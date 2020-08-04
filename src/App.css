@@ -1,38 +1,195 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+
+:root {
+  --main-primary-color: #4884f8;
+  --main-black-600: #393939;
+  --main-black-500: #6d6d6d;
+  --main-black-400: #9a9a9a;
+  --main-black-300: #cdcdcd;
+  --main-black-200: #f2f2f2;
+  --main-black-100: #fbfbfb;
+  --main-green: #2eba77;
+  --main-red: #df6161;
+  --main-lightred: #f5c3c3;
+  --main-lightyellow: #faf5e3;
+  --main-blue-600: #0f4d92;
+  --main-blue-200: #c3dbf5;
+  --main-lightpurple: #e7dff0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+body {
+  font-family: "Poppins", sans-serif !important;
+  color: var(--main-black-600) !important;
+  background-color: var(--main-black-200) !important;
+}
+
+.primary {
+  color: var(--main-primary-color);
+}
+
+.green {
+  color: var(--main-green);
+}
+
+.green-bg {
+  background-color: var(--main-green);
+}
+
+.red {
+  color: var(--main-red);
+}
+
+.red-bg {
+  background-color: var(--main-red);
+}
+
+.black-500 {
+  color: var(--main-black-500);
+}
+.black-500-bg {
+  background-color: var(--main-black-500);
+}
+
+.black-400 {
+  color: var(--main-black-400);
+}
+
+.black-400-bg {
+  background-color: var(--main-black-400);
+}
+
+.black-300 {
+  color: var(--main-black-300);
+}
+
+.black-300-bg {
+  background-color: var(--main-black-300);
+}
+
+.black-200 {
+  color: var(--main-black-200);
+}
+
+.black-200-bg {
+  background-color: var(--main-black-200);
+}
+
+.blue-600 {
+  color: var(--main-blue-600);
+}
+
+.blue-600-bg {
+  background-color: var(--main-blue-600);
+}
+
+.blue-200 {
+  color: var(--main-blue-200);
+}
+
+.blue-200-bg {
+  background-color: var(--main-blue-200);
+}
+
+.lightyellow {
+  color: var(--main-lightyellow);
+}
+
+.lightyellow-bg {
+  background-color: var(--main-lightyellow);
+}
+
+.lightred {
+  color: var(--main-lightred);
+}
+
+.lightred-bg {
+  background-color: var(--main-lightred);
+}
+
+.lightpurple {
+  color: var(--main-lightpurple);
+}
+
+.lightpurple-bg {
+  background-color: var(--main-lightpurple);
+}
+
+.small-image {
+  height: 63px;
+  width: 63px;
+}
+
+.large-image {
+  height: 136px;
+  width: 136px;
+}
+
+.p1 {
+  font-size: 40px;
+}
+
+.p2 {
+  font-size: 32px;
+}
+
+.p3 {
+  font-size: 24px;
+}
+
+.p4 {
+  font-size: 18px;
+}
+
+.p5 {
+  font-size: 16px;
+}
+
+.p6 {
+  font-size: 14px;
+}
+.p7 {
+  font-size: 12px;
+}
+
+.font-weight-semibold {
+  font-weight: 600;
+}
+
+.font-weight-medium {
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .p1 {
+    font-size: 48px;
   }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  .p2 {
+    font-size: 36px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .p3 {
+    font-size: 24px;
+  }
+
+  .p4 {
+    font-size: 18px;
+  }
+
+  .p5 {
+    font-size: 16px;
+  }
+
+  .p6 {
+    font-size: 14px;
   }
 }
