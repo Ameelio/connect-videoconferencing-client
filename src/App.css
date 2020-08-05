@@ -126,11 +126,13 @@ body {
 .small-image {
   height: 63px;
   width: 63px;
+  object-fit: cover;
 }
 
 .large-image {
   height: 136px;
   width: 136px;
+  object-fit: cover;
 }
 
 .p1 {
@@ -192,4 +194,24 @@ body {
   .p6 {
     font-size: 14px;
   }
+}
+
+.left-sidebar {
+  display: "flex";
+  flex-direction: "column";
+  width: 25%;
+  height: 100vh;
+  background-color: white;
+  align-items: "center";
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  padding: 2em 0em 2em 1em;
+  overflow: auto;
+}
+
+.left-sidebar-card:hover {
+  cursor: pointer;
+}
+
+.left-sidebar-card-active {
+  border-right: 3px solid #0089ff;
 }

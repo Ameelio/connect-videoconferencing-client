@@ -23,14 +23,8 @@ const NavBar: React.FC<Props> = () => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link as={Link} to="/">
-            Volunteers
-          </Nav.Link>
-          <Nav.Link as={Link} to="/contacts">
-            Contacts
-          </Nav.Link>
-          <Nav.Link as={Link} to="/newsletter">
-            Newsletter
+          <Nav.Link as={Link} to="/live-visitations">
+            Live Visitations
           </Nav.Link>
         </Nav>
       </Navbar.Collapse>
