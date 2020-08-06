@@ -5,10 +5,13 @@ import { bindActionCreators, Dispatch } from "redux";
 import FormControl from "react-bootstrap/FormControl";
 import Form from "react-bootstrap/Form";
 import SidebarCard from "src/components/cards/SidebarCard";
+import VideoConference from "src/components/videoconference/JitsiMeet";
+
 import {
   loadLiveVisitations,
   selectLiveVisitation,
 } from "src/redux/modules/live_visitation";
+import { CardType } from "src/data/utils/constants";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.liveVisitations,
@@ -54,12 +57,23 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         {visitations.visitations.map((liveVisitation) => (
           <SidebarCard
             key={liveVisitation.id}
-            type="kiosk"
+            type={CardType.Kiosk}
             entity={liveVisitation}
             isActive={liveVisitation.id === visitations.selectedVisitation?.id}
             handleClick={(e) => selectLiveVisitation(liveVisitation)}
           />
         ))}
+      </section>
+
+      <section className="main-wrapper">
+        <div className="main-container">
+          <span className="p3 font-weight-bold">
+            Kiosk #{visitations.selectedVisitation.kioskId}
+          </span>
+          <VideoConference />
+        </div>
+
+        <div></div>
       </section>
     </div>
   );

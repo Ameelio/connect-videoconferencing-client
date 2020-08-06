@@ -208,6 +208,19 @@ body {
   overflow: auto;
 }
 
+.main-wrapper {
+  display: "flex";
+  flex-direction: "column";
+  width: 75%;
+}
+
+.main-container {
+  padding: 2.5em;
+  margin: 2.5em;
+  background-color: white;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
 .left-sidebar-card:hover {
   cursor: pointer;
 }
