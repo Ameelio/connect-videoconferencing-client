@@ -1,5 +1,5 @@
 interface LiveVisitationState {
   visitations: LiveVisitation[];
-  selectedVisitation: LiveVisitation;
+  selectedVisitation?: LiveVisitation;
   hasLoaded: boolean;
 }

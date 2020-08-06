@@ -123,18 +123,33 @@ body {
   background-color: var(--main-lightpurple);
 }
 
+/* Images */
 .small-image {
-  height: 63px;
-  width: 63px;
+  height: 58px;
+  width: 58px;
   object-fit: cover;
 }
 
-.large-image {
-  height: 136px;
-  width: 136px;
+.medium-image {
+  height: 84px;
+  width: 84px;
   object-fit: cover;
 }
 
+.facepile-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.facepile-container .facepile-image:nth-child(1) {
+  margin-right: -1rem;
+}
+
+.facepile-container .facepile-image:nth-child(2) {
+  left: 0;
+}
+
+/* Typography */
 .p1 {
   font-size: 40px;
 }
@@ -227,4 +242,9 @@ body {
 
 .left-sidebar-card-active {
   border-right: 3px solid #0089ff;
+}
+
+.circle:before {
+  content: " \25CF";
+  color: var(--main-red);
 }

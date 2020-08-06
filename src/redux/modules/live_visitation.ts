@@ -41,7 +41,6 @@ export const selectLiveVisitation = (
 // Reducer
 const initialState: LiveVisitationState = {
   visitations: [],
-  selectedVisitation: {} as LiveVisitation,
   hasLoaded: false,
 };
 

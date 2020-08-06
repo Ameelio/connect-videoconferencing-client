@@ -27,19 +27,24 @@ const pickRandom = (items: any[]) => {
   return items[Math.floor(Math.random() * items.length)];
 };
 
-const genRandomId = (): number => {
-  return Math.random() * 1000 * Math.random();
-};
+const INMATE_IDS = ["K32135", "P32145", "J32183", "K54544", "B3235", "P63954"];
+const RELATIONSHIPS = [
+  "Sibling",
+  "Parent",
+  "Friend",
+  "Son/Daughter",
+  "Significant Other",
+];
 
 const genInmates = (): Inmate[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
-    inmateId: genRandomId(),
+    inmateId: pickRandom(INMATE_IDS),
     firstName: pickRandom(firstNames) as string,
     lastName: pickRandom(lastNames) as string,
     hasCallPrivilege: true,
-    unit: "",
-    dorm: "",
+    unit: "MCU",
+    dorm: "D-Pod",
     imageUri: pickRandom(PICS) as string,
   }));
 };
@@ -50,7 +55,8 @@ const genContacts = (): Contact[] => {
     firstName: pickRandom(firstNames) as string,
     lastName: pickRandom(lastNames) as string,
     imageUri: pickRandom(PICS) as string,
-    relationship: "parent",
+    relationship: pickRandom(RELATIONSHIPS),
+    numPastCalls: 23,
   }));
 };
 
@@ -91,4 +97,5 @@ const genVisitations = (): LiveVisitation[] => {
   }));
 };
 
+// console.log(genVisitations())
 export const LIVE_VISITATIONS = genVisitations();

@@ -5,13 +5,14 @@ import { bindActionCreators, Dispatch } from "redux";
 import FormControl from "react-bootstrap/FormControl";
 import Form from "react-bootstrap/Form";
 import SidebarCard from "src/components/cards/SidebarCard";
-import VideoConference from "src/components/videoconference/JitsiMeet";
+import LiveVisitationCard from "src/components/cards/LiveVisitationCard";
 
 import {
   loadLiveVisitations,
   selectLiveVisitation,
 } from "src/redux/modules/live_visitation";
 import { CardType } from "src/data/utils/constants";
+import ConnectionDetailsCard from "src/components/cards/ConnectionSnippetCard";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.liveVisitations,
@@ -40,6 +41,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   useEffect(() => {
     if (!visitations.hasLoaded) loadLiveVisitations();
   });
+
   return (
     <div className="d-flex flex-row">
       <section className="left-sidebar">
@@ -67,13 +69,20 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
       <section className="main-wrapper">
         <div className="main-container">
-          <span className="p3 font-weight-bold">
-            Kiosk #{visitations.selectedVisitation.kioskId}
-          </span>
-          <VideoConference />
+          {visitations.selectedVisitation && (
+            <LiveVisitationCard visitation={visitations.selectedVisitation} />
+          )}
         </div>
 
         <div></div>
+
+        <div className="main-container">
+          {visitations.selectedVisitation && (
+            <ConnectionDetailsCard
+              connection={visitations.selectedVisitation.connection}
+            />
+          )}
+        </div>
       </section>
     </div>
   );
