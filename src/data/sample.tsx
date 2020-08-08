@@ -78,7 +78,7 @@ const genConnections = (): Connection[] => {
       connectionRequestId: Math.random() * 100,
       requestedAt: new Date(),
       approvedAt: new Date(),
-      recordedVisitations: {} as Map<number, RecordedVisitation | null>,
+      recordedVisitations: {} as Map<number, RecordedVisitation>,
     };
   });
 };
@@ -101,7 +101,7 @@ const genRecordedVisitations = (
 
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
-    visitation: pastVisitations[id],
+    visitation: pastVisitations[id - 1],
     recordingUrl: "",
   }));
 };
@@ -111,7 +111,6 @@ const CONNECTIONS = rawConnection.map((connection) => ({
   ...connection,
   recordedVisitations: genRecordedVisitations(connection),
 }));
-
 const genVisitations = (): LiveVisitation[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
