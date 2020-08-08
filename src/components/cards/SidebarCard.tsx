@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "react-bootstrap/Image";
-import { CardType } from "src/data/utils/constants";
-import { genFullName, genImageUri } from "src/data/utils/utils";
+import { CardType } from "src/utils/constants";
+import { genFullName, genImageUri } from "src/utils/utils";
 
 interface Props {
   type: CardType;
@@ -19,10 +19,10 @@ const SidebarCard: React.FC<Props> = ({
   const activeBorder = isActive ? "left-sidebar-card-active" : "";
   const fontColor = isActive ? "primary" : "black-500";
 
-  const generateComponent = (type: CardType): JSX.Element => {
+  const genCard = (): JSX.Element => {
     switch (type) {
-      case CardType.Kiosk:
-        const { connection, id } = entity as Kiosk;
+      case CardType.LiveVisitation:
+        const { connection, id } = entity as LiveVisitation;
 
         return (
           <div className="d-flex flex-row">
@@ -62,7 +62,7 @@ const SidebarCard: React.FC<Props> = ({
       className={`pr-3 py-4 left-sidebar-card border-bottom ${activeBorder}`}
       onClick={handleClick}
     >
-      {generateComponent(type)}
+      {genCard()}
     </div>
   );
 };

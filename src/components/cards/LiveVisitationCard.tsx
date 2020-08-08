@@ -14,7 +14,6 @@ const LiveVisitationCard: React.FC<Props> = ({ visitation }) => {
     <div>
       <div className="d-flex flex-row justify-content-between">
         <span className="p2 font-weight-bold">Kiosk #{visitation.kioskId}</span>
-
         <div className="d-flex flex-row">
           <div className="d-flex align-items-center">
             <Video />

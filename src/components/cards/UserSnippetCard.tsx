@@ -1,7 +1,7 @@
 import React from "react";
-import { CardType } from "src/data/utils/constants";
+import { CardType } from "src/utils/constants";
 import { Image } from "react-bootstrap";
-import { genImageUri, genFullName } from "src/data/utils/utils";
+import { genImageUri, genFullName } from "src/utils/utils";
 
 interface Props {
   type: CardType;
@@ -14,7 +14,7 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity }) => {
       case CardType.Contact:
         return (
           <div className="d-flex flex-column">
-            <span className="p3">{genFullName(entity)}</span>
+            <span className="p4 text-truncate">{genFullName(entity)}</span>
             <span>{(entity as Contact).relationship}</span>
             <span>{(entity as Contact).numPastCalls}</span>
           </div>
@@ -22,7 +22,7 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity }) => {
       case CardType.Inmate:
         return (
           <div className="d-flex flex-column">
-            <span className="p3">{genFullName(entity)}</span>
+            <span className="p4 text-truncate">{genFullName(entity)}</span>
             <span>{(entity as Inmate).inmateId}</span>
             <span>
               {(entity as Inmate).unit}, {(entity as Inmate).dorm}
@@ -35,7 +35,7 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity }) => {
   };
 
   return (
-    <div className="d-flex flex-row border-right px-4 pt-1 justify-content-between align-items-center">
+    <div className="d-flex flex-row border-right px-4 pt-1 align-items-center w-33 mw-33">
       <Image
         rounded
         className="medium-image mr-3"

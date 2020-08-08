@@ -11,8 +11,10 @@ import {
   loadLiveVisitations,
   selectLiveVisitation,
 } from "src/redux/modules/live_visitation";
-import { CardType } from "src/data/utils/constants";
+import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionSnippetCard";
+import Sidebar from "src/components/sidebar/Sidebar";
+import { genFullName } from "src/utils/utils";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.liveVisitations,
@@ -37,35 +39,56 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   selectLiveVisitation,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
+    LiveVisitation[]
+  >(visitations.visitations);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchQuery(value);
+
+    setFilteredLiveVisitations(
+      !value
+        ? visitations.visitations
+        : filteredLiveVisitations.filter((visitation) => {
+            const { contact, inmate } = visitation.connection;
+            return (
+              genFullName(contact)
+                .toLowerCase()
+                .includes(value.toLowerCase()) ||
+              genFullName(inmate).toLowerCase().includes(value.toLowerCase())
+            );
+          })
+    );
+  };
 
   useEffect(() => {
     if (!visitations.hasLoaded) loadLiveVisitations();
-  });
+    setFilteredLiveVisitations(visitations.visitations);
+  }, [setFilteredLiveVisitations, visitations, loadLiveVisitations]);
 
   return (
     <div className="d-flex flex-row">
-      <section className="left-sidebar">
-        <span className="p3">Live Visitations</span>
-
+      <Sidebar title="Live Visitations">
         <Form className="mt-3 w-75">
           <FormControl
             type="text"
-            placeholder="Search kiosk"
+            placeholder="Search by name"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </Form>
 
-        {visitations.visitations.map((liveVisitation) => (
+        {filteredLiveVisitations.map((liveVisitation) => (
           <SidebarCard
             key={liveVisitation.id}
-            type={CardType.Kiosk}
+            type={CardType.LiveVisitation}
             entity={liveVisitation}
             isActive={liveVisitation.id === visitations.selectedVisitation?.id}
             handleClick={(e) => selectLiveVisitation(liveVisitation)}
           />
         ))}
-      </section>
+      </Sidebar>
 
       <section className="main-wrapper">
         <div className="main-container">

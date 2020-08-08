@@ -18,6 +18,7 @@ interface LiveVisitation {
 }
 
 interface RecordedVisitation {
+  id: number;
   visitation: LiveVisitation;
   recordingUrl: string;
 }

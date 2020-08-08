@@ -1,3 +1,5 @@
+import { subDays } from "date-fns";
+
 const firstNames = [
   "Harry",
   "George",
@@ -76,11 +78,39 @@ const genConnections = (): Connection[] => {
       connectionRequestId: Math.random() * 100,
       requestedAt: new Date(),
       approvedAt: new Date(),
+      recordedVisitations: {} as Map<number, RecordedVisitation | null>,
     };
   });
 };
 
-const CONNECTIONS = genConnections();
+const genRecordedVisitations = (
+  connection: Connection
+): RecordedVisitation[] => {
+  const pastVisitations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
+    id: id,
+    kioskId: id,
+    callUrl: "",
+    createdAt: subDays(new Date(), id * 7),
+    scheduledStartTime: subDays(new Date(), id * 7),
+    scheduledEndTime: subDays(new Date(), id * 7),
+    startTime: subDays(new Date(), id * 7),
+    endTime: subDays(new Date(), id * 7),
+    status: "done",
+    connection: connection,
+  }));
+
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
+    id: id,
+    visitation: pastVisitations[id],
+    recordingUrl: "",
+  }));
+};
+
+const rawConnection = genConnections();
+const CONNECTIONS = rawConnection.map((connection) => ({
+  ...connection,
+  recordedVisitations: genRecordedVisitations(connection),
+}));
 
 const genVisitations = (): LiveVisitation[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
@@ -97,5 +127,4 @@ const genVisitations = (): LiveVisitation[] => {
   }));
 };
 
-// console.log(genVisitations())
 export const LIVE_VISITATIONS = genVisitations();

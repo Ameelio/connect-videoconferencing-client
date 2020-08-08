@@ -1,6 +1,6 @@
 import React from "react";
 import UserSnippetCard from "./UserSnippetCard";
-import { CardType } from "src/data/utils/constants";
+import { CardType } from "src/utils/constants";
 import { Spinner } from "react-bootstrap";
 
 interface Props {

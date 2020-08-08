@@ -1,5 +1,5 @@
 export enum CardType {
-  Kiosk = "kiosk",
+  LiveVisitation = "kiosk",
   Contact = "contact",
   Inmate = "inmate",
   Doc = "doc",

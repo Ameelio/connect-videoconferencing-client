@@ -3,7 +3,6 @@ import Jitsi from "react-jitsi";
 
 const JitsiMeet = () => {
   const handleAPI = (api: any) => {
-    console.log(api);
     api.executeCommand("toggleVideo");
   };
 
@@ -15,6 +14,7 @@ const JitsiMeet = () => {
       displayName={"DOC Colorado"}
       interfaceConfig={interfaceConfig}
       config={config}
+      containerStyle={{ width: "100%" }}
     />
   );
 };

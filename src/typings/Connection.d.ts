@@ -17,4 +17,5 @@ interface Connection {
   connectionRequestId: number;
   requestedAt: Date;
   approvedAt: Date;
+  recordedVisitations: Map<number, ?RecordedVisitation>;
 }
