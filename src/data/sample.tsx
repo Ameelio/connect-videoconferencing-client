@@ -1,4 +1,5 @@
-import { subDays } from "date-fns";
+import { subDays, addSeconds } from "date-fns";
+import { add } from "date-fns/esm";
 
 const firstNames = [
   "Harry",
@@ -29,6 +30,10 @@ const pickRandom = (items: any[]) => {
   return items[Math.floor(Math.random() * items.length)];
 };
 
+function getRandomArbitrary(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
 const INMATE_IDS = ["K32135", "P32145", "J32183", "K54544", "B3235", "P63954"];
 const RELATIONSHIPS = [
   "Sibling",
@@ -38,6 +43,12 @@ const RELATIONSHIPS = [
   "Significant Other",
 ];
 
+export const PODS = [
+  { id: 1, name: "D-Pod", capability: 5 },
+  { id: 2, name: "MCU", capability: 2 },
+  { id: 3, name: "Incentive Pod", capability: 3 },
+];
+
 const genInmates = (): Inmate[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
@@ -45,8 +56,7 @@ const genInmates = (): Inmate[] => {
     firstName: pickRandom(firstNames) as string,
     lastName: pickRandom(lastNames) as string,
     hasCallPrivilege: true,
-    unit: "MCU",
-    dorm: "D-Pod",
+    pod: pickRandom(PODS),
     imageUri: pickRandom(PICS) as string,
   }));
 };
@@ -94,7 +104,10 @@ const genRecordedVisitations = (
     scheduledStartTime: subDays(new Date(), id * 7),
     scheduledEndTime: subDays(new Date(), id * 7),
     startTime: subDays(new Date(), id * 7),
-    endTime: subDays(new Date(), id * 7),
+    endTime: addSeconds(
+      subDays(new Date(), id * 7),
+      getRandomArbitrary(900, 1500)
+    ),
     status: "done" as VisitationStatus,
     connection: connection,
   }));
@@ -117,7 +130,7 @@ const genVisitations = (): LiveVisitation[] => {
     callUrl: "",
     createdAt: new Date(),
     scheduledStartTime: new Date(),
-    scheduledEndTime: new Date(),
+    scheduledEndTime: add(new Date(), { minutes: 15 }),
     startTime: new Date(),
     endTime: new Date(),
     status: "ongoing",

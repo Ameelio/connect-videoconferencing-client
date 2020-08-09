@@ -1,4 +1,5 @@
 import { EventInput } from "@fullcalendar/react";
+import { addSeconds, format, differenceInSeconds } from "date-fns";
 
 export const genFullName = (entity?: Inmate | Contact): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -15,4 +16,12 @@ export const VisitationToEventInput = (visitation: Visitation): EventInput => {
     start: visitation.scheduledStartTime,
     end: visitation.scheduledEndTime,
   };
+};
+
+const formatSecondsToMS = (secs: number): string => {
+  return format(addSeconds(new Date(0), secs), "mm:ss");
+};
+export const calculateDurationMS = (start: Date, end: Date): string => {
+  const secs = differenceInSeconds(end, start);
+  return formatSecondsToMS(secs);
 };

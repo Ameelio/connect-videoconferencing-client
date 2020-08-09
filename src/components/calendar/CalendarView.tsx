@@ -59,6 +59,7 @@ const CalendarView: React.FC<Props> = ({ visitations }) => {
         selectMirror={true}
         dayMaxEvents={true}
         weekends={false}
+        businessHours={true}
         events={events} // alternatively, use the `events` setting to fetch from a feed
         eventContent={renderEventContent} // custom render function
         eventClick={handleEventClick}

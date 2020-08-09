@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import JitsiMeet from "src/components/videoconference/JitsiMeet";
 import { Video } from "react-feather";
-import { differenceInMinutes, add } from "date-fns";
+import { format } from "date-fns";
+import { calculateDurationMS } from "src/utils/utils";
 
 interface Props {
   visitation: LiveVisitation;
@@ -9,7 +10,14 @@ interface Props {
 
 const LiveVisitationCard: React.FC<Props> = ({ visitation }) => {
   const { inmate, contact } = visitation.connection;
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateDurationMS(new Date(), visitation.scheduledEndTime));
+    }, 1000);
+    return () => clearTimeout(timer);
+  });
   return (
     <div>
       <div className="d-flex flex-row justify-content-between">
@@ -21,16 +29,11 @@ const LiveVisitationCard: React.FC<Props> = ({ visitation }) => {
           </div>
           <div className="d-flex ml-3 align-items-center">
             <span className="circle" />
-            <span className="ml-1">24:32</span>
+            <span className="ml-1">{timeLeft}</span>
           </div>
           <div className="d-flex flex-row ml-3 align-items-center">
             <span>Start Time:</span>
-            <span className="ml-1">
-              {differenceInMinutes(
-                add(visitation.startTime, { minutes: 24, seconds: 12 }),
-                visitation.startTime
-              )}
-            </span>
+            <span className="ml-1">{format(visitation.startTime, "h:mm")}</span>
           </div>
         </div>
       </div>

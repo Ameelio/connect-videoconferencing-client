@@ -1,6 +1,7 @@
 import React from "react";
-import { format, differenceInMinutes } from "date-fns";
+import { format } from "date-fns";
 import { Video } from "react-feather";
+import { calculateDurationMS } from "src/utils/utils";
 
 interface Props {
   record: RecordedVisitation;
@@ -15,10 +16,7 @@ const RecordedVisitationSnippetCard: React.FC<Props> = ({ record }) => {
           <span className="black-500 p7 ml-1">Video Call</span>
         </div>
         <span className="black-500 p7">
-          {format(
-            differenceInMinutes(record.endTime, record.startTime),
-            "mm:ss"
-          )}
+          {calculateDurationMS(record.startTime, record.endTime)}
         </span>
       </div>
       <div className="black-500 p6">{format(record.createdAt, "MMM d")}</div>

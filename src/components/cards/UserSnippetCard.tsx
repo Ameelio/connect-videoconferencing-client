@@ -24,9 +24,7 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity }) => {
           <div className="d-flex flex-column">
             <span className="p4 text-truncate">{genFullName(entity)}</span>
             <span>{(entity as Inmate).inmateId}</span>
-            <span>
-              {(entity as Inmate).unit}, {(entity as Inmate).dorm}
-            </span>
+            <span>{(entity as Inmate).pod.name}</span>
           </div>
         );
       default:

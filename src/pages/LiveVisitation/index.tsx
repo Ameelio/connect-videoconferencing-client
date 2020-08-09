@@ -15,6 +15,8 @@ import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionSnippetCard";
 import Sidebar from "src/components/containers/Sidebar";
 import { genFullName } from "src/utils/utils";
+import Container from "src/components/containers/Container";
+import Wrapper from "src/components/containers/Wrapper";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations,
@@ -90,23 +92,23 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         ))}
       </Sidebar>
 
-      <section className="main-wrapper">
-        <div className="main-container">
+      <Wrapper>
+        <Container>
           {visitations.selectedVisitation && (
             <LiveVisitationCard visitation={visitations.selectedVisitation} />
           )}
-        </div>
+        </Container>
 
         <div></div>
 
-        <div className="main-container">
+        <Container>
           {visitations.selectedVisitation && (
             <ConnectionDetailsCard
               connection={visitations.selectedVisitation.connection}
             />
           )}
-        </div>
-      </section>
+        </Container>
+      </Wrapper>
     </div>
   );
 };

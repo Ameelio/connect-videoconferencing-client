@@ -8,8 +8,7 @@ interface User {
 interface Inmate extends User {
   inmateId: string;
   hasCallPrivilege: boolean;
-  unit: string;
-  dorm: string;
+  pod: Pod;
 }
 
 interface Contact extends User {
