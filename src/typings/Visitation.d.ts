@@ -1,24 +1,31 @@
 interface Kiosk {
   id: number;
 }
-LiveVisitationStatus =
-  "scheduled" | "cancelled" | "ongoing" | "terminated" | "completed";
 
-interface LiveVisitation {
+type VisitationStatus =
+  | "scheduled"
+  | "cancelled"
+  | "ongoing"
+  | "terminated"
+  | "completed";
+
+interface Visitation {
   id: number;
-  kioskId: number;
-  callUrl: string;
   createdAt: Date;
   scheduledStartTime: Date;
   scheduledEndTime: Date;
-  startTime: Date;
-  endTime: Date;
-  status: LiveVisitationStatus;
+  callUrl: string;
   connection: Connection;
+  status: VisitationStatus;
 }
 
-interface RecordedVisitation {
-  id: number;
-  visitation: LiveVisitation;
+interface LiveVisitation extends Visitation {
+  kioskId: number;
+  callUrl: string;
+  startTime: Date;
+  endTime: Date;
+}
+
+interface RecordedVisitation extends LiveVisitation {
   recordingUrl: string;
 }

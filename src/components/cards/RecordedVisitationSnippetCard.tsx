@@ -16,17 +16,12 @@ const RecordedVisitationSnippetCard: React.FC<Props> = ({ record }) => {
         </div>
         <span className="black-500 p7">
           {format(
-            differenceInMinutes(
-              record.visitation.endTime,
-              record.visitation.startTime
-            ),
+            differenceInMinutes(record.endTime, record.startTime),
             "mm:ss"
           )}
         </span>
       </div>
-      <div className="black-500 p6">
-        {format(record.visitation.createdAt, "MMM d")}
-      </div>
+      <div className="black-500 p6">{format(record.createdAt, "MMM d")}</div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 interface Kiosk {
   id: number;
-  connection?: Connection;
+  visitations: Visitation[];
+  currentVisitation?: Visitation;
 }

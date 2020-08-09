@@ -95,13 +95,12 @@ const genRecordedVisitations = (
     scheduledEndTime: subDays(new Date(), id * 7),
     startTime: subDays(new Date(), id * 7),
     endTime: subDays(new Date(), id * 7),
-    status: "done",
+    status: "done" as VisitationStatus,
     connection: connection,
   }));
 
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
-    id: id,
-    visitation: pastVisitations[id - 1],
+    ...pastVisitations[id - 1],
     recordingUrl: "",
   }));
 };
@@ -126,4 +125,25 @@ const genVisitations = (): LiveVisitation[] => {
   }));
 };
 
+const genScheduledVisitations = (): Visitation[] => {
+  const arrays: Visitation[][] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) =>
+    [1, 2, 3, 4, 5].map((day) => ({
+      id: id,
+      createdAt: new Date(),
+      scheduledStartTime: new Date(`2020-08-${10 + day - 1}T${9 + id - 1}:00`),
+      scheduledEndTime: new Date(),
+      status: "scheduled",
+      connection: pickRandom(CONNECTIONS) as Connection,
+      callUrl: "",
+    }))
+  );
+  const result = arrays.reduce(
+    (accumulator, value) => accumulator.concat(value),
+    []
+  );
+
+  return result;
+};
+
 export const LIVE_VISITATIONS = genVisitations();
+export const SCHEDULED_VISITATIONS = genScheduledVisitations();

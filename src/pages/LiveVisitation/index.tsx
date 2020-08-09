@@ -10,14 +10,14 @@ import LiveVisitationCard from "src/components/cards/LiveVisitationCard";
 import {
   loadLiveVisitations,
   selectLiveVisitation,
-} from "src/redux/modules/live_visitation";
+} from "src/redux/modules/visitation";
 import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionSnippetCard";
-import Sidebar from "src/components/sidebar/Sidebar";
+import Sidebar from "src/components/containers/Sidebar";
 import { genFullName } from "src/utils/utils";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: state.liveVisitations,
+  visitations: state.visitations,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -41,7 +41,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
     LiveVisitation[]
-  >(visitations.visitations);
+  >(visitations.liveVisitations);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -49,7 +49,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
     setFilteredLiveVisitations(
       !value
-        ? visitations.visitations
+        ? visitations.liveVisitations
         : filteredLiveVisitations.filter((visitation) => {
             const { contact, inmate } = visitation.connection;
             return (
@@ -64,7 +64,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     if (!visitations.hasLoaded) loadLiveVisitations();
-    setFilteredLiveVisitations(visitations.visitations);
+    setFilteredLiveVisitations(visitations.liveVisitations);
   }, [setFilteredLiveVisitations, visitations, loadLiveVisitations]);
 
   return (

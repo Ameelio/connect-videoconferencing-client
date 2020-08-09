@@ -5,7 +5,7 @@ import { genFullName, genImageUri } from "src/utils/utils";
 
 interface Props {
   type: CardType;
-  entity: Kiosk | Contact;
+  entity: LiveVisitation | Contact;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   isActive: boolean;
 }
