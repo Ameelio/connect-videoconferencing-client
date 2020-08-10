@@ -5,7 +5,7 @@ import NavBar from "./components/navbar/Navbar";
 import LiveVisitation from "./pages/LiveVisitation";
 import CalendarView from "./pages/Calendar";
 import ConnectionRequests from "./pages/ConnectionRequests";
-import Logs from "./pages/Logs";
+import Logs from "./pages/PastVisitations";
 
 function App() {
   return (

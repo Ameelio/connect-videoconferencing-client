@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
@@ -12,6 +12,8 @@ import {
 import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
+import { Form, FormControl } from "react-bootstrap";
+import { genFullName } from "src/utils/utils";
 
 const mapStateToProps = (state: RootState) => ({
   logs: state.visitations.pastVisitations,
@@ -31,11 +33,49 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   loadPastVisitations,
   selectPastVisitation,
 }) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredPastVisitations, setFilteredPastVisitations] = useState<
+    RecordedVisitation[]
+  >(logs);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchQuery(value);
+
+    setFilteredPastVisitations(
+      !value
+        ? logs
+        : logs.filter((visitation) => {
+            const { contact, inmate } = visitation.connection;
+            return (
+              genFullName(contact)
+                .toLowerCase()
+                .includes(value.toLowerCase()) ||
+              genFullName(inmate).toLowerCase().includes(value.toLowerCase())
+            );
+          })
+    );
+  };
+
   if (!logs.length) loadPastVisitations();
+
+  useEffect(() => {
+    if (!logs.length) loadPastVisitations();
+    setFilteredPastVisitations(logs);
+  }, [logs, loadPastVisitations]);
+
   return (
     <div className="d-flex flex-row">
       <Sidebar title="Past Visitations">
-        {logs.map((log) => (
+        <Form className="mt-3 w-75">
+          <FormControl
+            type="text"
+            placeholder="Search by name"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </Form>
+        {filteredPastVisitations.map((log) => (
           <SidebarCard
             key={log.id}
             type={CardType.PastVisitation}
@@ -45,13 +85,16 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
         ))}
       </Sidebar>
-      <Wrapper>
-        <Container>
-          {selected && (
+      {selected && (
+        <Wrapper>
+          <Container>
+            {/* TODO add the past visitation log once we have the images */}
+          </Container>
+          <Container>
             <ConnectionDetailsCard connection={selected.connection} />
-          )}
-        </Container>
-      </Wrapper>
+          </Container>
+        </Wrapper>
+      )}
     </div>
   );
 };
