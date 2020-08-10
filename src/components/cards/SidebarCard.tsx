@@ -1,11 +1,11 @@
 import React from "react";
-import Image from "react-bootstrap/Image";
 import { CardType } from "src/utils/constants";
-import { genFullName, genImageUri } from "src/utils/utils";
+import { Spinner } from "react-bootstrap";
+import ConnectionCard from "./ConnectionCard";
 
 interface Props {
   type: CardType;
-  entity: LiveVisitation | Contact;
+  entity: LiveVisitation | ConnectionRequest;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   isActive: boolean;
 }
@@ -23,36 +23,31 @@ const SidebarCard: React.FC<Props> = ({
     switch (type) {
       case CardType.LiveVisitation:
         const { connection, id } = entity as LiveVisitation;
-
-        return (
-          <div className="d-flex flex-row">
-            <div className="d-flex flex-column align-items-center">
-              <span className="font-weight-bold">Kiosk {id}</span>
-              <div className="facepile-container">
-                <Image
-                  className="small-image facepile-image p4"
-                  src={genImageUri(connection?.inmate)}
-                  roundedCircle
-                />
-                <Image
-                  className="small-image facepile-image p4"
-                  src={genImageUri(connection?.contact)}
-                  roundedCircle
-                />
-              </div>
-            </div>
-            <div className="ml-4 d-flex flex-column">
-              <span className={`${fontColor}`}>
-                {genFullName(connection?.inmate)}
-              </span>
-              <div className="d-flex flex-row justify-content-between">
-                <span className="p6 text-truncate">
-                  Calling {genFullName(connection?.contact)}
-                </span>
-              </div>
-            </div>
-          </div>
+        const { inmate, contact } = connection;
+        return inmate && contact ? (
+          <ConnectionCard
+            inmate={inmate}
+            contact={contact}
+            kioskId={id}
+            fontColor={fontColor}
+            actionLabel="Calling"
+          />
+        ) : (
+          <Spinner animation="border" />
         );
+      case CardType.ConnectionRequest:
+        const connectionRequest = entity as ConnectionRequest;
+        return connectionRequest.inmate && connectionRequest.contact ? (
+          <ConnectionCard
+            inmate={connectionRequest.inmate}
+            contact={connectionRequest.contact}
+            fontColor={fontColor}
+            actionLabel="Requests"
+          />
+        ) : (
+          <Spinner animation="border" />
+        );
+
       default:
         return <div></div>;
     }

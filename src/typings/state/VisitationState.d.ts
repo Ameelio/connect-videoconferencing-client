@@ -1,7 +1,7 @@
-interface LiveVisitationState {
+interface VisitationState {
   liveVisitations: LiveVisitation[];
   scheduledVisitations: Visitation[];
-  selectedVisitation?: LiveVisitation;
+  selectedVisitation: LiveVisitation | null;
   hasLoaded: boolean;
   hasLoadedScheduledVisitations: boolean;
 }

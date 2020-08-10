@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
-import { liveVisitationsReducer } from "src/redux/modules/visitation";
+import { visitationsReducer } from "src/redux/modules/visitation";
+import { connectionsReducer } from "./modules/connection";
 
 export const rootReducer = combineReducers({
-  visitations: liveVisitationsReducer,
+  visitations: visitationsReducer,
+  connections: connectionsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

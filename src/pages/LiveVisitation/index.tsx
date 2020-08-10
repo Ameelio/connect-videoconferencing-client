@@ -12,7 +12,7 @@ import {
   selectLiveVisitation,
 } from "src/redux/modules/visitation";
 import { CardType } from "src/utils/constants";
-import ConnectionDetailsCard from "src/components/cards/ConnectionSnippetCard";
+import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
 import Sidebar from "src/components/containers/Sidebar";
 import { genFullName } from "src/utils/utils";
 import Container from "src/components/containers/Container";

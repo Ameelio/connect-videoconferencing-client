@@ -1,21 +1,31 @@
 import React from "react";
 import UserSnippetCard from "./UserSnippetCard";
-import { CardType } from "src/utils/constants";
+import { CardType, CardSize } from "src/utils/constants";
 import { Spinner } from "react-bootstrap";
 import RecordedVisitationSnippetCard from "./RecordedVisitationSnippetCard";
-import "./ConnectionSnippetCard.css";
+import "./ConnectionDetailsCard.css";
 
 interface Props {
   connection: Connection;
 }
 
-const ConnectionSnippetCard: React.FC<Props> = ({ connection }) => {
-  const { inmate, contact, recordedVisitations } = connection;
+const ConnectionDetailsCard: React.FC<Props> = ({ connection }) => {
+  const { inmate, contact, recordedVisitations, numPastCalls } = connection;
+
   return inmate && contact ? (
     <div className="d-flex flex-row">
-      <UserSnippetCard type={CardType.Inmate} entity={inmate} />
-      <UserSnippetCard type={CardType.Contact} entity={contact} />
+      <UserSnippetCard
+        type={CardType.Inmate}
+        entity={inmate}
+        size={CardSize.Medium}
+      />
+      <UserSnippetCard
+        type={CardType.Contact}
+        entity={contact}
+        size={CardSize.Medium}
+      />
       <div className="d-flex flex-column past-visitations-wrapper">
+        <span className="black-400 p6">Past Visitations ({numPastCalls})</span>
         {Array.from(recordedVisitations.values()).map(
           (record: RecordedVisitation) => (
             <RecordedVisitationSnippetCard record={record} />
@@ -30,4 +40,4 @@ const ConnectionSnippetCard: React.FC<Props> = ({ connection }) => {
   );
 };
 
-export default ConnectionSnippetCard;
+export default ConnectionDetailsCard;

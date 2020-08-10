@@ -13,5 +13,6 @@ interface Inmate extends User {
 
 interface Contact extends User {
   relationship: string;
-  numPastCalls: number;
+  dob: Date;
+  document: string;
 }

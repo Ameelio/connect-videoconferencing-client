@@ -68,7 +68,8 @@ const genContacts = (): Contact[] => {
     lastName: pickRandom(lastNames) as string,
     imageUri: pickRandom(PICS) as string,
     relationship: pickRandom(RELATIONSHIPS),
-    numPastCalls: 23,
+    document: "Colorado DL 1472",
+    dob: new Date("1990-10-27"),
   }));
 };
 
@@ -85,10 +86,25 @@ const genConnections = (): Connection[] => {
       contactId: contact.id,
       inmate: inmate,
       contact: contact,
-      connectionRequestId: Math.random() * 100,
       requestedAt: new Date(),
       approvedAt: new Date(),
       recordedVisitations: {} as Map<number, RecordedVisitation>,
+      numPastCalls: pickRandom([6, 8, 12, 15, 21, 3]),
+    };
+  });
+};
+
+const genConnectionRequests = (): ConnectionRequest[] => {
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => {
+    const inmate = pickRandom(INMATES) as Inmate;
+    const contact = pickRandom(CONTACTS) as Contact;
+    return {
+      id: id,
+      inmateId: inmate.id,
+      contactId: contact.id,
+      inmate: inmate,
+      contact: contact,
+      requestedAt: new Date(),
     };
   });
 };
@@ -160,3 +176,4 @@ const genScheduledVisitations = (): Visitation[] => {
 
 export const LIVE_VISITATIONS = genVisitations();
 export const SCHEDULED_VISITATIONS = genScheduledVisitations();
+export const CONNECTION_REQUESTS = genConnectionRequests();

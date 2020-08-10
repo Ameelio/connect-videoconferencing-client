@@ -1,9 +1,10 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import NavBar from "./components/navbar/Navbar";
 import LiveVisitation from "./pages/LiveVisitation";
 import CalendarView from "./pages/Calendar";
+import ConnectionRequests from "./pages/ConnectionRequests";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <NavBar />
       <Switch>
         <Route exact path="/calendar" component={CalendarView}></Route>
+        <Route exact path="/requests" component={ConnectionRequests}></Route>
         <Route exact path="/" component={LiveVisitation}></Route>
       </Switch>
     </Router>

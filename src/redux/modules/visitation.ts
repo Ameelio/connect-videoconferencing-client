@@ -55,23 +55,27 @@ const setScheduledVisitations = (
 };
 
 // Reducer
-const initialState: LiveVisitationState = {
+const initialState: VisitationState = {
   liveVisitations: [],
+  selectedVisitation: null,
   scheduledVisitations: [],
   hasLoaded: false,
   hasLoadedScheduledVisitations: false,
 };
 
-export function liveVisitationsReducer(
+export function visitationsReducer(
   state = initialState,
   action: LiveVisitationActionTypes
-): LiveVisitationState {
+): VisitationState {
   switch (action.type) {
     case SET_LIVE_VISITATIONS:
+      const selectedVisitation = action.payload.length
+        ? action.payload[0]
+        : null;
       return {
         ...state,
         liveVisitations: action.payload,
-        selectedVisitation: action.payload[0],
+        selectedVisitation: selectedVisitation, //TODO this assumes that there is at least one live visitation. This will break for zero state
         hasLoaded: true,
       };
     case SELECT_LIVE_VISITATION:

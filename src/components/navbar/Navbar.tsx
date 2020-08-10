@@ -29,6 +29,9 @@ const NavBar: React.FC<Props> = () => {
           <Nav.Link as={Link} to="/calendar">
             Calendar
           </Nav.Link>
+          <Nav.Link as={Link} to="/requests">
+            Connection Requests
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

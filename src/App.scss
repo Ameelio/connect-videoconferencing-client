@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+@import "./scss/custom.scss";
 
 :root {
   --main-primary-color: #4884f8;
@@ -133,6 +133,12 @@ body {
 .medium-image {
   height: 84px;
   width: 84px;
+  object-fit: cover;
+}
+
+.large-image {
+  height: 136px;
+  width: 136px;
   object-fit: cover;
 }
 
