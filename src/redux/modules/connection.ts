@@ -108,19 +108,29 @@ export function connectionsReducer(
         selectedRequest: selectedRequest,
       };
     case ADD_CONNECTION:
+      const requestsPostApproval = state.requests.filter(
+        (connection) => connection.id !== action.payload.id
+      );
       return {
         ...state,
         connections: [...state.connections, action.payload],
-        requests: state.requests.filter(
-          (connection) => connection.id !== action.payload.id
-        ),
+        requests: requestsPostApproval,
+        selectedRequest: requestsPostApproval.length
+          ? requestsPostApproval[0]
+          : null,
       };
     case DELETE_CONNECTION_REQUEST:
+      const requestsPostDeletion = state.requests.filter(
+        (connection) => connection.id !== action.payload.id
+      );
       return {
         ...state,
         requests: state.requests.filter(
           (connection) => connection.id !== action.payload.id
         ),
+        selectedRequest: requestsPostDeletion.length
+          ? requestsPostDeletion[0]
+          : null,
       };
 
     case SELECT_CONNECTION_REQUEST:

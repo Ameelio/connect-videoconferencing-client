@@ -177,3 +177,24 @@ const genScheduledVisitations = (): Visitation[] => {
 export const LIVE_VISITATIONS = genVisitations();
 export const SCHEDULED_VISITATIONS = genScheduledVisitations();
 export const CONNECTION_REQUESTS = genConnectionRequests();
+
+const genRandomRecordedVisitations = (): RecordedVisitation[] => {
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
+    id: id,
+    kioskId: id,
+    callUrl: "",
+    createdAt: subDays(new Date(), id * 7),
+    scheduledStartTime: subDays(new Date(), id * 7),
+    scheduledEndTime: subDays(new Date(), id * 7),
+    startTime: subDays(new Date(), id * 7),
+    endTime: addSeconds(
+      subDays(new Date(), id * 7),
+      getRandomArbitrary(900, 1500)
+    ),
+    status: "done" as VisitationStatus,
+    connection: pickRandom(CONNECTIONS) as Connection,
+    recordingUrl: "",
+  }));
+};
+
+export const PAST_VISITATIONS = genRandomRecordedVisitations();

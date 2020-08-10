@@ -4,4 +4,6 @@ interface VisitationState {
   selectedVisitation: LiveVisitation | null;
   hasLoaded: boolean;
   hasLoadedScheduledVisitations: boolean;
+  pastVisitations: RecordedVisitation[];
+  selectedPastVisitation: RecordedVisitation | null;
 }

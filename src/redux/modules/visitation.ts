@@ -1,9 +1,15 @@
 import { AppThunk } from "src/redux/helpers";
-import { LIVE_VISITATIONS, SCHEDULED_VISITATIONS } from "src/data/sample";
+import {
+  LIVE_VISITATIONS,
+  SCHEDULED_VISITATIONS,
+  PAST_VISITATIONS,
+} from "src/data/sample";
 
 const SET_LIVE_VISITATIONS = "visitation/SET_LIVE_VISITATIONS";
 const SELECT_LIVE_VISITATION = "visitation/SELECT_LIVE_VISITATION";
 const SET_SCHEDULED_VISITATIONS = "visitation/SET_SCHEDULED_VISITATIONS";
+const SET_PAST_VISITATIONS = "visitation/SET_PASET_PAST_VISITATIONS";
+const SELECT_PAST_VISITATION = "visitation/SELECT_PAST_VISITATION";
 
 // Action Constants & Shapes
 interface SetLiveVisitationAction {
@@ -16,15 +22,27 @@ interface SelectLivitationAction {
   payload: LiveVisitation;
 }
 
-interface SetScheduledVisitations {
+interface SetScheduledVisitationsAction {
   type: typeof SET_SCHEDULED_VISITATIONS;
   payload: Visitation[];
+}
+
+interface SetPastVisitationsAction {
+  type: typeof SET_PAST_VISITATIONS;
+  payload: RecordedVisitation[];
+}
+
+interface SelectVisitationsAction {
+  type: typeof SELECT_PAST_VISITATION;
+  payload: RecordedVisitation;
 }
 
 type LiveVisitationActionTypes =
   | SetLiveVisitationAction
   | SelectLivitationAction
-  | SetScheduledVisitations;
+  | SetScheduledVisitationsAction
+  | SetPastVisitationsAction
+  | SelectVisitationsAction;
 
 // Action Creators
 const setLiveVisitations = (
@@ -54,6 +72,24 @@ const setScheduledVisitations = (
   };
 };
 
+const setPastVisitations = (
+  visitations: RecordedVisitation[]
+): LiveVisitationActionTypes => {
+  return {
+    type: SET_PAST_VISITATIONS,
+    payload: visitations,
+  };
+};
+
+export const selectPastVisitation = (
+  visitation: RecordedVisitation
+): LiveVisitationActionTypes => {
+  return {
+    type: SELECT_PAST_VISITATION,
+    payload: visitation,
+  };
+};
+
 // Reducer
 const initialState: VisitationState = {
   liveVisitations: [],
@@ -61,6 +97,8 @@ const initialState: VisitationState = {
   scheduledVisitations: [],
   hasLoaded: false,
   hasLoadedScheduledVisitations: false,
+  pastVisitations: [],
+  selectedPastVisitation: null,
 };
 
 export function visitationsReducer(
@@ -86,6 +124,20 @@ export function visitationsReducer(
         scheduledVisitations: action.payload,
         hasLoadedScheduledVisitations: true,
       };
+    case SET_PAST_VISITATIONS:
+      const selectedPastVisitation = action.payload.length
+        ? action.payload[0]
+        : null;
+      return {
+        ...state,
+        pastVisitations: action.payload,
+        selectedPastVisitation: selectedPastVisitation,
+      };
+    case SELECT_PAST_VISITATION:
+      return {
+        ...state,
+        selectedPastVisitation: action.payload,
+      };
     default:
       return state;
   }
@@ -97,4 +149,8 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
 
 export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
   dispatch(setScheduledVisitations(SCHEDULED_VISITATIONS));
+};
+
+export const loadPastVisitations = (): AppThunk => async (dispatch) => {
+  dispatch(setPastVisitations(PAST_VISITATIONS));
 };

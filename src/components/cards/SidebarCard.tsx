@@ -47,7 +47,18 @@ const SidebarCard: React.FC<Props> = ({
         ) : (
           <Spinner animation="border" />
         );
-
+      case CardType.PastVisitation:
+        const record = entity as RecordedVisitation;
+        return record.connection.inmate && record.connection.contact ? (
+          <ConnectionCard
+            inmate={record.connection.inmate}
+            contact={record.connection.contact}
+            fontColor={fontColor}
+            actionLabel="Called"
+          />
+        ) : (
+          <Spinner animation="border" />
+        );
       default:
         return <div></div>;
     }

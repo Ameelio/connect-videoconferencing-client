@@ -5,6 +5,7 @@ export enum CardType {
   Connection = "connection",
   Inmate = "inmate",
   Doc = "doc",
+  PastVisitation = "record",
 }
 
 export enum CardSize {

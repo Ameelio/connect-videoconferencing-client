@@ -50,7 +50,7 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   });
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Connection Requests">
+      <Sidebar title={`Connection Requests (${requests.length})`}>
         {requests.map((request) => (
           <SidebarCard
             key={request.id}
