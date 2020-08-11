@@ -30,7 +30,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
   useEffect(() => {
     if (!staff.length) loadStaff();
   });
-  console.log(staff);
   return (
     <div className="d-flex flex-row">
       <Sidebar title="Staff members">

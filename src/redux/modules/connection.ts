@@ -125,9 +125,7 @@ export function connectionsReducer(
       );
       return {
         ...state,
-        requests: state.requests.filter(
-          (connection) => connection.id !== action.payload.id
-        ),
+        requests: requestsPostDeletion,
         selectedRequest: requestsPostDeletion.length
           ? requestsPostDeletion[0]
           : null,

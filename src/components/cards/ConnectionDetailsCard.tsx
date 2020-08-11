@@ -28,7 +28,7 @@ const ConnectionDetailsCard: React.FC<Props> = ({ connection }) => {
         <span className="black-400 p6">Past Visitations ({numPastCalls})</span>
         {Array.from(recordedVisitations.values()).map(
           (record: RecordedVisitation) => (
-            <RecordedVisitationSnippetCard record={record} />
+            <RecordedVisitationSnippetCard key={record.id} record={record} />
           )
         )}
       </div>

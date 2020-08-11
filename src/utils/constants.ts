@@ -1,5 +1,5 @@
 export enum CardType {
-  LiveVisitation = "kiosk",
+  LiveVisitation = "live",
   Contact = "contact",
   ConnectionRequest = "request",
   Connection = "connection",

@@ -23,9 +23,10 @@ interface LiveVisitation extends Visitation {
   kioskId: number;
   callUrl: string;
   startTime: Date;
-  endTime: Date;
 }
 
 interface RecordedVisitation extends LiveVisitation {
+  endTime: Date;
   recordingUrl: string;
+  recordingSize: number;
 }

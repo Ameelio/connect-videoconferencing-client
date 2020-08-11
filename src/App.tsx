@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import NavBar from "./components/navbar/Navbar";
+import NavBar from "./components/headers/Navbar";
 import LiveVisitation from "./pages/LiveVisitation";
 import CalendarView from "./pages/Calendar";
 import ConnectionRequests from "./pages/ConnectionRequests";

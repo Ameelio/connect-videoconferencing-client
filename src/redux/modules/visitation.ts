@@ -7,10 +7,11 @@ import {
 
 const SET_LIVE_VISITATIONS = "visitation/SET_LIVE_VISITATIONS";
 const SELECT_LIVE_VISITATION = "visitation/SELECT_LIVE_VISITATION";
+const DELETE_LIVE_VISITATION = "visitation/DELETE_LIVE_VISITATION";
 const SET_SCHEDULED_VISITATIONS = "visitation/SET_SCHEDULED_VISITATIONS";
 const SET_PAST_VISITATIONS = "visitation/SET_PASET_PAST_VISITATIONS";
 const SELECT_PAST_VISITATION = "visitation/SELECT_PAST_VISITATION";
-
+const ADD_VIDEO_RECORDING = "visitation/ADD_VIDEO_RECORDING";
 // Action Constants & Shapes
 interface SetLiveVisitationAction {
   type: typeof SET_LIVE_VISITATIONS;
@@ -19,6 +20,11 @@ interface SetLiveVisitationAction {
 
 interface SelectLivitationAction {
   type: typeof SELECT_LIVE_VISITATION;
+  payload: LiveVisitation;
+}
+
+interface DeleteLiveVisitationAction {
+  type: typeof DELETE_LIVE_VISITATION;
   payload: LiveVisitation;
 }
 
@@ -37,12 +43,23 @@ interface SelectVisitationsAction {
   payload: RecordedVisitation;
 }
 
+interface RecordingKeyValue {
+  key: number;
+  value: string;
+}
+interface AddRecordingAction {
+  type: typeof ADD_VIDEO_RECORDING;
+  payload: RecordingKeyValue;
+}
+
 type LiveVisitationActionTypes =
   | SetLiveVisitationAction
   | SelectLivitationAction
+  | DeleteLiveVisitationAction
   | SetScheduledVisitationsAction
   | SetPastVisitationsAction
-  | SelectVisitationsAction;
+  | SelectVisitationsAction
+  | AddRecordingAction;
 
 // Action Creators
 const setLiveVisitations = (
@@ -59,6 +76,15 @@ export const selectLiveVisitation = (
 ): LiveVisitationActionTypes => {
   return {
     type: SELECT_LIVE_VISITATION,
+    payload: visitation,
+  };
+};
+
+const deleteLiveVisitation = (
+  visitation: LiveVisitation
+): LiveVisitationActionTypes => {
+  return {
+    type: DELETE_LIVE_VISITATION,
     payload: visitation,
   };
 };
@@ -90,6 +116,13 @@ export const selectPastVisitation = (
   };
 };
 
+const addRecording = (key: number, value: string) => {
+  return {
+    type: ADD_VIDEO_RECORDING,
+    payload: { key: key, value: value },
+  };
+};
+
 // Reducer
 const initialState: VisitationState = {
   liveVisitations: [],
@@ -99,6 +132,7 @@ const initialState: VisitationState = {
   hasLoadedScheduledVisitations: false,
   pastVisitations: [],
   selectedPastVisitation: null,
+  requestedRecordings: new Map<number, string>(),
 };
 
 export function visitationsReducer(
@@ -118,6 +152,18 @@ export function visitationsReducer(
       };
     case SELECT_LIVE_VISITATION:
       return { ...state, selectedVisitation: action.payload };
+    case DELETE_LIVE_VISITATION:
+      const liveVisitationsPostDeletion = state.liveVisitations.filter(
+        (visitation) => visitation.id !== action.payload.id
+      );
+
+      return {
+        ...state,
+        liveVisitations: liveVisitationsPostDeletion,
+        selectedVisitation: liveVisitationsPostDeletion.length
+          ? liveVisitationsPostDeletion[0]
+          : null,
+      };
     case SET_SCHEDULED_VISITATIONS:
       return {
         ...state,
@@ -138,11 +184,20 @@ export function visitationsReducer(
         ...state,
         selectedPastVisitation: action.payload,
       };
+    case ADD_VIDEO_RECORDING:
+      return {
+        ...state,
+        requestedRecordings: state.requestedRecordings.set(
+          action.payload.key,
+          action.payload.value
+        ),
+      };
     default:
       return state;
   }
 }
 
+//TODO replace these with real API calls
 export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
   dispatch(setLiveVisitations(LIVE_VISITATIONS));
 };
@@ -153,4 +208,17 @@ export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
 
 export const loadPastVisitations = (): AppThunk => async (dispatch) => {
   dispatch(setPastVisitations(PAST_VISITATIONS));
+};
+
+export const terminateLiveVisitation = (
+  visitation: LiveVisitation
+): AppThunk => async (dispatch) => {
+  dispatch(deleteLiveVisitation(visitation));
+};
+
+export const fetchVideoRecording = (
+  visitation: RecordedVisitation
+): AppThunk => async (dispatch) => {
+  const { id } = visitation;
+  dispatch(addRecording(id, "src/assets/recording_demo.mp4"));
 };

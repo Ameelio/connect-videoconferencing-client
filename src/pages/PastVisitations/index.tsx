@@ -8,12 +8,15 @@ import Container from "src/components/containers/Container";
 import {
   loadPastVisitations,
   selectPastVisitation,
+  fetchVideoRecording,
 } from "src/redux/modules/visitation";
 import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
 import { Form, FormControl } from "react-bootstrap";
 import { genFullName } from "src/utils/utils";
+import VisitationCard from "src/components/cards/VisitationCard";
+import { WithLoading } from "src/components/enhancers/WithLoadingProps";
 
 const mapStateToProps = (state: RootState) => ({
   logs: state.visitations.pastVisitations,
@@ -21,22 +24,30 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ loadPastVisitations, selectPastVisitation }, dispatch);
+  bindActionCreators(
+    { loadPastVisitations, selectPastVisitation, fetchVideoRecording },
+    dispatch
+  );
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const VisitationCardWithLoading = WithLoading(VisitationCard);
 
 const LogsContainer: React.FC<PropsFromRedux> = ({
   logs,
   selected,
   loadPastVisitations,
   selectPastVisitation,
+  fetchVideoRecording,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredPastVisitations, setFilteredPastVisitations] = useState<
     RecordedVisitation[]
   >(logs);
+  //TODO replace this with appropriate Redux Logic
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -57,7 +68,14 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
     );
   };
 
-  if (!logs.length) loadPastVisitations();
+  const handleVideoRequest = (): void => {
+    setLoading(true);
+    setTimeout(function () {
+      setLoading(false);
+    }, 5000);
+
+    selected && fetchVideoRecording(selected);
+  };
 
   useEffect(() => {
     if (!logs.length) loadPastVisitations();
@@ -88,7 +106,13 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
       {selected && (
         <Wrapper>
           <Container>
-            {/* TODO add the past visitation log once we have the images */}
+            <VisitationCardWithLoading
+              loading={loading}
+              visitation={selected}
+              type={CardType.PastVisitation}
+              actionLabel="called"
+              handleClick={handleVideoRequest}
+            />
           </Container>
           <Container>
             <ConnectionDetailsCard connection={selected.connection} />

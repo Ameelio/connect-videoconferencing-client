@@ -5,11 +5,12 @@ import { bindActionCreators, Dispatch } from "redux";
 import FormControl from "react-bootstrap/FormControl";
 import Form from "react-bootstrap/Form";
 import SidebarCard from "src/components/cards/SidebarCard";
-import LiveVisitationCard from "src/components/cards/LiveVisitationCard";
+import VisitationCard from "src/components/cards/VisitationCard";
 
 import {
   loadLiveVisitations,
   selectLiveVisitation,
+  terminateLiveVisitation,
 } from "src/redux/modules/visitation";
 import { CardType } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
@@ -20,6 +21,7 @@ import Wrapper from "src/components/containers/Wrapper";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations,
+  selected: state.visitations.selectedVisitation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -27,6 +29,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       loadLiveVisitations,
       selectLiveVisitation,
+      terminateLiveVisitation,
     },
     dispatch
   );
@@ -37,8 +40,10 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
+  selected,
   loadLiveVisitations,
   selectLiveVisitation,
+  terminateLiveVisitation,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
@@ -64,6 +69,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     );
   };
 
+  const handleVideoTermination = () => {
+    selected && terminateLiveVisitation(selected);
+  };
+
   useEffect(() => {
     if (!visitations.hasLoaded) loadLiveVisitations();
     setFilteredLiveVisitations(visitations.liveVisitations);
@@ -86,29 +95,30 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
             key={liveVisitation.id}
             type={CardType.LiveVisitation}
             entity={liveVisitation}
-            isActive={liveVisitation.id === visitations.selectedVisitation?.id}
+            isActive={liveVisitation.id === selected?.id}
             handleClick={(e) => selectLiveVisitation(liveVisitation)}
           />
         ))}
       </Sidebar>
 
-      <Wrapper>
-        <Container>
-          {visitations.selectedVisitation && (
-            <LiveVisitationCard visitation={visitations.selectedVisitation} />
-          )}
-        </Container>
-
-        <div></div>
-
-        <Container>
-          {visitations.selectedVisitation && (
-            <ConnectionDetailsCard
-              connection={visitations.selectedVisitation.connection}
+      {selected && (
+        <Wrapper>
+          <Container>
+            <VisitationCard
+              type={CardType.LiveVisitation}
+              visitation={selected}
+              actionLabel="calling"
+              handleClick={handleVideoTermination}
             />
-          )}
-        </Container>
-      </Wrapper>
+          </Container>
+
+          <div></div>
+
+          <Container>
+            <ConnectionDetailsCard connection={selected.connection} />
+          </Container>
+        </Wrapper>
+      )}
     </div>
   );
 };
