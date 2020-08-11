@@ -104,6 +104,8 @@ const STAFF_FIRST_NAME = [
   "Alex",
 ];
 
+const FACILITY: Facility = { id: 0, name: "Colorado State Penitentiary" };
+
 const pickRandom = (items: any[]) => {
   return items[Math.floor(Math.random() * items.length)];
 };
@@ -136,6 +138,7 @@ const genInmates = (): Inmate[] => {
     hasCallPrivilege: true,
     pod: pickRandom(PODS),
     imageUri: PICS[id - 1] as string,
+    facility: FACILITY,
   }));
 };
 
@@ -152,16 +155,14 @@ const genContacts = (): Contact[] => {
 };
 
 const CONTACTS = genContacts();
-const INMATES = genInmates();
+export const INMATES = genInmates();
 
-const genConnections = (): Connection[] => {
+export const genConnections = (): Connection[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => {
     const inmate = pickRandom(INMATES) as Inmate;
     const contact = pickRandom(CONTACTS) as Contact;
     return {
       id: id,
-      inmateId: inmate.id,
-      contactId: contact.id,
       inmate: inmate,
       contact: contact,
       requestedAt: new Date(),
@@ -277,7 +278,6 @@ const genRandomRecordedVisitations = (): RecordedVisitation[] => {
 
 export const PAST_VISITATIONS = genRandomRecordedVisitations();
 
-const FACILITY: Facility = { id: 0, name: "Colorado State Penitentiary" };
 const genStaff = (): Staff[] => {
   return [1, 2, 3, 4, 5, 6, 7].map((id: number) => ({
     id: id,

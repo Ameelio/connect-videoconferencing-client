@@ -1,12 +1,11 @@
 import React from "react";
 import { CardType } from "src/utils/constants";
-import { Spinner } from "react-bootstrap";
 import ConnectionCard from "./ConnectionCard";
-import StaffCard from "./StaffCard";
+import UserCard from "./UserCard";
 
 interface Props {
   type: CardType;
-  entity: LiveVisitation | ConnectionRequest | Staff;
+  entity: LiveVisitation | ConnectionRequest | Staff | Inmate;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   isActive: boolean;
 }
@@ -24,45 +23,50 @@ const SidebarCard: React.FC<Props> = ({
     switch (type) {
       case CardType.LiveVisitation:
         const { connection, id } = entity as LiveVisitation;
-        const { inmate, contact } = connection;
-        return inmate && contact ? (
+        return (
           <ConnectionCard
-            inmate={inmate}
-            contact={contact}
+            inmate={connection.inmate}
+            contact={connection.contact}
             kioskId={id}
             fontColor={fontColor}
             actionLabel="Calling"
           />
-        ) : (
-          <Spinner animation="border" />
         );
       case CardType.ConnectionRequest:
         const connectionRequest = entity as ConnectionRequest;
-        return connectionRequest.inmate && connectionRequest.contact ? (
+        return (
           <ConnectionCard
             inmate={connectionRequest.inmate}
             contact={connectionRequest.contact}
             fontColor={fontColor}
             actionLabel="Requests"
           />
-        ) : (
-          <Spinner animation="border" />
         );
       case CardType.PastVisitation:
         const record = entity as RecordedVisitation;
-        return record.connection.inmate && record.connection.contact ? (
+        return (
           <ConnectionCard
             inmate={record.connection.inmate}
             contact={record.connection.contact}
             fontColor={fontColor}
             actionLabel="Called"
           />
-        ) : (
-          <Spinner animation="border" />
         );
       case CardType.Staff:
         const member = entity as Staff;
-        return <StaffCard member={member} fontColor={fontColor} />;
+        return (
+          <UserCard user={member} fontColor={fontColor} type={CardType.Staff} />
+        );
+      case CardType.Inmate:
+        const inmate = entity as Inmate;
+        return (
+          <UserCard
+            user={inmate}
+            fontColor={fontColor}
+            type={CardType.Inmate}
+          />
+        );
+
       default:
         return <div></div>;
     }
