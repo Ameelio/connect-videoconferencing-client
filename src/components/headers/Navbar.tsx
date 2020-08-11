@@ -30,7 +30,9 @@ const NavBar: React.FC<Props> = () => {
             Calendar
           </Nav.Link>
           <Nav.Link as={Link} to="/requests">
-            Connection Requests
+            <span>
+              Requests <span className="badge badge-dark">10</span>
+            </span>
           </Nav.Link>
           <Nav.Link as={Link} to="/logs">
             Past Visitations

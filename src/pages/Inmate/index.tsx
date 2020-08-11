@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
@@ -11,6 +11,7 @@ import Wrapper from "src/components/containers/Wrapper";
 import Sidebar from "src/components/containers/Sidebar";
 import SidebarCard from "src/components/cards/SidebarCard";
 import UserCard from "src/components/cards/UserCard";
+import ConnectionCard from "src/components/cards/ConnectionCard";
 
 const mapStateToProps = (state: RootState) => ({
   inmates: state.inmates.inmates,
@@ -34,11 +35,19 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
   selected,
   selectedConnections,
 }) => {
+  const [recordedVisitations, setRecordedVisitations] = useState<
+    RecordedVisitation[]
+  >([]);
+
   useEffect(() => {
     //TODO must change this with loading logic
+    if (!inmates.length) loadConnections();
     if (!inmates.length) loadInmates();
-    if (!selectedConnections.length) loadConnections();
-  });
+    const result = selectedConnections
+      .map((connection) => connection.recordedVisitations)
+      .reduce((accumulator, value) => accumulator.concat(value), []);
+    setRecordedVisitations(result);
+  }, [inmates, selectedConnections, loadConnections, loadInmates]);
 
   return (
     <div className="d-flex flex-row">
@@ -55,7 +64,24 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
       </Sidebar>
       {selected && (
         <Wrapper horizontal>
-          <Container></Container>
+          <Container fluid>
+            <div className="d-flex flex-column">
+              <span className="font-weight-bold p3">Activity</span>
+              <span className="black-400">Past Calls</span>
+            </div>
+            <div className="d-flex flex-row flex-wrap mw-75 w-75">
+              {recordedVisitations.map((visitation) => (
+                <ConnectionCard
+                  kioskId={visitation.kioskId}
+                  key={visitation.id}
+                  inmate={visitation.connection.inmate}
+                  contact={visitation.connection.contact}
+                  actionLabel="Called"
+                  border
+                />
+              ))}
+            </div>
+          </Container>
           <Container>
             <div className="d-flex flex-column">
               <UserDetailsCard type={CardType.Inmate} user={selected} />
@@ -64,7 +90,10 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
                 Connections ({selectedConnections.length})
               </span>
               {selectedConnections.map((connection) => (
-                <div className="d-flex flex-column border-bottom py-3">
+                <div
+                  key={connection.id}
+                  className="d-flex flex-column border-bottom py-3"
+                >
                   <UserCard
                     user={connection.contact}
                     fontColor="black-500"

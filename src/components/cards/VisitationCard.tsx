@@ -73,14 +73,16 @@ const VisitationCard: React.FC<Props> = ({
         }
       />
       {genMainComponent()}
-      <div className="d-flex flex-row justify-space-between w-100">
+      <div className="d-flex flex-row justify-content-between w-100 mt-3">
         <div className="d-flex flex-row mt-3">
           <span className="p3">{genFullName(inmate)}</span>
           <span className="p3 black-400">&nbsp;{actionLabel}&nbsp;</span>
           <span className="p3">{genFullName(contact)}</span>
         </div>
         {type === CardType.LiveVisitation && (
-          <Button onClick={(e) => handleClick()}>End Call</Button>
+          <Button variant="danger" onClick={(e) => handleClick()}>
+            End Call
+          </Button>
         )}
       </div>
     </div>

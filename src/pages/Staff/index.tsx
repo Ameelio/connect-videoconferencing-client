@@ -45,7 +45,7 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
       </Sidebar>
       {selected && (
         <Wrapper horizontal>
-          <Container></Container>
+          <Container fluid></Container>
           <Container>
             <UserDetailsCard type={CardType.Staff} user={selected} />
           </Container>

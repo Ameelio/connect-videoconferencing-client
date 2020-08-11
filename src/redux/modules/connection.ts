@@ -1,5 +1,5 @@
 import { AppThunk } from "src/redux/helpers";
-import { CONNECTION_REQUESTS, genConnections } from "src/data/sample";
+import { CONNECTION_REQUESTS, CONNECTIONS } from "src/data/sample";
 
 const SET_CONNECTION_REQUESTS = "connection/SET_CONNECTION_REQUESTS";
 const DELETE_CONNECTION_REQUEST = "connection/DECLINE_CONNECTION_REQUEST";
@@ -150,7 +150,7 @@ export const acceptConnectionRequest = (
   const connection: Connection = {
     ...request,
     approvedAt: new Date(),
-    recordedVisitations: {} as Map<number, RecordedVisitation>,
+    recordedVisitations: [],
     numPastCalls: 0,
   };
   dispatch(addConnection(connection));
@@ -165,5 +165,5 @@ export const declineConnectionRequest = (
 
 export const loadConnections = (): AppThunk => async (dispatch) => {
   //TODO replace this with the API call
-  dispatch(setConnections(genConnections()));
+  dispatch(setConnections(CONNECTIONS));
 };

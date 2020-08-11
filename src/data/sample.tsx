@@ -157,7 +157,7 @@ const genContacts = (): Contact[] => {
 const CONTACTS = genContacts();
 export const INMATES = genInmates();
 
-export const genConnections = (): Connection[] => {
+const genConnections = (): Connection[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => {
     const inmate = pickRandom(INMATES) as Inmate;
     const contact = pickRandom(CONTACTS) as Contact;
@@ -167,7 +167,7 @@ export const genConnections = (): Connection[] => {
       contact: contact,
       requestedAt: new Date(),
       approvedAt: new Date(),
-      recordedVisitations: {} as Map<number, RecordedVisitation>,
+      recordedVisitations: [],
       numPastCalls: pickRandom([6, 8, 12, 15, 21, 3]),
     };
   });
@@ -207,7 +207,7 @@ const genRecordedVisitations = (
     connection: connection,
   }));
 
-  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
+  return [1, 2, 3].map((id) => ({
     ...pastVisitations[id - 1],
     filename: `${pastVisitations[id - 1].connection.inmate.lastName}-${
       pastVisitations[id - 1].connection.contact.lastName
@@ -217,7 +217,7 @@ const genRecordedVisitations = (
 };
 
 const rawConnection = genConnections();
-const CONNECTIONS = rawConnection.map((connection) => ({
+export const CONNECTIONS: Connection[] = rawConnection.map((connection) => ({
   ...connection,
   recordedVisitations: genRecordedVisitations(connection),
 }));
@@ -232,7 +232,7 @@ const genVisitations = (): LiveVisitation[] => {
     startTime: new Date(),
     endTime: new Date(),
     status: "ongoing",
-    connection: pickRandom(CONNECTIONS) as Connection,
+    connection: CONNECTIONS[id - 1] as Connection,
   }));
 };
 
