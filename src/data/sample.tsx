@@ -209,7 +209,7 @@ const genRecordedVisitations = (
 
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     ...pastVisitations[id - 1],
-    recordingUrl: `${pastVisitations[id - 1].connection.inmate.lastName}-${
+    filename: `${pastVisitations[id - 1].connection.inmate.lastName}-${
       pastVisitations[id - 1].connection.contact.lastName
     }-${format(new Date(), "mm-dd-yyyy")}`,
     recordingSize: 100,
@@ -277,7 +277,7 @@ const genRandomRecordedVisitations = (): RecordedVisitation[] => {
       ),
       status: "done" as VisitationStatus,
       connection: connection,
-      recordingUrl: `${connection.inmate.lastName}-${
+      filename: `${connection.inmate.lastName}-${
         connection.contact.lastName
       }-${format(new Date(), "yyyy-MM-dd")}.mp4`,
       recordingSize: 100,

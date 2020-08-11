@@ -44,7 +44,7 @@ interface SelectVisitationsAction {
 }
 
 interface RecordingKeyValue {
-  key: number;
+  id: number;
   value: string;
 }
 interface AddRecordingAction {
@@ -116,10 +116,10 @@ export const selectPastVisitation = (
   };
 };
 
-const addRecording = (key: number, value: string) => {
+const addRecording = (id: number, value: string) => {
   return {
     type: ADD_VIDEO_RECORDING,
-    payload: { key: key, value: value },
+    payload: { id: id, value: value },
   };
 };
 
@@ -132,7 +132,6 @@ const initialState: VisitationState = {
   hasLoadedScheduledVisitations: false,
   pastVisitations: [],
   selectedPastVisitation: null,
-  requestedRecordings: new Map<number, string>(),
 };
 
 export function visitationsReducer(
@@ -185,12 +184,13 @@ export function visitationsReducer(
         selectedPastVisitation: action.payload,
       };
     case ADD_VIDEO_RECORDING:
+      const foundIndex = state.pastVisitations.findIndex(
+        (visitation) => visitation.id === action.payload.id
+      );
+      state.pastVisitations[foundIndex].recordingUrl = action.payload.value;
+
       return {
         ...state,
-        requestedRecordings: state.requestedRecordings.set(
-          action.payload.key,
-          action.payload.value
-        ),
       };
     default:
       return state;
@@ -220,5 +220,5 @@ export const fetchVideoRecording = (
   visitation: RecordedVisitation
 ): AppThunk => async (dispatch) => {
   const { id } = visitation;
-  dispatch(addRecording(id, "src/assets/recording_demo.mp4"));
+  dispatch(addRecording(id, "/recording_demo.mp4"));
 };

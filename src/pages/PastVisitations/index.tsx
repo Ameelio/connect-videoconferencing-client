@@ -69,12 +69,11 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   };
 
   const handleVideoRequest = (): void => {
+    selected && fetchVideoRecording(selected);
     setLoading(true);
     setTimeout(function () {
       setLoading(false);
-    }, 5000);
-
-    selected && fetchVideoRecording(selected);
+    }, 6000);
   };
 
   useEffect(() => {

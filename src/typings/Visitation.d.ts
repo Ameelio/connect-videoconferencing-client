@@ -27,6 +27,7 @@ interface LiveVisitation extends Visitation {
 
 interface RecordedVisitation extends LiveVisitation {
   endTime: Date;
-  recordingUrl: string;
+  recordingUrl?: string;
+  filename: string;
   recordingSize: number;
 }

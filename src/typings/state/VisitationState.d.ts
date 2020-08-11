@@ -6,5 +6,4 @@ interface VisitationState {
   hasLoadedScheduledVisitations: boolean;
   pastVisitations: RecordedVisitation[];
   selectedPastVisitation: RecordedVisitation | null;
-  requestedRecordings: Map<number, string>;
 }

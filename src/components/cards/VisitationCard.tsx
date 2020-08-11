@@ -37,10 +37,17 @@ const VisitationCard: React.FC<Props> = ({
       case CardType.PastVisitation:
         const record = visitation as RecordedVisitation;
         return (
-          <div className="w-50 mt-3">
+          <div
+            className={
+              record.recordingUrl
+                ? "w-100 mt-3 align-items-center"
+                : "mt-3 w-50"
+            }
+          >
             <VideRecordingCard
-              filename={record.recordingUrl}
-              size={321}
+              filename={record.filename}
+              pathname={record.recordingUrl}
+              size={record.recordingSize}
               handleVideoRequest={handleClick}
             />
           </div>
