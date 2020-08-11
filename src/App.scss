@@ -228,16 +228,17 @@ body {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   padding: 2em 0em 2em 1em;
   overflow: auto;
+  flex-shrink: 0;
 }
 
 .main-wrapper {
   display: "flex";
   flex-direction: "column";
-  width: 75%;
+  max-width: 75%;
 }
 
 .main-container {
-  padding: 1em 2.5em;
+  padding: 2em 2.5em;
   margin: 2em;
   background-color: white;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;

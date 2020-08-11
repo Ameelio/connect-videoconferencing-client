@@ -35,6 +35,9 @@ const NavBar: React.FC<Props> = () => {
           <Nav.Link as={Link} to="/logs">
             Past Visitations
           </Nav.Link>
+          <Nav.Link as={Link} to="/staff">
+            Staff
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -4,7 +4,7 @@ export enum CardType {
   ConnectionRequest = "request",
   Connection = "connection",
   Inmate = "inmate",
-  Doc = "doc",
+  Staff = "staff",
   PastVisitation = "record",
 }
 

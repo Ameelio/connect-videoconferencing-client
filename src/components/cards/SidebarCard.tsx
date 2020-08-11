@@ -2,10 +2,11 @@ import React from "react";
 import { CardType } from "src/utils/constants";
 import { Spinner } from "react-bootstrap";
 import ConnectionCard from "./ConnectionCard";
+import StaffCard from "./StaffCard";
 
 interface Props {
   type: CardType;
-  entity: LiveVisitation | ConnectionRequest;
+  entity: LiveVisitation | ConnectionRequest | Staff;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   isActive: boolean;
 }
@@ -59,6 +60,9 @@ const SidebarCard: React.FC<Props> = ({
         ) : (
           <Spinner animation="border" />
         );
+      case CardType.Staff:
+        const member = entity as Staff;
+        return <StaffCard member={member} fontColor={fontColor} />;
       default:
         return <div></div>;
     }

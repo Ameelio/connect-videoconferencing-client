@@ -16,3 +16,12 @@ interface Contact extends User {
   dob: Date;
   document: string;
 }
+
+type StaffRole = "admin" | "supervisor" | "operator" | "investigator";
+
+interface Staff extends User {
+  role: StaffRole;
+  isActive: boolean; // TODO: replace the boolean with some token expiration logic
+  email: string;
+  facility: Facility;
+}

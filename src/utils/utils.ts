@@ -1,7 +1,7 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 
-export const genFullName = (entity?: Inmate | Contact): string =>
+export const genFullName = (entity?: Inmate | Contact | Staff): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
 
 export const genImageUri = (user?: User): string => {
