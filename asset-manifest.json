@@ -1,30 +1,30 @@
 {
   "files": {
-    "main.css": "/letters-organizations-client/static/css/main.f9a61b9f.chunk.css",
-    "main.js": "/letters-organizations-client/static/js/main.86f77b21.chunk.js",
-    "main.js.map": "/letters-organizations-client/static/js/main.86f77b21.chunk.js.map",
-    "runtime-main.js": "/letters-organizations-client/static/js/runtime-main.a64d75bd.js",
-    "runtime-main.js.map": "/letters-organizations-client/static/js/runtime-main.a64d75bd.js.map",
-    "static/css/2.c0155d99.chunk.css": "/letters-organizations-client/static/css/2.c0155d99.chunk.css",
-    "static/js/2.369ca243.chunk.js": "/letters-organizations-client/static/js/2.369ca243.chunk.js",
-    "static/js/2.369ca243.chunk.js.map": "/letters-organizations-client/static/js/2.369ca243.chunk.js.map",
-    "index.html": "/letters-organizations-client/index.html",
-    "precache-manifest.c7925121585475fbd37291fae9bb0c25.js": "/letters-organizations-client/precache-manifest.c7925121585475fbd37291fae9bb0c25.js",
-    "service-worker.js": "/letters-organizations-client/service-worker.js",
-    "static/css/2.c0155d99.chunk.css.map": "/letters-organizations-client/static/css/2.c0155d99.chunk.css.map",
-    "static/css/main.f9a61b9f.chunk.css.map": "/letters-organizations-client/static/css/main.f9a61b9f.chunk.css.map",
-    "static/js/2.369ca243.chunk.js.LICENSE.txt": "/letters-organizations-client/static/js/2.369ca243.chunk.js.LICENSE.txt",
-    "static/media/bald.78e81582.svg": "/letters-organizations-client/static/media/bald.78e81582.svg",
-    "static/media/investigator.2c00f638.svg": "/letters-organizations-client/static/media/investigator.2c00f638.svg",
-    "static/media/logo.dfd0363d.svg": "/letters-organizations-client/static/media/logo.dfd0363d.svg",
-    "static/media/professor.fdf672c3.svg": "/letters-organizations-client/static/media/professor.fdf672c3.svg",
-    "static/media/woman.12299a71.svg": "/letters-organizations-client/static/media/woman.12299a71.svg"
+    "main.css": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css",
+    "main.js": "/connect-videoconferencing-client/static/js/main.08dcc81e.chunk.js",
+    "main.js.map": "/connect-videoconferencing-client/static/js/main.08dcc81e.chunk.js.map",
+    "runtime-main.js": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js",
+    "runtime-main.js.map": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js.map",
+    "static/css/2.c0155d99.chunk.css": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css",
+    "static/js/2.50713f1d.chunk.js": "/connect-videoconferencing-client/static/js/2.50713f1d.chunk.js",
+    "static/js/2.50713f1d.chunk.js.map": "/connect-videoconferencing-client/static/js/2.50713f1d.chunk.js.map",
+    "index.html": "/connect-videoconferencing-client/index.html",
+    "precache-manifest.9967b5928185fbe8767acc1ff50884a5.js": "/connect-videoconferencing-client/precache-manifest.9967b5928185fbe8767acc1ff50884a5.js",
+    "service-worker.js": "/connect-videoconferencing-client/service-worker.js",
+    "static/css/2.c0155d99.chunk.css.map": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css.map",
+    "static/css/main.f9a61b9f.chunk.css.map": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css.map",
+    "static/js/2.50713f1d.chunk.js.LICENSE.txt": "/connect-videoconferencing-client/static/js/2.50713f1d.chunk.js.LICENSE.txt",
+    "static/media/bald.78e81582.svg": "/connect-videoconferencing-client/static/media/bald.78e81582.svg",
+    "static/media/investigator.2c00f638.svg": "/connect-videoconferencing-client/static/media/investigator.2c00f638.svg",
+    "static/media/logo.dfd0363d.svg": "/connect-videoconferencing-client/static/media/logo.dfd0363d.svg",
+    "static/media/professor.fdf672c3.svg": "/connect-videoconferencing-client/static/media/professor.fdf672c3.svg",
+    "static/media/woman.12299a71.svg": "/connect-videoconferencing-client/static/media/woman.12299a71.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.a64d75bd.js",
+    "static/js/runtime-main.cda4135e.js",
     "static/css/2.c0155d99.chunk.css",
-    "static/js/2.369ca243.chunk.js",
+    "static/js/2.50713f1d.chunk.js",
     "static/css/main.f9a61b9f.chunk.css",
-    "static/js/main.86f77b21.chunk.js"
+    "static/js/main.08dcc81e.chunk.js"
   ]
 }
