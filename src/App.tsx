@@ -9,12 +9,14 @@ import Logs from "./pages/PastVisitations";
 import Staff from "./pages/Staff";
 import Inmate from "./pages/Inmate";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <Router>
       <NavBar />
       <Switch>
+        <Route exact path="/login" component={Login}></Route>
         <Route exact path="/calendar" component={CalendarView}></Route>
         <Route exact path="/requests" component={ConnectionRequests}></Route>
         <Route exact path="/logs" component={Logs}></Route>

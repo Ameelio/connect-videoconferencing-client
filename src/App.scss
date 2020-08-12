@@ -137,6 +137,17 @@ body {
 }
 
 /* Images */
+
+.avatar-image {
+  height: 36px;
+  width: 36px;
+  object-fit: cover;
+}
+
+.dropdown-avatar {
+  background-color: none;
+}
+
 .small-image {
   height: 58px;
   width: 58px;
@@ -255,6 +266,7 @@ body {
   margin: 2em;
   background-color: white;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  border-radius: 12px;
 }
 
 .left-sidebar-card:hover {
@@ -279,10 +291,31 @@ body {
   margin-right: 6px;
 }
 
+.span-circle-large {
+  border-radius: 100%;
+  height: 48px;
+  width: 48px;
+  text-align: center;
+  display: inline-block;
+  line-height: 36px;
+  margin-right: 8px;
+}
 .w-33 {
   width: 33%;
 }
 
 .mw-33 {
   max-width: 33%;
+}
+
+/* Overriding Bootstrap */
+.form-control {
+  font-weight: 300;
+}
+
+.test-account-card:hover {
+  cursor: pointer;
+  background-color: #0074d9;
+  border-color: #006ecc;
+  color: white;
 }

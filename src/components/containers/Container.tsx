@@ -7,7 +7,7 @@ interface Props {
 
 const Container: React.FC<Props> = ({ children, fluid, rounded }) => {
   const width = fluid ? "w-100" : "";
-  const corner = rounded ? "rounded" : "";
+  const corner = rounded ? "" : "";
   return (
     <section className={`main-container ${width} ${corner}`}>
       {children}

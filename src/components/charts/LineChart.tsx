@@ -9,11 +9,10 @@ interface Props {}
 
 const LineChart: React.FC<Props> = () => {
   const data = {
-    labels: ["March", "April", "May", "June", "July", "August"],
+    labels: ["July 6", "July 13", "July 20", "July 27", "Aug 3", "Aug 10"],
     datasets: [
       {
         label: "# of Visitations",
-        fill: false,
         lineTension: 0.1,
         backgroundColor: BG,
         borderColor: COLOR,
@@ -23,14 +22,14 @@ const LineChart: React.FC<Props> = () => {
         borderJoinStyle: "miter",
         pointBorderColor: COLOR,
         pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
+        pointBorderWidth: 5,
+        pointHoverRadius: 8,
         pointHoverBackgroundColor: COLOR,
         pointHoverBorderColor: DARKER_COLOR,
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40],
+        data: [34, 59, 44, 72, 80, 90, 40],
       },
     ],
   };

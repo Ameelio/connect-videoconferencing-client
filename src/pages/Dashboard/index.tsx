@@ -9,13 +9,19 @@ interface Props {}
 export default function Dashboard({}: Props): ReactElement {
   return (
     <div>
+      <div className="d-flex flex-column">
+        <span>Hi, Mark</span>
+        <span>
+          We have a few things for you to look at Colorado State Penitentiary
+        </span>
+      </div>
       <div className="d-flex flex-row">
         <Container rounded>
           <MetricCard
             name="Average call duration"
             metric={22}
             growthRate={-0.0696}
-            label="minutes"
+            label="min"
           />
         </Container>
         <Container rounded>
@@ -23,7 +29,7 @@ export default function Dashboard({}: Props): ReactElement {
             name="Calls this week"
             metric={34}
             growthRate={-0.0321}
-            label="scheduled calls"
+            label="calls"
           />
         </Container>
         <Container rounded>

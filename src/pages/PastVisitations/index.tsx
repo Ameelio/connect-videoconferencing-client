@@ -16,7 +16,7 @@ import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
 import { Form, FormControl } from "react-bootstrap";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
-import { WithLoading } from "src/components/enhancers/WithLoadingProps";
+import { WithLoading } from "src/components/hocs/WithLoadingProps";
 
 const mapStateToProps = (state: RootState) => ({
   logs: state.visitations.pastVisitations,

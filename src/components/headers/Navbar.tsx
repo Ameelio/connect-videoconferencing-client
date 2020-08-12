@@ -1,12 +1,74 @@
 import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Image, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { ReactComponent as Logo } from "src/assets/logo.svg";
+import { RootState } from "src/redux";
+import { connect, ConnectedProps } from "react-redux";
+import { logout } from "src/redux/modules/user";
 
-interface Props {}
+const mapStateToProps = (state: RootState) => ({
+  session: state.session,
+});
+const mapDispatchToProps = { logout };
 
-const NavBar: React.FC<Props> = () => {
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
+  const genLinks = (): JSX.Element => {
+    if (!session.staff) return <div />;
+
+    switch (session.staff.role) {
+      case "operator":
+        return (
+          <div className="d-flex flex-row">
+            <Nav.Link as={Link} to="/calendar">
+              Calendar
+            </Nav.Link>
+            <Nav.Link as={Link} to="/visitations">
+              Live Visitations <span className="badge badge-danger">8</span>
+            </Nav.Link>
+          </div>
+        );
+      case "investigator":
+        return (
+          <Nav.Link as={Link} to="/logs">
+            Past Visitations
+          </Nav.Link>
+        );
+      case "supervisor":
+      case "admin":
+        return (
+          <div className="d-flex flex-row">
+            <Nav.Link as={Link} to="/calendar">
+              Calendar
+            </Nav.Link>
+            <Nav.Link as={Link} to="/visitations">
+              Live Visitations <span className="badge badge-danger">8</span>
+            </Nav.Link>
+            <Nav.Link as={Link} to="/logs">
+              Past Visitations
+            </Nav.Link>
+            <Nav.Link as={Link} to="/requests">
+              <span>
+                Requests <span className="badge badge-dark">10</span>
+              </span>
+            </Nav.Link>
+
+            <Nav.Link as={Link} to="/members">
+              Members
+            </Nav.Link>
+            <Nav.Link as={Link} to="/staff">
+              Staff
+            </Nav.Link>
+          </div>
+        );
+      default:
+        return <div />;
+    }
+  };
   return (
     <Navbar
       collapseOnSelect
@@ -22,32 +84,27 @@ const NavBar: React.FC<Props> = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Link as={Link} to="/calendar">
-            Calendar
-          </Nav.Link>
-          <Nav.Link as={Link} to="/visitations">
-            Live Visitations <span className="badge badge-danger">8</span>
-          </Nav.Link>
+        {session.staff && (
+          <Nav className="ml-auto">
+            {genLinks()}
 
-          <Nav.Link as={Link} to="/requests">
-            <span>
-              Requests <span className="badge badge-dark">10</span>
-            </span>
-          </Nav.Link>
-          <Nav.Link as={Link} to="/logs">
-            Past Visitations
-          </Nav.Link>
-          <Nav.Link as={Link} to="/members">
-            Members
-          </Nav.Link>
-          <Nav.Link as={Link} to="/staff">
-            Staff
-          </Nav.Link>
-        </Nav>
+            <Dropdown bsPrefix="dropdown-avatar">
+              <Dropdown.Toggle>
+                <Image
+                  className="avatar-image"
+                  src={session.staff.imageUri}
+                  roundedCircle
+                />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item href="#/action-1">Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );
 };
 
-export default NavBar;
+export default connector(NavBar);

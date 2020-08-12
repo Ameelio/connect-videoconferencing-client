@@ -2,7 +2,7 @@ import { subDays, addSeconds, format } from "date-fns";
 import { add } from "date-fns/esm";
 
 const firstNames = [
-  "Bart",
+  "David",
   "Bijan",
   "Rudolph",
   "Kevin",
@@ -37,12 +37,11 @@ const firstNamesWomen = [
 ];
 
 const lastNames = [
-  "Wells",
+  "Fitzgerald",
   "Orwell",
+  "Hemingway",
   "Orchingwa",
-  "Jones",
   "Matthews",
-  "Jones",
   "McKessen",
   "Pekala",
   "Pinedo",
@@ -95,9 +94,9 @@ const STAFF_PICS = [
 ];
 
 const STAFF_FIRST_NAME = [
-  "George",
-  "Dan",
-  "Linna",
+  "Bart",
+  "Amber",
+  "Chris",
   "Fernanda",
   "Lucia",
   "Owen",
@@ -301,3 +300,47 @@ const genStaff = (): Staff[] => {
 };
 
 export const STAFF = genStaff();
+
+export const OPERATOR: Staff = {
+  id: 10,
+  firstName: STAFF_FIRST_NAME[0] as string,
+  lastName: lastNames[0] as string,
+  imageUri: STAFF_PICS[0] as string,
+  role: "operator" as StaffRole,
+  isActive: true,
+  facility: FACILITY,
+  email: `${STAFF_FIRST_NAME[0]}.${lastNames[0]}@state.co.us`,
+};
+
+export const SUPERVISOR: Staff = {
+  id: 11,
+  firstName: STAFF_FIRST_NAME[1] as string,
+  lastName: lastNames[1] as string,
+  imageUri: STAFF_PICS[1] as string,
+  role: "supervisor" as StaffRole,
+  isActive: true,
+  facility: FACILITY,
+  email: `${STAFF_FIRST_NAME[1]}.${lastNames[1]}@state.co.us`,
+};
+
+export const ADMIN: Staff = {
+  id: 12,
+  firstName: STAFF_FIRST_NAME[2] as string,
+  lastName: lastNames[2] as string,
+  imageUri: STAFF_PICS[2] as string,
+  role: "supervisor" as StaffRole,
+  isActive: true,
+  facility: FACILITY,
+  email: `${STAFF_FIRST_NAME[2]}.${lastNames[2]}@state.co.us`,
+};
+
+export const INVESTIGATOR: Staff = {
+  id: 12,
+  firstName: STAFF_FIRST_NAME[3] as string,
+  lastName: lastNames[3] as string,
+  imageUri: STAFF_PICS[3] as string,
+  role: "investigator" as StaffRole,
+  isActive: true,
+  facility: FACILITY,
+  email: `${STAFF_FIRST_NAME[3]}.${lastNames[3]}@state.co.us`,
+};
