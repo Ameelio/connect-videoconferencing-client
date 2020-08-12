@@ -23,12 +23,13 @@ const NavBar: React.FC<Props> = () => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link as={Link} to="/">
-            Live Visitations
-          </Nav.Link>
           <Nav.Link as={Link} to="/calendar">
             Calendar
           </Nav.Link>
+          <Nav.Link as={Link} to="/visitations">
+            Live Visitations <span className="badge badge-danger">8</span>
+          </Nav.Link>
+
           <Nav.Link as={Link} to="/requests">
             <span>
               Requests <span className="badge badge-dark">10</span>

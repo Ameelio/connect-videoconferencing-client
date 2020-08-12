@@ -63,6 +63,7 @@ const CalendarView: React.FC<Props> = ({ visitations }) => {
         events={events} // alternatively, use the `events` setting to fetch from a feed
         eventContent={renderEventContent} // custom render function
         eventClick={handleEventClick}
+        themeSystem="bootstrap"
         // eventsSet={(events: EventApi[]) => setCurrentEvents(events)} // called after events are initialized/added/changed/removed
         /* you can update a remote database when these fire:
             eventAdd={function(){}}

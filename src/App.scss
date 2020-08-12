@@ -1,7 +1,7 @@
 @import "./scss/custom.scss";
 
 :root {
-  --main-primary-color: #4884f8;
+  --main-primary-color: #0089ff;
   --main-black-600: #393939;
   --main-black-500: #6d6d6d;
   --main-black-400: #9a9a9a;
@@ -9,11 +9,16 @@
   --main-black-200: #f2f2f2;
   --main-black-100: #fbfbfb;
   --main-green: #2eba77;
+  --main-lightgreen: #bbfcdd;
   --main-red: #df6161;
   --main-lightred: #f5c3c3;
   --main-lightyellow: #faf5e3;
-  --main-blue-600: #0f4d92;
-  --main-blue-200: #c3dbf5;
+  --main-blue-600: #004886;
+  --main-blue-500: #0275d8;
+  --main-blue-400: #0089ff;
+  --main-blue-300: #70a9e9;
+  --main-blue-200: #9ac1ec;
+  --main-blue-100: #eef6ff;
   --main-lightpurple: #e7dff0;
 }
 
@@ -42,6 +47,14 @@ body {
 
 .green-bg {
   background-color: var(--main-green);
+}
+
+.lightgreen {
+  color: var(--main-lightgreen);
+}
+
+.lightgreen-bg {
+  background-color: var(--main-lightgreen);
 }
 
 .red {
@@ -254,6 +267,16 @@ body {
 
 .circle:before {
   content: " \25CF";
+}
+
+.span-circle {
+  border-radius: 50%;
+  height: 26px;
+  width: 26px;
+  text-align: center;
+  display: inline-block;
+  line-height: 26px;
+  margin-right: 6px;
 }
 
 .w-33 {
