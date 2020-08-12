@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/letters-organizations-client/static/css/main.f9a61b9f.chunk.css",
+    "main.js": "/letters-organizations-client/static/js/main.86f77b21.chunk.js",
+    "main.js.map": "/letters-organizations-client/static/js/main.86f77b21.chunk.js.map",
+    "runtime-main.js": "/letters-organizations-client/static/js/runtime-main.a64d75bd.js",
+    "runtime-main.js.map": "/letters-organizations-client/static/js/runtime-main.a64d75bd.js.map",
+    "static/css/2.c0155d99.chunk.css": "/letters-organizations-client/static/css/2.c0155d99.chunk.css",
+    "static/js/2.369ca243.chunk.js": "/letters-organizations-client/static/js/2.369ca243.chunk.js",
+    "static/js/2.369ca243.chunk.js.map": "/letters-organizations-client/static/js/2.369ca243.chunk.js.map",
+    "index.html": "/letters-organizations-client/index.html",
+    "precache-manifest.1d7e38f2e43b83b994a468463a788c52.js": "/letters-organizations-client/precache-manifest.1d7e38f2e43b83b994a468463a788c52.js",
+    "service-worker.js": "/letters-organizations-client/service-worker.js",
+    "static/css/2.c0155d99.chunk.css.map": "/letters-organizations-client/static/css/2.c0155d99.chunk.css.map",
+    "static/css/main.f9a61b9f.chunk.css.map": "/letters-organizations-client/static/css/main.f9a61b9f.chunk.css.map",
+    "static/js/2.369ca243.chunk.js.LICENSE.txt": "/letters-organizations-client/static/js/2.369ca243.chunk.js.LICENSE.txt",
+    "static/media/bald.78e81582.svg": "/letters-organizations-client/static/media/bald.78e81582.svg",
+    "static/media/investigator.2c00f638.svg": "/letters-organizations-client/static/media/investigator.2c00f638.svg",
+    "static/media/logo.dfd0363d.svg": "/letters-organizations-client/static/media/logo.dfd0363d.svg",
+    "static/media/professor.fdf672c3.svg": "/letters-organizations-client/static/media/professor.fdf672c3.svg",
+    "static/media/woman.12299a71.svg": "/letters-organizations-client/static/media/woman.12299a71.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a64d75bd.js",
+    "static/css/2.c0155d99.chunk.css",
+    "static/js/2.369ca243.chunk.js",
+    "static/css/main.f9a61b9f.chunk.css",
+    "static/js/main.86f77b21.chunk.js"
+  ]
+}
