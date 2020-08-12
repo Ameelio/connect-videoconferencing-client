@@ -11,7 +11,7 @@ import {
   fetchVideoRecording,
 } from "src/redux/modules/visitation";
 import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType } from "src/utils/constants";
+import { CardType, LoadingTypes } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
 import { Form, FormControl } from "react-bootstrap";
 import { genFullName } from "src/utils/utils";
@@ -111,6 +111,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
               type={CardType.PastVisitation}
               actionLabel="called"
               handleClick={handleVideoRequest}
+              loadingType={LoadingTypes.FetchRecording}
             />
           </Container>
           <Container>

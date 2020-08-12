@@ -13,3 +13,8 @@ export enum CardSize {
   Medium = "medium",
   Large = "large",
 }
+
+export enum LoadingTypes {
+  AcceptConnection = "accept",
+  FetchRecording = "video",
+}

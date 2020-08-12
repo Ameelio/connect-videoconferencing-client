@@ -220,5 +220,5 @@ export const fetchVideoRecording = (
   visitation: RecordedVisitation
 ): AppThunk => async (dispatch) => {
   const { id } = visitation;
-  dispatch(addRecording(id, "/recording_demo.mp4"));
+  dispatch(addRecording(id, process.env.PUBLIC_URL + "/recording_demo.mp4"));
 };

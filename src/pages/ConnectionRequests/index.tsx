@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { RootState } from "src/redux";
 import Sidebar from "src/components/containers/Sidebar";
-import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import {
   loadConnectionRequests,
@@ -12,9 +11,10 @@ import {
   selectConnectionRequest,
 } from "src/redux/modules/connection";
 import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType, CardSize } from "src/utils/constants";
-import { Button } from "react-bootstrap";
-import UserSnippetCard from "src/components/cards/UserSnippetCard";
+import { CardType, LoadingTypes } from "src/utils/constants";
+import ConnectionRequest from "./ConnectionRequest";
+import { WithLoading } from "src/components/hocs/WithLoadingProps";
+import Container from "src/components/containers/Container";
 
 const mapStateToProps = (state: RootState) => ({
   requests: state.connections.requests,
@@ -36,6 +36,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+const ConnectionRequestWithLoading = WithLoading(ConnectionRequest);
+
 const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   requests,
   selected,
@@ -44,6 +46,22 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   declineConnectionRequest,
   selectConnectionRequest,
 }) => {
+  //TODO replace this with appropriate Redux Logic
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleAccept = (e: React.MouseEvent): void => {
+    selected && acceptConnectionRequest(selected);
+    setLoading(true);
+    setTimeout(function () {
+      setLoading(false);
+    }, 3000);
+  };
+
+  const handleDecline = (e: React.MouseEvent): void => {
+    selected && declineConnectionRequest(selected);
+  };
+
   useEffect(() => {
     //TODO, replace this with loading logic
     if (!requests.length) loadConnectionRequests();
@@ -62,36 +80,15 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
         ))}
       </Sidebar>
       <Wrapper>
-        {selected && selected.contact && selected.inmate && (
+        {selected && (
           <Container>
-            <div className="d-flex flex-row w-100 justify-content-evenly my-5">
-              <UserSnippetCard
-                type={CardType.Inmate}
-                entity={selected.inmate}
-                size={CardSize.Large}
-              />
-              <UserSnippetCard
-                type={CardType.Contact}
-                entity={selected.contact}
-                size={CardSize.Large}
-              />
-            </div>
-            <div className="d-flex flex-row my-5">
-              <Button
-                size="lg"
-                onClick={(e) => acceptConnectionRequest(selected)}
-              >
-                Approve
-              </Button>
-              <Button
-                size="lg"
-                variant="light"
-                className="ml-3"
-                onClick={(e) => declineConnectionRequest(selected)}
-              >
-                Decline
-              </Button>
-            </div>
+            <ConnectionRequestWithLoading
+              accept={handleAccept}
+              decline={handleDecline}
+              connection={selected}
+              loading={loading}
+              loadingType={LoadingTypes.AcceptConnection}
+            />
           </Container>
         )}
       </Wrapper>

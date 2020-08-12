@@ -1,5 +1,6 @@
 {
   "name": "connect-client",
+  "homepage": "http://ameelio.github.io/connect-videoconferencing-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

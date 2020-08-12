@@ -54,12 +54,12 @@ function App({ session }: PropsFromRedux) {
           path="/logs"
           component={Logs}
         ></ProtectedRoute>
-        <ProtectedRoute
+        {/* <ProtectedRoute
           exact
           {...defaultProtectedRouteProps}
           path="/staff"
           component={Staff}
-        ></ProtectedRoute>
+        ></ProtectedRoute> */}
         <ProtectedRoute
           exact
           {...defaultProtectedRouteProps}
