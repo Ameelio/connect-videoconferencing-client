@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "45d2b3e4e5064a678ba9b05030f070cb",
+    "revision": "c3d82fe128aa7a09375575505bc6d507",
     "url": "/connect-videoconferencing-client/index.html"
   },
   {
-    "revision": "03a75f25e9f38ba9922a",
+    "revision": "27c2786de25b780b0f3d",
     "url": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css"
   },
   {
-    "revision": "2da85f990b3778dace15",
+    "revision": "e5b62a0c86b2ab2b6ed4",
     "url": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css"
   },
   {
-    "revision": "03a75f25e9f38ba9922a",
-    "url": "/connect-videoconferencing-client/static/js/2.1ddd0952.chunk.js"
+    "revision": "27c2786de25b780b0f3d",
+    "url": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js"
   },
   {
     "revision": "cd49a31f8c2399c78777cdf833721914",
-    "url": "/connect-videoconferencing-client/static/js/2.1ddd0952.chunk.js.LICENSE.txt"
+    "url": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2da85f990b3778dace15",
-    "url": "/connect-videoconferencing-client/static/js/main.5afc6bff.chunk.js"
+    "revision": "e5b62a0c86b2ab2b6ed4",
+    "url": "/connect-videoconferencing-client/static/js/main.58024060.chunk.js"
   },
   {
     "revision": "5f21b178f57b6ebf5e7e",
