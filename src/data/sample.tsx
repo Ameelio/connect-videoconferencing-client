@@ -236,16 +236,24 @@ const genVisitations = (): LiveVisitation[] => {
 };
 
 const genScheduledVisitations = (): Visitation[] => {
-  const arrays: Visitation[][] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) =>
-    [1, 2, 3, 4, 5].map((day) => ({
-      id: id,
-      createdAt: new Date(),
-      scheduledStartTime: new Date(`2020-08-${10 + day - 1}T${9 + id - 1}:00`),
-      scheduledEndTime: new Date(),
-      status: "scheduled",
-      connection: pickRandom(CONNECTIONS) as Connection,
-      callUrl: "",
-    }))
+  const els = [
+    [1, 2, 3, 4],
+    [3, 4],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  ];
+  const arrays: Visitation[][] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+    (id: number) =>
+      (pickRandom(els) as number[]).map((day) => ({
+        id: id,
+        createdAt: new Date(),
+        scheduledStartTime: new Date(
+          `2020-08-${12 + day - 1}T${9 + id - 1}:00`
+        ),
+        scheduledEndTime: new Date(),
+        status: "scheduled",
+        connection: pickRandom(CONNECTIONS) as Connection,
+        callUrl: "",
+      }))
   );
   const result = arrays.reduce(
     (accumulator, value) => accumulator.concat(value),
@@ -316,7 +324,7 @@ export const SUPERVISOR: Staff = {
   id: 11,
   firstName: STAFF_FIRST_NAME[1] as string,
   lastName: lastNames[1] as string,
-  imageUri: STAFF_PICS[1] as string,
+  imageUri: STAFF_PICS[4] as string,
   role: "supervisor" as StaffRole,
   isActive: true,
   facility: FACILITY,

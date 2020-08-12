@@ -29,7 +29,7 @@ export default function MetricCard({
       <div className="d-flex flex-column">
         <span className="black-400 p4">{name}</span>
         <div className="d-flex flex-row align-items-center">
-          <span className="p1">{metric}</span>
+          <span className="p1 font-weight-bold">{metric}</span>
           <span className="ml-2">{label}</span>
         </div>
         {growthRate && (
@@ -41,9 +41,9 @@ export default function MetricCard({
           </div>
         )}
       </div>
-      <div className="span-circle-large lightgreen-bg green flex-shrink-0">
+      {/* <div className="span-circle-large lightgreen-bg green flex-shrink-0">
         <Clock size="24" />{" "}
-      </div>
+      </div> */}
     </div>
   );
 }

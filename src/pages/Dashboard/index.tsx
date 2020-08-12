@@ -10,10 +10,7 @@ export default function Dashboard({}: Props): ReactElement {
   return (
     <div>
       <div className="d-flex flex-column">
-        <span>Hi, Mark</span>
-        <span>
-          We have a few things for you to look at Colorado State Penitentiary
-        </span>
+        <span className="p2 facility-name mt-3">State Penitentiary</span>
       </div>
       <div className="d-flex flex-row">
         <Container rounded>

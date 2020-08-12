@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Image, Dropdown } from "react-bootstrap";
+import { Navbar, Nav, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { ReactComponent as Logo } from "src/assets/logo.svg";
@@ -88,18 +88,13 @@ const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
           <Nav className="ml-auto">
             {genLinks()}
 
-            <Dropdown bsPrefix="dropdown-avatar">
-              <Dropdown.Toggle>
-                <Image
-                  className="avatar-image"
-                  src={session.staff.imageUri}
-                  roundedCircle
-                />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Logout</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Nav.Link>
+              <Image
+                className="avatar-image"
+                src={session.staff.imageUri}
+                roundedCircle
+              />
+            </Nav.Link>
           </Nav>
         )}
       </Navbar.Collapse>
