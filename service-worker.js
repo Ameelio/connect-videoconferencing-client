@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/connect-videoconferencing-client/precache-manifest.8310bedae271d2a4ebfce5a18672cdf9.js"
+  "/connect-videoconferencing-client/precache-manifest.d437a727e083e3ecc6e89cb8f747b8bf.js"
 );
 
 self.addEventListener('message', (event) => {

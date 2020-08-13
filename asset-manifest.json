@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css",
-    "main.js": "/connect-videoconferencing-client/static/js/main.58024060.chunk.js",
-    "main.js.map": "/connect-videoconferencing-client/static/js/main.58024060.chunk.js.map",
+    "main.js": "/connect-videoconferencing-client/static/js/main.4501c406.chunk.js",
+    "main.js.map": "/connect-videoconferencing-client/static/js/main.4501c406.chunk.js.map",
     "runtime-main.js": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js",
     "runtime-main.js.map": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js.map",
     "static/css/2.c0155d99.chunk.css": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css",
     "static/js/2.336bfc5c.chunk.js": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js",
     "static/js/2.336bfc5c.chunk.js.map": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js.map",
     "index.html": "/connect-videoconferencing-client/index.html",
-    "precache-manifest.8310bedae271d2a4ebfce5a18672cdf9.js": "/connect-videoconferencing-client/precache-manifest.8310bedae271d2a4ebfce5a18672cdf9.js",
+    "precache-manifest.d437a727e083e3ecc6e89cb8f747b8bf.js": "/connect-videoconferencing-client/precache-manifest.d437a727e083e3ecc6e89cb8f747b8bf.js",
     "service-worker.js": "/connect-videoconferencing-client/service-worker.js",
     "static/css/2.c0155d99.chunk.css.map": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css.map",
     "static/css/main.f9a61b9f.chunk.css.map": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css.map",
@@ -25,6 +25,6 @@
     "static/css/2.c0155d99.chunk.css",
     "static/js/2.336bfc5c.chunk.js",
     "static/css/main.f9a61b9f.chunk.css",
-    "static/js/main.58024060.chunk.js"
+    "static/js/main.4501c406.chunk.js"
   ]
 }
