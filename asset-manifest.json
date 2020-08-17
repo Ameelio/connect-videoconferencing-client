@@ -1,30 +1,30 @@
 {
   "files": {
-    "main.css": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css",
-    "main.js": "/connect-videoconferencing-client/static/js/main.4501c406.chunk.js",
-    "main.js.map": "/connect-videoconferencing-client/static/js/main.4501c406.chunk.js.map",
-    "runtime-main.js": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js",
-    "runtime-main.js.map": "/connect-videoconferencing-client/static/js/runtime-main.cda4135e.js.map",
-    "static/css/2.c0155d99.chunk.css": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css",
-    "static/js/2.336bfc5c.chunk.js": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js",
-    "static/js/2.336bfc5c.chunk.js.map": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js.map",
-    "index.html": "/connect-videoconferencing-client/index.html",
-    "precache-manifest.d437a727e083e3ecc6e89cb8f747b8bf.js": "/connect-videoconferencing-client/precache-manifest.d437a727e083e3ecc6e89cb8f747b8bf.js",
-    "service-worker.js": "/connect-videoconferencing-client/service-worker.js",
-    "static/css/2.c0155d99.chunk.css.map": "/connect-videoconferencing-client/static/css/2.c0155d99.chunk.css.map",
-    "static/css/main.f9a61b9f.chunk.css.map": "/connect-videoconferencing-client/static/css/main.f9a61b9f.chunk.css.map",
-    "static/js/2.336bfc5c.chunk.js.LICENSE.txt": "/connect-videoconferencing-client/static/js/2.336bfc5c.chunk.js.LICENSE.txt",
-    "static/media/bald.78e81582.svg": "/connect-videoconferencing-client/static/media/bald.78e81582.svg",
-    "static/media/investigator.2c00f638.svg": "/connect-videoconferencing-client/static/media/investigator.2c00f638.svg",
-    "static/media/logo.dfd0363d.svg": "/connect-videoconferencing-client/static/media/logo.dfd0363d.svg",
-    "static/media/professor.fdf672c3.svg": "/connect-videoconferencing-client/static/media/professor.fdf672c3.svg",
-    "static/media/woman.12299a71.svg": "/connect-videoconferencing-client/static/media/woman.12299a71.svg"
+    "main.css": "/static/css/main.f9a61b9f.chunk.css",
+    "main.js": "/static/js/main.fee70665.chunk.js",
+    "main.js.map": "/static/js/main.fee70665.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.bef88823.js",
+    "runtime-main.js.map": "/static/js/runtime-main.bef88823.js.map",
+    "static/css/2.c0155d99.chunk.css": "/static/css/2.c0155d99.chunk.css",
+    "static/js/2.2657c2fb.chunk.js": "/static/js/2.2657c2fb.chunk.js",
+    "static/js/2.2657c2fb.chunk.js.map": "/static/js/2.2657c2fb.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.5f41a2dbb894abcf3ede27db6d4e7273.js": "/precache-manifest.5f41a2dbb894abcf3ede27db6d4e7273.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.c0155d99.chunk.css.map": "/static/css/2.c0155d99.chunk.css.map",
+    "static/css/main.f9a61b9f.chunk.css.map": "/static/css/main.f9a61b9f.chunk.css.map",
+    "static/js/2.2657c2fb.chunk.js.LICENSE.txt": "/static/js/2.2657c2fb.chunk.js.LICENSE.txt",
+    "static/media/bald.78e81582.svg": "/static/media/bald.78e81582.svg",
+    "static/media/investigator.2c00f638.svg": "/static/media/investigator.2c00f638.svg",
+    "static/media/logo.dfd0363d.svg": "/static/media/logo.dfd0363d.svg",
+    "static/media/professor.fdf672c3.svg": "/static/media/professor.fdf672c3.svg",
+    "static/media/woman.12299a71.svg": "/static/media/woman.12299a71.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.cda4135e.js",
+    "static/js/runtime-main.bef88823.js",
     "static/css/2.c0155d99.chunk.css",
-    "static/js/2.336bfc5c.chunk.js",
+    "static/js/2.2657c2fb.chunk.js",
     "static/css/main.f9a61b9f.chunk.css",
-    "static/js/main.4501c406.chunk.js"
+    "static/js/main.fee70665.chunk.js"
   ]
 }
