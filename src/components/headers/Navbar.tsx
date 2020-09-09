@@ -60,9 +60,9 @@ const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
             <Nav.Link as={Link} to="/members">
               Members
             </Nav.Link>
-            <Nav.Link as={Link} to="/staff">
+            {/* <Nav.Link as={Link} to="/staff">
               Staff
-            </Nav.Link>
+            </Nav.Link> */}
           </div>
         );
       default:
@@ -88,7 +88,7 @@ const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
           <Nav className="ml-auto">
             {genLinks()}
 
-            <Nav.Link>
+            <Nav.Link onClick={(e: React.MouseEvent) => logout()}>
               <Image
                 className="avatar-image"
                 src={session.staff.imageUri}

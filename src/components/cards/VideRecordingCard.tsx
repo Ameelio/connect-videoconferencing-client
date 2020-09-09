@@ -32,7 +32,7 @@ export default function VideRecordingCard({
       <Button onClick={handleClick}>Request</Button>
     </div>
   ) : (
-    <video autoPlay playsInline muted className="w-100">
+    <video autoPlay playsInline className="w-100">
       <source src={pathname} type="video/mp4" />
     </video>
   );

@@ -8,6 +8,7 @@ import { loadScheduledVisitations } from "src/redux/modules/visitation";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations.scheduledVisitations,
@@ -38,7 +39,13 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Video Visitation Calendar"></Sidebar>
+      <Sidebar title="Video Visitation Calendar">
+        {/* <DropdownButton id="dropdown-basic-button" title="Pod">
+  <Dropdown.Item href="#/action-1">Pod #1</Dropdown.Item>
+  <Dropdown.Item href="#/action-2">Pod #2</Dropdown.Item>
+  <Dropdown.Item href="#/action-3">Pod #3</Dropdown.Item>
+</DropdownButton> */}
+      </Sidebar>
       <Wrapper>
         <Container>
           <CalendarView visitations={visitations} />

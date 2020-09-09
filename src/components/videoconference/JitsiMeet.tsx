@@ -10,8 +10,8 @@ const JitsiMeet = () => {
     <Jitsi
       domain="meet.jit.si"
       onAPILoad={handleAPI}
-      roomName={"Colorado State Penitentiary"}
-      displayName={"DOC Colorado"}
+      roomName={"Florida State Penitentiary"}
+      displayName={"DOC Florida"}
       interfaceConfig={interfaceConfig}
       config={config}
       containerStyle={{ width: "100%" }}

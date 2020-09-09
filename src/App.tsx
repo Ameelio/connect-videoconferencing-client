@@ -1,4 +1,4 @@
-import React, { Props } from "react";
+import React from "react";
 import "./App.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import NavBar from "./components/headers/Navbar";
@@ -54,12 +54,12 @@ function App({ session }: PropsFromRedux) {
           path="/logs"
           component={Logs}
         ></ProtectedRoute>
-        {/* <ProtectedRoute
+        <ProtectedRoute
           exact
           {...defaultProtectedRouteProps}
           path="/staff"
           component={Staff}
-        ></ProtectedRoute> */}
+        ></ProtectedRoute>
         <ProtectedRoute
           exact
           {...defaultProtectedRouteProps}

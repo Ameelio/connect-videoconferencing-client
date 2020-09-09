@@ -63,6 +63,7 @@ function LoginContainer({
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                isInvalid={error !== ""}
               />
             </Form.Group>
             <Button block type="submit" onClick={tryLogin}>

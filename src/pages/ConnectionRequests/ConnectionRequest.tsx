@@ -2,7 +2,6 @@ import React, { ReactElement } from "react";
 import { Button } from "react-bootstrap";
 import UserSnippetCard from "src/components/cards/UserSnippetCard";
 import { CardType, CardSize } from "src/utils/constants";
-import Container from "src/components/containers/Container";
 
 interface Props {
   connection: ConnectionRequest;

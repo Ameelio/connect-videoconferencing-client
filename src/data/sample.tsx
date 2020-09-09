@@ -103,7 +103,7 @@ const STAFF_FIRST_NAME = [
   "Alex",
 ];
 
-const FACILITY: Facility = { id: 0, name: "Colorado State Penitentiary" };
+const FACILITY: Facility = { id: 0, name: "Florida State Prison" };
 
 const pickRandom = (items: any[]) => {
   return items[Math.floor(Math.random() * items.length)];
@@ -148,7 +148,7 @@ const genContacts = (): Contact[] => {
     lastName: pickRandom(lastNames) as string,
     imageUri: WOMEN_PICS[id - 1] as string,
     relationship: pickRandom(RELATIONSHIPS),
-    document: "Colorado DL 1472",
+    document: "FL 1472",
     dob: new Date("1990-10-27"),
   }));
 };
@@ -247,7 +247,7 @@ const genScheduledVisitations = (): Visitation[] => {
         id: id,
         createdAt: new Date(),
         scheduledStartTime: new Date(
-          `2020-08-${12 + day - 1}T${9 + id - 1}:00`
+          `2020-09-${12 + day - 1}T${9 + id - 1}:00`
         ),
         scheduledEndTime: new Date(),
         status: "scheduled",
