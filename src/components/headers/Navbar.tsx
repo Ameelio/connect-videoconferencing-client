@@ -18,56 +18,81 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
   const genLinks = (): JSX.Element => {
-    if (!session.staff) return <div />;
+    if (!session.isLoggedIn) return <div />;
 
-    switch (session.staff.role) {
-      case "operator":
-        return (
-          <div className="d-flex flex-row">
-            <Nav.Link as={Link} to="/calendar">
-              Calendar
-            </Nav.Link>
-            <Nav.Link as={Link} to="/visitations">
-              Live Visitations <span className="badge badge-danger">8</span>
-            </Nav.Link>
-          </div>
-        );
-      case "investigator":
-        return (
-          <Nav.Link as={Link} to="/logs">
-            Past Visitations
-          </Nav.Link>
-        );
-      case "supervisor":
-      case "admin":
-        return (
-          <div className="d-flex flex-row">
-            <Nav.Link as={Link} to="/calendar">
-              Calendar
-            </Nav.Link>
-            <Nav.Link as={Link} to="/visitations">
-              Live Visitations <span className="badge badge-danger">8</span>
-            </Nav.Link>
-            <Nav.Link as={Link} to="/logs">
-              Past Visitations
-            </Nav.Link>
-            <Nav.Link as={Link} to="/requests">
-              <span>
-                Requests <span className="badge badge-dark">10</span>
-              </span>
-            </Nav.Link>
+    return (
+      <div className="d-flex flex-row">
+        <Nav.Link as={Link} to="/calendar">
+          Calendar
+        </Nav.Link>
+        <Nav.Link as={Link} to="/visitations">
+          Live Visitations <span className="badge badge-danger">8</span>
+        </Nav.Link>
+        <Nav.Link as={Link} to="/logs">
+          Past Visitations
+        </Nav.Link>
+        <Nav.Link as={Link} to="/requests">
+          <span>
+            Requests <span className="badge badge-dark">10</span>
+          </span>
+        </Nav.Link>
 
-            <Nav.Link as={Link} to="/members">
-              Members
-            </Nav.Link>
-            {/* <Nav.Link as={Link} to="/staff">
-              Staff
-            </Nav.Link> */}
-          </div>
-        );
-      default:
-        return <div />;
-    }
+        <Nav.Link as={Link} to="/members">
+          Members
+        </Nav.Link>
+        <Nav.Link as={Link} to="/staff">
+          Staff
+        </Nav.Link>
+      </div>
+    );
+    // switch (session.staff.role) {
+    //   case "operator":
+    //     return (
+    //       <div className="d-flex flex-row">
+    //         <Nav.Link as={Link} to="/calendar">
+    //           Calendar
+    //         </Nav.Link>
+    //         <Nav.Link as={Link} to="/visitations">
+    //           Live Visitations <span className="badge badge-danger">8</span>
+    //         </Nav.Link>
+    //       </div>
+    //     );
+    //   case "investigator":
+    //     return (
+    //       <Nav.Link as={Link} to="/logs">
+    //         Past Visitations
+    //       </Nav.Link>
+    //     );
+    //   case "supervisor":
+    //   case "admin":
+    //     return (
+    //       <div className="d-flex flex-row">
+    //         <Nav.Link as={Link} to="/calendar">
+    //           Calendar
+    //         </Nav.Link>
+    //         <Nav.Link as={Link} to="/visitations">
+    //           Live Visitations <span className="badge badge-danger">8</span>
+    //         </Nav.Link>
+    //         <Nav.Link as={Link} to="/logs">
+    //           Past Visitations
+    //         </Nav.Link>
+    //         <Nav.Link as={Link} to="/requests">
+    //           <span>
+    //             Requests <span className="badge badge-dark">10</span>
+    //           </span>
+    //         </Nav.Link>
+
+    //         <Nav.Link as={Link} to="/members">
+    //           Members
+    //         </Nav.Link>
+    //         <Nav.Link as={Link} to="/staff">
+    //           Staff
+    //         </Nav.Link>
+    //       </div>
+    //     );
+    //   default:
+    //     return <div />;
+    // }
   };
   return (
     <Navbar
@@ -84,14 +109,14 @@ const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        {session.staff && (
+        {session.user.image && (
           <Nav className="ml-auto">
             {genLinks()}
 
             <Nav.Link onClick={(e: React.MouseEvent) => logout()}>
               <Image
                 className="avatar-image"
-                src={session.staff.imageUri}
+                src={session.user.image}
                 roundedCircle
               />
             </Nav.Link>

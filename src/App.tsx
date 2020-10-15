@@ -27,7 +27,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function App({ session }: PropsFromRedux) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
-    isAuthenticated: session.staff !== null, // TODO: improve this later
+    isAuthenticated: session.authInfo.apiToken !== "", // TODO: improve this later
     authenticationPath: "/login",
   };
 

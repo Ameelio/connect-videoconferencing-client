@@ -1,64 +1,71 @@
+import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
+
 // Constants & Shapes
-const LOGIN = "user/LOGIN";
+const SET_SESSION = "user/SET_SESSION";
 const LOGOUT = "user/LOGOUT";
 
-interface LoginAction {
-  type: typeof LOGIN;
-  payload: Staff;
+interface SetSessionAction {
+  type: typeof SET_SESSION;
+  payload: SessionState;
 }
-
 interface LogoutAction {
   type: typeof LOGOUT;
-  //   payload: null;
 }
 
-type SessionActionTypes = LoginAction | LogoutAction;
+type UserActionTypes = LogoutAction | SetSessionAction;
 
-// Action Creators
-export const login = (staff: Staff): SessionActionTypes => {
+export const logout = (): UserActionTypes => {
   return {
-    type: LOGIN,
-    payload: staff,
+    type: LOGOUT,
   };
 };
 
-export const logout = (): SessionActionTypes => {
+export const setSession = (userState: SessionState): UserActionTypes => {
   return {
-    type: LOGOUT,
-    // payload: null,
+    type: SET_SESSION,
+    payload: userState,
   };
 };
 
 // const fromStorage: string | null = sessionStorage.getItem('userState');
-// let storedUserState: UserState | null = null;
+// let storedUserState: SessionState | null = null;
 // if (fromStorage) {
 //   storedUserState = JSON.parse(fromStorage);
 // }
 
 // Reducer
-// let initialState: UserState = storedUserState || {
-//   user: null,
-//   token: null,
-// };
-
-let initialState: SessionState = {
-  staff: null,
-  token: null,
+const initialState: SessionState = {
+  authInfo: { apiToken: "", rememberToken: "" },
+  user: {
+    id: UNAUTHENTICATED_USER_ID,
+    firstName: "",
+    lastName: "",
+    email: "",
+    image: "",
+  },
+  isLoggedIn: false,
 };
 
 export function sessionReducer(
   state = initialState,
-  action: SessionActionTypes
+  action: UserActionTypes
 ): SessionState {
   switch (action.type) {
-    case LOGIN:
-      return { ...state, staff: action.payload };
+    case SET_SESSION:
+      return action.payload;
     case LOGOUT:
       //   sessionStorage.clear();
       return {
         ...state,
-        staff: null,
-        token: null,
+        authInfo: { apiToken: "", rememberToken: "" },
+        user: {
+          id: UNAUTHENTICATED_USER_ID,
+          firstName: "",
+          lastName: "",
+          email: "",
+          image: "",
+        },
+        isLoggedIn: false,
       };
     default:
       return state;

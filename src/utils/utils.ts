@@ -1,10 +1,10 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 
-export const genFullName = (entity?: Inmate | Contact | Staff): string =>
+export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
 
-export const genImageUri = (user?: User): string => {
+export const genImageUri = (user?: BasePersona): string => {
   return user?.imageUri || "default.jpg";
 };
 

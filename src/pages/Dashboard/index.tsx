@@ -4,9 +4,7 @@ import Container from "src/components/containers/Container";
 import LineChart from "src/components/charts/LineChart";
 import BarChart from "src/components/charts/BarChart";
 
-interface Props {}
-
-export default function Dashboard({}: Props): ReactElement {
+export default function Dashboard(): ReactElement {
   return (
     <div>
       <div className="d-flex flex-column">

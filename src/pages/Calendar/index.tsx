@@ -8,7 +8,6 @@ import { loadScheduledVisitations } from "src/redux/modules/visitation";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
-import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations.scheduledVisitations,

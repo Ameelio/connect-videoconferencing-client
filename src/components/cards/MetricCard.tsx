@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import "./MetricCard.css";
-import { ArrowUpRight, ArrowDownRight, Clock } from "react-feather";
+import { ArrowUpRight, ArrowDownRight } from "react-feather";
 
 interface Props {
   name: string;

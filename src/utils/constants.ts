@@ -18,3 +18,5 @@ export enum LoadingTypes {
   AcceptConnection = "accept",
   FetchRecording = "video",
 }
+
+export const UNAUTHENTICATED_USER_ID = -999;

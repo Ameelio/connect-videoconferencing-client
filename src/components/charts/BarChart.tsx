@@ -1,9 +1,7 @@
 import React, { ReactElement } from "react";
 import { Doughnut } from "react-chartjs-2";
 
-interface Props {}
-
-export default function BarChart({}: Props): ReactElement {
+export default function BarChart(): ReactElement {
   const data = {
     labels: ["Extremely Poor", "Poor", "Okay", "Good", "Really Good"],
     datasets: [
