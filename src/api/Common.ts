@@ -1,11 +1,12 @@
 import { Store } from "src/redux";
 
-export const GENERAL_URL = "https://connect-api-staging.ameelio.org/";
+export const GENERAL_URL = "/";
 
-export const API_URL = "https://letters-api-staging.ameelio.org/api/";
+export const API_URL = "/api/";
 
 export interface ApiResponse {
   date: number;
+  good: boolean;
   status?: "OK" | "ERROR" | "succeeded";
   message?: string;
   data: Record<string, unknown> | Record<string, unknown>[] | unknown;

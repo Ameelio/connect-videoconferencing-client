@@ -4,6 +4,7 @@ import {
   SCHEDULED_VISITATIONS,
   PAST_VISITATIONS,
 } from "src/data/sample";
+import { getVisitations } from "src/api/Visitation";
 
 const SET_LIVE_VISITATIONS = "visitation/SET_LIVE_VISITATIONS";
 const SELECT_LIVE_VISITATION = "visitation/SELECT_LIVE_VISITATION";
@@ -203,6 +204,7 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
 };
 
 export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
+  // const visitations = await getVisitations();
   dispatch(setScheduledVisitations(SCHEDULED_VISITATIONS));
 };
 

@@ -63,7 +63,7 @@ function cleanUser(user: RawUser): User {
 export async function loginWithCredentials(
   cred: UserLoginInfo
 ): Promise<SessionState> {
-  const response = await fetchTimeout(url.resolve(API_URL, "login"), {
+  const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -75,7 +75,8 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
-  if (body.status !== "OK") throw body;
+  console.log(body);
+  if (!body.good) throw body;
   const user = cleanUser(body.data as RawUser);
   const { apiToken, rememberToken } = body.data;
 
