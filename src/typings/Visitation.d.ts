@@ -7,6 +7,7 @@ interface Visitation {
   scheduledStartTime: Date;
   scheduledEndTime: Date;
 
+  connection: Connection;
   kiosk: Kiosk;
 
   approved: boolean;
@@ -15,4 +16,11 @@ interface Visitation {
   startTime?: Date;
   endTime?: Date;
   liveStatus?: string;
+}
+interface LiveVisitation extends Visitation {
+  startTime: Date;
+  liveStatus: string;
+}
+interface RecordedVisitation extends LiveVisitation {
+  endTime: Date;
 }

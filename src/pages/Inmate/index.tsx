@@ -39,6 +39,7 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
     RecordedVisitation[]
   >([]);
 
+  /*
   useEffect(() => {
     //TODO must change this with loading logic
     if (!inmates.length) loadConnections();
@@ -48,6 +49,7 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
       .reduce((accumulator, value) => accumulator.concat(value), []);
     setRecordedVisitations(result);
   }, [inmates, selectedConnections, loadConnections, loadInmates]);
+  */
 
   return (
     <div className="d-flex flex-row">
@@ -72,7 +74,7 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
             <div className="d-flex flex-row flex-wrap mw-75 w-75">
               {recordedVisitations.map((visitation) => (
                 <ConnectionCard
-                  kioskId={visitation.kioskId}
+                  kioskId={visitation.kiosk.id}
                   key={visitation.id}
                   inmate={visitation.connection.inmate}
                   contact={visitation.connection.contact}

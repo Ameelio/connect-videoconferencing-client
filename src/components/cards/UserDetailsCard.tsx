@@ -26,8 +26,10 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
         return (
           <div className="d-flex flex-column border-bottom pb-3">
             <span className="p6 black-500">{genFullName(inmate)}</span>
-            <span className="p6 black-500">{inmate.inmateId}</span>
-            <span className="p6 black-500">{inmate.facility.name}</span>
+            <span className="p6 black-500">{inmate.inmateNumber}</span>
+            <span className="p6 black-500">
+              {inmate.nodes[inmate.nodes.length - 1].name}
+            </span>
           </div>
         );
 

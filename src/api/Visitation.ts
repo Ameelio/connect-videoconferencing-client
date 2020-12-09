@@ -11,7 +11,7 @@ interface RawInmate {
   id: number;
   first_name: string;
   last_name: string;
-  nodes: Node[];
+  nodes: AmeelioNode[];
   inmate_number: string;
 }
 

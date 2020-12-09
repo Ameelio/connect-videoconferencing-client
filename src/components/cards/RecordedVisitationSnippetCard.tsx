@@ -19,7 +19,7 @@ const RecordedVisitationSnippetCard: React.FC<Props> = ({ record }) => {
           {calculateDurationMS(record.startTime, record.endTime)}
         </span>
       </div>
-      <div className="black-500 p6">{format(record.createdAt, "MMM d")}</div>
+      <div className="black-500 p6">{format(record.endTime, "MMM d")}</div>
     </div>
   );
 };

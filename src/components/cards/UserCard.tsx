@@ -31,7 +31,7 @@ export default function UserCard({
         );
       case CardType.Inmate:
         const inmate = user as Inmate;
-        return <span className="p6 ">{inmate.inmateId}</span>;
+        return <span className="p6 ">{inmate.inmateNumber}</span>;
       case CardType.Contact:
         const contact = user as Contact;
         return <span className="p6 ">{contact.relationship}</span>;

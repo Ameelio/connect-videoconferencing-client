@@ -103,7 +103,7 @@ const STAFF_FIRST_NAME = [
   "Alex",
 ];
 
-const FACILITY: Facility = { id: 0, name: "Florida State Prison" };
+const FACILITY: AmeelioNode = { id: 0, name: "Florida State Prison" };
 
 const pickRandom = (items: any[]) => {
   return items[Math.floor(Math.random() * items.length)];
@@ -131,13 +131,12 @@ export const PODS = [
 const genInmates = (): Inmate[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id: number) => ({
     id: id,
-    inmateId: pickRandom(INMATE_IDS),
+    inmateNumber: pickRandom(INMATE_IDS),
     firstName: pickRandom(firstNames) as string,
     lastName: pickRandom(lastNames) as string,
     hasCallPrivilege: true,
-    pod: pickRandom(PODS),
+    nodes: [pickRandom(PODS), FACILITY],
     imageUri: PICS[id - 1] as string,
-    facility: FACILITY,
   }));
 };
 
@@ -148,8 +147,7 @@ const genContacts = (): Contact[] => {
     lastName: pickRandom(lastNames) as string,
     imageUri: WOMEN_PICS[id - 1] as string,
     relationship: pickRandom(RELATIONSHIPS),
-    document: "FL 1472",
-    dob: new Date("1990-10-27"),
+    details: "FL 1472",
   }));
 };
 
@@ -166,8 +164,6 @@ const genConnections = (): Connection[] => {
       contact: contact,
       requestedAt: new Date(),
       approvedAt: new Date(),
-      recordedVisitations: [],
-      numPastCalls: pickRandom([6, 8, 12, 15, 21, 3]),
     };
   });
 };
@@ -192,8 +188,7 @@ const genRecordedVisitations = (
 ): RecordedVisitation[] => {
   const pastVisitations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
-    kioskId: id,
-    callUrl: "",
+    kiosk: { id },
     createdAt: subDays(new Date(), id * 7),
     scheduledStartTime: subDays(new Date(), id * 7),
     scheduledEndTime: subDays(new Date(), id * 7),
@@ -202,7 +197,8 @@ const genRecordedVisitations = (
       subDays(new Date(), id * 7),
       getRandomArbitrary(900, 1500)
     ),
-    status: "done" as VisitationStatus,
+    liveStatus: "{}",
+    approved: true,
     connection: connection,
   }));
 
@@ -223,14 +219,15 @@ export const CONNECTIONS: Connection[] = rawConnection.map((connection) => ({
 const genVisitations = (): LiveVisitation[] => {
   return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => ({
     id: id,
-    kioskId: id,
+    kiosk: { id },
     callUrl: "",
     createdAt: new Date(),
     scheduledStartTime: new Date(),
     scheduledEndTime: add(new Date(), { minutes: 15 }),
     startTime: new Date(),
     endTime: new Date(),
-    status: "ongoing",
+    liveStatus: "{}",
+    approved: true,
     connection: CONNECTIONS[id - 1] as Connection,
   }));
 };
@@ -245,14 +242,14 @@ const genScheduledVisitations = (): Visitation[] => {
     (id: number) =>
       (pickRandom(els) as number[]).map((day) => ({
         id: id,
+        kiosk: { id },
+        approved: true,
         createdAt: new Date(),
         scheduledStartTime: new Date(
           `2020-09-${12 + day - 1}T${9 + id - 1}:00`
         ),
         scheduledEndTime: new Date(),
-        status: "scheduled",
         connection: pickRandom(CONNECTIONS) as Connection,
-        callUrl: "",
       }))
   );
   const result = arrays.reduce(
@@ -272,7 +269,7 @@ const genRandomRecordedVisitations = (): RecordedVisitation[] => {
     const connection = pickRandom(CONNECTIONS) as Connection;
     return {
       id: id,
-      kioskId: id,
+      kiosk: { id },
       callUrl: "",
       createdAt: subDays(new Date(), id * 7),
       scheduledStartTime: subDays(new Date(), id * 7),
@@ -282,12 +279,9 @@ const genRandomRecordedVisitations = (): RecordedVisitation[] => {
         subDays(new Date(), id * 7),
         getRandomArbitrary(900, 1500)
       ),
-      status: "done" as VisitationStatus,
+      approved: true,
+      liveStatus: "{}",
       connection: connection,
-      filename: `${connection.inmate.lastName}-${
-        connection.contact.lastName
-      }-${format(new Date(), "yyyy-MM-dd")}.mp4`,
-      recordingSize: 100,
     };
   });
 };

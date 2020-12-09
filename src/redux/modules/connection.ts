@@ -150,8 +150,6 @@ export const acceptConnectionRequest = (
   const connection: Connection = {
     ...request,
     approvedAt: new Date(),
-    recordedVisitations: [],
-    numPastCalls: 0,
   };
   dispatch(addConnection(connection));
 };

@@ -7,7 +7,7 @@ interface BasePersona {
 
 interface Inmate extends BasePersona {
   inmateNumber: string;
-  nodes: Node[];
+  nodes: AmeelioNode[];
 }
 
 interface Contact extends BasePersona {
@@ -21,7 +21,7 @@ interface Staff extends BasePersona {
   role: StaffRole;
   isActive: boolean; // TODO: replace the boolean with some token expiration logic
   email: string;
-  facility: Facility;
+  facility: AmeelioNode;
 }
 
 interface UserLoginInfo {

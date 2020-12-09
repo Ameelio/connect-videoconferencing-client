@@ -19,7 +19,12 @@ const VisitationCard: React.FC<Props> = ({
   actionLabel,
   handleClick,
 }) => {
-  const { startTime, kioskId, scheduledEndTime, connection } = visitation;
+  const {
+    startTime,
+    kiosk: { id: kioskId },
+    scheduledEndTime,
+    connection,
+  } = visitation;
   const { inmate, contact } = connection;
   const [now, setNow] = useState<Date>(new Date());
 
@@ -34,6 +39,7 @@ const VisitationCard: React.FC<Props> = ({
     switch (type) {
       case CardType.LiveVisitation:
         return <JitsiMeet />;
+      /*
       case CardType.PastVisitation:
         const record = visitation as RecordedVisitation;
         return (
@@ -52,6 +58,7 @@ const VisitationCard: React.FC<Props> = ({
             />
           </div>
         );
+      */
       default:
         return <div />;
     }

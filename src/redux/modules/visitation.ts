@@ -188,7 +188,7 @@ export function visitationsReducer(
       const foundIndex = state.pastVisitations.findIndex(
         (visitation) => visitation.id === action.payload.id
       );
-      state.pastVisitations[foundIndex].recordingUrl = action.payload.value;
+      // state.pastVisitations[foundIndex].recordingUrl = action.payload.value;
 
       return {
         ...state,
