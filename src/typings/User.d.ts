@@ -2,20 +2,17 @@ interface BasePersona {
   id: number;
   firstName: string;
   lastName: string;
-  imageUri: string;
+  imageUri?: string;
 }
 
 interface Inmate extends BasePersona {
-  inmateId: string;
-  hasCallPrivilege: boolean;
-  pod: Pod;
-  facility: Facility;
+  inmateNumber: string;
+  nodes: Node[];
 }
 
 interface Contact extends BasePersona {
   relationship: string;
-  dob: Date;
-  document: string;
+  details: string;
 }
 
 type StaffRole = "admin" | "supervisor" | "operator" | "investigator";

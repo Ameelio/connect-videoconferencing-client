@@ -9,6 +9,4 @@ interface ConnectionRequest {
 
 interface Connection extends ConnectionRequest {
   approvedAt: Date;
-  numPastCalls: number;
-  recordedVisitations: RecordedVisitation[];
 }

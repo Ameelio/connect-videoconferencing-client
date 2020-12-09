@@ -30,6 +30,10 @@ export function fetchTimeout(
   ]);
 }
 
+export function toQueryString(options: string[][]) {
+  return options.map((x) => x[0] + "=" + encodeURIComponent(x[1])).join("&");
+}
+
 export async function fetchAuthenticated(
   fetchUrl: string,
   options: Record<string, unknown> = {},

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ConnectionDetailsCard: React.FC<Props> = ({ connection }) => {
-  const { inmate, contact, recordedVisitations, numPastCalls } = connection;
+  const { inmate, contact } = connection;
 
   return inmate && contact ? (
     <div className="d-flex flex-row">
@@ -24,14 +24,6 @@ const ConnectionDetailsCard: React.FC<Props> = ({ connection }) => {
         entity={contact}
         size={CardSize.Medium}
       />
-      <div className="d-flex flex-column past-visitations-wrapper">
-        <span className="black-400 p6">Past Visitations ({numPastCalls})</span>
-        {Array.from(recordedVisitations.values()).map(
-          (record: RecordedVisitation) => (
-            <RecordedVisitationSnippetCard key={record.id} record={record} />
-          )
-        )}
-      </div>
     </div>
   ) : (
     <Spinner animation="border" role="status">
