@@ -6,6 +6,8 @@ import {
 } from "src/data/sample";
 import { getVisitations } from "src/api/Visitation";
 
+console.log("RUNNING actual visitation module code");
+
 const SET_LIVE_VISITATIONS = "visitation/SET_LIVE_VISITATIONS";
 const SELECT_LIVE_VISITATION = "visitation/SELECT_LIVE_VISITATION";
 const DELETE_LIVE_VISITATION = "visitation/DELETE_LIVE_VISITATION";
@@ -125,7 +127,7 @@ const addRecording = (id: number, value: string) => {
 };
 
 // Reducer
-const initialState: VisitationState = {
+const initialVisitationState: VisitationState = {
   liveVisitations: [],
   selectedVisitation: null,
   scheduledVisitations: [],
@@ -136,7 +138,7 @@ const initialState: VisitationState = {
 };
 
 export function visitationsReducer(
-  state = initialState,
+  state = initialVisitationState,
   action: LiveVisitationActionTypes
 ): VisitationState {
   switch (action.type) {

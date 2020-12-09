@@ -1,6 +1,8 @@
 import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
 import url from "url";
 
+console.log("RUNNING visitation api code");
+
 interface RawUser {
   id: number;
   first_name: string;
@@ -15,16 +17,6 @@ interface RawInmate {
   inmate_number: string;
 }
 
-function cleanInmate(inmate: RawInmate): Inmate {
-  return {
-    id: inmate.id,
-    inmateNumber: inmate.inmate_number,
-    firstName: inmate.first_name,
-    lastName: inmate.last_name,
-    nodes: inmate.nodes,
-  } as Inmate;
-}
-
 interface RawConnection {
   id: number;
   inmate: RawInmate;
@@ -35,6 +27,21 @@ interface RawConnection {
   request_details: string;
   status: string;
   status_details: string;
+}
+
+interface VisitationOptions {
+  date?: Date[];
+  approved?: boolean;
+}
+
+function cleanInmate(inmate: RawInmate): Inmate {
+  return {
+    id: inmate.id,
+    inmateNumber: inmate.inmate_number,
+    firstName: inmate.first_name,
+    lastName: inmate.last_name,
+    nodes: inmate.nodes,
+  } as Inmate;
 }
 
 function createContact(connection: RawConnection) {
@@ -87,11 +94,6 @@ function cleanVisitation(visitation: RawVisitation): Visitation {
   } as Visitation;
 }
 
-interface VisitationOptions {
-  date?: Date[];
-  approved?: boolean;
-}
-
 export async function getVisitations({
   date,
   approved,
@@ -109,7 +111,8 @@ export async function getVisitations({
     throw body;
   }
 
-  const visitations = (body.data as RawVisitation[]).map(cleanVisitation);
+  const visitations = ((body.data as Record<string, unknown>)
+    .calls as RawVisitation[]).map(cleanVisitation);
 
   return visitations;
 }
