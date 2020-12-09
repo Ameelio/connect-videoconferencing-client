@@ -204,8 +204,14 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
 };
 
 export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
-  // const visitations = await getVisitations();
-  dispatch(setScheduledVisitations(SCHEDULED_VISITATIONS));
+  const visitations = await getVisitations({
+    date: [
+      new Date(),
+      new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+    ],
+    approved: true,
+  });
+  dispatch(setScheduledVisitations(visitations));
 };
 
 export const loadPastVisitations = (): AppThunk => async (dispatch) => {
