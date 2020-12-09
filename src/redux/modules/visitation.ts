@@ -1,10 +1,6 @@
 import { AppThunk } from "src/redux/helpers";
-import {
-  LIVE_VISITATIONS,
-  SCHEDULED_VISITATIONS,
-  PAST_VISITATIONS,
-} from "src/data/sample";
-import { getVisitations } from "src/api/Visitation";
+import { LIVE_VISITATIONS, PAST_VISITATIONS } from "src/data/sample";
+// import { getVisitations } from "src/api/Visitation";
 
 console.log("RUNNING actual visitation module code");
 
@@ -92,7 +88,7 @@ const deleteLiveVisitation = (
   };
 };
 
-const setScheduledVisitations = (
+export const setScheduledVisitations = (
   visitations: Visitation[]
 ): LiveVisitationActionTypes => {
   return {
@@ -205,16 +201,16 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
   dispatch(setLiveVisitations(LIVE_VISITATIONS));
 };
 
-export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
-  const visitations = await getVisitations({
-    date: [
-      new Date(),
-      new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-    ],
-    approved: true,
-  });
-  dispatch(setScheduledVisitations(visitations));
-};
+// export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
+//   const visitations = await getVisitations({
+//     date: [
+//       new Date(),
+//       new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+//     ],
+//     approved: true,
+//   });
+//   dispatch(setScheduledVisitations(visitations));
+// };
 
 export const loadPastVisitations = (): AppThunk => async (dispatch) => {
   dispatch(setPastVisitations(PAST_VISITATIONS));

@@ -1,5 +1,7 @@
 import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
 import url from "url";
+import { Store } from "src/redux";
+import { setScheduledVisitations } from "src/redux/modules/visitation";
 
 console.log("RUNNING visitation api code");
 
@@ -114,5 +116,6 @@ export async function getVisitations({
   const visitations = ((body.data as Record<string, unknown>)
     .calls as RawVisitation[]).map(cleanVisitation);
 
+  Store.dispatch(setScheduledVisitations(visitations));
   return visitations;
 }

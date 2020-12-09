@@ -4,10 +4,10 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 
-import { loadScheduledVisitations } from "src/redux/modules/visitation";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
+import { getVisitations } from "src/api/Visitation";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations.scheduledVisitations,
@@ -15,25 +15,23 @@ const mapStateToProps = (state: RootState) => ({
     state.visitations.hasLoadedScheduledVisitations,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      loadScheduledVisitations,
-    },
-    dispatch
-  );
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
-  loadScheduledVisitations,
   visitations,
   hasLoadedScheduledVisitations,
 }) => {
   useEffect(() => {
-    if (!hasLoadedScheduledVisitations) loadScheduledVisitations();
+    if (!hasLoadedScheduledVisitations)
+      getVisitations({
+        date: [
+          new Date(),
+          new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+        ],
+        approved: true,
+      });
   });
 
   return (
