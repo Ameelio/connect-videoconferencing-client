@@ -109,19 +109,15 @@ const NavBar: React.FC<PropsFromRedux> = ({ session, logout }) => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        {session.user.image && (
+        {
           <Nav className="ml-auto">
             {genLinks()}
 
             <Nav.Link onClick={(e: React.MouseEvent) => logout()}>
-              <Image
-                className="avatar-image"
-                src={session.user.image}
-                roundedCircle
-              />
+              Logout
             </Nav.Link>
           </Nav>
-        )}
+        }
       </Navbar.Collapse>
     </Navbar>
   );
