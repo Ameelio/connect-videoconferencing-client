@@ -19,6 +19,22 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+function mondayMorning() {
+  const now = new Date();
+  const day = now.getDay();
+  now.setDate(now.getDate() - day + 1);
+  now.setHours(0, 0, 0, 0);
+  return now;
+}
+
+function fridayEvening() {
+  const now = new Date();
+  const day = now.getDay();
+  now.setDate(now.getDate() - day + 5);
+  now.setHours(23, 59, 59, 0);
+  return now;
+}
+
 const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   visitations,
   hasLoadedScheduledVisitations,
@@ -26,10 +42,7 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   useEffect(() => {
     if (!hasLoadedScheduledVisitations)
       getVisitations({
-        date: [
-          new Date(),
-          new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-        ],
+        date: [mondayMorning(), fridayEvening()],
         approved: true,
       });
   });

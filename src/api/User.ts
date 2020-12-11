@@ -78,7 +78,8 @@ export async function loginWithCredentials(
   console.log(body);
   if (!body.good) throw body;
   const user = cleanUser(body.data as RawUser);
-  const { apiToken, rememberToken } = body.data;
+  console.log("Got data", body.data);
+  const { token: apiToken, remember: rememberToken } = body.data;
 
   return { user, authInfo: { rememberToken, apiToken }, isLoggedIn: true };
 }

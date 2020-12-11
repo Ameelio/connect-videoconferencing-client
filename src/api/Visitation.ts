@@ -116,6 +116,8 @@ export async function getVisitations({
   const visitations = ((body.data as Record<string, unknown>)
     .calls as RawVisitation[]).map(cleanVisitation);
 
+  console.log("Fetched visitations", visitations);
+
   Store.dispatch(setScheduledVisitations(visitations));
   return visitations;
 }
