@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import JitsiMeet from "src/components/videoconference/JitsiMeet";
+import VideoChat from "src/components/videoconference/VideoChat";
 import { genFullName } from "src/utils/utils";
 import VisitationCardHeader from "../headers/VisitationCardHeader";
 import { CardType } from "src/utils/constants";
@@ -20,6 +20,7 @@ const VisitationCard: React.FC<Props> = ({
   handleClick,
 }) => {
   const {
+    id: callId,
     startTime,
     kiosk: { id: kioskId },
     scheduledEndTime,
@@ -38,31 +39,12 @@ const VisitationCard: React.FC<Props> = ({
   const genMainComponent = (): JSX.Element => {
     switch (type) {
       case CardType.LiveVisitation:
-        return <JitsiMeet />;
-      /*
-      case CardType.PastVisitation:
-        const record = visitation as RecordedVisitation;
-        return (
-          <div
-            className={
-              record.recordingUrl
-                ? "w-100 mt-3 align-items-center"
-                : "mt-3 w-50"
-            }
-          >
-            <VideRecordingCard
-              filename={record.filename}
-              pathname={record.recordingUrl}
-              size={record.recordingSize}
-              handleVideoRequest={handleClick}
-            />
-          </div>
-        );
-      */
+        return <VideoChat callId={callId} />;
       default:
         return <div />;
     }
   };
+
   return (
     <div>
       <VisitationCardHeader
