@@ -1,3 +1,4 @@
+import { updateConnection } from "src/api/Connection";
 import { AppThunk } from "src/redux/helpers";
 
 const SET_CONNECTION_REQUESTS = "connection/SET_CONNECTION_REQUESTS";
@@ -142,6 +143,7 @@ export const acceptConnectionRequest = (
   request: ConnectionRequest
 ): AppThunk => async (dispatch) => {
   //TODO replace this with the API call
+  await updateConnection(request.id, "approved");
   const connection: Connection = {
     ...request,
     approvedAt: new Date(),
@@ -152,6 +154,7 @@ export const acceptConnectionRequest = (
 export const declineConnectionRequest = (
   request: ConnectionRequest
 ): AppThunk => async (dispatch) => {
+  await updateConnection(request.id, "denied");
   //TODO replace this with actual API call
   dispatch(deleteConnectionRequeest(request));
 };

@@ -17,8 +17,8 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
           <div className="d-flex flex-column">
             <span className="p6 black-400 text-capitalize">{staff.role}</span>
             <span className="p6 black-500">{genFullName(staff)}</span>
-            <span className="p6 black-500">{staff.email}</span>
-            <span className="p6 black-500">{staff.facility.name}</span>
+            {/* <span className="p6 black-500">{staff.email}</span>
+            <span className="p6 black-500">{staff.facility.name}</span> */}
           </div>
         );
       case CardType.Inmate:

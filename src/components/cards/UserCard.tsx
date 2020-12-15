@@ -16,19 +16,6 @@ export default function UserCard({
 }: Props): ReactElement {
   const genDetails = (): JSX.Element => {
     switch (type) {
-      case CardType.Staff:
-        const staff = user as Staff;
-        return staff.isActive ? (
-          <span className="green p6">
-            <span className="circle green mr-1" />
-            Active
-          </span>
-        ) : (
-          <span className="p6 black-400">
-            <span className="circle black-300 mr-1" />
-            Last active 10 min ago
-          </span>
-        );
       case CardType.Inmate:
         const inmate = user as Inmate;
         return <span className="p6 ">{inmate.inmateNumber}</span>;

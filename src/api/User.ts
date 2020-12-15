@@ -1,7 +1,7 @@
 import { API_URL, fetchAuthenticated, fetchTimeout } from "./Common";
 import url from "url";
 import { setSession } from "src/redux/modules/user";
-import { getInmates } from "./Persona";
+import { getInmates, getStaff } from "./Persona";
 import { Store } from "src/redux";
 import { getApprovedConnections } from "./Connection";
 
@@ -38,6 +38,7 @@ function cleanUser(user: RawUser): User {
 async function initializeData() {
   await getInmates();
   await getApprovedConnections();
+  await getStaff();
 }
 
 export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {

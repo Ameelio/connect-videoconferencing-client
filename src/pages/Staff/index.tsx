@@ -26,9 +26,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
   selected,
   selectStaff,
 }) => {
-  // useEffect(() => {
-  //   if (!staff.length) loadStaff();
-  // });
   return (
     <div className="d-flex flex-row">
       <Sidebar title="Staff members">
