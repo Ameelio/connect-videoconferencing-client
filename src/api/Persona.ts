@@ -26,8 +26,6 @@ export async function getStaff(): Promise<Staff[]> {
     throw body;
   }
 
-  console.log(body.data);
-
   const staff = ((body.data as Record<string, unknown>)
     .admins as Object[]).map((admin) => camelcaseKeys(admin)) as Staff[];
 

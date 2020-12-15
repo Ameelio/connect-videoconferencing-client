@@ -12,7 +12,7 @@ import {
 import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType, LoadingTypes } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
-import { Form, FormControl } from "react-bootstrap";
+import { Form, FormControl, Table } from "react-bootstrap";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
@@ -71,49 +71,47 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
     }, 6000);
   };
 
+  const renderItem = (visitation: Visitation): JSX.Element => {
+    return (
+      <tr>
+        <td></td>
+        <td>{genFullName(visitation.connection.contact)}</td>
+        <td>{genFullName(visitation.connection.inmate)}</td>
+      </tr>
+    );
+  };
+
   useEffect(() => {
     // if (!logs.length) loadPastVisitations();
     setFilteredPastVisitations(logs);
   }, [logs]);
 
   return (
-    <div className="d-flex flex-row">
-      <Sidebar title="Past Visitations">
-        <Form className="mt-3 w-75">
-          <FormControl
-            type="text"
-            placeholder="Search by name"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-        </Form>
-        {filteredPastVisitations.map((log) => (
-          <SidebarCard
-            key={log.id}
-            type={CardType.PastVisitation}
-            entity={log}
-            isActive={log.id === selected?.id}
-            handleClick={(e) => selectPastVisitation(log)}
-          />
-        ))}
-      </Sidebar>
-      {selected && (
-        <Wrapper>
-          <Container>
-            <VisitationCardWithLoading
-              loading={loading}
-              visitation={selected}
-              type={CardType.PastVisitation}
-              actionLabel="called"
-              handleClick={handleVideoRequest}
-              loadingType={LoadingTypes.FetchRecording}
-            />
-          </Container>
-          <Container>
-            {/* <ConnectionDetailsCard connection={selected.connection} /> */}
-          </Container>
-        </Wrapper>
-      )}
+    <div className="d-flex">
+      <Form className="mt-3 w-100">
+        <FormControl
+          type="text"
+          placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </Form>
+      <Table responsive variant="dark">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Inmate Name</th>
+            <th>Inmate ID</th>
+            <th>Visitor Name</th>
+            <th>Visitor ID</th>
+            <th>Facility</th>
+          </tr>
+        </thead>
+        {filteredPastVisitations.map(renderItem)}
+      </Table>
     </div>
   );
 };

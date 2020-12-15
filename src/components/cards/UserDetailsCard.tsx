@@ -28,7 +28,7 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
             <span className="p6 black-500">{genFullName(inmate)}</span>
             <span className="p6 black-500">{inmate.inmateNumber}</span>
             <span className="p6 black-500">
-              {inmate.nodes[inmate.nodes.length - 1].name}
+              {/* {inmate.nodes[inmate.nodes.length - 1].name} */}
             </span>
           </div>
         );

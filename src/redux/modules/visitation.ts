@@ -93,7 +93,7 @@ export const setScheduledVisitations = (
   };
 };
 
-const setPastVisitations = (
+export const setPastVisitations = (
   visitations: RecordedVisitation[]
 ): LiveVisitationActionTypes => {
   return {

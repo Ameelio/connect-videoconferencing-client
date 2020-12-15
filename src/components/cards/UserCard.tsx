@@ -14,6 +14,7 @@ export default function UserCard({
   fontColor,
   type,
 }: Props): ReactElement {
+  console.log(user);
   const genDetails = (): JSX.Element => {
     switch (type) {
       case CardType.Inmate:

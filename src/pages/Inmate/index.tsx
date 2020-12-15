@@ -67,7 +67,7 @@ const InmateContainer: React.FC = (
           />
         ))}
       </Sidebar>
-      {true && (
+      {/* {true && (
         <Wrapper horizontal>
           <Container fluid>
             <div className="d-flex flex-column">
@@ -89,7 +89,7 @@ const InmateContainer: React.FC = (
           </Container>
           <Container>
             <div className="d-flex flex-column">
-              {/* <UserDetailsCard type={CardType.Inmate} user={selected} /> */}
+              <UserDetailsCard type={CardType.Inmate} user={selected} />
               <UserDetailsCard type={CardType.Inmate} user={inmates[0]} />
 
               <span className="black-500 mt-3">
@@ -105,13 +105,13 @@ const InmateContainer: React.FC = (
                     fontColor="black-500"
                     type={CardType.Contact}
                   />
-                  {/* TODO add the connection background here */}
+                  TODO add the connection background here
                 </div>
               ))}
             </div>
           </Container>
         </Wrapper>
-      )}
+      )} */}
     </div>
   );
 };
