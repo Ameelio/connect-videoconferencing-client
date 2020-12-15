@@ -6,7 +6,6 @@ import Sidebar from "src/components/containers/Sidebar";
 import Wrapper from "src/components/containers/Wrapper";
 import Container from "src/components/containers/Container";
 import {
-  loadPastVisitations,
   selectPastVisitation,
   fetchVideoRecording,
 } from "src/redux/modules/visitation";
@@ -24,10 +23,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    { loadPastVisitations, selectPastVisitation, fetchVideoRecording },
-    dispatch
-  );
+  bindActionCreators({ selectPastVisitation, fetchVideoRecording }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -38,7 +34,6 @@ const VisitationCardWithLoading = WithLoading(VisitationCard);
 const LogsContainer: React.FC<PropsFromRedux> = ({
   logs,
   selected,
-  loadPastVisitations,
   selectPastVisitation,
   fetchVideoRecording,
 }) => {
@@ -77,9 +72,9 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   };
 
   useEffect(() => {
-    if (!logs.length) loadPastVisitations();
+    // if (!logs.length) loadPastVisitations();
     setFilteredPastVisitations(logs);
-  }, [logs, loadPastVisitations]);
+  }, [logs]);
 
   return (
     <div className="d-flex flex-row">
@@ -115,7 +110,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             />
           </Container>
           <Container>
-            <ConnectionDetailsCard connection={selected.connection} />
+            {/* <ConnectionDetailsCard connection={selected.connection} /> */}
           </Container>
         </Wrapper>
       )}

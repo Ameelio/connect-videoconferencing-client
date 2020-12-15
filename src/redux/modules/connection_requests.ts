@@ -1,5 +1,4 @@
 import { AppThunk } from "src/redux/helpers";
-import { CONNECTION_REQUESTS, CONNECTIONS } from "src/data/sample";
 
 const SET_CONNECTION_REQUESTS = "connection/SET_CONNECTION_REQUESTS";
 const DELETE_CONNECTION_REQUEST = "connection/DECLINE_CONNECTION_REQUEST";
@@ -41,7 +40,7 @@ type ConnectionActionTypes =
   | SelectConnectionRequestAction;
 
 // Action Creators
-const setConnectionRequests = (
+export const setConnectionRequests = (
   connections: ConnectionRequest[]
 ): ConnectionActionTypes => {
   return {
@@ -75,8 +74,9 @@ export const selectConnectionRequest = (
   };
 };
 
-//TODO uncomment this once we have use case for this function
-const setConnections = (connections: Connection[]): ConnectionActionTypes => {
+export const setConnections = (
+  connections: Connection[]
+): ConnectionActionTypes => {
   return {
     type: SET_CONNECTIONS,
     payload: connections,
@@ -138,11 +138,6 @@ export function connectionsReducer(
   }
 }
 
-export const loadConnectionRequests = (): AppThunk => async (dispatch) => {
-  //TODO replace this with the API call
-  dispatch(setConnectionRequests(CONNECTION_REQUESTS));
-};
-
 export const acceptConnectionRequest = (
   request: ConnectionRequest
 ): AppThunk => async (dispatch) => {
@@ -159,9 +154,4 @@ export const declineConnectionRequest = (
 ): AppThunk => async (dispatch) => {
   //TODO replace this with actual API call
   dispatch(deleteConnectionRequeest(request));
-};
-
-export const loadConnections = (): AppThunk => async (dispatch) => {
-  //TODO replace this with the API call
-  dispatch(setConnections(CONNECTIONS));
 };

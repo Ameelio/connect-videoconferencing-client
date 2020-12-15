@@ -1,6 +1,3 @@
-import { AppThunk } from "src/redux/helpers";
-import { STAFF } from "src/data/sample";
-
 const SET_STAFF = "staff/SET_STAFF";
 const SELECT_STAFF = "staff/SELECT_STAFF";
 
@@ -17,7 +14,7 @@ interface SelectStaffAction {
 type StaffActionTypes = SetStaffAction | SelectStaffAction;
 
 // Action Creators
-const setStaff = (staff: Staff[]): StaffActionTypes => {
+export const setStaff = (staff: Staff[]): StaffActionTypes => {
   return {
     type: SET_STAFF,
     payload: staff,
@@ -51,8 +48,3 @@ export function staffReducer(
       return state;
   }
 }
-
-export const loadStaff = (): AppThunk => async (dispatch) => {
-  //TODO replace this with the API call
-  dispatch(setStaff(STAFF));
-};

@@ -7,6 +7,12 @@ interface BasePersona {
 
 interface Inmate extends BasePersona {
   inmateNumber: string;
+  dateOfBirth: Date;
+  quota: number;
+  sentence: string;
+  sentnceLength: string;
+  location: string;
+  race: string;
   nodes: AmeelioNode[];
 }
 

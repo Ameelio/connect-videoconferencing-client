@@ -22,11 +22,11 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity, size }) => {
             <span className={`${nameFontSize} text-truncate`}>
               {genFullName(entity)}
             </span>
-            <span className={`${detailFontSize}`}>
+            {/* <span className={`${detailFontSize}`}>
               {(entity as Contact).relationship}
-            </span>
+            </span> */}
             <span className={`${detailFontSize}`}>
-              {(entity as Contact).details}
+              {/* {(entity as Contact).} */}
             </span>
           </div>
         );
@@ -39,9 +39,9 @@ const UserSnippetCard: React.FC<Props> = ({ type, entity, size }) => {
             <span className={`${detailFontSize}`}>
               {(entity as Inmate).inmateNumber}
             </span>
-            <span className={`${detailFontSize}`}>
+            {/* <span className={`${detailFontSize}`}>
               {(entity as Inmate).nodes[0].name}
-            </span>
+            </span> */}
           </div>
         );
       default:

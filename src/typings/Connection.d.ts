@@ -2,9 +2,16 @@ type ConnectionRequestStatus = "approved" | "rejected" | "pending";
 
 interface ConnectionRequest {
   id: number;
-  inmate: Inmate;
   contact: Contact;
-  requestedAt: Date;
+  requestedAt: number;
+  approvedAt: number;
+  relationship: string;
+  requestDetails: string;
+  inmateId: number;
+  // TODO revisit this data dup
+  inmate: Inmate;
+  status: string;
+  statusDetails: string;
 }
 
 interface Connection extends ConnectionRequest {

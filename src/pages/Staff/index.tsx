@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { loadStaff, selectStaff } from "src/redux/modules/staff";
+import { selectStaff } from "src/redux/modules/staff";
 import Wrapper from "src/components/containers/Wrapper";
 import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType } from "src/utils/constants";
@@ -16,7 +16,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ loadStaff, selectStaff }, dispatch);
+  bindActionCreators({ selectStaff }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -24,12 +24,11 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 const StaffContainer: React.FC<PropsFromRedux> = ({
   staff,
   selected,
-  loadStaff,
   selectStaff,
 }) => {
-  useEffect(() => {
-    if (!staff.length) loadStaff();
-  });
+  // useEffect(() => {
+  //   if (!staff.length) loadStaff();
+  // });
   return (
     <div className="d-flex flex-row">
       <Sidebar title="Staff members">

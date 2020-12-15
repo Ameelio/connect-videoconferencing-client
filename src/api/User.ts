@@ -1,35 +1,10 @@
-import { API_URL, fetchTimeout } from "./Common";
+import { API_URL, fetchAuthenticated, fetchTimeout } from "./Common";
 import url from "url";
+import { setSession } from "src/redux/modules/user";
+import { getInmates } from "./Persona";
+import { Store } from "src/redux";
+import { getApprovedConnections } from "./Connection";
 
-// export async function loginWithToken(): Promise<User> {
-//     store.dispatch(setLoadingStatus(0));
-//     try {
-//       const rememberToken = await getItemAsync(Storage.RememberToken);
-//       if (!rememberToken) {
-//         throw Error('Cannot load token');
-//       }
-//       const response = await fetchTimeout(url.resolve(API_URL, 'login/token'), {
-//         method: 'POST',
-//         headers: {
-//           Accept: 'application/json',
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           token: rememberToken,
-//         }),
-//       });
-//       const body = await response.json();
-//       if (body.status !== 'OK') throw body;
-//       const userData = cleanUser(body.data as RawUser);
-//       const { token, remember } = body.data;
-//       await initializeData(userData, token, remember);
-//       return userData;
-//     } catch (err) {
-//       Sentry.captureException(err);
-//       store.dispatch(logoutUser());
-//       throw Error(err);
-//     }
-//   }
 interface RawUser {
   id: number;
   email: string;
@@ -60,9 +35,12 @@ function cleanUser(user: RawUser): User {
   };
 }
 
-export async function loginWithCredentials(
-  cred: UserLoginInfo
-): Promise<SessionState> {
+async function initializeData() {
+  await getInmates();
+  await getApprovedConnections();
+}
+
+export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
@@ -75,11 +53,15 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
-  console.log(body);
   if (!body.good) throw body;
   const user = cleanUser(body.data as RawUser);
-  console.log("Got data", body.data);
   const { token: apiToken, remember: rememberToken } = body.data;
-
-  return { user, authInfo: { rememberToken, apiToken }, isLoggedIn: true };
+  Store.dispatch(
+    setSession({
+      user,
+      authInfo: { rememberToken, apiToken },
+      isLoggedIn: true,
+    })
+  );
+  await initializeData();
 }

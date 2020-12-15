@@ -1,8 +1,4 @@
 import { AppThunk } from "src/redux/helpers";
-import { LIVE_VISITATIONS, PAST_VISITATIONS } from "src/data/sample";
-// import { getVisitations } from "src/api/Visitation";
-
-console.log("RUNNING actual visitation module code");
 
 const SET_LIVE_VISITATIONS = "visitation/SET_LIVE_VISITATIONS";
 const SELECT_LIVE_VISITATION = "visitation/SELECT_LIVE_VISITATION";
@@ -197,25 +193,6 @@ export function visitationsReducer(
 }
 
 //TODO replace these with real API calls
-export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
-  dispatch(setLiveVisitations(LIVE_VISITATIONS));
-};
-
-// export const loadScheduledVisitations = (): AppThunk => async (dispatch) => {
-//   const visitations = await getVisitations({
-//     date: [
-//       new Date(),
-//       new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-//     ],
-//     approved: true,
-//   });
-//   dispatch(setScheduledVisitations(visitations));
-// };
-
-export const loadPastVisitations = (): AppThunk => async (dispatch) => {
-  dispatch(setPastVisitations(PAST_VISITATIONS));
-};
-
 export const terminateLiveVisitation = (
   visitation: LiveVisitation
 ): AppThunk => async (dispatch) => {
