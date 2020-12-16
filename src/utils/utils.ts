@@ -5,7 +5,7 @@ export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
 
 export const genImageUri = (user?: BasePersona): string => {
-  return user?.imageUri || "default.jpg";
+  return user?.profileImgPath || "default.jpg";
 };
 
 export const VisitationToEventInput = (visitation: Visitation): EventInput => {

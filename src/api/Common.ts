@@ -12,11 +12,6 @@ export interface ApiResponse {
   data: Record<string, unknown> | Record<string, unknown>[] | unknown;
 }
 
-// export interface UserResponse {
-//     type: string;
-//     data: User;
-// }
-
 export function fetchTimeout(
   fetchUrl: string,
   options: Record<string, unknown>,

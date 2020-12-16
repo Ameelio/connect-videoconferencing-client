@@ -25,7 +25,7 @@ interface DeleteLiveVisitationAction {
 
 interface SetScheduledVisitationsAction {
   type: typeof SET_SCHEDULED_VISITATIONS;
-  payload: Visitation[];
+  payload: BaseVisitation[];
 }
 
 interface SetPastVisitationsAction {
@@ -85,7 +85,7 @@ const deleteLiveVisitation = (
 };
 
 export const setScheduledVisitations = (
-  visitations: Visitation[]
+  visitations: BaseVisitation[]
 ): LiveVisitationActionTypes => {
   return {
     type: SET_SCHEDULED_VISITATIONS,

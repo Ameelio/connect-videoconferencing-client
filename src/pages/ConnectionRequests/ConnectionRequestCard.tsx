@@ -10,7 +10,7 @@ interface Props {
   decline: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function ConnectionRequest({
+export default function ConnectionRequestCard({
   inmate,
   contact,
   accept,

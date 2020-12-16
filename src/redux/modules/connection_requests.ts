@@ -10,27 +10,27 @@ const ADD_CONNECTION = "connection/ACCEPT_CONNECTION_REQUEST";
 // Action Constants & Shapes
 interface SetConnectionRequestsAction {
   type: typeof SET_CONNECTION_REQUESTS;
-  payload: ConnectionRequest[];
+  payload: BaseConnection[];
 }
 
 interface AddConnectionAction {
   type: typeof ADD_CONNECTION;
-  payload: Connection;
+  payload: BaseConnection;
 }
 
 interface DeleteConnectionRequestAction {
   type: typeof DELETE_CONNECTION_REQUEST;
-  payload: ConnectionRequest;
+  payload: BaseConnection;
 }
 
 interface SetConnectionsAction {
   type: typeof SET_CONNECTIONS;
-  payload: Connection[];
+  payload: BaseConnection[];
 }
 
 interface SelectConnectionRequestAction {
   type: typeof SELECT_CONNECTION_REQUEST;
-  payload: ConnectionRequest;
+  payload: BaseConnection;
 }
 
 type ConnectionActionTypes =
@@ -42,7 +42,7 @@ type ConnectionActionTypes =
 
 // Action Creators
 export const setConnectionRequests = (
-  connections: ConnectionRequest[]
+  connections: BaseConnection[]
 ): ConnectionActionTypes => {
   return {
     type: SET_CONNECTION_REQUESTS,
@@ -50,7 +50,7 @@ export const setConnectionRequests = (
   };
 };
 
-const addConnection = (connection: Connection): ConnectionActionTypes => {
+const addConnection = (connection: BaseConnection): ConnectionActionTypes => {
   return {
     type: ADD_CONNECTION,
     payload: connection,
@@ -58,7 +58,7 @@ const addConnection = (connection: Connection): ConnectionActionTypes => {
 };
 
 const deleteConnectionRequeest = (
-  connection: ConnectionRequest
+  connection: BaseConnection
 ): ConnectionActionTypes => {
   return {
     type: DELETE_CONNECTION_REQUEST,
@@ -67,7 +67,7 @@ const deleteConnectionRequeest = (
 };
 
 export const selectConnectionRequest = (
-  connection: ConnectionRequest
+  connection: BaseConnection
 ): ConnectionActionTypes => {
   return {
     type: SELECT_CONNECTION_REQUEST,
@@ -76,7 +76,7 @@ export const selectConnectionRequest = (
 };
 
 export const setConnections = (
-  connections: Connection[]
+  connections: BaseConnection[]
 ): ConnectionActionTypes => {
   return {
     type: SET_CONNECTIONS,
@@ -140,19 +140,19 @@ export function connectionsReducer(
 }
 
 export const acceptConnectionRequest = (
-  request: ConnectionRequest
+  request: BaseConnection
 ): AppThunk => async (dispatch) => {
   //TODO replace this with the API call
   await updateConnection(request.id, "approved");
-  const connection: Connection = {
-    ...request,
-    approvedAt: new Date(),
-  };
-  dispatch(addConnection(connection));
+  // const connection: BaseConnection = {
+  //   ...request,
+  //   approvedAt: new Date(),
+  // };
+  dispatch(addConnection(request));
 };
 
 export const declineConnectionRequest = (
-  request: ConnectionRequest
+  request: BaseConnection
 ): AppThunk => async (dispatch) => {
   await updateConnection(request.id, "denied");
   //TODO replace this with actual API call

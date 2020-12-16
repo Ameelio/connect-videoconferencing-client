@@ -2,7 +2,7 @@ interface BasePersona {
   id: number;
   firstName: string;
   lastName: string;
-  imageUri?: string;
+  profileImgPath?: string;
 }
 
 interface Inmate extends BasePersona {
@@ -19,6 +19,7 @@ interface Inmate extends BasePersona {
 interface Contact extends BasePersona {
   relationship: string;
   details: string;
+  email: string;
 }
 
 type StaffRole = "admin" | "supervisor" | "operator" | "investigator";

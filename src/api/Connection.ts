@@ -8,7 +8,7 @@ import {
 import { connectionsActions } from "src/redux/modules/connections";
 import camelcaseKeys from "camelcase-keys";
 
-export async function getApprovedConnections(): Promise<Connection[]> {
+export async function getApprovedConnections(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(
     url.resolve(API_URL, `node/1/connections?status=approved`)
   );
@@ -20,12 +20,12 @@ export async function getApprovedConnections(): Promise<Connection[]> {
   const connections = ((body.data as Record<string, unknown>)
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
-  ) as Connection[];
+  ) as BaseConnection[];
   Store.dispatch(connectionsActions.connectionsAddMany(connections));
   return connections;
 }
 
-export async function getConnectionRequests(): Promise<ConnectionRequest[]> {
+export async function getConnectionRequests(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(
     url.resolve(API_URL, `node/1/connections?status=pending`)
   );
@@ -38,7 +38,7 @@ export async function getConnectionRequests(): Promise<ConnectionRequest[]> {
   const connections = ((body.data as Record<string, unknown>)
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
-  ) as ConnectionRequest[];
+  ) as BaseConnection[];
 
   console.log(connections);
 

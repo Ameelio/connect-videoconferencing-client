@@ -29,7 +29,7 @@ export default function UserCard({
   };
   return (
     <div className="d-flex flex-row">
-      <Image src={user.imageUri} roundedCircle className="small-image" />
+      <Image src={user.profileImgPath} roundedCircle className="small-image" />
       <div className="d-flex flex-column ml-3">
         <span className={fontColor}>{genFullName(user)}</span>
         {genDetails()}

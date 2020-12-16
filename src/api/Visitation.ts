@@ -50,7 +50,7 @@ interface RawConnection {
 //   } as Contact;
 // }
 
-// function cleanConnection(connection: RawConnection): Connection {
+// function cleanConnection(connection: RawConnection): BaseConnection {
 //   return {
 //     id: connection.id,
 //     inmateId: cleanInmate(connection.inmate),
@@ -58,12 +58,13 @@ interface RawConnection {
 //     requestedAt: new Date(connection.requested_at),
 //     approvedAt: new Date(connection.approved_at),
 //     requestDetails: conn
-//   } as Connection;
+//   } as BaseConnection;
 // }
 
 interface RawVisitation {
   id: number;
-  connection: Connection;
+  connection: BaseConnection;
+  connection_id: number;
   users: number[];
   start: number;
   end: number;
@@ -75,10 +76,10 @@ interface RawVisitation {
   approved: boolean;
 }
 
-function cleanVisitation(visitation: RawVisitation): Visitation {
+function cleanVisitation(visitation: RawVisitation): BaseVisitation {
   return {
     id: visitation.id,
-    connection: camelcaseKeys(visitation.connection) as Connection,
+    connectionId: visitation.connection_id,
     scheduledStartTime: new Date(visitation.start),
     scheduledEndTime: new Date(visitation.end),
     startTime: visitation.first_live
@@ -88,13 +89,13 @@ function cleanVisitation(visitation: RawVisitation): Visitation {
     end: new Date(visitation.end),
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
-  } as Visitation;
+  } as BaseVisitation;
 }
 
 export async function getVisitations(
   date: Date[],
   approved = true
-): Promise<Visitation[]> {
+): Promise<BaseVisitation[]> {
   const options = [
     ["approved", approved.toString()],
     ["date", date.map((x) => x.getTime()).join(",")],

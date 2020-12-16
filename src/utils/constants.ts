@@ -2,7 +2,7 @@ export enum CardType {
   LiveVisitation = "live",
   Contact = "contact",
   ConnectionRequest = "request",
-  Connection = "connection",
+  ApprovedConnectioo = "connection",
   Inmate = "inmate",
   Staff = "staff",
   PastVisitation = "record",
@@ -20,3 +20,6 @@ export enum LoadingTypes {
 }
 
 export const UNAUTHENTICATED_USER_ID = -999;
+
+export const TOKEN_KEY = "apiToken";
+export const REMEMBER_TOKEN_KEY = "rememberToken";

@@ -40,7 +40,11 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
 
   return (
     <div className="d-flex flex-column align-items-center text-center">
-      <Image className="large-image mb-3" src={user.imageUri} roundedCircle />
+      <Image
+        className="large-image mb-3"
+        src={user.profileImgPath}
+        roundedCircle
+      />
       {genDetails()}
     </div>
   );

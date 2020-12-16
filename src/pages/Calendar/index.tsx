@@ -8,9 +8,13 @@ import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import { getVisitations } from "src/api/Visitation";
+import { getAllVisitationsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: state.visitations.scheduledVisitations,
+  visitations: getAllVisitationsInfo(
+    state,
+    state.visitations.scheduledVisitations
+  ),
   hasLoadedScheduledVisitations:
     state.visitations.hasLoadedScheduledVisitations,
 });
@@ -46,7 +50,7 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Video Visitation Calendar"></Sidebar>
+      <Sidebar title="Video BaseVisitation Calendar"></Sidebar>
       <Wrapper>
         <Container>
           <CalendarView visitations={visitations} />

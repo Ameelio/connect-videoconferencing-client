@@ -16,9 +16,13 @@ import { Form, FormControl, Table } from "react-bootstrap";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
+import { getAllVisitationsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  logs: state.visitations.pastVisitations,
+  logs: getAllVisitationsInfo(
+    state,
+    state.visitations.pastVisitations
+  ) as RecordedVisitation[],
   selected: state.visitations.selectedPastVisitation,
 });
 

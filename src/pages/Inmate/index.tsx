@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, useSelector } from "react-redux";
-import { RootState, selectAllConnections, selectAllInmates } from "src/redux";
+import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 // import {  selectInmate } from "src/redux/modules/inmate";
 import UserDetailsCard from "src/components/cards/UserDetailsCard";
@@ -11,6 +11,7 @@ import Sidebar from "src/components/containers/Sidebar";
 import SidebarCard from "src/components/cards/SidebarCard";
 import UserCard from "src/components/cards/UserCard";
 import ConnectionCard from "src/components/cards/ConnectionCard";
+import { selectAllInmates } from "src/redux/selectors";
 
 // const mapStateToProps = (state: RootState) => ({
 //   inmates: state.inmates.inmates,
@@ -34,12 +35,11 @@ const InmateContainer: React.FC = (
     // selectedConnections,
   }
 ) => {
-  const [recordedVisitations, setRecordedVisitations] = useState<
-    RecordedVisitation[]
-  >([]);
+  // const [recordedVisitations, setRecordedVisitations] = useState<
+  //   RecordedVisitation[]
+  // >([]);
 
   const inmates = useSelector(selectAllInmates);
-  const connections = useSelector(selectAllConnections);
   /*
   useEffect(() => {
     //TODO must change this with loading logic

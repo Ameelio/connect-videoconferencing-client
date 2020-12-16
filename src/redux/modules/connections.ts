@@ -2,7 +2,7 @@ import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 
 // The magic line
 
-export const connectionsAdapter = createEntityAdapter<Connection>();
+export const connectionsAdapter = createEntityAdapter<BaseConnection>();
 
 export const connectionsSlice = createSlice({
   name: "connections",

@@ -1,5 +1,5 @@
 interface ConnectionState {
-  requests: ConnectionRequests[];
-  selectedRequest: ConnectionRequest | null;
-  connections: Connection[];
+  requests: BaseConnection[];
+  selectedRequest: BaseConnection | null;
+  connections: BaseConnection[];
 }
