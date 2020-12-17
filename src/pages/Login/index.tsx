@@ -1,8 +1,6 @@
 import React, { useState, ReactElement } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { setSession } from "src/redux/modules/user";
-
 import { Form, Button } from "react-bootstrap";
 import Container from "src/components/containers/Container";
 // import { ReactComponent as Operator } from "src/assets/avatars/bald.svg";
@@ -19,13 +17,11 @@ const mapStateToProps = (state: RootState) => ({
   session: state.session,
 });
 
-const mapDispatchToProps = { setSession };
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function LoginContainer({ session, setSession }: PropsFromRedux): ReactElement {
+function LoginContainer({ session }: PropsFromRedux): ReactElement {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -38,8 +34,7 @@ function LoginContainer({ session, setSession }: PropsFromRedux): ReactElement {
       remember: false,
     };
     try {
-      const userState = await loginWithCredentials(cred);
-      setSession(userState);
+      await loginWithCredentials(cred);
     } catch (err) {
       setError("Invalid email or password");
     }

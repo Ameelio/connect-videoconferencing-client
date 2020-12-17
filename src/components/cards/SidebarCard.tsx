@@ -5,7 +5,7 @@ import UserCard from "./UserCard";
 
 interface Props {
   type: CardType;
-  entity: LiveVisitation | ConnectionRequest | Staff | Inmate;
+  entity: LiveVisitation | BaseConnection | Staff | Inmate;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   isActive: boolean;
 }
@@ -33,7 +33,7 @@ const SidebarCard: React.FC<Props> = ({
           />
         );
       case CardType.ConnectionRequest:
-        const connectionRequest = entity as ConnectionRequest;
+        const connectionRequest = entity as Connection;
         return (
           <ConnectionCard
             inmate={connectionRequest.inmate}

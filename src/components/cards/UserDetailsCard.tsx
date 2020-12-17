@@ -17,8 +17,8 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
           <div className="d-flex flex-column">
             <span className="p6 black-400 text-capitalize">{staff.role}</span>
             <span className="p6 black-500">{genFullName(staff)}</span>
-            <span className="p6 black-500">{staff.email}</span>
-            <span className="p6 black-500">{staff.facility.name}</span>
+            {/* <span className="p6 black-500">{staff.email}</span>
+            <span className="p6 black-500">{staff.facility.name}</span> */}
           </div>
         );
       case CardType.Inmate:
@@ -28,7 +28,7 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
             <span className="p6 black-500">{genFullName(inmate)}</span>
             <span className="p6 black-500">{inmate.inmateNumber}</span>
             <span className="p6 black-500">
-              {inmate.nodes[inmate.nodes.length - 1].name}
+              {/* {inmate.nodes[inmate.nodes.length - 1].name} */}
             </span>
           </div>
         );
@@ -40,7 +40,11 @@ function UserDetailsCard({ user, type }: Props): ReactElement {
 
   return (
     <div className="d-flex flex-column align-items-center text-center">
-      <Image className="large-image mb-3" src={user.imageUri} roundedCircle />
+      <Image
+        className="large-image mb-3"
+        src={user.profileImgPath}
+        roundedCircle
+      />
       {genDetails()}
     </div>
   );

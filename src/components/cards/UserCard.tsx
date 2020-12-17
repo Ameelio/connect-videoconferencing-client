@@ -14,21 +14,9 @@ export default function UserCard({
   fontColor,
   type,
 }: Props): ReactElement {
+  console.log(user);
   const genDetails = (): JSX.Element => {
     switch (type) {
-      case CardType.Staff:
-        const staff = user as Staff;
-        return staff.isActive ? (
-          <span className="green p6">
-            <span className="circle green mr-1" />
-            Active
-          </span>
-        ) : (
-          <span className="p6 black-400">
-            <span className="circle black-300 mr-1" />
-            Last active 10 min ago
-          </span>
-        );
       case CardType.Inmate:
         const inmate = user as Inmate;
         return <span className="p6 ">{inmate.inmateNumber}</span>;
@@ -41,7 +29,7 @@ export default function UserCard({
   };
   return (
     <div className="d-flex flex-row">
-      <Image src={user.imageUri} roundedCircle className="small-image" />
+      <Image src={user.profileImgPath} roundedCircle className="small-image" />
       <div className="d-flex flex-column ml-3">
         <span className={fontColor}>{genFullName(user)}</span>
         {genDetails()}

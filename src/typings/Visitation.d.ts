@@ -2,21 +2,22 @@ interface Kiosk {
   id: number;
 }
 
-interface Visitation {
+interface BaseVisitation {
   id: number;
   scheduledStartTime: Date;
   scheduledEndTime: Date;
-
-  connection: Connection;
+  connectionId: number;
   kiosk: Kiosk;
-
   approved: boolean;
-
-  // Only exist if it's run for some time
-  startTime?: Date;
   endTime?: Date;
+  startTime?: Date;
   liveStatus?: string;
 }
+
+interface Visitation extends BaseVisitation {
+  connection: Connection;
+}
+
 interface LiveVisitation extends Visitation {
   startTime: Date;
   liveStatus: string;
@@ -24,3 +25,9 @@ interface LiveVisitation extends Visitation {
 interface RecordedVisitation extends LiveVisitation {
   endTime: Date;
 }
+
+// type VisitationFilterType = 'approved' | 'query' | 'approved' | 'limit' | 'offset' | 'global';
+
+// interface VisitationFilters<T> {
+//   [Key: VisitatinFilterType]: T;
+// }

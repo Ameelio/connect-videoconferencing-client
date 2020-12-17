@@ -13,7 +13,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
   if (!props.isAuthenticated) {
     redirectPath = props.authenticationPath;
   }
-  // if (props.isAuthenticated && !props.isAllowed) {
+  // if (props.isAuthenticated && props.path) {
   //   redirectPath = props.restrictedPath;
   // }
 

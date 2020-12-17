@@ -8,7 +8,6 @@ import SidebarCard from "src/components/cards/SidebarCard";
 import VisitationCard from "src/components/cards/VisitationCard";
 
 import {
-  loadLiveVisitations,
   selectLiveVisitation,
   terminateLiveVisitation,
 } from "src/redux/modules/visitation";
@@ -27,7 +26,6 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      loadLiveVisitations,
       selectLiveVisitation,
       terminateLiveVisitation,
     },
@@ -41,7 +39,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   selected,
-  loadLiveVisitations,
   selectLiveVisitation,
   terminateLiveVisitation,
 }) => {
@@ -74,9 +71,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   };
 
   useEffect(() => {
-    if (!visitations.hasLoaded) loadLiveVisitations();
+    // if (!visitations.hasLoaded) loadLiveVisitations();
     setFilteredLiveVisitations(visitations.liveVisitations);
-  }, [setFilteredLiveVisitations, visitations, loadLiveVisitations]);
+  }, [setFilteredLiveVisitations, visitations]);
 
   return (
     <div className="d-flex flex-row">
@@ -115,7 +112,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
           <div></div>
 
           <Container>
-            <ConnectionDetailsCard connection={selected.connection} />
+            {/* <ConnectionDetailsCard connection={selected.connection} /> */}
           </Container>
         </Wrapper>
       )}

@@ -2,8 +2,7 @@ import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
 import url from "url";
 import { Store } from "src/redux";
 import { setScheduledVisitations } from "src/redux/modules/visitation";
-
-console.log("RUNNING visitation api code");
+import camelcaseKeys from "camelcase-keys";
 
 interface RawUser {
   id: number;
@@ -31,44 +30,41 @@ interface RawConnection {
   status_details: string;
 }
 
-interface VisitationOptions {
-  date?: Date[];
-  approved?: boolean;
-}
+// function cleanInmate(inmate: RawInmate): Inmate {
+//   return {
+//     id: inmate.id,
+//     inmateNumber: inmate.inmate_number,
+//     firstName: inmate.first_name,
+//     lastName: inmate.last_name,
+//     nodes: inmate.nodes,
+//   } as Inmate;
+// }
 
-function cleanInmate(inmate: RawInmate): Inmate {
-  return {
-    id: inmate.id,
-    inmateNumber: inmate.inmate_number,
-    firstName: inmate.first_name,
-    lastName: inmate.last_name,
-    nodes: inmate.nodes,
-  } as Inmate;
-}
+// function createContact(connection: RawConnection) {
+//   return {
+//     id: connection.user.id,
+//     firstName: connection.user.first_name,
+//     lastName: connection.user.last_name,
+//     relationship: connection.relationship,
+//     details: connection.request_details,
+//   } as Contact;
+// }
 
-function createContact(connection: RawConnection) {
-  return {
-    id: connection.user.id,
-    firstName: connection.user.first_name,
-    lastName: connection.user.last_name,
-    relationship: connection.relationship,
-    details: connection.request_details,
-  } as Contact;
-}
-
-function cleanConnection(connection: RawConnection): Connection {
-  return {
-    id: connection.id,
-    inmate: cleanInmate(connection.inmate),
-    contact: createContact(connection),
-    requestedAt: new Date(connection.requested_at),
-    approvedAt: new Date(connection.approved_at),
-  } as Connection;
-}
+// function cleanConnection(connection: RawConnection): BaseConnection {
+//   return {
+//     id: connection.id,
+//     inmateId: cleanInmate(connection.inmate),
+//     contactId: createContact(connection),
+//     requestedAt: new Date(connection.requested_at),
+//     approvedAt: new Date(connection.approved_at),
+//     requestDetails: conn
+//   } as BaseConnection;
+// }
 
 interface RawVisitation {
   id: number;
-  connection: RawConnection;
+  connection: BaseConnection;
+  connection_id: number;
   users: number[];
   start: number;
   end: number;
@@ -80,10 +76,10 @@ interface RawVisitation {
   approved: boolean;
 }
 
-function cleanVisitation(visitation: RawVisitation): Visitation {
+function cleanVisitation(visitation: RawVisitation): BaseVisitation {
   return {
     id: visitation.id,
-    connection: cleanConnection(visitation.connection),
+    connectionId: visitation.connection_id,
     scheduledStartTime: new Date(visitation.start),
     scheduledEndTime: new Date(visitation.end),
     startTime: visitation.first_live
@@ -93,30 +89,40 @@ function cleanVisitation(visitation: RawVisitation): Visitation {
     end: new Date(visitation.end),
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
-  } as Visitation;
+  } as BaseVisitation;
 }
 
-export async function getVisitations({
-  date,
-  approved,
-}: VisitationOptions): Promise<Visitation[]> {
-  const options = [];
-  if (approved !== undefined) options.push(["approved", approved.toString()]);
-  if (date !== undefined)
-    options.push(["date", date.map((x) => x.getTime()).join(",")]);
+export async function getVisitations(
+  // filters: VisitationFilters<number | Date | string>,
+  date?: Date[],
+  query = "",
+  duration?: number[],
+  approved = true,
+  limit = 100,
+  offset = 0
+): Promise<BaseVisitation[]> {
+  const options = [
+    ["approved", approved.toString()],
+    ["limit", limit.toString()],
+    ["offset", offset.toString()],
+  ];
+
+  if (date) options.push(["date", date.map((x) => x.getTime()).join(",")]);
+  if (duration && duration.length === 2)
+    options.push(["duration", duration.join(",")]);
+  if (query.length) options.push(["global", query]);
 
   const body = await fetchAuthenticated(
     url.resolve(API_URL, `node/1/calls?` + toQueryString(options))
   );
 
-  if (!body.good || !body.data) {
+  console.log(body);
+  if (!body.good) {
     throw body;
   }
 
   const visitations = ((body.data as Record<string, unknown>)
     .calls as RawVisitation[]).map(cleanVisitation);
-
-  console.log("Fetched visitations", visitations);
 
   Store.dispatch(setScheduledVisitations(visitations));
   return visitations;

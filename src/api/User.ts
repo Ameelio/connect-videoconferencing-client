@@ -1,35 +1,11 @@
-import { API_URL, fetchTimeout } from "./Common";
+import { API_URL, fetchAuthenticated, fetchTimeout } from "./Common";
 import url from "url";
+import { setSession } from "src/redux/modules/user";
+import { getContacts, getInmates, getStaff } from "./Persona";
+import { Store } from "src/redux";
+import { getApprovedConnections } from "./Connection";
+import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 
-// export async function loginWithToken(): Promise<User> {
-//     store.dispatch(setLoadingStatus(0));
-//     try {
-//       const rememberToken = await getItemAsync(Storage.RememberToken);
-//       if (!rememberToken) {
-//         throw Error('Cannot load token');
-//       }
-//       const response = await fetchTimeout(url.resolve(API_URL, 'login/token'), {
-//         method: 'POST',
-//         headers: {
-//           Accept: 'application/json',
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           token: rememberToken,
-//         }),
-//       });
-//       const body = await response.json();
-//       if (body.status !== 'OK') throw body;
-//       const userData = cleanUser(body.data as RawUser);
-//       const { token, remember } = body.data;
-//       await initializeData(userData, token, remember);
-//       return userData;
-//     } catch (err) {
-//       Sentry.captureException(err);
-//       store.dispatch(logoutUser());
-//       throw Error(err);
-//     }
-//   }
 interface RawUser {
   id: number;
   email: string;
@@ -60,9 +36,55 @@ function cleanUser(user: RawUser): User {
   };
 }
 
-export async function loginWithCredentials(
-  cred: UserLoginInfo
-): Promise<SessionState> {
+async function initializeData(body: any) {
+  const user = cleanUser(body.data as RawUser);
+  const { token: apiToken, remember: rememberToken } = body.data;
+  Store.dispatch(
+    setSession({
+      user,
+      authInfo: { rememberToken, apiToken },
+      isLoggedIn: true,
+    })
+  );
+  // TO
+  localStorage.setItem(TOKEN_KEY, apiToken);
+  localStorage.setItem(REMEMBER_TOKEN_KEY, rememberToken);
+  await Promise.allSettled([
+    getInmates(),
+    getApprovedConnections(),
+    getStaff(),
+    getContacts(),
+  ]);
+}
+
+export async function loginWithToken(): Promise<void> {
+  try {
+    const rememberToken = await localStorage.getItem(REMEMBER_TOKEN_KEY);
+    if (!rememberToken) {
+      throw Error("Cannot load token");
+    }
+    const response = await fetchTimeout(
+      url.resolve(API_URL, "auth/login/remember"),
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          remember: rememberToken,
+        }),
+      }
+    );
+    const body = await response.json();
+    if (!body.good) throw body;
+    await initializeData(body);
+  } catch (err) {
+    throw Error(err);
+  }
+}
+
+export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
@@ -75,11 +97,19 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
-  console.log(body);
   if (!body.good) throw body;
-  const user = cleanUser(body.data as RawUser);
-  console.log("Got data", body.data);
-  const { token: apiToken, remember: rememberToken } = body.data;
-
-  return { user, authInfo: { rememberToken, apiToken }, isLoggedIn: true };
+  console.log(body);
+  // const user = cleanUser(body.data as RawUser);
+  // const { token: apiToken, remember: rememberToken } = body.data;
+  // Store.dispatch(
+  //   setSession({
+  //     user,
+  //     authInfo: { rememberToken, apiToken },
+  //     isLoggedIn: true,
+  //   })
+  // );
+  // // TO
+  // localStorage.setItem(TOKEN_KEY, apiToken);
+  // localStorage.setItem(REMEMBER_TOKEN_KEY, rememberToken);
+  await initializeData(body);
 }

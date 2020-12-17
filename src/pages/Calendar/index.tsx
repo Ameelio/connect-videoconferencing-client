@@ -8,9 +8,13 @@ import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import { getVisitations } from "src/api/Visitation";
+import { getAllVisitationsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: state.visitations.scheduledVisitations,
+  visitations: getAllVisitationsInfo(
+    state,
+    state.visitations.scheduledVisitations
+  ),
   hasLoadedScheduledVisitations:
     state.visitations.hasLoadedScheduledVisitations,
 });
@@ -19,7 +23,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function mondayMorning() {
+function mondayMorning(): Date {
   const now = new Date();
   const day = now.getDay();
   now.setDate(now.getDate() - day + 1);
@@ -27,7 +31,7 @@ function mondayMorning() {
   return now;
 }
 
-function fridayEvening() {
+function fridayEvening(): Date {
   const now = new Date();
   const day = now.getDay();
   now.setDate(now.getDate() - day + 5);
@@ -41,21 +45,12 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
 }) => {
   useEffect(() => {
     if (!hasLoadedScheduledVisitations)
-      getVisitations({
-        date: [mondayMorning(), fridayEvening()],
-        approved: true,
-      });
+      getVisitations([mondayMorning(), fridayEvening()]);
   });
 
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Video Visitation Calendar">
-        {/* <DropdownButton id="dropdown-basic-button" title="Pod">
-  <Dropdown.Item href="#/action-1">Pod #1</Dropdown.Item>
-  <Dropdown.Item href="#/action-2">Pod #2</Dropdown.Item>
-  <Dropdown.Item href="#/action-3">Pod #3</Dropdown.Item>
-</DropdownButton> */}
-      </Sidebar>
+      <Sidebar title="Video BaseVisitation Calendar"></Sidebar>
       <Wrapper>
         <Container>
           <CalendarView visitations={visitations} />

@@ -4,13 +4,15 @@ import UserSnippetCard from "src/components/cards/UserSnippetCard";
 import { CardType, CardSize } from "src/utils/constants";
 
 interface Props {
-  connection: ConnectionRequest;
+  inmate: Inmate;
+  contact: Contact;
   accept: (e: React.MouseEvent<HTMLDivElement>) => void;
   decline: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function ConnectionRequest({
-  connection,
+export default function ConnectionRequestCard({
+  inmate,
+  contact,
   accept,
   decline,
 }: Props): ReactElement {
@@ -19,12 +21,12 @@ export default function ConnectionRequest({
       <div className="d-flex flex-row w-100 justify-content-evenly my-5">
         <UserSnippetCard
           type={CardType.Inmate}
-          entity={connection.inmate}
+          entity={inmate}
           size={CardSize.Large}
         />
         <UserSnippetCard
           type={CardType.Contact}
-          entity={connection.contact}
+          entity={contact}
           size={CardSize.Large}
         />
       </div>

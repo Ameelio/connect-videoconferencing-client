@@ -6,12 +6,11 @@ import RecordedVisitationSnippetCard from "./RecordedVisitationSnippetCard";
 import "./ConnectionDetailsCard.css";
 
 interface Props {
-  connection: Connection;
+  inmate: Inmate;
+  contact: Contact;
 }
 
-const ConnectionDetailsCard: React.FC<Props> = ({ connection }) => {
-  const { inmate, contact } = connection;
-
+const ConnectionDetailsCard: React.FC<Props> = ({ inmate, contact }) => {
   return inmate && contact ? (
     <div className="d-flex flex-row">
       <UserSnippetCard

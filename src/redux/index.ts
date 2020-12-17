@@ -1,22 +1,28 @@
 import { combineReducers } from "redux";
 import { visitationsReducer } from "./modules/visitation";
-import { connectionsReducer } from "./modules/connection";
-import { staffReducer } from "./modules/staff";
-import { inmatesReducer } from "./modules/inmate";
+import { connectionsReducer } from "./modules/connection_requests";
+import { staffSlice } from "./modules/staff";
+import { inmatesSlice } from "./modules/inmate";
 import { sessionReducer } from "./modules/user";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
+import { connectionsSlice } from "./modules/connections";
 
-console.log("RUNNING combine reducers code");
+import { createStore, applyMiddleware } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
+import thunk from "redux-thunk";
+import { contactsSlice } from "./modules/contact";
+import { recordingsSlice } from "./modules/recording";
 
 export const rootReducer = combineReducers({
   visitations: visitationsReducer,
-  connections: connectionsReducer,
-  staff: staffReducer,
-  inmates: inmatesReducer,
+  requests: connectionsReducer,
+  staff: staffSlice.reducer,
   session: sessionReducer,
+  inmates: inmatesSlice.reducer,
+  contacts: contactsSlice.reducer,
+  connections: connectionsSlice.reducer,
+  recordings: recordingsSlice.reducer,
 });
 
-export const Store = createStore(rootReducer, applyMiddleware(thunk));
+export const Store = configureStore({ reducer: rootReducer });
 
 export type RootState = ReturnType<typeof rootReducer>;

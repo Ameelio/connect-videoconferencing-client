@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import NavBar from "./components/headers/Navbar";
@@ -15,6 +15,7 @@ import { connect, ConnectedProps } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
+import { loginWithToken } from "./api/User";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -30,6 +31,14 @@ function App({ session }: PropsFromRedux) {
     isAuthenticated: session.authInfo.apiToken !== "", // TODO: improve this later
     authenticationPath: "/login",
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await loginWithToken();
+      } catch (err) {}
+    })();
+  }, []);
 
   return (
     <Router>
