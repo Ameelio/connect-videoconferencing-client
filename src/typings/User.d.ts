@@ -34,6 +34,7 @@ type Permissions =
 interface Staff extends BasePersona {
   permissions: Permissions[];
   role: StaffRole;
+  email: string;
   // TODO move this to a different place on the redux store. It's gonna be selected beforehand.
   // facility: AmeelioNode;
 }

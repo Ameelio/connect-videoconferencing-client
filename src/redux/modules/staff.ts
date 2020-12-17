@@ -1,50 +1,30 @@
-const SET_STAFF = "staff/SET_STAFF";
-const SELECT_STAFF = "staff/SELECT_STAFF";
+import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { getStaff } from "src/api/Persona";
+import { getVisitations } from "src/api/Visitation";
+import { AppThunk } from "../helpers";
 
-interface SetStaffAction {
-  type: typeof SET_STAFF;
-  payload: Staff[];
-}
+export const staffAdapter = createEntityAdapter<Staff>();
 
-interface SelectStaffAction {
-  type: typeof SELECT_STAFF;
-  payload: Staff;
-}
+export const staffSlice = createSlice({
+  name: "staff",
+  initialState: staffAdapter.getInitialState(),
+  reducers: {
+    staffSetAll: staffAdapter.setAll,
+    staffUpdateOne: staffAdapter.updateOne,
+  },
+});
 
-type StaffActionTypes = SetStaffAction | SelectStaffAction;
+export const staffActions = staffSlice.actions;
 
-// Action Creators
-export const setStaff = (staff: Staff[]): StaffActionTypes => {
-  return {
-    type: SET_STAFF,
-    payload: staff,
-  };
+// export const getRecordings = (query="", dateRange?: Date[], duration?: number[], limit=100, offset=0,
+//   ): AppThunk => async (dispatch) => {
+//     // TODO wrap in try catch
+//     const recordings =  await getVisitations(dateRange, query, duration, true, limit, offset);
+//     console.log('number of recodings returned:' + recordings.length);
+//     dispatch(recordingsActions.recordingsSetAll(recordings));
+// };
+
+export const loadStaff = (): AppThunk => async (dispatch) => {
+  const staff = await getStaff();
+  dispatch(staffActions.staffSetAll(staff));
 };
-
-export const selectStaff = (member: Staff): StaffActionTypes => {
-  return {
-    type: SELECT_STAFF,
-    payload: member,
-  };
-};
-
-const initialState: StaffState = {
-  staff: [],
-  selectedStaff: null,
-};
-
-export function staffReducer(
-  state = initialState,
-  action: StaffActionTypes
-): StaffState {
-  switch (action.type) {
-    case SET_STAFF:
-      const selectedStaff = action.payload.length ? action.payload[0] : null;
-
-      return { ...state, staff: action.payload, selectedStaff: selectedStaff };
-    case SELECT_STAFF:
-      return { ...state, selectedStaff: action.payload };
-    default:
-      return state;
-  }
-}

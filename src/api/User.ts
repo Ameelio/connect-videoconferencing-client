@@ -55,10 +55,6 @@ async function initializeData(body: any) {
     getStaff(),
     getContacts(),
   ]);
-  // await getInmates();
-  // await getApprovedConnections();
-  // await getStaff();
-  // await getContacts();
 }
 
 export async function loginWithToken(): Promise<void> {

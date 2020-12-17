@@ -20,10 +20,12 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/socket.io-client": "^1.4.34",
+    "antd": "^4.9.4",
     "bootstrap": "^4.5.0",
     "camelcase-keys": "^6.2.2",
     "chart.js": "^2.9.3",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
+    "lodash": "^4.17.20",
     "mediasoup-client": "^3.6.23",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -78,6 +80,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.165",
     "eslint-config-airbnb": "^18.2.0",
     "gh-pages": "^3.1.0",
     "husky": "^4.2.5",

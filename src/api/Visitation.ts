@@ -93,19 +93,31 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
 }
 
 export async function getVisitations(
-  date: Date[],
-  approved = true
+  // filters: VisitationFilters<number | Date | string>,
+  date?: Date[],
+  query = "",
+  duration?: number[],
+  approved = true,
+  limit = 100,
+  offset = 0
 ): Promise<BaseVisitation[]> {
   const options = [
     ["approved", approved.toString()],
-    ["date", date.map((x) => x.getTime()).join(",")],
+    ["limit", limit.toString()],
+    ["offset", offset.toString()],
   ];
+
+  if (date) options.push(["date", date.map((x) => x.getTime()).join(",")]);
+  if (duration && duration.length === 2)
+    options.push(["duration", duration.join(",")]);
+  if (query.length) options.push(["global", query]);
 
   const body = await fetchAuthenticated(
     url.resolve(API_URL, `node/1/calls?` + toQueryString(options))
   );
 
-  if (!body.good || !body.data) {
+  console.log(body);
+  if (!body.good) {
     throw body;
   }
 

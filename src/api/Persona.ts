@@ -3,7 +3,6 @@ import url from "url";
 import { Store } from "src/redux";
 import { inmatesActions } from "src/redux/modules/inmate";
 import camelcaseKeys from "camelcase-keys";
-import { setStaff } from "src/redux/modules/staff";
 import { contactsActions } from "src/redux/modules/contact";
 
 export async function getInmates(): Promise<Inmate[]> {
@@ -30,7 +29,6 @@ export async function getStaff(): Promise<Staff[]> {
   const staff = ((body.data as Record<string, unknown>)
     .admins as Object[]).map((admin) => camelcaseKeys(admin)) as Staff[];
 
-  Store.dispatch(setStaff(staff));
   return staff;
 }
 

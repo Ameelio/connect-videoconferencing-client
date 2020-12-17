@@ -25,3 +25,9 @@ interface LiveVisitation extends Visitation {
 interface RecordedVisitation extends LiveVisitation {
   endTime: Date;
 }
+
+// type VisitationFilterType = 'approved' | 'query' | 'approved' | 'limit' | 'offset' | 'global';
+
+// interface VisitationFilters<T> {
+//   [Key: VisitatinFilterType]: T;
+// }
