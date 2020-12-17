@@ -21,6 +21,7 @@ export async function getApprovedConnections(): Promise<BaseConnection[]> {
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
   ) as BaseConnection[];
+  console.log(connections);
   Store.dispatch(connectionsActions.connectionsAddMany(connections));
   return connections;
 }

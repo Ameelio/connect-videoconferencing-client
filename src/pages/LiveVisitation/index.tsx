@@ -19,15 +19,20 @@ import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import { loadLiveVisitations } from "src/api/Visitation";
 import io from "socket.io-client";
+import { getAllVisitationsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: state.visitations,
+  visitations: getAllVisitationsInfo(
+    state,
+    state.visitations.liveVisitations
+  ) as LiveVisitation[],
   selected: state.visitations.selectedVisitation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
+      loadLiveVisitations,
       selectLiveVisitation,
       terminateLiveVisitation,
     },
@@ -43,16 +48,18 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   selected,
   selectLiveVisitation,
   terminateLiveVisitation,
+  loadLiveVisitations,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
     LiveVisitation[]
-  >(visitations.liveVisitations);
+  >(visitations);
 
   useEffect(() => {
+    loadLiveVisitations();
     setSocket(io.connect("ws://localhost:8000", { transports: ["websocket"] }));
-  }, []);
+  }, [loadLiveVisitations]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -60,7 +67,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
     setFilteredLiveVisitations(
       !value
-        ? visitations.liveVisitations
+        ? visitations
         : filteredLiveVisitations.filter((visitation) => {
             const { contact, inmate } = visitation.connection;
             return (
@@ -79,7 +86,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     // if (!visitations.hasLoaded) loadLiveVisitations();
-    setFilteredLiveVisitations(visitations.liveVisitations);
+    setFilteredLiveVisitations(visitations);
   }, [setFilteredLiveVisitations, visitations]);
 
   return (
@@ -105,15 +112,15 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         ))}
       </Sidebar>
 
-      {selected && socket && (
+      {selected && socket && visitations && visitations.length > 0 && (
         <Wrapper>
           <Container>
             <VisitationCard
               type={CardType.LiveVisitation}
-              visitation={selected}
+              visitation={visitations && visitations[0]}
               socket={socket}
               actionLabel="calling"
-              handleClick={handleVideoTermination}
+              handleClick={() => console.log("hi")}
             />
           </Container>
 

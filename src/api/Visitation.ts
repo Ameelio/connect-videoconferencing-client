@@ -102,6 +102,7 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
     url.resolve(API_URL, "node/1/calls?" + toQueryString(options))
   );
 
+  console.log(body);
   // TODO how to properly typecheck this?
   const visitations = ((body.data as Record<string, RawVisitation[]>).calls.map(
     cleanVisitation
