@@ -33,6 +33,8 @@ function App({ session }: PropsFromRedux) {
   };
 
   useEffect(() => {
+    localStorage.setItem("debug", "*");
+
     (async () => {
       try {
         await loginWithToken();

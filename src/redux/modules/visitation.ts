@@ -57,7 +57,7 @@ type LiveVisitationActionTypes =
   | AddRecordingAction;
 
 // Action Creators
-const setLiveVisitations = (
+export const setLiveVisitations = (
   visitations: LiveVisitation[]
 ): LiveVisitationActionTypes => {
   return {

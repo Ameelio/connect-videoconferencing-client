@@ -5,6 +5,7 @@ import { getContacts, getInmates, getStaff } from "./Persona";
 import { Store } from "src/redux";
 import { getApprovedConnections } from "./Connection";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
+import { loadLiveVisitations } from "./Visitation";
 
 interface RawUser {
   id: number;
@@ -54,6 +55,7 @@ async function initializeData(body: any) {
     getApprovedConnections(),
     getStaff(),
     getContacts(),
+    loadLiveVisitations(),
   ]);
 }
 

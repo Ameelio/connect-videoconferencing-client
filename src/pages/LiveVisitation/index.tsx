@@ -17,6 +17,8 @@ import Sidebar from "src/components/containers/Sidebar";
 import { genFullName } from "src/utils/utils";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
+import { loadLiveVisitations } from "src/api/Visitation";
+import io from "socket.io-client";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: state.visitations,
@@ -42,10 +44,15 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   selectLiveVisitation,
   terminateLiveVisitation,
 }) => {
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
     LiveVisitation[]
   >(visitations.liveVisitations);
+
+  useEffect(() => {
+    setSocket(io.connect("ws://localhost:8000", { transports: ["websocket"] }));
+  }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -98,12 +105,13 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         ))}
       </Sidebar>
 
-      {selected && (
+      {selected && socket && (
         <Wrapper>
           <Container>
             <VisitationCard
               type={CardType.LiveVisitation}
               visitation={selected}
+              socket={socket}
               actionLabel="calling"
               handleClick={handleVideoTermination}
             />

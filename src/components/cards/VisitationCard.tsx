@@ -11,6 +11,7 @@ interface Props {
   type: CardType;
   actionLabel: string;
   handleClick: () => void; // TODO: enforce this
+  socket: SocketIOClient.Socket;
 }
 
 const VisitationCard: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const VisitationCard: React.FC<Props> = ({
   type,
   actionLabel,
   handleClick,
+  socket,
 }) => {
   const {
     id: callId,
@@ -39,7 +41,7 @@ const VisitationCard: React.FC<Props> = ({
   const genMainComponent = (): JSX.Element => {
     switch (type) {
       case CardType.LiveVisitation:
-        return <VideoChat callId={callId} />;
+        return <VideoChat callId={callId} socket={socket} />;
       default:
         return <div />;
     }
