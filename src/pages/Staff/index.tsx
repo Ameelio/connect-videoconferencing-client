@@ -112,7 +112,12 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
             <span>{genFullName(selected)}</span>
             <span>{selected.role}</span>
             <span>{selected.email}</span>
-            <Switch defaultChecked onChange={onChange} />
+            {selected.permissions.map((permission) => (
+              <div className="d-flex flex-row">
+                <Switch defaultChecked onChange={onChange} />
+                <span>{permission}</span>
+              </div>
+            ))}
           </div>
         )}
       </Modal>
