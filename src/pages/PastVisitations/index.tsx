@@ -78,6 +78,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   }, [getRecordings, limit, offset, dateRange, duration, global]);
 
   const renderItem = (visitation: RecordedVisitation): JSX.Element => {
+    console.log("Rendering vistation:", visitation);
+
     return (
       <tr>
         <td></td>

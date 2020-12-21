@@ -47,7 +47,6 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
       ? new Date(visitation.first_live)
       : undefined,
     endTime: visitation.last_live ? new Date(visitation.last_live) : undefined,
-    end: new Date(visitation.end),
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
   } as BaseVisitation;
@@ -74,7 +73,7 @@ export async function getVisitations(
   if (query.length) options.push(["global", query]);
 
   const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/calls?` + toQueryString(options))
+    url.resolve(API_URL, `node/2/calls?` + toQueryString(options))
   );
 
   console.log(body);
@@ -99,7 +98,7 @@ export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
   ];
 
   const body = await fetchAuthenticated(
-    url.resolve(API_URL, "node/1/calls?" + toQueryString(options))
+    url.resolve(API_URL, "node/2/calls?" + toQueryString(options))
   );
 
   console.log(body);

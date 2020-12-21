@@ -10,7 +10,7 @@ import camelcaseKeys from "camelcase-keys";
 
 export async function getApprovedConnections(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connections?status=approved`)
+    url.resolve(API_URL, `node/2/connections?status=approved`)
   );
 
   if (!body.good || !body.data) {
@@ -28,7 +28,7 @@ export async function getApprovedConnections(): Promise<BaseConnection[]> {
 
 export async function getConnectionRequests(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connections?status=pending`)
+    url.resolve(API_URL, `node/2/connections?status=pending`)
   );
 
   if (!body.good || !body.data) {
@@ -52,7 +52,7 @@ export async function updateConnection(
   status: "approved" | "pending" | "denied"
 ): Promise<void> {
   const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connection`),
+    url.resolve(API_URL, `node/2/connection`),
     {
       method: "PUT",
       body: JSON.stringify({ connection_id: connectionId, status }),

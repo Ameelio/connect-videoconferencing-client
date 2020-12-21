@@ -33,7 +33,7 @@ function cleanUser(user: RawUser): User {
     firstName: user.first_name,
     lastName: user.last_name,
     email: user.email,
-    image: user.profile_img_path,
+    profileImgPath: user.profile_img_path,
   };
 }
 

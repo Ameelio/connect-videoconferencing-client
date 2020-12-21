@@ -73,6 +73,8 @@ const VideoChat: React.FC<Props2> = React.memo(({ callId, socket }) => {
               console.log("Got video.");
               const video = document.createElement("video");
               video.srcObject = stream;
+              video.style.width = "500px";
+              video.style.height = "500px";
               video.autoplay = true;
               ref.current.appendChild(video);
             }
