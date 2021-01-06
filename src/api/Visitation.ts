@@ -1,7 +1,10 @@
 import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
 import url from "url";
 import { Store } from "src/redux";
-import { setScheduledVisitations } from "src/redux/modules/visitation";
+import {
+  setPastVisitations,
+  setScheduledVisitations,
+} from "src/redux/modules/visitation";
 import camelcaseKeys from "camelcase-keys";
 
 interface RawUser {
@@ -80,52 +83,49 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
   return {
     id: visitation.id,
     connectionId: visitation.connection_id,
-    scheduledStartTime: new Date(visitation.start),
-    scheduledEndTime: new Date(visitation.end),
-    startTime: visitation.first_live
-      ? new Date(visitation.first_live)
-      : undefined,
-    endTime: visitation.last_live ? new Date(visitation.last_live) : undefined,
-    end: new Date(visitation.end),
+    scheduledStartTime: visitation.start,
+    scheduledEndTime: visitation.end,
+    startTime: visitation.first_live,
+    endTime: visitation.last_live,
+    end: visitation.end,
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
   } as BaseVisitation;
 }
 
-export async function getVisitations(
-  // filters: VisitationFilters<number | Date | string>,
-  startDate?: Date,
-  endDate?: Date,
-  query = "",
-  duration?: number[],
-  approved = true,
-  limit = 100,
-  offset = 0
-): Promise<BaseVisitation[]> {
-  const options = [
-    ["approved", approved.toString()],
-    ["limit", limit.toString()],
-    ["offset", offset.toString()],
-  ];
+// export async function getVisitations(
+//   // filters: CallFilters<number | Date | string>,
+//   startDate?: Date,
+//   endDate?: Date,
+//   query = "",
+//   duration?: number[],
+//   approved = true,
+//   limit = 100,
+//   offset = 0
+// ): Promise<BaseVisitation[]> {
+//   const options = [
+//     ["approved", approved.toString()],
+//     ["limit", limit.toString()],
+//     ["offset", offset.toString()],
+//   ];
 
-  if (startDate) options.push(["start", startDate.getTime().toString()]);
-  if (endDate) options.push(["end", endDate.getTime().toString()]);
-  if (duration && duration.length === 2)
-    options.push(["duration", duration.join(",")]);
-  if (query.length) options.push(["global", query]);
+//   if (startDate && endDate) options.push(["start", `{${startDate.getTime().toString()},  ${endDate.getTime().toString()}`]);
+//   if (duration && duration.length === 2)
+//     options.push(["duration", duration.join(",")]);
+//   if (query.length) options.push(["global", query]);
 
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/calls?` + toQueryString(options))
-  );
+//   const body = await fetchAuthenticated(
+//     url.resolve(API_URL, `node/1/calls?` + toQueryString(options))
+//   );
 
-  console.log(body);
-  if (!body.good) {
-    throw body;
-  }
+//   console.log(body);
+//   if (!body.good) {
+//     throw body;
+//   }
 
-  const visitations = ((body.data as Record<string, unknown>)
-    .calls as RawVisitation[]).map(cleanVisitation);
+//   const visitations = ((body.data as Record<string, unknown>)
+//     .calls as RawVisitation[]).map(cleanVisitation) as RecordedVisitation[];
 
-  Store.dispatch(setScheduledVisitations(visitations));
-  return visitations;
-}
+//   Store.dispatch(setPastVisitations(visitations));
+//   return visitations;
+// }

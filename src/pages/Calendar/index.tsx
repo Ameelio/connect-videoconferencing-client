@@ -7,7 +7,6 @@ import { bindActionCreators, Dispatch } from "redux";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
-import { getVisitations } from "src/api/Visitation";
 import { getAllVisitationsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
@@ -43,10 +42,10 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   visitations,
   hasLoadedScheduledVisitations,
 }) => {
-  useEffect(() => {
-    if (!hasLoadedScheduledVisitations)
-      getVisitations(mondayMorning(), fridayEvening());
-  });
+  // useEffect(() => {
+  //   if (!hasLoadedScheduledVisitations)
+  //     getVisitations(mondayMorning(), fridayEvening());
+  // });
 
   return (
     <div className="d-flex flex-row">

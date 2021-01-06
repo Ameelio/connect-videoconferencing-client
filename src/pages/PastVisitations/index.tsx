@@ -26,11 +26,10 @@ import {
   getAllVisitationsInfo,
   selectAllRecordings,
 } from "src/redux/selectors";
-import { getVisitations } from "src/api/Visitation";
 import { isCatchClause } from "typescript";
 import { format, getDate, getTime } from "date-fns";
 import { getRecordings } from "src/redux/modules/recording";
-import CallFilters from "./CallFilters";
+import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
 
 const mapStateToProps = (state: RootState) => ({
@@ -60,9 +59,9 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
   const [offset, setOffset] = useState(0);
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
-  const [duration, setDuration] = useState<number[]>();
+  const [startDate, setStartDate] = useState<number>();
+  const [endDate, setEndDate] = useState<number>();
+  const [maxDuration, setMaxDuration] = useState<number>();
 
   const debounceUpdate = useCallback(
     _.debounce(() => setGlobal(searchQuery), 1000),
@@ -76,16 +75,24 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     (async () =>
-      getRecordings(global, startDate, endDate, duration, limit, offset))();
-  }, [getRecordings, limit, offset, startDate, endDate, duration, global]);
+      getRecordings({
+        query: global,
+        startDate,
+        endDate,
+        minDuration: 0,
+        maxDuration,
+        limit,
+        offset,
+      }))();
+  }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
 
   const renderItem = (visitation: RecordedVisitation): JSX.Element => {
     return (
       <tr>
         <td></td>
         <td>{format(visitation.startTime, "MM/dd/yy")}</td>
-        <td>{format(visitation.startTime, "HH/mm")}</td>
-        <td>{format(visitation.endTime, "HH/mm")}</td>
+        <td>{format(visitation.startTime, "HH:mm")}</td>
+        <td>{format(visitation.endTime, "HH:mm")}</td>
         <td>{genFullName(visitation.connection.inmate)}</td>
         <td>{visitation.connection.inmate.inmateNumber}</td>
         <td>{genFullName(visitation.connection.contact)}</td>
@@ -103,13 +110,12 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
           value={searchQuery}
           onChange={handleSearchChange}
-          // onSubmit={handleSubmission}
         />
       </Form>
-      <CallFilters
+      <CallFiltersHeader
         setStartDate={setStartDate}
         setEndDate={setEndDate}
-        setDuration={setDuration}
+        setDuration={setMaxDuration}
       />
       <Container>
         <Table responsive>

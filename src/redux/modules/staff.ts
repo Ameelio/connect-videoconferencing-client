@@ -5,11 +5,10 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import { API_URL, fetchAuthenticated } from "src/api/Common";
-import { getStaff, postStaffMember } from "src/api/Persona";
-import { getVisitations } from "src/api/Visitation";
-import UserDetailsCard from "src/components/cards/UserDetailsCard";
+import { getStaff } from "src/api/Persona";
 import { AppThunk } from "../helpers";
 import url from "url";
+import camelcaseKeys from "camelcase-keys";
 
 export const staffAdapter = createEntityAdapter<Staff>();
 
@@ -35,6 +34,29 @@ export const updateStaff = createAsyncThunk(
   }
 );
 
+export const createStaff = createAsyncThunk(
+  "staff/createStaff",
+  async (args: { email: string; role: string; permissions: Permission[] }) => {
+    const body = await fetchAuthenticated(
+      url.resolve(API_URL, `node/1/admin`),
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: args.email,
+          role: args.role,
+          permissions: args.permissions,
+        }),
+      }
+    );
+
+    //TODO update this with API return when it's actually supported
+    const staff = camelcaseKeys(
+      (body.data as Record<string, unknown>).staff as Object
+    ) as Staff;
+
+    return staff;
+  }
+);
 interface StaffState extends EntityState<Staff> {
   error?: string;
 }
@@ -61,12 +83,20 @@ export const staffSlice = createSlice({
       ...state,
       error: action.error.message,
     }));
+    builder.addCase(createStaff.fulfilled, (state, action) => {
+      staffAdapter.addOne(state, action.payload);
+    });
+    builder.addCase(createStaff.rejected, (state, action) => ({
+      ...state,
+      error: action.error.message,
+    }));
   },
 });
 
 export const staffActions = staffSlice.actions;
 
 export const loadStaff = (): AppThunk => async (dispatch) => {
+  // TODO move this to async thunk
   const staff = await getStaff();
   dispatch(staffActions.staffSetAll(staff));
 };

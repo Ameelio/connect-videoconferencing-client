@@ -4,13 +4,13 @@ interface Kiosk {
 
 interface BaseVisitation {
   id: number;
-  scheduledStartTime: Date;
-  scheduledEndTime: Date;
+  scheduledStartTime: number;
+  scheduledEndTime: number;
   connectionId: number;
   kiosk: Kiosk;
   approved: boolean;
-  endTime?: Date;
-  startTime?: Date;
+  endTime?: number;
+  startTime?: number;
   liveStatus?: string;
 }
 
@@ -19,15 +19,25 @@ interface Visitation extends BaseVisitation {
 }
 
 interface LiveVisitation extends Visitation {
-  startTime: Date;
+  startTime: number;
   liveStatus: string;
 }
 interface RecordedVisitation extends LiveVisitation {
-  endTime: Date;
+  endTime: number;
 }
 
+interface CallFilters {
+  query?: string;
+  startDate?: number;
+  endDate?: number;
+  minDuration?: number;
+  maxDuration?: number;
+  limit?: number;
+  offset?: number;
+  approved?: boolean;
+}
 // type VisitationFilterType = 'approved' | 'query' | 'approved' | 'limit' | 'offset' | 'global';
 
-// interface VisitationFilters<T> {
+// interface CallFilters<T> {
 //   [Key: VisitatinFilterType]: T;
 // }

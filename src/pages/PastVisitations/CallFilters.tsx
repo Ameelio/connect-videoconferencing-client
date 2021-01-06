@@ -8,12 +8,12 @@ import { DatePicker, Space } from "antd";
 const { RangePicker } = DatePicker;
 
 interface Props {
-  setStartDate: (date: Date) => void;
-  setEndDate: (date: Date) => void;
-  setDuration: (duration: number[]) => void;
+  setStartDate: (date: number) => void;
+  setEndDate: (date: number) => void;
+  setDuration: (maxDuration: number) => void;
 }
 
-export default function CallFilters({
+export default function CallFiltersHeader({
   setDuration,
   setStartDate,
   setEndDate,
@@ -23,7 +23,7 @@ export default function CallFilters({
   const DurationFilters = (
     <Menu>
       {DURATION_FILTERS.map((duration) => (
-        <Menu.Item key={duration} onClick={() => setDuration([0, duration])}>
+        <Menu.Item key={duration} onClick={() => setDuration(duration)}>
           {"<"}
           {duration}
         </Menu.Item>
@@ -34,13 +34,11 @@ export default function CallFilters({
   return (
     <div className="d-flex flex-row">
       <RangePicker
-        onChange={(date) =>
-          date &&
-          date[0] &&
-          setStartDate(date[0].toDate()) &&
-          date[1] &&
-          setEndDate(date[1].toDate())
-        }
+        onChange={(date) => {
+          if (!date) return;
+          if (date[0]) setStartDate(date[0].unix());
+          if (date[1]) setEndDate(date[1].unix());
+        }}
       />
       <Dropdown overlay={DurationFilters} trigger={["click"]}>
         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>

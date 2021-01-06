@@ -16,6 +16,7 @@ import { Modal, Button } from "antd";
 import { Switch } from "antd";
 import { SwitchChangeEventHandler } from "antd/lib/switch";
 import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
+import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 
 const { Column } = Table;
 
@@ -34,9 +35,14 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
   updateStaff,
   loadStaff,
 }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [selected, setSelected] = React.useState<Staff>();
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  const [modalType, setModalType] = useState<"create" | "edit" | null>(null);
+  const [selected, setSelected] = useState<Staff>();
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [formData, setFormData] = useState<StaffFormFields>({
+    email: "",
+    role: "",
+    permissions: [],
+  });
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<Permission, boolean>
   >({
@@ -49,26 +55,27 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
 
   // create d
   const showModal = (record: Staff) => {
-    setVisible(true);
     setSelected(record);
   };
 
-  const handleOk = async () => {
+  const handleOk = () => {
     setConfirmLoading(true);
-    if (selected)
-      await updateStaff({
-        userId: selected.id,
-        permissions: Object.keys(selectedPermissions).filter(
-          (key) => selectedPermissions[key as Permission]
-        ) as Permission[],
-      });
-    setConfirmLoading(false);
-    setVisible(false);
-  };
+    switch (modalType) {
+      case "edit":
+        if (selected)
+          updateStaff({
+            userId: selected.id,
+            permissions: Object.keys(selectedPermissions).filter(
+              (key) => selectedPermissions[key as Permission]
+            ) as Permission[],
+          });
+        break;
+      case "create":
+        // do somethin
+        break;
+    }
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
+    setConfirmLoading(false);
   };
 
   useEffect(() => {
@@ -80,9 +87,9 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
       setSelectedPermissions(mapPermissionMap(selected.permissions));
   }, [selected]);
 
-  console.log(selected);
   return (
-    <div className="d-flex flex-row">
+    <div className="d-flex">
+      <Button onClick={() => setModalType("create")}>Add</Button>
       <Table dataSource={staff}>
         <Column
           title=""
@@ -121,11 +128,20 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
         />
       </Table>
       <Modal
-        title="Edit Staff"
-        visible={visible}
+        title="Add Staff"
+        visible={modalType === "create"}
         onOk={handleOk}
         confirmLoading={confirmLoading}
-        onCancel={handleCancel}
+        onCancel={() => setModalType(null)}
+      >
+        <CreateStaffForm data={formData} onChange={setFormData} />
+      </Modal>
+      <Modal
+        title="Edit Staff"
+        visible={modalType === "edit"}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={() => setModalType(null)}
       >
         {selected && (
           <div className="d-flex flex-column">

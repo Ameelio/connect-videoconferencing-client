@@ -1,5 +1,6 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
+import { toQueryString } from "src/api/Common";
 import { STAFF_PERMISSION_OPTIONS } from "./constants";
 
 export const genFullName = (entity?: BasePersona): string =>
@@ -41,3 +42,24 @@ export const mapPermissionMap = (
 
 export const cloneObject = (obj: Object): Object =>
   JSON.parse(JSON.stringify(obj));
+
+export const createCallOptionsParam = (filters: CallFilters): string => {
+  const options = [
+    ["approved", filters.approved?.toString() || "true"],
+    ["limit", filters.limit?.toString() || "100"],
+    ["offset", filters.offset?.toString() || "0"],
+  ];
+
+  console.log("here");
+  console.log(filters);
+  if (filters.startDate && filters.endDate)
+    options.push(["start", `${filters.startDate},${filters.endDate}`]);
+  if (filters.minDuration && filters.maxDuration)
+    options.push([
+      "duration",
+      `${filters.minDuration}, ${filters.maxDuration}`,
+    ]);
+  if (filters.query?.length) options.push(["global", filters.query]);
+  console.log(options);
+  return toQueryString(options);
+};

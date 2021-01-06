@@ -1,4 +1,4 @@
-import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
+import { API_URL, fetchAuthenticated } from "./Common";
 import url from "url";
 import { Store } from "src/redux";
 import { inmatesActions } from "src/redux/modules/inmate";
@@ -30,28 +30,6 @@ export async function getStaff(): Promise<Staff[]> {
     .admins as Object[]).map((admin) => camelcaseKeys(admin)) as Staff[];
 
   return staff;
-}
-
-export async function postStaffMember(
-  userId: number,
-  permissions: Permission[]
-): Promise<Staff> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connection`),
-    {
-      method: "POST",
-      body: JSON.stringify({ user_id: userId, permissions }),
-    }
-  );
-
-  if (!body.good || !body.data) {
-    throw body;
-  }
-  console.log("done");
-
-  return camelcaseKeys(
-    (body.data as Record<string, unknown>).admin as Object
-  ) as Staff;
 }
 
 export async function getContacts(): Promise<Contact[]> {

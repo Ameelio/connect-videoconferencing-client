@@ -5,9 +5,9 @@ import { calculateDurationMS } from "src/utils/utils";
 
 interface Props {
   kioskId: number;
-  endTime: Date;
-  startTime: Date;
-  currentTime: Date;
+  endTime: number;
+  startTime: number;
+  currentTime: number;
 }
 
 export default function VisitationCardHeader({
@@ -27,12 +27,14 @@ export default function VisitationCardHeader({
         <div className="d-flex ml-3 align-items-center">
           <span className="circle red" />
           <span className="ml-1 black-500">
-            {calculateDurationMS(currentTime, endTime)}
+            {calculateDurationMS(new Date(currentTime), new Date(endTime))}
           </span>
         </div>
         <div className="d-flex flex-row ml-3 align-items-center">
           <span className="black-500">Start Time:</span>
-          <span className="ml-1 black-500">{format(startTime, "h:mm")}</span>
+          <span className="ml-1 black-500">
+            {format(new Date(startTime), "h:mm")}
+          </span>
         </div>
       </div>
     </div>
