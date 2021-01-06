@@ -23,3 +23,11 @@ export const UNAUTHENTICATED_USER_ID = -999;
 
 export const TOKEN_KEY = "apiToken";
 export const REMEMBER_TOKEN_KEY = "rememberToken";
+
+export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
+  allowRead: "Allow Read",
+  allowCalltimes: "allowCalltimes",
+  allowApproval: "allowApproval",
+  allowRestructure: "allowRestructure",
+  allowMonitor: "allowMonitor",
+};

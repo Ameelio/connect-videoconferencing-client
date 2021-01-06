@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { loadStaff } from "src/redux/modules/staff";
+import { loadStaff, updateStaff } from "src/redux/modules/staff";
 import Wrapper from "src/components/containers/Wrapper";
 import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType } from "src/utils/constants";
+import { CardType, STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import UserDetailsCard from "src/components/cards/UserDetailsCard";
@@ -15,7 +15,7 @@ import { Image } from "antd";
 import { Modal, Button } from "antd";
 import { Switch } from "antd";
 import { SwitchChangeEventHandler } from "antd/lib/switch";
-import { genFullName } from "src/utils/utils";
+import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
 
 const { Column } = Table;
 
@@ -24,29 +24,46 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ loadStaff }, dispatch);
+  bindActionCreators({ loadStaff, updateStaff }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
+const StaffContainer: React.FC<PropsFromRedux> = ({
+  staff,
+  updateStaff,
+  loadStaff,
+}) => {
   const [visible, setVisible] = React.useState(false);
   const [selected, setSelected] = React.useState<Staff>();
   const [confirmLoading, setConfirmLoading] = React.useState(false);
-  const [modalText, setModalText] = React.useState("Content of the modal");
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    Record<Permission, boolean>
+  >({
+    allowRead: false,
+    allowCalltimes: false,
+    allowApproval: false,
+    allowRestructure: false,
+    allowMonitor: false,
+  });
 
+  // create d
   const showModal = (record: Staff) => {
     setVisible(true);
     setSelected(record);
   };
 
-  const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
+  const handleOk = async () => {
     setConfirmLoading(true);
-    setTimeout(() => {
-      setVisible(false);
-      setConfirmLoading(false);
-    }, 2000);
+    if (selected)
+      await updateStaff({
+        userId: selected.id,
+        permissions: Object.keys(selectedPermissions).filter(
+          (key) => selectedPermissions[key as Permission]
+        ) as Permission[],
+      });
+    setConfirmLoading(false);
+    setVisible(false);
   };
 
   const handleCancel = () => {
@@ -54,13 +71,16 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
     setVisible(false);
   };
 
-  function onChange(checked: boolean) {
-    // console.log(`switch to ${checked}`);
-  }
-
   useEffect(() => {
     loadStaff();
   }, [loadStaff]);
+
+  useEffect(() => {
+    if (selected)
+      setSelectedPermissions(mapPermissionMap(selected.permissions));
+  }, [selected]);
+
+  console.log(selected);
   return (
     <div className="d-flex flex-row">
       <Table dataSource={staff}>
@@ -112,7 +132,25 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
             <span>{genFullName(selected)}</span>
             <span>{selected.role}</span>
             <span>{selected.email}</span>
-            <Switch defaultChecked onChange={onChange} />
+            {Object.keys(STAFF_PERMISSION_OPTIONS).map((key) => (
+              <div>
+                <span>{STAFF_PERMISSION_OPTIONS[key as Permission]}</span>
+                <Switch
+                  defaultChecked={selected.permissions.includes(
+                    key as Permission
+                  )}
+                  checked={selectedPermissions[key as Permission]}
+                  onChange={(checked) => {
+                    const update = cloneObject(selectedPermissions) as Record<
+                      Permission,
+                      boolean
+                    >;
+                    update[key as Permission] = checked;
+                    setSelectedPermissions(update);
+                  }}
+                />
+              </div>
+            ))}
           </div>
         )}
       </Modal>

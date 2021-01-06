@@ -1,5 +1,6 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
+import { STAFF_PERMISSION_OPTIONS } from "./constants";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -25,3 +26,18 @@ export const calculateDurationMS = (start: Date, end: Date): string => {
   const secs = differenceInSeconds(end, start);
   return formatSecondsToMS(secs);
 };
+
+export const mapPermissionMap = (
+  permissions: Permission[]
+): Record<Permission, boolean> => {
+  return {
+    allowRead: permissions.includes("allowRead"),
+    allowApproval: permissions.includes("allowApproval"),
+    allowMonitor: permissions.includes("allowMonitor"),
+    allowCalltimes: permissions.includes("allowCalltimes"),
+    allowRestructure: permissions.includes("allowRestructure"),
+  };
+};
+
+export const cloneObject = (obj: Object): Object =>
+  JSON.parse(JSON.stringify(obj));

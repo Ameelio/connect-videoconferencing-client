@@ -8,13 +8,15 @@ import { DatePicker, Space } from "antd";
 const { RangePicker } = DatePicker;
 
 interface Props {
-  setDateRange: (range: Date[]) => void;
+  setStartDate: (date: Date) => void;
+  setEndDate: (date: Date) => void;
   setDuration: (duration: number[]) => void;
 }
 
 export default function CallFilters({
   setDuration,
-  setDateRange,
+  setStartDate,
+  setEndDate,
 }: Props): ReactElement {
   const DURATION_FILTERS = [Infinity, 3, 5, 10, 15, 20];
 
@@ -35,8 +37,9 @@ export default function CallFilters({
         onChange={(date) =>
           date &&
           date[0] &&
+          setStartDate(date[0].toDate()) &&
           date[1] &&
-          setDateRange([date[0].toDate(), date[1].toDate()])
+          setEndDate(date[1].toDate())
         }
       />
       <Dropdown overlay={DurationFilters} trigger={["click"]}>

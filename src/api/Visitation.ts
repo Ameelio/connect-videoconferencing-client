@@ -94,7 +94,8 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
 
 export async function getVisitations(
   // filters: VisitationFilters<number | Date | string>,
-  date?: Date[],
+  startDate?: Date,
+  endDate?: Date,
   query = "",
   duration?: number[],
   approved = true,
@@ -107,7 +108,8 @@ export async function getVisitations(
     ["offset", offset.toString()],
   ];
 
-  if (date) options.push(["date", date.map((x) => x.getTime()).join(",")]);
+  if (startDate) options.push(["start", startDate.getTime().toString()]);
+  if (endDate) options.push(["end", endDate.getTime().toString()]);
   if (duration && duration.length === 2)
     options.push(["duration", duration.join(",")]);
   if (query.length) options.push(["global", query]);

@@ -17,14 +17,16 @@ export const recordingsActions = recordingsSlice.actions;
 
 export const getRecordings = (
   query = "",
-  dateRange?: Date[],
+  startDate?: Date,
+  endDate?: Date,
   duration?: number[],
   limit = 100,
   offset = 0
 ): AppThunk => async (dispatch) => {
   // TODO wrap in try catch
   const recordings = await getVisitations(
-    dateRange,
+    startDate,
+    endDate,
     query,
     duration,
     true,

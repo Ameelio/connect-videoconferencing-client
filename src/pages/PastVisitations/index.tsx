@@ -60,7 +60,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
   const [offset, setOffset] = useState(0);
-  const [dateRange, setDateRange] = useState<Date[]>();
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   const [duration, setDuration] = useState<number[]>();
 
   const debounceUpdate = useCallback(
@@ -74,8 +75,9 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   };
 
   useEffect(() => {
-    (async () => getRecordings(global, dateRange, duration, limit, offset))();
-  }, [getRecordings, limit, offset, dateRange, duration, global]);
+    (async () =>
+      getRecordings(global, startDate, endDate, duration, limit, offset))();
+  }, [getRecordings, limit, offset, startDate, endDate, duration, global]);
 
   const renderItem = (visitation: RecordedVisitation): JSX.Element => {
     return (
@@ -104,7 +106,11 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           // onSubmit={handleSubmission}
         />
       </Form>
-      <CallFilters setDateRange={setDateRange} setDuration={setDuration} />
+      <CallFilters
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        setDuration={setDuration}
+      />
       <Container>
         <Table responsive>
           <thead>

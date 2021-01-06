@@ -45,7 +45,7 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
 }) => {
   useEffect(() => {
     if (!hasLoadedScheduledVisitations)
-      getVisitations([mondayMorning(), fridayEvening()]);
+      getVisitations(mondayMorning(), fridayEvening());
   });
 
   return (
