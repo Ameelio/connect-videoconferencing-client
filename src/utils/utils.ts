@@ -9,10 +9,10 @@ import {
   getDay,
 } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { TimeRange, Weekday } from "src/redux/helpers";
 import { NodeCallTimes } from "src/typings/Node";
 import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
-import _, { forEach } from "lodash";
+import { TimeRange, Weekday } from "src/typings/Common";
+import _ from "lodash";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";

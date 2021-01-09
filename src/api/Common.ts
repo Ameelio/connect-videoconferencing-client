@@ -51,7 +51,7 @@ export async function fetchAuthenticated(
 
   const response = await fetchTimeout(
     `${API_URL}${
-      nodeResource ? `node/${state.facilities.selected?.nodeId}/` : ""
+      nodeResource ? `node/${state.facilities.selected?.nodeId}` : ""
     }${fetchUrl}`,
     requestOptions,
     timeout

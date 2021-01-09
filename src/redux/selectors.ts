@@ -46,8 +46,14 @@ const getConnectionEntities = (
   const inmate = selectInmateById(state, connection.inmateId);
   const contact = selectContactById(state, connection.userId);
   // TODO improve this
-  if (!inmate || !contact)
-    throw new Error("Failed to locate connection information");
+  if (!inmate)
+    throw new Error(
+      `Failed to locate information for inmate ${connection.inmateId}`
+    );
+  if (!contact)
+    throw new Error(
+      `Failed to locate information for contact ${connection.userId}`
+    );
   return { inmate, contact, ...connection };
 };
 

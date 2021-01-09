@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import LiveVisitation from "./pages/LiveVisitation";
@@ -17,13 +17,15 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/User";
 import Menu from "./components/headers/Menu";
-import { Layout } from "antd";
+import { Layout, PageHeader } from "antd";
 import { logout } from "src/redux/modules/user";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
 import { selectAllFacilities } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { initializeAppData } from "./api/Common";
+import { useHistory } from "react-router-dom";
+import { ROUTES } from "./utils/constants";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -48,6 +50,8 @@ function App({
   };
 
   const facilities = useSelector(selectAllFacilities);
+  const history = useHistory();
+  const [header, setHeader] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -65,6 +69,18 @@ function App({
     }
   }, [selected]);
 
+  useEffect(() => {
+    console.log(history);
+    if (history) {
+      const unlisten = history.listen((location, action) => {
+        console.log(location);
+        console.log(action);
+      });
+
+      return unlisten;
+    }
+  }, [history]);
+
   return (
     <Router>
       <Layout style={{ minHeight: "100vh" }}>
@@ -78,15 +94,24 @@ function App({
           />
         )}
         <Layout>
+          <PageHeader title={header} />
           <Switch>
             <Route exact path="/login" component={Login}></Route>
-            <ProtectedRoute
+            {ROUTES.map((i) => (
+              <ProtectedRoute
+                exact
+                {...defaultProtectedRouteProps}
+                path={i.path}
+                component={i.component}
+              ></ProtectedRoute>
+            ))}
+            {/* <ProtectedRoute
               exact
               {...defaultProtectedRouteProps}
               path="/calendar"
               component={CalendarView}
-            ></ProtectedRoute>
-            <ProtectedRoute
+            ></ProtectedRoute> */}
+            {/* <ProtectedRoute
               exact
               {...defaultProtectedRouteProps}
               path="/requests"
@@ -127,7 +152,7 @@ function App({
               {...defaultProtectedRouteProps}
               path="/"
               component={Dashboard}
-            ></ProtectedRoute>
+            ></ProtectedRoute> */}
           </Switch>
           <Footer style={{ textAlign: "center" }}>
             Connect ©2021 Created by Ameelio Inc.

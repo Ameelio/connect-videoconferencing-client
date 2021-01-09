@@ -83,9 +83,12 @@ export const updateCallTimes = createAsyncThunk(
 interface FacilitiesState extends EntityState<Facility> {
   error?: string;
   selected?: SelectedFacility;
+  loading: boolean;
 }
 
-const initialState: FacilitiesState = facilitiesAdapter.getInitialState({});
+const initialState: FacilitiesState = facilitiesAdapter.getInitialState({
+  loading: false,
+});
 
 export const facilitiesSlice = createSlice({
   name: "facilities",
@@ -113,10 +116,16 @@ export const facilitiesSlice = createSlice({
     builder.addCase(selectActiveFacility.fulfilled, (state, action) => ({
       ...state,
       selected: action.payload,
+      loading: false,
     }));
     builder.addCase(selectActiveFacility.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
+      loading: false,
+    }));
+    builder.addCase(selectActiveFacility.pending, (state, action) => ({
+      ...state,
+      loading: true,
     }));
   },
 });

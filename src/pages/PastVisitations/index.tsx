@@ -73,7 +73,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   };
 
   useEffect(() => {
-    setLoading(false);
+    setLoading(true);
     (async () =>
       getRecordings({
         query: global,
@@ -84,7 +84,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         limit,
         offset,
       }))();
-    setLoading(true);
+    setLoading(false);
   }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
 
   return (

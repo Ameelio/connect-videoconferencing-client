@@ -5,9 +5,9 @@ import { TimePicker, Layout, Row, Col } from "antd";
 import { Header } from "antd/lib/layout/layout";
 import { NodeCallTimes } from "src/typings/Node";
 import { WeekdayMap } from "src/utils/constants";
-import { TimeRange } from "src/redux/helpers";
 import { mapCallTimeToRange } from "src/utils/utils";
 import moment from "moment";
+import { TimeRange } from "src/typings/Common";
 
 const { RangePicker } = TimePicker;
 const { Content } = Layout;

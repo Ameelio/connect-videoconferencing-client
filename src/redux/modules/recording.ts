@@ -15,7 +15,7 @@ export const getRecordings = createAsyncThunk(
   "recordings/fetchAll",
   async (filters: CallFilters) => {
     const body = await fetchAuthenticated(
-      url.resolve(API_URL, `node/1/calls?` + createCallOptionsParam(filters))
+      `/calls?${createCallOptionsParam(filters)}`
     );
     if (!body.good) {
       throw body;

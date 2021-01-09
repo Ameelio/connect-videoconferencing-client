@@ -1,5 +1,3 @@
-// import { Weekdays } from "src/utils/constants";
-
 export interface AmeelioNode {
   id: number;
   name: string;

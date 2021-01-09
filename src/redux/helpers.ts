@@ -38,18 +38,3 @@ export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
     kiosk: { id: visitation.kiosk_id } as Kiosk,
   } as BaseVisitation;
 }
-
-export type Weekday =
-  | "Sunday"
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday";
-
-export interface TimeRange {
-  start: string;
-  end: string;
-  duration: number;
-}

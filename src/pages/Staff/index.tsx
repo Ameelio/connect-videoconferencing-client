@@ -13,7 +13,7 @@ import {
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import UserDetailsCard from "src/components/cards/UserDetailsCard";
-import { Table, Tag, Space, Layout, Avatar } from "antd";
+import { Table, Tag, Space, Layout, Avatar, Divider } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
 import { Image } from "antd";
 import { Modal, Button } from "antd";
@@ -94,51 +94,53 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <Content style={{ padding: PADDING }}>
-      <Space align="end" direction="vertical">
-        <Button type="primary" onClick={() => setModalType("create")}>
-          Add
-        </Button>
-        <Table dataSource={staff}>
-          <Column
-            title=""
-            dataIndex="profileImgPath"
-            key="profileImgPath"
-            render={(img) => (
-              <>
-                <Avatar src={img} size="large" />
-              </>
-            )}
-          />
-          <Column title="First Name" dataIndex="firstName" key="firstName" />
-          <Column title="Last Name" dataIndex="lastName" key="lastName" />
-          <Column
-            title="Role"
-            dataIndex="role"
-            key="role"
-            render={(role) => (
-              <>
-                <Tag color="blue" key={role}>
-                  {role || "Operator"}
-                </Tag>
-              </>
-            )}
-          />
-          <Column
-            title=""
-            key="edit"
-            render={(_text, record: Staff) => (
-              <Button
-                onClick={() => {
-                  setSelected(record);
-                  setModalType("edit");
-                }}
-              >
-                Edit
-              </Button>
-            )}
-          />
-        </Table>
-      </Space>
+      {/* <Space align="end" direction="vertical" style={{ flex: 1 }}> */}
+      <Button type="primary" onClick={() => setModalType("create")}>
+        Add
+      </Button>
+      <Divider />
+
+      <Table dataSource={staff}>
+        <Column
+          title=""
+          dataIndex="profileImgPath"
+          key="profileImgPath"
+          render={(img) => (
+            <>
+              <Avatar src={img} size="large" />
+            </>
+          )}
+        />
+        <Column title="First Name" dataIndex="firstName" key="firstName" />
+        <Column title="Last Name" dataIndex="lastName" key="lastName" />
+        <Column
+          title="Role"
+          dataIndex="role"
+          key="role"
+          render={(role) => (
+            <>
+              <Tag color="blue" key={role}>
+                {role || "Operator"}
+              </Tag>
+            </>
+          )}
+        />
+        <Column
+          title=""
+          key="edit"
+          render={(_text, record: Staff) => (
+            <Button
+              onClick={() => {
+                setSelected(record);
+                setModalType("edit");
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        />
+      </Table>
+      {/* </Space> */}
       <Modal
         title="Add Staff"
         visible={modalType === "create"}

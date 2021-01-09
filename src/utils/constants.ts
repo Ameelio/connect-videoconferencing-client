@@ -1,3 +1,13 @@
+import LiveVisitationsPage from "src/pages/LiveVisitation";
+import CalendarPage from "src/pages/Calendar";
+import RequestsPage from "src/pages/ConnectionRequests";
+import LogsPage from "src/pages/PastVisitations";
+import StaffPage from "src/pages/Staff";
+import InmatesPage from "src/pages/Inmate";
+import DashboardPage from "src/pages/Dashboard";
+import SettingsPage from "src//pages/Settings";
+import { Route } from "src/typings/Common";
+
 export enum CardType {
   LiveVisitation = "live",
   Contact = "contact",
@@ -43,3 +53,16 @@ export enum WeekdayMap {
 }
 
 export const PADDING = 16;
+
+type Routename = string;
+
+export const ROUTES: Route[] = [
+  { path: "/calendar", component: CalendarPage, label: "Page" },
+  { path: "/requests", component: RequestsPage, label: "Connection Requests" },
+  { path: "/logs", component: LogsPage, label: "Search for Visits" },
+  { path: "/staff", component: StaffPage, label: "Staff" },
+  { path: "/members", component: InmatesPage, label: "Inmates" },
+  { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
+  { path: "/settings", component: SettingsPage, label: "Settings" },
+  { path: "/", component: DashboardPage, label: "Dashboard" },
+];

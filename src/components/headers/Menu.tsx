@@ -17,6 +17,7 @@ import {
   UserOutlined,
   SettingOutlined,
   UserAddOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { RootState } from "src/redux";
@@ -73,7 +74,7 @@ export default function Menu({
         ))}
       </SubMenu>
       <AntdMenu.Item>
-        <a onClick={() => logout()}>Log out</a>
+        <span onClick={() => logout()}>Log out</span>
       </AntdMenu.Item>
     </AntdMenu>
   );
@@ -84,30 +85,20 @@ export default function Menu({
       collapsed={collapsed}
       onCollapse={(collapsed) => setCollapsed(collapsed)}
     >
-      <Row className="menu-header">
-        <Col flex={1}>
+      <Dropdown overlay={headerMenu}>
+        <Space align="center" className="menu-header">
           <FacilityAvatar facility={selected} />
-        </Col>
-        <Col flex={2}>
-          <Space direction="vertical">
-            <Dropdown overlay={headerMenu} className="menu-header-select">
-              <Select
-                disabled
-                defaultValue={selected.nodeId}
-                bordered={false}
-                className="menu-select"
-              >
-                {facilities.map((facility) => (
-                  <Option value={facility.nodeId}>{facility.name}</Option>
-                ))}
-              </Select>
-            </Dropdown>
+          <Space direction="vertical" size={0}>
+            <Space align="center">
+              <span className="menu-header-facility">{selected.name}</span>
+              <DownOutlined style={{ color: "white" }} />
+            </Space>
             <span className="menu-header-name">
               {genFullName(session.user)}
             </span>
           </Space>
-        </Col>
-      </Row>
+        </Space>
+      </Dropdown>
 
       {/* </div> */}
       <AntdMenu theme="dark" defaultSelectedKeys={["1"]} mode="inline">

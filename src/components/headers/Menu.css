@@ -1,11 +1,15 @@
 .menu-header {
   padding: 16px 16px 0px 24px;
 }
-.menu-header-select {
-  color: white;
-  /* font-weight: bold; */
+
+.menu-header:hover {
+  cursor: pointer;
 }
 
+.menu-header-facility {
+  color: white;
+  font-weight: bold;
+}
 .menu-header-name {
   color: #ffffffa6;
 }

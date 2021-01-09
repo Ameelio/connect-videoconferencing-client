@@ -42,6 +42,7 @@ export async function getContacts(): Promise<Contact[]> {
   const contacts = ((body.data as Record<string, unknown>)
     .users as Object[]).map((contact) => camelcaseKeys(contact)) as Contact[];
 
+  console.log(contacts);
   Store.dispatch(contactsActions.contactsAddMany(contacts));
   return contacts;
 }

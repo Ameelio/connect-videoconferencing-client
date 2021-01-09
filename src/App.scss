@@ -21,6 +21,7 @@
   --main-blue-200: #9ac1ec;
   --main-blue-100: #eef6ff;
   --main-lightpurple: #e7dff0;
+  --main-background: #fafafb;
 }
 
 html {
@@ -35,7 +36,7 @@ html {
 body {
   font-family: "Poppins", sans-serif !important;
   color: var(--main-black-600) !important;
-  background-color: var(--main-black-200) !important;
+  background-color: var(--main-background) !important;
 }
 
 .primary {
