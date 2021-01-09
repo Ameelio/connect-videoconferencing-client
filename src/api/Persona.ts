@@ -6,7 +6,7 @@ import camelcaseKeys from "camelcase-keys";
 import { contactsActions } from "src/redux/modules/contact";
 
 export async function getInmates(): Promise<Inmate[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/1/inmates`));
+  const body = await fetchAuthenticated(`/inmates`);
 
   if (!body.good || !body.data) {
     throw body;
@@ -20,7 +20,7 @@ export async function getInmates(): Promise<Inmate[]> {
 }
 
 export async function getStaff(): Promise<Staff[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/1/admins`));
+  const body = await fetchAuthenticated(`/admins`);
 
   if (!body.good || !body.data) {
     throw body;
@@ -33,7 +33,7 @@ export async function getStaff(): Promise<Staff[]> {
 }
 
 export async function getContacts(): Promise<Contact[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/1/users`));
+  const body = await fetchAuthenticated(`/users`);
 
   if (!body.good || !body.data) {
     throw body;

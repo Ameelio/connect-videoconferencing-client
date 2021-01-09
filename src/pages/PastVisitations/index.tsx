@@ -10,15 +10,7 @@ import {
   fetchVideoRecording,
 } from "src/redux/modules/visitation";
 import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType, LoadingTypes } from "src/utils/constants";
-import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
-import {
-  Dropdown,
-  DropdownButton,
-  Form,
-  FormControl,
-  Table,
-} from "react-bootstrap";
+import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
@@ -31,6 +23,12 @@ import { format, getDate, getTime } from "date-fns";
 import { getRecordings } from "src/redux/modules/recording";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
+import { Table, Tag, Space, Layout } from "antd";
+import { DownloadOutlined, TeamOutlined } from "@ant-design/icons";
+import Search from "antd/lib/input/Search";
+
+const { Column } = Table;
+const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   logs: getAllVisitationsInfo(
@@ -62,6 +60,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [startDate, setStartDate] = useState<number>();
   const [endDate, setEndDate] = useState<number>();
   const [maxDuration, setMaxDuration] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const debounceUpdate = useCallback(
     _.debounce(() => setGlobal(searchQuery), 1000),
@@ -74,6 +73,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   };
 
   useEffect(() => {
+    setLoading(false);
     (async () =>
       getRecordings({
         query: global,
@@ -84,40 +84,112 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         limit,
         offset,
       }))();
+    setLoading(true);
   }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
 
-  const renderItem = (visitation: RecordedVisitation): JSX.Element => {
-    return (
-      <tr>
-        <td></td>
-        <td>{format(visitation.startTime, "MM/dd/yy")}</td>
-        <td>{format(visitation.startTime, "HH:mm")}</td>
-        <td>{format(visitation.endTime, "HH:mm")}</td>
-        <td>{genFullName(visitation.connection.inmate)}</td>
-        <td>{visitation.connection.inmate.inmateNumber}</td>
-        <td>{genFullName(visitation.connection.contact)}</td>
-        <td>{visitation.connection.contact.id}</td>
-        <td>Facility</td>
-      </tr>
-    );
-  };
-
   return (
-    <div className="d-flex flex-column">
-      <Form className="mt-3 w-100">
-        <FormControl
-          type="text"
+    <Content style={{ padding: PADDING }}>
+      <Space direction="vertical" style={{ width: "100% " }}>
+        <Search
           placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
+          allowClear
           value={searchQuery}
           onChange={handleSearchChange}
+          onSearch={(value) => {
+            setSearchQuery(value);
+          }}
         />
-      </Form>
-      <CallFiltersHeader
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setDuration={setMaxDuration}
-      />
-      <Container>
+        <CallFiltersHeader
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setDuration={setMaxDuration}
+        />
+
+        <Table dataSource={logs} loading={loading}>
+          <Column
+            title="Date"
+            dataIndex="startTime"
+            key="startTime"
+            render={(time) => (
+              <>
+                <span>{format(time, "MM/dd/yy")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Start Time"
+            dataIndex="startTime"
+            key="startTime"
+            render={(time) => (
+              <>
+                <span>{format(time, "HH:mm")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="End Time"
+            dataIndex="endTime"
+            key="endTime"
+            render={(time) => (
+              <>
+                <span>{format(time, "HH:mm")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Inmate Name"
+            dataIndex="connection"
+            key="connection"
+            render={(connection: Connection) => (
+              <>
+                <span>{genFullName(connection.inmate)}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Inmate ID"
+            dataIndex="connection"
+            key="connection"
+            render={(connection: Connection) => (
+              <>
+                <span>{connection.inmate.inmateNumber}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Contact Name"
+            dataIndex="connection"
+            key="connection"
+            render={(connection: Connection) => (
+              <>
+                <span>{genFullName(connection.contact)}</span>
+              </>
+            )}
+          />
+          {/* Change this */}
+          <Column
+            title="Location"
+            dataIndex="connection"
+            key="connection"
+            render={(connection: Connection) => (
+              <>
+                <span>{connection.inmate.location}</span>
+              </>
+            )}
+          />
+
+          <Column
+            title="Recording"
+            key="action"
+            render={(text, visitation) => (
+              <Space size="middle">
+                <a>View</a>
+              </Space>
+            )}
+          />
+        </Table>
+      </Space>
+      {/* <Container>
         <Table responsive>
           <thead>
             <tr>
@@ -134,8 +206,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           </thead>
           <tbody>{logs.map(renderItem)}</tbody>
         </Table>
-      </Container>
-    </div>
+      </Container> */}
+    </Content>
   );
 };
 

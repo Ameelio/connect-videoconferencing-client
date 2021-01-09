@@ -31,3 +31,15 @@ export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
   allowRestructure: "allowRestructure",
   allowMonitor: "allowMonitor",
 };
+
+export enum WeekdayMap {
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6,
+  Sunday = 0,
+}
+
+export const PADDING = 16;

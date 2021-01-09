@@ -11,6 +11,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
 import { recordingsSlice } from "./modules/recording";
+import { facilitiesSlice } from "./modules/facility";
 
 export const rootReducer = combineReducers({
   visitations: visitationsReducer,
@@ -21,6 +22,7 @@ export const rootReducer = combineReducers({
   contacts: contactsSlice.reducer,
   connections: connectionsSlice.reducer,
   recordings: recordingsSlice.reducer,
+  facilities: facilitiesSlice.reducer,
 });
 
 export const Store = configureStore({ reducer: rootReducer });

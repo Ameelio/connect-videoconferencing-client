@@ -9,9 +9,7 @@ import { connectionsActions } from "src/redux/modules/connections";
 import camelcaseKeys from "camelcase-keys";
 
 export async function getApprovedConnections(): Promise<BaseConnection[]> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connections?status=approved`)
-  );
+  const body = await fetchAuthenticated(`connections?status=approved`);
 
   if (!body.good || !body.data) {
     throw body;
@@ -26,9 +24,7 @@ export async function getApprovedConnections(): Promise<BaseConnection[]> {
 }
 
 export async function getConnectionRequests(): Promise<BaseConnection[]> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connections?status=pending`)
-  );
+  const body = await fetchAuthenticated(`connections?status=pending`);
 
   if (!body.good || !body.data) {
     throw body;

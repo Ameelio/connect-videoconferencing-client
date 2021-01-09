@@ -1,5 +1,14 @@
 import React, { ReactElement, useState } from "react";
-import { Layout, Menu as AntdMenu, Breadcrumb } from "antd";
+import {
+  Layout,
+  Menu as AntdMenu,
+  Row,
+  Col,
+  Select,
+  Avatar,
+  Space,
+  Dropdown,
+} from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -10,24 +19,64 @@ import {
   UserAddOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { logout } from "src/redux/modules/user";
+import { Facility, SelectedFacility } from "src/typings/Node";
+import "./Menu.css";
+import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
 
+const { Option } = Select;
+
+const { Sider } = Layout;
 const { SubMenu } = AntdMenu;
-
-const { Header, Content, Footer, Sider } = Layout;
 
 interface Props {
   session: SessionState;
+  selected: SelectedFacility;
+  facilities: Facility[];
   logout: () => void;
+  select: (facility: Facility) => void;
 }
 
-export default function Menu({ session, logout }: Props): ReactElement {
+const FacilityAvatar = ({ facility }: { facility: Facility }): JSX.Element => (
+  <Avatar
+    size="large"
+    shape="square"
+    style={{ backgroundColor: generateBgColor(facility.name) }}
+  >
+    {getInitials(facility.name)}
+  </Avatar>
+);
+
+export default function Menu({
+  session,
+  selected,
+  facilities,
+  select,
+  logout,
+}: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
   if (!session.isLoggedIn) return <div />;
+
+  const headerMenu = (
+    <AntdMenu>
+      <SubMenu key="sub2" title="Switch Organization">
+        {facilities.map((facility) => (
+          <AntdMenu.Item onClick={() => select(facility)}>
+            <Space>
+              <FacilityAvatar facility={facility} />
+              <span>{facility.name}</span>
+            </Space>
+          </AntdMenu.Item>
+        ))}
+      </SubMenu>
+      <AntdMenu.Item>
+        <a onClick={() => logout()}>Log out</a>
+      </AntdMenu.Item>
+    </AntdMenu>
+  );
 
   return (
     <Sider
@@ -35,7 +84,32 @@ export default function Menu({ session, logout }: Props): ReactElement {
       collapsed={collapsed}
       onCollapse={(collapsed) => setCollapsed(collapsed)}
     >
-      <div className="logo" />
+      <Row className="menu-header">
+        <Col flex={1}>
+          <FacilityAvatar facility={selected} />
+        </Col>
+        <Col flex={2}>
+          <Space direction="vertical">
+            <Dropdown overlay={headerMenu} className="menu-header-select">
+              <Select
+                disabled
+                defaultValue={selected.nodeId}
+                bordered={false}
+                className="menu-select"
+              >
+                {facilities.map((facility) => (
+                  <Option value={facility.nodeId}>{facility.name}</Option>
+                ))}
+              </Select>
+            </Dropdown>
+            <span className="menu-header-name">
+              {genFullName(session.user)}
+            </span>
+          </Space>
+        </Col>
+      </Row>
+
+      {/* </div> */}
       <AntdMenu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <AntdMenu.Item
           key="calendar"

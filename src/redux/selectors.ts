@@ -5,6 +5,7 @@ import { inmatesActions, inmatesAdapter } from "./modules/inmate";
 import { createSelector } from "reselect";
 import { recordingsAdapter } from "./modules/recording";
 import { staffAdapter } from "./modules/staff";
+import { facilitiesAdapter } from "./modules/facility";
 
 // get selectors from entity adapter
 export const {
@@ -31,6 +32,11 @@ export const {
   selectById: selectStaffByIdd,
   selectAll: selectAllStaff,
 } = staffAdapter.getSelectors<RootState>((state) => state.staff);
+
+export const {
+  selectById: selectFacilityById,
+  selectAll: selectAllFacilities,
+} = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
 
 // helper selectors
 const getConnectionEntities = (

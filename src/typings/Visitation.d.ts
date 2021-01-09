@@ -36,8 +36,3 @@ interface CallFilters {
   offset?: number;
   approved?: boolean;
 }
-// type VisitationFilterType = 'approved' | 'query' | 'approved' | 'limit' | 'offset' | 'global';
-
-// interface CallFilters<T> {
-//   [Key: VisitatinFilterType]: T;
-// }

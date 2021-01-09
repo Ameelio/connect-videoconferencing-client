@@ -32,12 +32,12 @@ export default function CallFiltersHeader({
   );
 
   return (
-    <div className="d-flex flex-row">
+    <Space align="center">
       <RangePicker
         onChange={(date) => {
           if (!date) return;
-          if (date[0]) setStartDate(date[0].unix());
-          if (date[1]) setEndDate(date[1].unix());
+          if (date[0]) setStartDate(date[0].unix() * 1000);
+          if (date[1]) setEndDate(date[1].unix() * 1000);
         }}
       />
       <Dropdown overlay={DurationFilters} trigger={["click"]}>
@@ -45,20 +45,6 @@ export default function CallFiltersHeader({
           Call Duration <DownOutlined />
         </a>
       </Dropdown>
-      {/* <DropdownButton id="dropdown-basic-button" title="Time range">
-                <Form>
-                <FormControl
-                type="text"
-                placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value) }
-                onSubmit={handleSubmission}
-                />
-                </Form>
-            </DropdownButton>
-            <DropdownButton id="dropdown-basic-button" title="Call duration">
-                {DURATION_FILTERS.map((duration) => <Dropdown.Item onClick={() => filterCalls()}>{duration} minutes </Dropdown.Item>)}
-            </DropdownButton> */}
-    </div>
+    </Space>
   );
 }
