@@ -71,6 +71,7 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
     //TODO, replace this with loading logic
     getConnectionRequests();
   }, []);
+
   return (
     <Content style={{ padding: PADDING }}>
       <Table dataSource={requests}>

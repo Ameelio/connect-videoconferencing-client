@@ -1,5 +1,6 @@
-@import "./scss/custom.scss";
+// @import "./scss/custom.scss";
 @import "~antd/dist/antd.css";
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@200;300;400;500;600;700;800&display=swap");
 
 :root {
   --main-primary-color: #0089ff;
@@ -34,7 +35,7 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Rubik", sans-serif !important;
   color: var(--main-black-600) !important;
   background-color: var(--main-background) !important;
 }

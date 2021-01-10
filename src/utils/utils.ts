@@ -13,6 +13,7 @@ import { NodeCallTimes } from "src/typings/Node";
 import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
 import { TimeRange, Weekday } from "src/typings/Common";
 import _ from "lodash";
+import { notification } from "antd";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -219,3 +220,14 @@ export function generateBgColor(label: string): string {
     Math.abs(hashCode(label) % BACKGROUND_COLORS.length)
   ];
 }
+
+export const openNotificationWithIcon = (
+  message: string,
+  description: string,
+  type: "success" | "info" | "error" | "warning"
+) => {
+  notification[type]({
+    message,
+    description,
+  });
+};

@@ -25,6 +25,7 @@
     "bootstrap": "^4.5.0",
     "camelcase-keys": "^6.2.2",
     "chart.js": "^2.9.3",
+    "connected-react-router": "^6.8.0",
     "date-fns": "^2.16.1",
     "lodash": "^4.17.20",
     "mediasoup-client": "^3.6.23",

@@ -24,12 +24,15 @@ import { fetchFacilities } from "./redux/modules/facility";
 import { selectAllFacilities } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { initializeAppData } from "./api/Common";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { ROUTES } from "./utils/constants";
+import { ConnectedRouter } from "connected-react-router";
+import { History } from "history";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
+  pathname: state.router.location,
 });
 const mapDispatchToProps = { logout, fetchFacilities, selectActiveFacility };
 
@@ -40,17 +43,19 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 function App({
   session,
   selected,
+  pathname,
   selectActiveFacility,
   logout,
   fetchFacilities,
-}: PropsFromRedux) {
+  history,
+}: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
     isAuthenticated: session.authInfo.apiToken !== "", // TODO: improve this later
     authenticationPath: "/login",
   };
 
   const facilities = useSelector(selectAllFacilities);
-  const history = useHistory();
+  // const history = useHistory();
   const [header, setHeader] = useState("");
 
   useEffect(() => {
@@ -70,19 +75,12 @@ function App({
   }, [selected]);
 
   useEffect(() => {
-    console.log(history);
-    if (history) {
-      const unlisten = history.listen((location, action) => {
-        console.log(location);
-        console.log(action);
-      });
-
-      return unlisten;
-    }
-  }, [history]);
+    const route = ROUTES.find((route) => route.path === pathname.pathname);
+    if (route) setHeader(route.label);
+  }, [pathname]);
 
   return (
-    <Router>
+    <ConnectedRouter history={history}>
       <Layout style={{ minHeight: "100vh" }}>
         {selected && (
           <Menu
@@ -159,7 +157,7 @@ function App({
           </Footer>
         </Layout>
       </Layout>
-    </Router>
+    </ConnectedRouter>
   );
 }
 

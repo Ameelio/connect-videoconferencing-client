@@ -30,13 +30,10 @@ export async function getConnectionRequests(): Promise<BaseConnection[]> {
     throw body;
   }
 
-  console.log(body);
   const connections = ((body.data as Record<string, unknown>)
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
   ) as BaseConnection[];
-
-  console.log(connections);
 
   Store.dispatch(setConnectionRequests(connections));
   return connections;
@@ -46,13 +43,10 @@ export async function updateConnection(
   connectionId: number,
   status: "approved" | "pending" | "denied"
 ): Promise<void> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/1/connection`),
-    {
-      method: "PUT",
-      body: JSON.stringify({ connection_id: connectionId, status }),
-    }
-  );
+  const body = await fetchAuthenticated("/connection", {
+    method: "PUT",
+    body: JSON.stringify({ connection_id: connectionId, status }),
+  });
 
   if (!body.good || !body.data) {
     throw body;

@@ -88,15 +88,17 @@ export default function Menu({
       <Dropdown overlay={headerMenu}>
         <Space align="center" className="menu-header">
           <FacilityAvatar facility={selected} />
-          <Space direction="vertical" size={0}>
-            <Space align="center">
-              <span className="menu-header-facility">{selected.name}</span>
-              <DownOutlined style={{ color: "white" }} />
+          {!collapsed && (
+            <Space direction="vertical" size={0}>
+              <Space align="center">
+                <span className="menu-header-facility">{selected.name}</span>
+                <DownOutlined style={{ color: "white" }} />
+              </Space>
+              <span className="menu-header-name">
+                {genFullName(session.user)}
+              </span>
             </Space>
-            <span className="menu-header-name">
-              {genFullName(session.user)}
-            </span>
-          </Space>
+          )}
         </Space>
       </Dropdown>
 

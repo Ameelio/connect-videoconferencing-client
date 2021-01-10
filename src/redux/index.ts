@@ -12,18 +12,27 @@ import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
 import { recordingsSlice } from "./modules/recording";
 import { facilitiesSlice } from "./modules/facility";
+import { connectRouter } from "connected-react-router";
+import { History } from "history";
+import { createBrowserHistory } from "history";
 
-export const rootReducer = combineReducers({
-  visitations: visitationsReducer,
-  requests: connectionsReducer,
-  staff: staffSlice.reducer,
-  session: sessionReducer,
-  inmates: inmatesSlice.reducer,
-  contacts: contactsSlice.reducer,
-  connections: connectionsSlice.reducer,
-  recordings: recordingsSlice.reducer,
-  facilities: facilitiesSlice.reducer,
-});
+export const history = createBrowserHistory();
+
+export const createRootReducer = (history: History) =>
+  combineReducers({
+    visitations: visitationsReducer,
+    requests: connectionsReducer,
+    staff: staffSlice.reducer,
+    session: sessionReducer,
+    inmates: inmatesSlice.reducer,
+    contacts: contactsSlice.reducer,
+    connections: connectionsSlice.reducer,
+    recordings: recordingsSlice.reducer,
+    facilities: facilitiesSlice.reducer,
+    router: connectRouter(history),
+  });
+
+export const rootReducer = createRootReducer(history);
 
 export const Store = configureStore({ reducer: rootReducer });
 

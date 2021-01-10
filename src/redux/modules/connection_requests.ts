@@ -1,5 +1,6 @@
 import { updateConnection } from "src/api/Connection";
 import { AppThunk } from "src/redux/helpers";
+import { openNotificationWithIcon } from "src/utils/utils";
 
 const SET_CONNECTION_REQUESTS = "connection/SET_CONNECTION_REQUESTS";
 const DELETE_CONNECTION_REQUEST = "connection/DECLINE_CONNECTION_REQUEST";
@@ -149,6 +150,7 @@ export const acceptConnectionRequest = (
   //   approvedAt: new Date(),
   // };
   dispatch(addConnection(request));
+  openNotificationWithIcon("Connection created!", "Hooray!", "success");
 };
 
 export const declineConnectionRequest = (
@@ -157,4 +159,5 @@ export const declineConnectionRequest = (
   await updateConnection(request.id, "denied");
   //TODO replace this with actual API call
   dispatch(deleteConnectionRequeest(request));
+  openNotificationWithIcon("Connection rejected", "Very sad", "info");
 };
