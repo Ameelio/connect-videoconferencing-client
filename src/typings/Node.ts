@@ -3,7 +3,7 @@ export interface AmeelioNode {
   name: string;
 }
 
-export interface NodeCallTimes {
+export interface NodeCallSlot {
   start: {
     day: number;
     hour: number;
@@ -21,6 +21,6 @@ export interface Facility {
 }
 
 export interface SelectedFacility extends Facility {
-  callTimes: NodeCallTimes[];
+  callTimes: NodeCallSlot[];
   // zone: string;
 }

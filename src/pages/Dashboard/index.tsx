@@ -7,9 +7,6 @@ import BarChart from "src/components/charts/BarChart";
 export default function Dashboard(): ReactElement {
   return (
     <div>
-      <div className="d-flex flex-column">
-        <span className="p2 facility-name mt-3">State Penitentiary</span>
-      </div>
       <div className="d-flex flex-row">
         <Container rounded>
           <MetricCard

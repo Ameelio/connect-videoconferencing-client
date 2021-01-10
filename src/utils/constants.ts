@@ -43,13 +43,13 @@ export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
 };
 
 export enum WeekdayMap {
+  Sunday = 0,
   Monday = 1,
   Tuesday = 2,
   Wednesday = 3,
   Thursday = 4,
   Friday = 5,
   Saturday = 6,
-  Sunday = 0,
 }
 
 export const PADDING = 16;
@@ -65,4 +65,14 @@ export const ROUTES: Route[] = [
   { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
   { path: "/settings", component: SettingsPage, label: "Settings" },
   { path: "/", component: DashboardPage, label: "Dashboard" },
+];
+
+export const WEEKDAYS = [
+  WeekdayMap.Sunday,
+  WeekdayMap.Monday,
+  WeekdayMap.Tuesday,
+  WeekdayMap.Wednesday,
+  WeekdayMap.Thursday,
+  WeekdayMap.Friday,
+  WeekdayMap.Saturday,
 ];

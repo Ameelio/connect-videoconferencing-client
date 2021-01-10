@@ -7,7 +7,8 @@ import {
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
 import { API_URL, fetchAuthenticated } from "src/api/Common";
-import { SelectedFacility, Facility, NodeCallTimes } from "src/typings/Node";
+import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Node";
+import { mapCallBlockToCallSlots } from "src/utils/Call";
 import url from "url";
 import { Store } from "..";
 
@@ -29,7 +30,7 @@ export const selectActiveFacility = createAsyncThunk(
 
     const callTimes = camelcaseKeys(
       (body.data as Record<string, unknown>).call_times as Object
-    ) as NodeCallTimes[];
+    ) as NodeCallSlot[];
 
     return { ...facility, callTimes };
   }
@@ -66,17 +67,22 @@ export const fetchFacilities = createAsyncThunk(
 
 export const updateCallTimes = createAsyncThunk(
   "facility/updateCallTimes",
-  async (args: { callTimes: NodeCallTimes }) => {
-    const fBody = await fetchAuthenticated(
-      url.resolve(
-        API_URL,
-        `/api/user/${Store.getState().session.user.id}/facilities`
-      )
-    );
+  async (args: { callSlots: NodeCallSlot[]; zone: string }) => {
+    const body = await fetchAuthenticated(`/times`, {
+      method: "PUT",
+      body: JSON.stringify({
+        call_times: args.callSlots,
+        zone: "America_LosAngeles",
+      }),
+    });
 
     // update
+    if (!body.data) {
+      throw new Error("Could not update call time");
+    }
 
     // update stsore
+    return args.callSlots;
   }
 );
 
@@ -123,9 +129,15 @@ export const facilitiesSlice = createSlice({
       error: action.error.message,
       loading: false,
     }));
-    builder.addCase(selectActiveFacility.pending, (state, action) => ({
+    builder.addCase(selectActiveFacility.pending, (state) => ({
       ...state,
       loading: true,
+    }));
+    builder.addCase(updateCallTimes.fulfilled, (state, action) => ({
+      ...state,
+      // TODO update store with new call times
+      // selected:  {...state.selected},
+      // selected: { ...state.selected, callTimes: action.payload },
     }));
   },
 });

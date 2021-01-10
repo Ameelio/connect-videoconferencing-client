@@ -1,72 +1,134 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { TimePicker, Layout, Row, Col } from "antd";
+import { TimePicker, Layout, Row, Col, Space, Button } from "antd";
 import { Header } from "antd/lib/layout/layout";
-import { NodeCallTimes } from "src/typings/Node";
-import { WeekdayMap } from "src/utils/constants";
-import { mapCallTimeToRange } from "src/utils/utils";
+import { NodeCallSlot } from "src/typings/Node";
+import { PADDING, WeekdayMap, WEEKDAYS } from "src/utils/constants";
 import moment from "moment";
-import { TimeRange } from "src/typings/Common";
+import { CallBlock, WeeklySchedule } from "src/typings/Common";
+import { Tabs } from "antd";
+import {
+  dayOfWeekAsString,
+  mapCallSlotsToTimeBlock,
+  mapCallBlockToCallSlots,
+} from "src/utils/Call";
+import { cloneObject } from "src/utils/utils";
+import { updateCallTimes } from "src/redux/modules/facility";
+import { format } from "date-fns";
 
+const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   facility: state.facilities.selected,
 });
-const mapDispatchToProps = {};
+const mapDispatchToProps = { updateCallTimes };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function SettingsContainer({ facility }: PropsFromRedux): ReactElement {
-  const [ranges, setRanges] = useState<
-    { day: WeekdayMap; ranges: TimeRange[] }[]
-  >();
+type Tab = "setting" | "facility";
+
+function SettingsContainer({
+  facility,
+  updateCallTimes,
+}: PropsFromRedux): ReactElement {
+  const [ranges, setRanges] = useState<WeeklySchedule>();
+  const [activeTab, setActiveTab] = useState<Tab>("setting");
+  const [callSlots, setCallSlots] = useState<NodeCallSlot[]>([]);
 
   useEffect(() => {
-    if (facility) setRanges(mapCallTimeToRange(facility.callTimes));
+    if (facility) setRanges(mapCallSlotsToTimeBlock(facility.callTimes));
   }, [facility]);
 
   if (!facility || !ranges) return <div />;
 
-  const format = "HH:mm";
+  const dateFormat = "HH:mm";
 
-  const renderItem = (range: { day: WeekdayMap; ranges: TimeRange[] }) => {
+  const tabCallback = (key: string) => {
+    setActiveTab(key as Tab);
+  };
+
+  const onChange = (start: Date, end: Date, day: WeekdayMap, idx: number) => {
+    // setRanges(mapCallSlotsToTimeBlock())
+    const r = cloneObject(ranges) as WeeklySchedule;
+    // update call block
+    r[day][idx] = {
+      start: start.toString(),
+      end: end.toString(),
+      duration: 30,
+      idx,
+      day,
+    };
+    setCallSlots(mapCallBlockToCallSlots(r));
+  };
+
+  const handleSubmission = (e: React.MouseEvent) => {
+    updateCallTimes({ callSlots, zone: "America_LosAngeles" });
+  };
+  const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
     return (
-      <Layout>
-        <Row>
-          <Col span={3}>{range.day}</Col>
-          <Col span={12}>
-            {range.ranges.map((time) => (
+      <Row>
+        <Col span={3}>{dayOfWeekAsString(day)}</Col>
+        <Col span={12}>
+          <Space direction="vertical">
+            {ranges.length > 0 ? (
+              ranges.map((time) => (
+                <RangePicker
+                  minuteStep={30}
+                  use12Hours={true}
+                  defaultValue={[
+                    moment(time.start, dateFormat),
+                    moment(time.end, dateFormat),
+                  ]}
+                  onChange={(values) => {
+                    if (!values || !values[0] || !values[1]) return;
+                    // TODO with date range picker, convert to right day
+                    onChange(
+                      values[0].toDate(),
+                      values[1].toDate(),
+                      day,
+                      time.idx
+                    );
+                  }}
+                  format={dateFormat}
+                />
+              ))
+            ) : (
               <RangePicker
-                // defaultValue={time.startTime}
+                format={dateFormat}
                 minuteStep={30}
                 use12Hours={true}
-                defaultValue={[
-                  moment(time.start, "HH:mm"),
-                  moment(time.end, "HH:mm"),
-                ]}
-                onChange={(values) => console.log(values)}
-                format={format}
+                onChange={(values) => {
+                  if (!values || !values[0] || !values[1]) return;
+                  onChange(values[0].toDate(), values[1].toDate(), day, 0);
+                }}
               />
-            ))}
-          </Col>
-        </Row>
-      </Layout>
+            )}
+          </Space>
+        </Col>
+      </Row>
     );
   };
 
   return (
-    <Layout>
-      <Header>Settings</Header>
-      <Content>
-        {/* map over ranges, create div with daay of week + all ranges */}
-        {ranges.map(renderItem)}
+    <Content style={{ padding: PADDING }}>
+      <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+        <TabPane tab="General Settings" key="setting"></TabPane>
+        <TabPane tab="Facility Settings" key="facility"></TabPane>
+      </Tabs>
+      <Content className="main-content-container">
+        <Space direction="vertical">
+          {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
+          <Button type="primary" onClick={handleSubmission}>
+            Save Changes
+          </Button>
+        </Space>
       </Content>
-    </Layout>
+    </Content>
   );
 }
 

@@ -1,3 +1,5 @@
+import { WeekdayMap } from "src/utils/constants";
+
 export type Weekday =
   | "Sunday"
   | "Monday"
@@ -7,10 +9,12 @@ export type Weekday =
   | "Friday"
   | "Saturday";
 
-export interface TimeRange {
+export interface CallBlock {
+  idx: number;
   start: string;
   end: string;
   duration: number;
+  day: WeekdayMap;
 }
 
 export interface Route {
@@ -18,3 +22,7 @@ export interface Route {
   component: React.ComponentType<any>;
   label: string;
 }
+
+export type WeeklySchedule = {
+  [key: number]: CallBlock[];
+};

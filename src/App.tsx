@@ -17,7 +17,7 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/User";
 import Menu from "./components/headers/Menu";
-import { Layout, PageHeader } from "antd";
+import { Avatar, Layout, PageHeader } from "antd";
 import { logout } from "src/redux/modules/user";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
@@ -28,6 +28,9 @@ import { initializeAppData } from "./api/Common";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
 import { History } from "history";
+import Icon, { BellFilled, BellOutlined, BulbFilled } from "@ant-design/icons";
+import { InitialsAvatar } from "./components/avatar/InitialsAvatar";
+import { genFullName } from "./utils/utils";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -92,7 +95,18 @@ function App({
           />
         )}
         <Layout>
-          <PageHeader title={header} />
+          <PageHeader
+            title={header}
+            extra={[
+              <BellFilled />,
+              <BulbFilled />,
+              <InitialsAvatar
+                name={genFullName(session.user)}
+                size="default"
+                shape="circle"
+              />,
+            ]}
+          />
           <Switch>
             <Route exact path="/login" component={Login}></Route>
             {ROUTES.map((i) => (
@@ -103,54 +117,6 @@ function App({
                 component={i.component}
               ></ProtectedRoute>
             ))}
-            {/* <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/calendar"
-              component={CalendarView}
-            ></ProtectedRoute> */}
-            {/* <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/requests"
-              component={ConnectionRequests}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/logs"
-              component={Logs}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/staff"
-              component={Staff}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/members"
-              component={Inmate}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/visitations"
-              component={LiveVisitation}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/settings"
-              component={Settings}
-            ></ProtectedRoute>
-            <ProtectedRoute
-              exact
-              {...defaultProtectedRouteProps}
-              path="/"
-              component={Dashboard}
-            ></ProtectedRoute> */}
           </Switch>
           <Footer style={{ textAlign: "center" }}>
             Connect ©2021 Created by Ameelio Inc.
