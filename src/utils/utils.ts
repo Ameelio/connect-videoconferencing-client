@@ -1,13 +1,5 @@
 import { EventInput } from "@fullcalendar/react";
-import {
-  addSeconds,
-  format,
-  differenceInSeconds,
-  addMinutes,
-  getHours,
-  getMinutes,
-  getDay,
-} from "date-fns";
+import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
 import { NodeCallSlot } from "src/typings/Node";
 import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";

@@ -76,3 +76,6 @@ export const WEEKDAYS = [
   WeekdayMap.Friday,
   WeekdayMap.Saturday,
 ];
+
+// 30 min
+export const DEFAULT_DURATION_MS = 18e6;

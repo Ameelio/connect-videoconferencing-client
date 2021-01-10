@@ -4,7 +4,12 @@ import { connect, ConnectedProps } from "react-redux";
 import { TimePicker, Layout, Row, Col, Space, Button } from "antd";
 import { Header } from "antd/lib/layout/layout";
 import { NodeCallSlot } from "src/typings/Node";
-import { PADDING, WeekdayMap, WEEKDAYS } from "src/utils/constants";
+import {
+  PADDING,
+  WeekdayMap,
+  WEEKDAYS,
+  DEFAULT_DURATION_MS,
+} from "src/utils/constants";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Common";
 import { Tabs } from "antd";
@@ -59,11 +64,14 @@ function SettingsContainer({
     r[day][idx] = {
       start: start.toString(),
       end: end.toString(),
-      duration: 30,
+      duration: DEFAULT_DURATION_MS,
       idx,
       day,
     };
+    const h = mapCallBlockToCallSlots(r);
+    console.log(h);
     setCallSlots(mapCallBlockToCallSlots(r));
+    setRanges(r);
   };
 
   const handleSubmission = (e: React.MouseEvent) => {
@@ -81,8 +89,11 @@ function SettingsContainer({
                   minuteStep={30}
                   use12Hours={true}
                   defaultValue={[
-                    moment(time.start, dateFormat),
-                    moment(time.end, dateFormat),
+                    moment(
+                      format(new Date(time.start), dateFormat),
+                      dateFormat
+                    ),
+                    moment(format(new Date(time.end), dateFormat), dateFormat),
                   ]}
                   onChange={(values) => {
                     if (!values || !values[0] || !values[1]) return;

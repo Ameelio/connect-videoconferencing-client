@@ -1,14 +1,7 @@
-import {
-  addMilliseconds,
-  addMinutes,
-  format,
-  getDay,
-  getHours,
-  getMinutes,
-} from "date-fns";
+import { addMilliseconds, getDay, getHours, getMinutes } from "date-fns";
 import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Common";
 import { NodeCallSlot } from "src/typings/Node";
-import { WeekdayMap, WEEKDAYS } from "./constants";
+import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
 
 const callSlotToDateString = (time: NodeCallSlot): string => {
@@ -20,7 +13,10 @@ const callSlotToDateString = (time: NodeCallSlot): string => {
 
 const calcEndCallSlot = (time: NodeCallSlot): string => {
   const date = new Date();
-  date.setDate(time.start.day);
+  // TODO fix this
+  const offset = date.getDay() - time.start.day;
+  //     date.setDate(date.getDate() + offset);
+  //   date.setDate(time.start.day);
   date.setHours(time.start.hour);
   date.setMinutes(time.start.minute);
   // const hi = addMilliseconds(date, duration);
@@ -83,7 +79,7 @@ export const mapCallSlotsToTimeBlock = (
         // new time range
         // TODO account for potential timezone differences?
         timeRanges.push({
-          duration: 30,
+          duration: DEFAULT_DURATION_MS,
           start: callSlotToDateString(first),
           end: calcEndCallSlot(curr),
           idx,
@@ -97,7 +93,7 @@ export const mapCallSlotsToTimeBlock = (
     }
     // create last range
     timeRanges.push({
-      duration: 30,
+      duration: DEFAULT_DURATION_MS,
       start: callSlotToDateString(first),
       end: calcEndCallSlot(curr),
       idx,
@@ -120,7 +116,7 @@ export const mapCallBlockToCallSlots = (
   );
 
   console.log(rangeList);
-  return rangeList
+  const res = rangeList
     .map((range) => {
       let iterator = new Date(range.start);
       const endTime = new Date(range.end);
@@ -129,21 +125,23 @@ export const mapCallBlockToCallSlots = (
 
       const callTimes: NodeCallSlot[] = [];
 
-      while (iterator <= endTime) {
+      while (iterator < endTime) {
         callTimes.push({
           start: {
             hour: getHours(iterator),
             minute: getMinutes(iterator),
-            day: getDay(range.day),
+            day: range.day,
           },
           duration: range.duration,
         });
-        iterator = addMinutes(iterator, range.duration);
+        iterator = addMilliseconds(iterator, range.duration);
+        console.log(iterator);
       }
 
       return callTimes;
     })
     .reduce((prev, curr) => prev.concat(curr), []);
+  return res;
 };
 
 export const dayOfWeekAsString = (dayIndex: WeekdayMap): string => {
