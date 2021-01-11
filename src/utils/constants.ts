@@ -53,6 +53,7 @@ export enum WeekdayMap {
 }
 
 export const PADDING = 16;
+export const WRAPPER_STYLE = { padding: PADDING, paddingTop: 0 };
 
 type Routename = string;
 
@@ -78,4 +79,4 @@ export const WEEKDAYS = [
 ];
 
 // 30 min
-export const DEFAULT_DURATION_MS = 18e6;
+export const DEFAULT_DURATION_MS = 1800000;

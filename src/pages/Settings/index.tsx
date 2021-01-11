@@ -1,11 +1,12 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { TimePicker, Layout, Row, Col, Space, Button } from "antd";
+import { TimePicker, Layout, Row, Col, Space, Button, Divider } from "antd";
 import { Header } from "antd/lib/layout/layout";
 import { NodeCallSlot } from "src/typings/Node";
 import {
   PADDING,
+  WRAPPER_STYLE,
   WeekdayMap,
   WEEKDAYS,
   DEFAULT_DURATION_MS,
@@ -46,7 +47,10 @@ function SettingsContainer({
   const [callSlots, setCallSlots] = useState<NodeCallSlot[]>([]);
 
   useEffect(() => {
-    if (facility) setRanges(mapCallSlotsToTimeBlock(facility.callTimes));
+    if (facility) {
+      setCallSlots(facility.callTimes);
+      setRanges(mapCallSlotsToTimeBlock(facility.callTimes));
+    }
   }, [facility]);
 
   if (!facility || !ranges) return <div />;
@@ -58,7 +62,6 @@ function SettingsContainer({
   };
 
   const onChange = (start: Date, end: Date, day: WeekdayMap, idx: number) => {
-    // setRanges(mapCallSlotsToTimeBlock())
     const r = cloneObject(ranges) as WeeklySchedule;
     // update call block
     r[day][idx] = {
@@ -69,7 +72,6 @@ function SettingsContainer({
       day,
     };
     const h = mapCallBlockToCallSlots(r);
-    console.log(h);
     setCallSlots(mapCallBlockToCallSlots(r));
     setRanges(r);
   };
@@ -79,57 +81,55 @@ function SettingsContainer({
   };
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
     return (
-      <Row>
-        <Col span={3}>{dayOfWeekAsString(day)}</Col>
-        <Col span={12}>
-          <Space direction="vertical">
-            {ranges.length > 0 ? (
-              ranges.map((time) => (
-                <RangePicker
-                  minuteStep={30}
-                  use12Hours={true}
-                  defaultValue={[
-                    moment(
-                      format(new Date(time.start), dateFormat),
-                      dateFormat
-                    ),
-                    moment(format(new Date(time.end), dateFormat), dateFormat),
-                  ]}
-                  onChange={(values) => {
-                    if (!values || !values[0] || !values[1]) return;
-                    // TODO with date range picker, convert to right day
-                    onChange(
-                      values[0].toDate(),
-                      values[1].toDate(),
-                      day,
-                      time.idx
-                    );
-                  }}
-                  format={dateFormat}
-                />
-              ))
-            ) : (
+      <Space direction="vertical">
+        <Divider orientation="left">{dayOfWeekAsString(day)}</Divider>
+        {/* <Col> */}
+        <Space direction="vertical">
+          {ranges.length > 0 ? (
+            ranges.map((time) => (
               <RangePicker
-                format={dateFormat}
                 minuteStep={30}
                 use12Hours={true}
+                defaultValue={[
+                  moment(format(new Date(time.start), dateFormat), dateFormat),
+                  moment(format(new Date(time.end), dateFormat), dateFormat),
+                ]}
                 onChange={(values) => {
                   if (!values || !values[0] || !values[1]) return;
-                  onChange(values[0].toDate(), values[1].toDate(), day, 0);
+                  // TODO with date range picker, convert to right day
+                  onChange(
+                    values[0].toDate(),
+                    values[1].toDate(),
+                    day,
+                    time.idx
+                  );
                 }}
+                format={dateFormat}
               />
-            )}
-          </Space>
-        </Col>
-      </Row>
+            ))
+          ) : (
+            <RangePicker
+              format={dateFormat}
+              minuteStep={30}
+              use12Hours={true}
+              onChange={(values) => {
+                if (!values || !values[0] || !values[1]) return;
+                onChange(values[0].toDate(), values[1].toDate(), day, 0);
+              }}
+            />
+          )}
+        </Space>
+        {/* </Col> */}
+      </Space>
     );
   };
 
   return (
-    <Content style={{ padding: PADDING }}>
+    <Content style={WRAPPER_STYLE}>
       <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
         <TabPane tab="General Settings" key="setting"></TabPane>
         <TabPane tab="Facility Settings" key="facility"></TabPane>
+        <TabPane tab="Call Hours" key="facility"></TabPane>
       </Tabs>
       <Content className="main-content-container">
         <Space direction="vertical">

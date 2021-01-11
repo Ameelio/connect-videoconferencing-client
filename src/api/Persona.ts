@@ -6,7 +6,7 @@ import camelcaseKeys from "camelcase-keys";
 import { contactsActions } from "src/redux/modules/contact";
 
 export async function getInmates(): Promise<Inmate[]> {
-  const body = await fetchAuthenticated(`/inmates`);
+  const body = await fetchAuthenticated(`/inmates`, {}, false);
 
   if (!body.good || !body.data) {
     throw body;
