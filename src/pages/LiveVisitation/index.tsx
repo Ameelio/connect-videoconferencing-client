@@ -69,13 +69,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     <Menu>
       {OPTIONS.map((option) => (
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setNumGridCalls(option)}
-          >
-            {option}
-          </a>
+          <span onClick={() => setNumGridCalls(option)}>{option}</span>
         </Menu.Item>
       ))}
     </Menu>
@@ -83,7 +77,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     setVisibleCalls(visitations.slice(0, numGridCalls));
-  }, [numGridCalls]);
+  }, [numGridCalls, visitations]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;

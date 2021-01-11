@@ -5,7 +5,7 @@ import RoomClient from "src/components/videoconference/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
 import io from "socket.io-client";
 
-interface Props2 {
+interface Props {
   callId: number;
   socket: SocketIOClient.Socket;
 }
@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-const VideoChat: React.FC<Props2> = React.memo(({ callId, socket }) => {
+const VideoChat: React.FC<Props> = React.memo(({ callId, socket }) => {
   // console.log(socket);
 
   const ref = React.createRef<HTMLDivElement>();
@@ -32,7 +32,6 @@ const VideoChat: React.FC<Props2> = React.memo(({ callId, socket }) => {
     if (ref.current) {
       console.log("Reinitializing videochat." + callId);
       (async () => {
-        // const socket = io.connect("ws://localhost:8000", { transports: ["websocket"] })
         console.log("Connection state", socket.connected);
 
         if (!socket.connected) {
