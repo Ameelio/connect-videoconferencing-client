@@ -20,6 +20,7 @@ import Wrapper from "src/components/containers/Wrapper";
 import { loadLiveVisitations } from "src/api/Visitation";
 import io from "socket.io-client";
 import { getAllVisitationsInfo } from "src/redux/selectors";
+import { Menu, Button, Dropdown } from "antd";
 
 const mapStateToProps = (state: RootState) => ({
   visitations: getAllVisitationsInfo(
@@ -51,6 +52,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   loadLiveVisitations,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
+  const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
+  const [numGridCalls, setNumGridCalls] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
     LiveVisitation[]
@@ -60,6 +63,27 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     loadLiveVisitations();
     setSocket(io.connect("ws://localhost:8000", { transports: ["websocket"] }));
   }, [loadLiveVisitations]);
+
+  const OPTIONS = [1, 3, 6, 12];
+  const GridMenu = (
+    <Menu>
+      {OPTIONS.map((option) => (
+        <Menu.Item>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setNumGridCalls(option)}
+          >
+            {option}
+          </a>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
+  useEffect(() => {
+    setVisibleCalls(visitations.slice(0, numGridCalls));
+  }, [numGridCalls]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -112,16 +136,23 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         ))}
       </Sidebar>
 
-      {selected && socket && visitations && visitations.length > 0 && (
+      {socket && (
         <Wrapper>
           <Container>
-            <VisitationCard
-              type={CardType.LiveVisitation}
-              visitation={visitations && visitations[0]}
-              socket={socket}
-              actionLabel="calling"
-              handleClick={() => console.log("hi")}
-            />
+            <Dropdown overlay={GridMenu} placement="bottomLeft">
+              <Button>{numGridCalls}</Button>
+            </Dropdown>
+            <div className="d-flex flex-column">
+              {visibleCalls.map((visibleCall) => (
+                <VisitationCard
+                  socket={socket}
+                  type={CardType.LiveVisitation}
+                  visitation={visibleCall}
+                  actionLabel="calling"
+                  handleClick={handleVideoTermination}
+                />
+              ))}
+            </div>
           </Container>
 
           <div></div>
