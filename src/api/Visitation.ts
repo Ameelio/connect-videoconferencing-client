@@ -88,3 +88,25 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
 //   Store.dispatch(setPastVisitations(visitations));
 //   return visitations;
 // }
+
+export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
+  const now = new Date().getTime();
+
+  const options = [
+    ["approved", "true"],
+    ["first_live", [0, now].join(",")],
+    ["end", [now, now + 1e8].join(",")],
+  ];
+
+  const body = await fetchAuthenticated(
+    url.resolve(API_URL, "node/2/calls?" + toQueryString(options))
+  );
+
+  console.log(body);
+  // TODO how to properly typecheck this?
+  const visitations = ((body.data as Record<string, RawVisitation[]>).calls.map(
+    cleanVisitation
+  ) as any) as LiveVisitation[];
+
+  dispatch(setLiveVisitations(visitations));
+};
