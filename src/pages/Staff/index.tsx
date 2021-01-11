@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { loadStaff } from "src/redux/modules/staff";
+import { loadStaff, updateStaff } from "src/redux/modules/staff";
 import Wrapper from "src/components/containers/Wrapper";
 import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType } from "src/utils/constants";
+import { CardType, STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import UserDetailsCard from "src/components/cards/UserDetailsCard";
@@ -15,7 +15,8 @@ import { Image } from "antd";
 import { Modal, Button } from "antd";
 import { Switch } from "antd";
 import { SwitchChangeEventHandler } from "antd/lib/switch";
-import { genFullName } from "src/utils/utils";
+import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
+import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 
 const { Column } = Table;
 
@@ -24,45 +25,71 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ loadStaff }, dispatch);
+  bindActionCreators({ loadStaff, updateStaff }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [selected, setSelected] = React.useState<Staff>();
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
-  const [modalText, setModalText] = React.useState("Content of the modal");
+const StaffContainer: React.FC<PropsFromRedux> = ({
+  staff,
+  updateStaff,
+  loadStaff,
+}) => {
+  const [modalType, setModalType] = useState<"create" | "edit" | null>(null);
+  const [selected, setSelected] = useState<Staff>();
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [formData, setFormData] = useState<StaffFormFields>({
+    email: "",
+    role: "",
+    permissions: [],
+  });
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    Record<Permission, boolean>
+  >({
+    allowRead: false,
+    allowCalltimes: false,
+    allowApproval: false,
+    allowRestructure: false,
+    allowMonitor: false,
+  });
 
+  // create d
   const showModal = (record: Staff) => {
-    setVisible(true);
     setSelected(record);
   };
 
   const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
     setConfirmLoading(true);
-    setTimeout(() => {
-      setVisible(false);
-      setConfirmLoading(false);
-    }, 2000);
-  };
+    switch (modalType) {
+      case "edit":
+        if (selected)
+          updateStaff({
+            userId: selected.id,
+            permissions: Object.keys(selectedPermissions).filter(
+              (key) => selectedPermissions[key as Permission]
+            ) as Permission[],
+          });
+        break;
+      case "create":
+        // do somethin
+        break;
+    }
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
+    setConfirmLoading(false);
   };
-
-  function onChange(checked: boolean) {
-    // console.log(`switch to ${checked}`);
-  }
 
   useEffect(() => {
     loadStaff();
   }, [loadStaff]);
+
+  useEffect(() => {
+    if (selected)
+      setSelectedPermissions(mapPermissionMap(selected.permissions));
+  }, [selected]);
+
   return (
-    <div className="d-flex flex-row">
+    <div className="d-flex">
+      <Button onClick={() => setModalType("create")}>Add</Button>
       <Table dataSource={staff}>
         <Column
           title=""
@@ -101,21 +128,43 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, loadStaff }) => {
         />
       </Table>
       <Modal
-        title="Edit Staff"
-        visible={visible}
+        title="Add Staff"
+        visible={modalType === "create"}
         onOk={handleOk}
         confirmLoading={confirmLoading}
-        onCancel={handleCancel}
+        onCancel={() => setModalType(null)}
+      >
+        <CreateStaffForm data={formData} onChange={setFormData} />
+      </Modal>
+      <Modal
+        title="Edit Staff"
+        visible={modalType === "edit"}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={() => setModalType(null)}
       >
         {selected && (
           <div className="d-flex flex-column">
             <span>{genFullName(selected)}</span>
             <span>{selected.role}</span>
             <span>{selected.email}</span>
-            {selected.permissions.map((permission) => (
-              <div className="d-flex flex-row">
-                <Switch defaultChecked onChange={onChange} />
-                <span>{permission}</span>
+            {Object.keys(STAFF_PERMISSION_OPTIONS).map((key) => (
+              <div>
+                <span>{STAFF_PERMISSION_OPTIONS[key as Permission]}</span>
+                <Switch
+                  defaultChecked={selected.permissions.includes(
+                    key as Permission
+                  )}
+                  checked={selectedPermissions[key as Permission]}
+                  onChange={(checked) => {
+                    const update = cloneObject(selectedPermissions) as Record<
+                      Permission,
+                      boolean
+                    >;
+                    update[key as Permission] = checked;
+                    setSelectedPermissions(update);
+                  }}
+                />
               </div>
             ))}
           </div>

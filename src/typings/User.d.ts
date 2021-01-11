@@ -24,7 +24,7 @@ interface Contact extends BasePersona {
 
 type StaffRole = "admin" | "supervisor" | "operator" | "investigator";
 
-type Permissions =
+type Permission =
   | "allowRead"
   | "allowCalltimes"
   | "allowApproval"
@@ -32,7 +32,7 @@ type Permissions =
   | "allowMonitor";
 
 interface Staff extends BasePersona {
-  permissions: Permissions[];
+  permissions: Permission[];
   role: StaffRole;
   email: string;
   // TODO move this to a different place on the redux store. It's gonna be selected beforehand.

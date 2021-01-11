@@ -1,4 +1,4 @@
-import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
+import { API_URL, fetchAuthenticated } from "./Common";
 import url from "url";
 import { Store } from "src/redux";
 import { inmatesActions } from "src/redux/modules/inmate";

@@ -59,7 +59,7 @@ const VisitationCard: React.FC<Props> = ({
         kioskId={kioskId}
         currentTime={
           type === CardType.LiveVisitation
-            ? now
+            ? now.getTime()
             : (visitation as RecordedVisitation).endTime
         }
       />
