@@ -35,6 +35,7 @@ function App({ session, logout }: PropsFromRedux) {
   };
 
   useEffect(() => {
+    // localStorage.removeItem("debug");
     (async () => {
       try {
         await loginWithToken();

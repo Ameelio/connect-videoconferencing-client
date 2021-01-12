@@ -2,10 +2,12 @@ import { API_URL, fetchAuthenticated, toQueryString } from "./Common";
 import url from "url";
 import { Store } from "src/redux";
 import {
+  setLiveVisitations,
   setPastVisitations,
   setScheduledVisitations,
 } from "src/redux/modules/visitation";
 import camelcaseKeys from "camelcase-keys";
+import { AppThunk } from "src/redux/helpers";
 
 interface RawUser {
   id: number;
@@ -20,49 +22,6 @@ interface RawInmate {
   nodes: AmeelioNode[];
   inmate_number: string;
 }
-
-interface RawConnection {
-  id: number;
-  inmate: RawInmate;
-  user: RawUser;
-  requested_at: number;
-  approved_at: number;
-  relationship: string;
-  request_details: string;
-  status: string;
-  status_details: string;
-}
-
-// function cleanInmate(inmate: RawInmate): Inmate {
-//   return {
-//     id: inmate.id,
-//     inmateNumber: inmate.inmate_number,
-//     firstName: inmate.first_name,
-//     lastName: inmate.last_name,
-//     nodes: inmate.nodes,
-//   } as Inmate;
-// }
-
-// function createContact(connection: RawConnection) {
-//   return {
-//     id: connection.user.id,
-//     firstName: connection.user.first_name,
-//     lastName: connection.user.last_name,
-//     relationship: connection.relationship,
-//     details: connection.request_details,
-//   } as Contact;
-// }
-
-// function cleanConnection(connection: RawConnection): BaseConnection {
-//   return {
-//     id: connection.id,
-//     inmateId: cleanInmate(connection.inmate),
-//     contactId: createContact(connection),
-//     requestedAt: new Date(connection.requested_at),
-//     approvedAt: new Date(connection.approved_at),
-//     requestDetails: conn
-//   } as BaseConnection;
-// }
 
 interface RawVisitation {
   id: number;
@@ -129,3 +88,25 @@ function cleanVisitation(visitation: RawVisitation): BaseVisitation {
 //   Store.dispatch(setPastVisitations(visitations));
 //   return visitations;
 // }
+
+export const loadLiveVisitations = (): AppThunk => async (dispatch) => {
+  const now = new Date().getTime();
+
+  const options = [
+    ["approved", "true"],
+    ["first_live", [0, now].join(",")],
+    ["end", [now, now + 1e8].join(",")],
+  ];
+
+  const body = await fetchAuthenticated(
+    url.resolve(API_URL, "node/2/calls?" + toQueryString(options))
+  );
+
+  console.log(body);
+  // TODO how to properly typecheck this?
+  const visitations = ((body.data as Record<string, RawVisitation[]>).calls.map(
+    cleanVisitation
+  ) as any) as LiveVisitation[];
+
+  dispatch(setLiveVisitations(visitations));
+};

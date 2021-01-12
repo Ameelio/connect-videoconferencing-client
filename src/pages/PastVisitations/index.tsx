@@ -32,13 +32,16 @@ import { getRecordings } from "src/redux/modules/recording";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
 
-const mapStateToProps = (state: RootState) => ({
-  logs: getAllVisitationsInfo(
-    state,
-    selectAllRecordings(state)
-  ) as RecordedVisitation[],
-  selected: state.visitations.selectedPastVisitation,
-});
+const mapStateToProps = (state: RootState) => {
+  console.log("Calling mapstatetoprops");
+
+  return {
+    logs: getAllVisitationsInfo(state, selectAllRecordings(state)).filter(
+      (x) => x.startTime && x.endTime
+    ) as RecordedVisitation[],
+    selected: state.visitations.selectedPastVisitation,
+  };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators({ getRecordings, selectPastVisitation }, dispatch);
@@ -87,6 +90,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
 
   const renderItem = (visitation: RecordedVisitation): JSX.Element => {
+    console.log("Rendering vistation:", visitation);
+
     return (
       <tr>
         <td></td>
