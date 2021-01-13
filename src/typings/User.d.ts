@@ -44,12 +44,8 @@ interface UserLoginInfo {
   remember?: boolean;
 }
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
+interface User extends BasePersona {
   email: string;
-  image: string;
 }
 
 interface AuthInfo {

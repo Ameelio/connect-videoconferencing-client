@@ -9,10 +9,10 @@ import { AppThunk, cleanVisitation, RawVisitation } from "../helpers";
 import url from "url";
 import { createCallOptionsParam } from "src/utils/utils";
 
-export const recordingsAdapter = createEntityAdapter<BaseVisitation>();
+export const callsAdapter = createEntityAdapter<BaseVisitation>();
 
-export const getRecordings = createAsyncThunk(
-  "recordings/fetchAll",
+export const fetchCalls = createAsyncThunk(
+  "calls/fetchAll",
   async (filters: CallFilters) => {
     const body = await fetchAuthenticated(
       `/calls?${createCallOptionsParam(filters)}`
@@ -23,9 +23,6 @@ export const getRecordings = createAsyncThunk(
 
     const visitations = ((body.data as Record<string, unknown>)
       .calls as RawVisitation[]).map(cleanVisitation) as RecordedVisitation[];
-    //TODO update this with API return when it's actually supported
-    // const staff = camelcaseKeys((body.data as Record<string, unknown>)
-    // .admin as Object) as Staff;;
 
     return visitations;
   }
@@ -35,24 +32,25 @@ interface VisitationState extends EntityState<BaseVisitation> {
   error?: string;
 }
 
-const initialState: VisitationState = recordingsAdapter.getInitialState({});
+const initialState: VisitationState = callsAdapter.getInitialState({});
 
-export const recordingsSlice = createSlice({
-  name: "recordings",
+export const callsSlice = createSlice({
+  name: "calls",
   initialState,
   reducers: {
-    recordingsAddMany: recordingsAdapter.addMany,
-    recordingsSetAll: recordingsAdapter.setAll,
+    callsAddMany: callsAdapter.addMany,
+    callsSetAll: callsAdapter.setAll,
   },
   extraReducers: (builder) => {
-    builder.addCase(getRecordings.fulfilled, (state, action) => {
-      recordingsAdapter.setAll(state, action.payload);
+    builder.addCase(fetchCalls.fulfilled, (state, action) => {
+      // TODO make this a set all and filter
+      callsAdapter.setAll(state, action.payload);
     });
-    builder.addCase(getRecordings.rejected, (state, action) => ({
+    builder.addCase(fetchCalls.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
     }));
   },
 });
 
-export const recordingsActions = recordingsSlice.actions;
+export const callsActions = callsSlice.actions;

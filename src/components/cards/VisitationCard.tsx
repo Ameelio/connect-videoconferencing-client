@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import VideoChat from "src/components/videoconference/VideoChat";
+import VideoChat from "src/pages/LiveVisitation/VideoChat";
 import { genFullName } from "src/utils/utils";
 import VisitationCardHeader from "../headers/VisitationCardHeader";
 import { CardType } from "src/utils/constants";
@@ -11,6 +11,7 @@ interface Props {
   type: CardType;
   actionLabel: string;
   handleClick: () => void; // TODO: enforce this
+  socket: SocketIOClient.Socket;
 }
 
 const VisitationCard: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const VisitationCard: React.FC<Props> = ({
   type,
   actionLabel,
   handleClick,
+  socket,
 }) => {
   const {
     id: callId,
@@ -38,8 +40,8 @@ const VisitationCard: React.FC<Props> = ({
 
   const genMainComponent = (): JSX.Element => {
     switch (type) {
-      case CardType.LiveVisitation:
-        return <VideoChat callId={callId} />;
+      // case CardType.LiveVisitation:
+      //   return <VideoChat callId={callId} socket={socket} />;
       default:
         return <div />;
     }
@@ -62,7 +64,7 @@ const VisitationCard: React.FC<Props> = ({
         }
       />
       {genMainComponent()}
-      <div className="d-flex flex-row justify-content-between w-100 mt-3">
+      {/* <div className="d-flex flex-row justify-content-between w-100 mt-3">
         <div className="d-flex flex-row mt-3">
           <span className="p3">{genFullName(inmate)}</span>
           <span className="p3 black-400">&nbsp;{actionLabel}&nbsp;</span>
@@ -73,7 +75,7 @@ const VisitationCard: React.FC<Props> = ({
             End Call
           </Button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

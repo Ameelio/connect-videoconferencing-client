@@ -53,9 +53,8 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
     ["limit", filters.limit?.toString() || "100"],
     ["offset", filters.offset?.toString() || "0"],
   ];
-
-  console.log("here");
-  console.log(filters);
+  if (filters.firstLive) options.push(["first_live", filters.firstLive]);
+  if (filters.end) options.push(["end", filters.end]);
   if (filters.startDate && filters.endDate)
     options.push(["start", `${filters.startDate},${filters.endDate}`]);
   if (filters.minDuration && filters.maxDuration)

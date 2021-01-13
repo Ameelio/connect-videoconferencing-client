@@ -35,7 +35,6 @@ const initialState: SessionState = {
     firstName: "",
     lastName: "",
     email: "",
-    image: "",
   },
   isLoggedIn: false,
 };
@@ -57,7 +56,6 @@ export function sessionReducer(
           firstName: "",
           lastName: "",
           email: "",
-          image: "",
         },
         isLoggedIn: false,
       };

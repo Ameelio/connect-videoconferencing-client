@@ -6,7 +6,7 @@ import StaffPage from "src/pages/Staff";
 import InmatesPage from "src/pages/Inmate";
 import DashboardPage from "src/pages/Dashboard";
 import SettingsPage from "src//pages/Settings";
-import { Route } from "src/typings/Common";
+import { GridOption, Route } from "src/typings/Common";
 
 export enum CardType {
   LiveVisitation = "live",
@@ -80,3 +80,16 @@ export const WEEKDAYS = [
 
 // 30 min
 export const DEFAULT_DURATION_MS = 1800000;
+
+export const SIDEBAR_WIDTH = 216;
+
+export const MAX_NUMBER_CALLS_PER_ROW = 3;
+export const MAX_NUMBER_ROWS = 2;
+
+export const GRID_NUM_TO_SPAN: { [key in GridOption]: number } = {
+  1: 24,
+  2: 12,
+  4: 12,
+  6: 8,
+  8: 6,
+};

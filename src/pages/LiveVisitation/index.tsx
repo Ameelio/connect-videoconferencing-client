@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import FormControl from "react-bootstrap/FormControl";
@@ -11,21 +11,42 @@ import {
   selectLiveVisitation,
   terminateLiveVisitation,
 } from "src/redux/modules/visitation";
-import { CardType } from "src/utils/constants";
+import {
+  CardType,
+  GRID_NUM_TO_SPAN,
+  MAX_NUMBER_ROWS,
+  SIDEBAR_WIDTH,
+  WRAPPER_STYLE,
+} from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
 import Sidebar from "src/components/containers/Sidebar";
 import { genFullName } from "src/utils/utils";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
+import io from "socket.io-client";
+import { getAllVisitationsInfo, selectAllCalls } from "src/redux/selectors";
+import { Menu, Button, Dropdown, Layout, Row, Col, Space } from "antd";
+import { fetchCalls } from "src/redux/modules/call";
+import VideoChat from "src/pages/LiveVisitation/VideoChat";
+import VideoSkeleton from "./VideoSkeleton";
+import { chownSync } from "fs";
+import { GridOption } from "src/typings/Common";
+
+const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: state.visitations,
+  // TODO update this once we have status selecotr
+  visitations: getAllVisitationsInfo(
+    state,
+    selectAllCalls(state)
+  ) as LiveVisitation[],
   selected: state.visitations.selectedVisitation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
+      fetchCalls,
       selectLiveVisitation,
       terminateLiveVisitation,
     },
@@ -36,87 +57,82 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+const MAX_VH_HEIGHT_FRAMES = 80;
+
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   selected,
   selectLiveVisitation,
   terminateLiveVisitation,
+  fetchCalls,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredLiveVisitations, setFilteredLiveVisitations] = useState<
-    LiveVisitation[]
-  >(visitations.liveVisitations);
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
+  const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
+  const [numGridCalls, setNumGridCalls] = useState<GridOption>(1);
+  const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearchQuery(value);
+  useEffect(() => {
+    const now = new Date().getTime();
+    fetchCalls({
+      approved: true,
+      firstLive: [0, now].join(","),
+      end: [now, now + 1e8].join(","),
+    });
+    console.log("connectinf");
+    setSocket(io.connect("ws://localhost:8000", { transports: ["websocket"] }));
+  }, [fetchCalls]);
 
-    setFilteredLiveVisitations(
-      !value
-        ? visitations.liveVisitations
-        : filteredLiveVisitations.filter((visitation) => {
-            const { contact, inmate } = visitation.connection;
-            return (
-              genFullName(contact)
-                .toLowerCase()
-                .includes(value.toLowerCase()) ||
-              genFullName(inmate).toLowerCase().includes(value.toLowerCase())
-            );
-          })
-    );
+  const handleGridChange = (grid: GridOption) => {
+    setNumGridCalls(grid);
+    // setFrameWidth((window.screen.width - SIDEBAR_WIDTH) / Math.min(grid, MAX_NUMBER_CALLS_PER_ROW));
+    setFrameVhHeight(MAX_VH_HEIGHT_FRAMES / Math.min(grid, MAX_NUMBER_ROWS));
   };
+
+  const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
+  const GridMenu = (
+    <Menu>
+      {OPTIONS.map((option) => (
+        <Menu.Item>
+          <span onClick={() => handleGridChange(option)}>View by {option}</span>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
+  useEffect(() => {
+    setVisibleCalls(visitations.slice(0, numGridCalls));
+  }, [numGridCalls, visitations]);
 
   const handleVideoTermination = () => {
     selected && terminateLiveVisitation(selected);
   };
-
-  useEffect(() => {
-    // if (!visitations.hasLoaded) loadLiveVisitations();
-    setFilteredLiveVisitations(visitations.liveVisitations);
-  }, [setFilteredLiveVisitations, visitations]);
+  console.log(frameVhHeight);
 
   return (
-    <div className="d-flex flex-row">
-      <Sidebar title="Live Visitations">
-        <Form className="mt-3 w-75">
-          <FormControl
-            type="text"
-            placeholder="Search by name"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-        </Form>
-
-        {filteredLiveVisitations.map((liveVisitation) => (
-          <SidebarCard
-            key={liveVisitation.id}
-            type={CardType.LiveVisitation}
-            entity={liveVisitation}
-            isActive={liveVisitation.id === selected?.id}
-            handleClick={(e) => selectLiveVisitation(liveVisitation)}
-          />
-        ))}
-      </Sidebar>
-
-      {selected && (
-        <Wrapper>
-          <Container>
-            <VisitationCard
-              type={CardType.LiveVisitation}
-              visitation={selected}
-              actionLabel="calling"
-              handleClick={handleVideoTermination}
-            />
-          </Container>
-
-          <div></div>
-
-          <Container>
-            {/* <ConnectionDetailsCard connection={selected.connection} /> */}
-          </Container>
-        </Wrapper>
-      )}
-    </div>
+    <Content style={WRAPPER_STYLE}>
+      <Space direction="vertical" style={{ width: "100% " }}>
+        <Dropdown overlay={GridMenu} placement="bottomLeft">
+          <Button>View by {numGridCalls}</Button>
+        </Dropdown>
+        <Row gutter={[8, 16]}>
+          {Array.from(Array(numGridCalls).keys()).map((idx) => (
+            <Col span={GRID_NUM_TO_SPAN[numGridCalls]}>
+              {visibleCalls.length - 1 >= idx && socket ? (
+                <VideoChat
+                  height={frameVhHeight}
+                  socket={socket}
+                  callId={visibleCalls[idx].id}
+                  handleTermination={handleVideoTermination}
+                  width="100%"
+                />
+              ) : (
+                <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
+              )}
+            </Col>
+          ))}
+        </Row>
+      </Space>
+    </Content>
   );
 };
 

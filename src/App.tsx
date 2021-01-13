@@ -62,6 +62,8 @@ function App({
   const [header, setHeader] = useState("");
 
   useEffect(() => {
+    localStorage.setItem("debug", "*");
+    localStorage.removeItem("debug");
     (async () => {
       try {
         await loginWithToken();
@@ -98,23 +100,25 @@ function App({
           <PageHeader
             title={header}
             extra={[
-              <BellFilled />,
-              <BulbFilled />,
+              <BellFilled key="bell" />,
+              <BulbFilled key="bulb" />,
               <InitialsAvatar
                 name={genFullName(session.user)}
                 size="default"
                 shape="circle"
+                key="avatar"
               />,
             ]}
           />
           <Switch>
             <Route exact path="/login" component={Login}></Route>
-            {ROUTES.map((i) => (
+            {ROUTES.map((route) => (
               <ProtectedRoute
                 exact
                 {...defaultProtectedRouteProps}
-                path={i.path}
-                component={i.component}
+                path={route.path}
+                component={route.component}
+                key={route.label}
               ></ProtectedRoute>
             ))}
           </Switch>

@@ -26,3 +26,5 @@ export interface Route {
 export type WeeklySchedule = {
   [key: number]: CallBlock[];
 };
+
+export type GridOption = 1 | 2 | 4 | 6 | 8;

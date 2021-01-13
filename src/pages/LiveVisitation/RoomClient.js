@@ -48,7 +48,7 @@ class RoomClient {
 
     // We will eventually have...
     // Two transports
-    this.producerTransport = null;
+    // this.producerTransport = null;
     this.consumerTransport = null;
 
     // A device
@@ -56,7 +56,7 @@ class RoomClient {
 
     // Consumers and producers
     this.consumers = {};
-    this.producers = {};
+    // this.producers = {};
 
     // Event handlers
     this.handlers = { consume: [] };
@@ -93,10 +93,14 @@ class RoomClient {
     // We will recieve two transports and
     // and rtpCapabilities object, if we are allowed in.
     const {
-      producerTransportInfo,
+      // producerTransportInfo,
       consumerTransportInfo,
       routerRtpCapabilities,
     } = await this.request("join", { callId: this.callId });
+
+    // console.log(producerTransportInfo);
+    console.log(consumerTransportInfo);
+    console.log(routerRtpCapabilities);
 
     // Load up a local media device consistent
     // with the server's RTP capabilities.
@@ -105,10 +109,10 @@ class RoomClient {
     // Set up both transports and promise to send
     // dtls info when they connect (this won't occur until
     // someone actually produces).
-    this.producerTransport = this.device.createSendTransport(
-      producerTransportInfo
-    );
-    this.handleTransportConnect(this.producerTransport);
+    // this.producerTransport = this.device.createSendTransport(
+    //   producerTransportInfo
+    // );
+    // this.handleTransportConnect(this.producerTransport);
 
     this.consumerTransport = this.device.createRecvTransport(
       consumerTransportInfo
@@ -125,20 +129,20 @@ class RoomClient {
 
     // When our producer transport is producing a new stream,
     // inform the server.
-    this.producerTransport.on(
-      "produce",
-      async ({ kind, rtpParameters }, callback, errback) => {
-        console.log("Sending produce request");
+    // this.producerTransport.on(
+    //   "produce",
+    //   async ({ kind, rtpParameters }, callback, errback) => {
+    //     console.log("Sending produce request");
 
-        const { producerId } = await this.request("produce", {
-          callId: this.callId,
-          kind,
-          rtpParameters,
-        });
+    //     const { producerId } = await this.request("produce", {
+    //       callId: this.callId,
+    //       kind,
+    //       rtpParameters,
+    //     });
 
-        callback({ id: producerId });
-      }
-    );
+    //     callback({ id: producerId });
+    //   }
+    // );
 
     // When we get a consumer, fire an event.
     this.socket.on("consume", async (info) => {
@@ -189,10 +193,10 @@ class RoomClient {
 
     console.log("producing with params", params);
 
-    const producer = await this.producerTransport.produce(params);
-    console.log("produced with id", producer.id);
-    window.producers.push(producer);
-    this.producers[producer.id] = producer;
+    // const producer = await this.producerTransport.produce(params);
+    // console.log("produced with id", producer.id);
+    // window.producers.push(producer);
+    // this.producers[producer.id] = producer;
   }
 
   async loadDevice(routerRtpCapabilities) {

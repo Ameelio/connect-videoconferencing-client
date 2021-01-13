@@ -3,7 +3,7 @@ import { connectionsAdapter } from "./modules/connections";
 import { contactsAdapter } from "./modules/contact";
 import { inmatesActions, inmatesAdapter } from "./modules/inmate";
 import { createSelector } from "reselect";
-import { recordingsAdapter } from "./modules/recording";
+import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 
@@ -25,8 +25,8 @@ export const {
 
 export const {
   selectById: selectRecordingById,
-  selectAll: selectAllRecordings,
-} = recordingsAdapter.getSelectors<RootState>((state) => state.recordings);
+  selectAll: selectAllCalls,
+} = callsAdapter.getSelectors<RootState>((state) => state.calls);
 
 export const {
   selectById: selectStaffByIdd,

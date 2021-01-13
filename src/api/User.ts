@@ -1,9 +1,7 @@
 import { API_URL, fetchAuthenticated, fetchTimeout } from "./Common";
 import url from "url";
 import { setSession } from "src/redux/modules/user";
-import { getContacts, getInmates, getStaff } from "./Persona";
 import { Store } from "src/redux";
-import { getApprovedConnections } from "./Connection";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 import { fetchFacilities } from "src/redux/modules/facility";
 
@@ -33,7 +31,7 @@ function cleanUser(user: RawUser): User {
     firstName: user.first_name,
     lastName: user.last_name,
     email: user.email,
-    image: user.profile_img_path,
+    profileImgPath: user.profile_img_path,
   };
 }
 

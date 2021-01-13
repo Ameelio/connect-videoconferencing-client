@@ -26,6 +26,7 @@ import { logout } from "src/redux/modules/user";
 import { Facility, SelectedFacility } from "src/typings/Node";
 import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
+import { SIDEBAR_WIDTH } from "src/utils/constants";
 
 const { Option } = Select;
 
@@ -84,6 +85,7 @@ export default function Menu({
       collapsible
       collapsed={collapsed}
       onCollapse={(collapsed) => setCollapsed(collapsed)}
+      width={SIDEBAR_WIDTH}
     >
       <Dropdown overlay={headerMenu}>
         <Space align="center" className="menu-header">
@@ -105,18 +107,11 @@ export default function Menu({
       {/* </div> */}
       <AntdMenu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <AntdMenu.Item
-          key="calendar"
+          key="dash"
           icon={<PieChartOutlined />}
           onClick={() => history.push("/")}
         >
           Dashboard
-        </AntdMenu.Item>
-        <AntdMenu.Item
-          key="calendar"
-          icon={<PieChartOutlined />}
-          onClick={() => history.push("/calendar")}
-        >
-          Calendar
         </AntdMenu.Item>
         <AntdMenu.Item
           key="live"

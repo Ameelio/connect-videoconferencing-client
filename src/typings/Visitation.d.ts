@@ -35,4 +35,6 @@ interface CallFilters {
   limit?: number;
   offset?: number;
   approved?: boolean;
+  firstLive?: string;
+  end?: string;
 }

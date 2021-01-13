@@ -14,13 +14,10 @@ import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
-import {
-  getAllVisitationsInfo,
-  selectAllRecordings,
-} from "src/redux/selectors";
+import { getAllVisitationsInfo, selectAllCalls } from "src/redux/selectors";
 import { isCatchClause } from "typescript";
 import { format, getDate, getTime } from "date-fns";
-import { getRecordings } from "src/redux/modules/recording";
+import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
 import { Table, Tag, Space, Layout } from "antd";
@@ -30,16 +27,19 @@ import Search from "antd/lib/input/Search";
 const { Column } = Table;
 const { Content } = Layout;
 
-const mapStateToProps = (state: RootState) => ({
-  logs: getAllVisitationsInfo(
-    state,
-    selectAllRecordings(state)
-  ) as RecordedVisitation[],
-  selected: state.visitations.selectedPastVisitation,
-});
+const mapStateToProps = (state: RootState) => {
+  console.log("Calling mapstatetoprops");
+
+  return {
+    logs: getAllVisitationsInfo(state, selectAllCalls(state)).filter(
+      (x) => x.startTime && x.endTime
+    ) as RecordedVisitation[],
+    selected: state.visitations.selectedPastVisitation,
+  };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ getRecordings, selectPastVisitation }, dispatch);
+  bindActionCreators({ fetchCalls, selectPastVisitation }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -51,7 +51,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   logs,
   selected,
   selectPastVisitation,
-  getRecordings,
+  fetchCalls,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
@@ -75,7 +75,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   useEffect(() => {
     setLoading(true);
     (async () =>
-      getRecordings({
+      fetchCalls({
         query: global,
         startDate,
         endDate,
@@ -85,7 +85,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         offset,
       }))();
     setLoading(false);
-  }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
+  }, [fetchCalls, limit, offset, startDate, endDate, maxDuration, global]);
 
   return (
     <Content style={{ padding: PADDING }}>

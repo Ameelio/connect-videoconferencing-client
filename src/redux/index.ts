@@ -10,7 +10,7 @@ import { createStore, applyMiddleware } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
-import { recordingsSlice } from "./modules/recording";
+import { callsSlice } from "./modules/call";
 import { facilitiesSlice } from "./modules/facility";
 import { connectRouter } from "connected-react-router";
 import { History } from "history";
@@ -27,7 +27,7 @@ export const createRootReducer = (history: History) =>
     inmates: inmatesSlice.reducer,
     contacts: contactsSlice.reducer,
     connections: connectionsSlice.reducer,
-    recordings: recordingsSlice.reducer,
+    calls: callsSlice.reducer,
     facilities: facilitiesSlice.reducer,
     router: connectRouter(history),
   });
