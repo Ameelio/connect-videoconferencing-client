@@ -15,6 +15,7 @@ import { facilitiesSlice } from "./modules/facility";
 import { connectRouter } from "connected-react-router";
 import { History } from "history";
 import { createBrowserHistory } from "history";
+import { socketsSlice } from "./modules/socket";
 
 export const history = createBrowserHistory();
 
@@ -30,6 +31,7 @@ export const createRootReducer = (history: History) =>
     calls: callsSlice.reducer,
     facilities: facilitiesSlice.reducer,
     router: connectRouter(history),
+    sockets: socketsSlice.reducer,
   });
 
 export const rootReducer = createRootReducer(history);

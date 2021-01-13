@@ -1,5 +1,5 @@
 import { addMilliseconds, getDay, getHours, getMinutes } from "date-fns";
-import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Common";
+import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
 import { NodeCallSlot } from "src/typings/Node";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";

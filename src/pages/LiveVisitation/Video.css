@@ -1,0 +1,18 @@
+.video-wrapper {
+  background-color: #1f1f23;
+  border-radius: 8px;
+  display: flex;
+}
+.video-commands-overlay {
+  position: absolute;
+  right: 0;
+  z-index: 999;
+}
+
+.video-loading-spinner {
+  margin: auto;
+}
+
+.video-loading-spinner-span {
+  color: white;
+}

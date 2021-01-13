@@ -1,24 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveVisitation/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
 import io from "socket.io-client";
-import { Menu, Spin, Dropdown, Button } from "antd";
+import { Menu, Spin, Dropdown, Button, Space } from "antd";
 import {
   LockFilled,
   MessageFilled,
   MoreOutlined,
   SettingFilled,
 } from "@ant-design/icons";
-const { SubMenu } = Menu;
+import "./Video.css";
+import VideoOverlay from "./VideoOverlay";
+import { CallAlert } from "src/typings/Call";
+import { cloneObject } from "src/utils/utils";
 
 interface Props {
   width: number | string;
   height: number | string;
   callId: number;
   socket: SocketIOClient.Socket;
-  handleTermination: () => void;
+  alerts: CallAlert[];
+  terminateCall: (callId: number) => void;
+  muteCall: (callId: number) => void;
+  unmuteCall: (callId: number) => void;
+  isAudioOn: boolean;
+  lockCall: (callId: number) => void;
 }
 
 declare global {
@@ -27,27 +35,27 @@ declare global {
   }
 }
 
-const menu = (
-  <Menu>
-    <SubMenu key="sub2" icon={<MessageFilled />} title="Send Alert">
-      <Menu.Item key="1">Appropriate clothing</Menu.Item>
-      <Menu.Item key="2">Clothing exposure</Menu.Item>
-      <Menu.Item key="3">Appropriate undergarments</Menu.Item>
-      <Menu.Item key="4">No sheer clothing</Menu.Item>
-      <Menu.Item key="5">Clothing no shorter than knee</Menu.Item>
-      <Menu.Item key="6">Leggings no shorter than knee</Menu.Item>
-    </SubMenu>
-    <Menu.Item key="3" icon={<LockFilled />}>
-      Lock
-    </Menu.Item>
-    <Menu.Item key="1" icon={<SettingFilled />}>
-      More
-    </Menu.Item>
-  </Menu>
-);
-
+function Loader(): ReactElement {
+  return (
+    <Space direction="vertical" className="video-loading-spinner">
+      <Spin />
+      <span className="video-loading-spinner-span ">Loading video call...</span>
+    </Space>
+  );
+}
 const VideoChat: React.FC<Props> = React.memo(
-  ({ width, height, callId, socket, handleTermination }) => {
+  ({
+    width,
+    height,
+    callId,
+    socket,
+    alerts,
+    terminateCall,
+    lockCall,
+    muteCall,
+    unmuteCall,
+    isAudioOn,
+  }) => {
     const ref = React.createRef<HTMLDivElement>();
 
     const token = useSelector(
@@ -56,6 +64,21 @@ const VideoChat: React.FC<Props> = React.memo(
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);
+    const [video, setVideo] = useState<HTMLVideoElement>();
+    const [audio, setAudio] = useState();
+
+    console.log(isAudioOn);
+    const emitAlert = async (alert: CallAlert) => {
+      const { participants } = await new Promise((resolve, reject) => {
+        socket.emit("info", { callId }, resolve);
+      });
+      console.log(participants);
+      socket.emit("textMessage", {
+        callId,
+        contents: alert.body,
+        recipients: participants,
+      });
+    };
 
     // Asynchronously load the room
     useEffect(() => {
@@ -73,7 +96,6 @@ const VideoChat: React.FC<Props> = React.memo(
           }
 
           await new Promise((resolve) => {
-            console.log("OK, logging in as", id, token);
             // TODO fetch actual credentials from redux
             socket.emit(
               "authenticate",
@@ -94,51 +116,70 @@ const VideoChat: React.FC<Props> = React.memo(
           // This will occur whenever we have JUST joined, or whenever
           // a NEW participant arrives.
           rc.on("consume", async (kind: string, stream: MediaStream) => {
-            console.log("GOT CONSUME");
-
+            // console.log("GOT CONSUME");
+            // console.log(stream);
             while (!ref.current) {
               await new Promise((resolve) => setTimeout(resolve, 100));
             }
 
-            if (kind === "video") {
-              console.log("Got video.");
-              const video = document.createElement("video");
-              video.srcObject = stream;
-              video.style.width = `${width}`;
-              video.style.height = `${height}`;
-              video.autoplay = true;
-              ref.current.appendChild(video);
-              setLoading(false);
-            }
+            // if (ref.current) {
+            switch (kind) {
+              case "video":
+                if (video) break;
+                const newVideo = document.createElement("video");
+                newVideo.srcObject = stream;
+                newVideo.style.width = `100%`;
+                newVideo.style.height = `100%`;
+                newVideo.autoplay = true;
+                ref.current.appendChild(newVideo);
+                setVideo(newVideo);
 
-            // TODO audio as well.
+                break;
+              case "audio":
+                if (!isAudioOn) break;
+                if (audio) break;
+                const newAudio = document.createElement("audio");
+                newAudio.srcObject = stream;
+                newAudio.autoplay = true;
+                document.body.appendChild(newAudio);
+                break;
+            }
+            setLoading(false);
           });
         })();
       }
-    }, [callId, id, ref, token, socket, width, height]);
+    }, [
+      callId,
+      id,
+      ref,
+      token,
+      socket,
+      width,
+      height,
+      isAudioOn,
+      audio,
+      video,
+    ]);
 
     return (
       <div
+        className="video-wrapper"
         style={{
           width,
           height,
-          backgroundColor: "black",
-          borderRadius: 4,
         }}
         ref={ref}
       >
-        <div></div>
-        <Dropdown overlay={menu}>
-          <Button>
-            <MoreOutlined />
-          </Button>
-        </Dropdown>
-        {loading && (
-          <div>
-            <Spin />
-            <span>Loading video call...</span>
-          </div>
-        )}
+        <VideoOverlay
+          alerts={alerts}
+          terminateCall={() => terminateCall(callId)}
+          lockCall={() => lockCall(callId)}
+          muteCall={() => muteCall(callId)}
+          unmuteCall={() => unmuteCall(callId)}
+          isAudioOn={isAudioOn}
+          emitAlert={emitAlert}
+        />
+        {loading && <Loader />}
       </div>
     );
   }

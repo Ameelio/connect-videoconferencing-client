@@ -12,7 +12,7 @@ import {
   DEFAULT_DURATION_MS,
 } from "src/utils/constants";
 import moment from "moment";
-import { CallBlock, WeeklySchedule } from "src/typings/Common";
+import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
 import {
   dayOfWeekAsString,

@@ -3,7 +3,7 @@ import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
 import { NodeCallSlot } from "src/typings/Node";
 import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
-import { CallBlock, Weekday } from "src/typings/Common";
+import { CallBlock, Weekday } from "src/typings/Call";
 import _ from "lodash";
 import { notification } from "antd";
 

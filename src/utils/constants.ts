@@ -6,7 +6,8 @@ import StaffPage from "src/pages/Staff";
 import InmatesPage from "src/pages/Inmate";
 import DashboardPage from "src/pages/Dashboard";
 import SettingsPage from "src//pages/Settings";
-import { GridOption, Route } from "src/typings/Common";
+import { CallAlert, GridOption } from "src/typings/Call";
+import { Route } from "src/typings/Common";
 
 export enum CardType {
   LiveVisitation = "live",
@@ -55,8 +56,6 @@ export enum WeekdayMap {
 export const PADDING = 16;
 export const WRAPPER_STYLE = { padding: PADDING, paddingTop: 0 };
 
-type Routename = string;
-
 export const ROUTES: Route[] = [
   { path: "/calendar", component: CalendarPage, label: "Page" },
   { path: "/requests", component: RequestsPage, label: "Connection Requests" },
@@ -83,13 +82,57 @@ export const DEFAULT_DURATION_MS = 1800000;
 
 export const SIDEBAR_WIDTH = 216;
 
-export const MAX_NUMBER_CALLS_PER_ROW = 3;
-export const MAX_NUMBER_ROWS = 2;
-
-export const GRID_NUM_TO_SPAN: { [key in GridOption]: number } = {
+export const GRID_TO_SPAN_WIDTH: { [key in GridOption]: number } = {
   1: 24,
   2: 12,
   4: 12,
   6: 8,
   8: 6,
 };
+
+export const GRID_TO_VH_HEIGHT: { [key in GridOption]: number } = {
+  1: 80,
+  2: 80,
+  4: 40,
+  6: 40,
+  8: 40,
+};
+
+export const CALL_ALERTS: CallAlert[] = [
+  {
+    id: 1,
+    title: "Appropriate clothing",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+  {
+    id: 2,
+    title: "Clothing exposure",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+  {
+    id: 3,
+    title: "Appropriate undergarments",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+  {
+    id: 4,
+    title: "No sheer clothing",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+  {
+    id: 5,
+    title: "Clothing no shorter than knee",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+  {
+    id: 6,
+    title: "Leggings no shorter than knee",
+    body:
+      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+  },
+];

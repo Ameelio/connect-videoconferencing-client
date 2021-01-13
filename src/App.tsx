@@ -62,7 +62,7 @@ function App({
   const [header, setHeader] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("debug", "*");
+    // localStorage.setItem("debug", "*");
     localStorage.removeItem("debug");
     (async () => {
       try {

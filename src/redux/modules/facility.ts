@@ -141,3 +141,5 @@ export const facilitiesSlice = createSlice({
     }));
   },
 });
+
+export const facilitiesActions = facilitiesSlice.actions;

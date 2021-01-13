@@ -8,14 +8,9 @@ import SidebarCard from "src/components/cards/SidebarCard";
 import VisitationCard from "src/components/cards/VisitationCard";
 
 import {
-  selectLiveVisitation,
-  terminateLiveVisitation,
-} from "src/redux/modules/visitation";
-import {
-  CardType,
-  GRID_NUM_TO_SPAN,
-  MAX_NUMBER_ROWS,
-  SIDEBAR_WIDTH,
+  CALL_ALERTS,
+  GRID_TO_SPAN_WIDTH,
+  GRID_TO_VH_HEIGHT,
   WRAPPER_STYLE,
 } from "src/utils/constants";
 import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
@@ -25,14 +20,26 @@ import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import io from "socket.io-client";
 import { getAllVisitationsInfo, selectAllCalls } from "src/redux/selectors";
-import { Menu, Button, Dropdown, Layout, Row, Col, Space } from "antd";
+import {
+  Menu,
+  Button,
+  Dropdown,
+  Layout,
+  Row,
+  Col,
+  Space,
+  Carousel,
+} from "antd";
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveVisitation/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
 import { chownSync } from "fs";
-import { GridOption } from "src/typings/Common";
+import { GridOption } from "src/typings/Call";
+import { socketsActions } from "src/redux/modules/socket";
+import _ from "lodash";
 
 const { Content } = Layout;
+// const { setSocket } = socketsActions;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
@@ -40,15 +47,14 @@ const mapStateToProps = (state: RootState) => ({
     state,
     selectAllCalls(state)
   ) as LiveVisitation[],
-  selected: state.visitations.selectedVisitation,
+  // socket: state.sockets.socket,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchCalls,
-      selectLiveVisitation,
-      terminateLiveVisitation,
+      // setSocket
     },
     dispatch
   );
@@ -61,15 +67,18 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
-  selected,
-  selectLiveVisitation,
-  terminateLiveVisitation,
   fetchCalls,
+  // socket,
+  // setSocket,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
-  const [numGridCalls, setNumGridCalls] = useState<GridOption>(1);
+  const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
+
+  const [consumeAudioRecord, setConsumeAudioRecord] = useState<
+    Record<number, boolean>
+  >({});
 
   useEffect(() => {
     const now = new Date().getTime();
@@ -78,14 +87,27 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
       firstLive: [0, now].join(","),
       end: [now, now + 1e8].join(","),
     });
-    console.log("connectinf");
-    setSocket(io.connect("ws://localhost:8000", { transports: ["websocket"] }));
   }, [fetchCalls]);
 
+  useEffect(() => {
+    if (!socket)
+      setSocket(
+        io.connect("ws://localhost:8000", { transports: ["websocket"] })
+      );
+  }, [setSocket, socket]);
+
+  useEffect(() => {
+    setVisibleCalls(visitations.slice(0, grid));
+  }, [grid, visitations]);
+
+  const handleVideoTermination = () => {
+    // TODO add redux store request
+  };
+
+  // Grid options
   const handleGridChange = (grid: GridOption) => {
-    setNumGridCalls(grid);
-    // setFrameWidth((window.screen.width - SIDEBAR_WIDTH) / Math.min(grid, MAX_NUMBER_CALLS_PER_ROW));
-    setFrameVhHeight(MAX_VH_HEIGHT_FRAMES / Math.min(grid, MAX_NUMBER_ROWS));
+    setGrid(grid);
+    setFrameVhHeight(GRID_TO_VH_HEIGHT[grid]);
   };
 
   const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
@@ -99,31 +121,40 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     </Menu>
   );
 
-  useEffect(() => {
-    setVisibleCalls(visitations.slice(0, numGridCalls));
-  }, [numGridCalls, visitations]);
-
-  const handleVideoTermination = () => {
-    selected && terminateLiveVisitation(selected);
-  };
-  console.log(frameVhHeight);
-
+  console.log(consumeAudioRecord);
   return (
     <Content style={WRAPPER_STYLE}>
       <Space direction="vertical" style={{ width: "100% " }}>
         <Dropdown overlay={GridMenu} placement="bottomLeft">
-          <Button>View by {numGridCalls}</Button>
+          <Button>View by {grid}</Button>
         </Dropdown>
-        <Row gutter={[8, 16]}>
-          {Array.from(Array(numGridCalls).keys()).map((idx) => (
-            <Col span={GRID_NUM_TO_SPAN[numGridCalls]}>
+        {/* <Carousel style={{ width: "100% " }}> */}
+        <Row>
+          {Array.from(Array(grid).keys()).map((idx) => (
+            <Col span={GRID_TO_SPAN_WIDTH[grid]}>
               {visibleCalls.length - 1 >= idx && socket ? (
                 <VideoChat
-                  height={frameVhHeight}
+                  height={`${frameVhHeight}vh`}
                   socket={socket}
                   callId={visibleCalls[idx].id}
-                  handleTermination={handleVideoTermination}
                   width="100%"
+                  alerts={CALL_ALERTS}
+                  terminateCall={handleVideoTermination}
+                  muteCall={(callId: number) => {
+                    console.log(callId);
+                    console.log({ ...consumeAudioRecord, [callId]: true });
+                    setConsumeAudioRecord({
+                      ...consumeAudioRecord,
+                      [callId]: true,
+                    });
+                  }}
+                  unmuteCall={(callId: number) =>
+                    setConsumeAudioRecord(_.omit(consumeAudioRecord, callId))
+                  }
+                  isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
+                  lockCall={(callId: number) => {
+                    console.log(callId);
+                  }}
                 />
               ) : (
                 <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
@@ -131,6 +162,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
             </Col>
           ))}
         </Row>
+        {/* </Carousel> */}
       </Space>
     </Content>
   );

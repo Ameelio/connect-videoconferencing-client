@@ -21,7 +21,9 @@ interface Visitation extends BaseVisitation {
 interface LiveVisitation extends Visitation {
   startTime: number;
   liveStatus: string;
+  isUnmuted?: boolean;
 }
+
 interface RecordedVisitation extends LiveVisitation {
   endTime: number;
 }
