@@ -24,7 +24,7 @@ export const {
 } = contactsAdapter.getSelectors<RootState>((state) => state.contacts);
 
 export const {
-  selectById: selectRecordingById,
+  selectById: selectCallById,
   selectAll: selectAllCalls,
 } = callsAdapter.getSelectors<RootState>((state) => state.calls);
 

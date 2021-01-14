@@ -8,7 +8,7 @@ import { contactsActions } from "src/redux/modules/contact";
 export async function getInmates(): Promise<Inmate[]> {
   const body = await fetchAuthenticated(`/inmates`, {}, false);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -22,7 +22,7 @@ export async function getInmates(): Promise<Inmate[]> {
 export async function getStaff(): Promise<Staff[]> {
   const body = await fetchAuthenticated(`/admins`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -35,7 +35,7 @@ export async function getStaff(): Promise<Staff[]> {
 export async function getContacts(): Promise<Contact[]> {
   const body = await fetchAuthenticated(`/users`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 

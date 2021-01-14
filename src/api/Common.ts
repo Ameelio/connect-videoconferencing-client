@@ -20,6 +20,11 @@ export function fetchTimeout(
   options: Record<string, unknown>,
   timeout = 15000
 ): Promise<Response> {
+  // if (fetchUrl === 'api/node/2/call/1') {
+  //   console.log(fetchUrl);
+  // }
+
+  console.log(fetchUrl);
   return Promise.race([
     fetch(fetchUrl, options),
     new Promise<Response>((_, reject) =>
@@ -56,6 +61,7 @@ export async function fetchAuthenticated(
     requestOptions,
     timeout
   );
+  console.log(response);
   const body = await response.json();
   return body;
 }

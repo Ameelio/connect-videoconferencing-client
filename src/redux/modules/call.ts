@@ -17,7 +17,7 @@ export const fetchCalls = createAsyncThunk(
     const body = await fetchAuthenticated(
       `/calls?${createCallOptionsParam(filters)}`
     );
-    if (!body.good) {
+    if (body.status !== 200) {
       throw body;
     }
 
@@ -25,6 +25,19 @@ export const fetchCalls = createAsyncThunk(
       .calls as RawVisitation[]).map(cleanVisitation) as RecordedVisitation[];
 
     return visitations;
+  }
+);
+
+export const fetchRecording = createAsyncThunk(
+  "bloo/fetchRecording",
+  async (callId: number) => {
+    const body = await fetchAuthenticated(`/call/${callId}`);
+    if (body.status !== 200) {
+      throw body;
+    }
+    const recordingUrl = (body.data as Record<string, unknown>).url as string;
+
+    return { callId, recordingUrl };
   }
 );
 
@@ -47,6 +60,16 @@ export const callsSlice = createSlice({
       callsAdapter.setAll(state, action.payload);
     });
     builder.addCase(fetchCalls.rejected, (state, action) => ({
+      ...state,
+      error: action.error.message,
+    }));
+    builder.addCase(fetchRecording.fulfilled, (state, action) =>
+      callsAdapter.updateOne(state, {
+        id: action.payload.callId,
+        changes: { recordingUrl: action.payload.recordingUrl },
+      })
+    );
+    builder.addCase(fetchRecording.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
     }));

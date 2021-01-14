@@ -20,26 +20,24 @@ import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
-import { Table, Tag, Space, Layout } from "antd";
+import { Table, Tag, Space, Layout, Button } from "antd";
 import { DownloadOutlined, TeamOutlined } from "@ant-design/icons";
 import Search from "antd/lib/input/Search";
+import { push } from "connected-react-router";
 
 const { Column } = Table;
 const { Content } = Layout;
 
-const mapStateToProps = (state: RootState) => {
-  console.log("Calling mapstatetoprops");
-
-  return {
-    logs: getAllVisitationsInfo(state, selectAllCalls(state)).filter(
-      (x) => x.startTime && x.endTime
-    ) as RecordedVisitation[],
-    selected: state.visitations.selectedPastVisitation,
-  };
-};
+const mapStateToProps = (state: RootState) => ({
+  logs: getAllVisitationsInfo(state, selectAllCalls(state)).filter(
+    (x) => x.startTime && x.endTime
+  ) as RecordedVisitation[],
+  selected: state.visitations.selectedPastVisitation,
+  history: state.router,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ fetchCalls, selectPastVisitation }, dispatch);
+  bindActionCreators({ fetchCalls, selectPastVisitation, push }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -52,6 +50,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   selected,
   selectPastVisitation,
   fetchCalls,
+  push,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
@@ -109,7 +108,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Date"
             dataIndex="startTime"
-            key="startTime"
+            key="date"
             render={(time) => (
               <>
                 <span>{format(time, "MM/dd/yy")}</span>
@@ -149,7 +148,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Inmate ID"
             dataIndex="connection"
-            key="connection"
+            key="inmateId"
             render={(connection: Connection) => (
               <>
                 <span>{connection.inmate.inmateNumber}</span>
@@ -159,7 +158,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Contact Name"
             dataIndex="connection"
-            key="connection"
+            key="contactName"
             render={(connection: Connection) => (
               <>
                 <span>{genFullName(connection.contact)}</span>
@@ -170,7 +169,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Location"
             dataIndex="connection"
-            key="connection"
+            key="location"
             render={(connection: Connection) => (
               <>
                 <span>{connection.inmate.location}</span>
@@ -181,9 +180,11 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Recording"
             key="action"
-            render={(text, visitation) => (
+            render={(_text, visitation: RecordedVisitation) => (
               <Space size="middle">
-                <a>View</a>
+                <Button onClick={() => push(`/call/${visitation.id}`)}>
+                  View
+                </Button>
               </Space>
             )}
           />

@@ -23,6 +23,7 @@ export interface RawVisitation {
   room_id: number;
   kiosk_id: number;
   approved: boolean;
+  video_ready: boolean;
 }
 
 export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
@@ -36,5 +37,6 @@ export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
     end: visitation.end,
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
+    videoReady: visitation.video_ready,
   } as BaseVisitation;
 }

@@ -11,7 +11,7 @@ import camelcaseKeys from "camelcase-keys";
 export async function getApprovedConnections(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(`/connections?status=approved`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -26,8 +26,7 @@ export async function getApprovedConnections(): Promise<BaseConnection[]> {
 
 export async function getConnectionRequests(): Promise<BaseConnection[]> {
   const body = await fetchAuthenticated(`/connections?status=pending`);
-
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -35,6 +34,7 @@ export async function getConnectionRequests(): Promise<BaseConnection[]> {
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
   ) as BaseConnection[];
+  console.log(connections);
 
   Store.dispatch(setConnectionRequests(connections));
   return connections;
@@ -49,7 +49,7 @@ export async function updateConnection(
     body: JSON.stringify({ connection_id: connectionId, status }),
   });
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 }

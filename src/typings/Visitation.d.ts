@@ -9,9 +9,11 @@ interface BaseVisitation {
   connectionId: number;
   kiosk: Kiosk;
   approved: boolean;
+  videoReady: boolean;
   endTime?: number;
   startTime?: number;
   liveStatus?: string;
+  recordingUrl?: string;
 }
 
 interface Visitation extends BaseVisitation {

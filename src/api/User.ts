@@ -73,7 +73,7 @@ export async function loginWithToken(): Promise<void> {
       }
     );
     const body = await response.json();
-    if (!body.good) throw body;
+    if (body.status !== 200) throw body;
     await initializeSession(body);
   } catch (err) {
     throw Error(err);
@@ -93,7 +93,7 @@ export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {
     }),
   });
   const body = await response.json();
-  if (!body.good) throw body;
+  if (body.status !== 200) throw body;
   console.log(body);
   // const user = cleanUser(body.data as RawUser);
   // const { token: apiToken, remember: rememberToken } = body.data;

@@ -6,6 +6,7 @@ import StaffPage from "src/pages/Staff";
 import InmatesPage from "src/pages/Inmate";
 import DashboardPage from "src/pages/Dashboard";
 import SettingsPage from "src//pages/Settings";
+import RecordingPage from "src/pages/Recording";
 import { CallAlert, GridOption } from "src/typings/Call";
 import { Route } from "src/typings/Common";
 
@@ -65,6 +66,7 @@ export const ROUTES: Route[] = [
   { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
   { path: "/settings", component: SettingsPage, label: "Settings" },
   { path: "/", component: DashboardPage, label: "Dashboard" },
+  { path: "/call/:id", component: RecordingPage, label: "" },
 ];
 
 export const WEEKDAYS = [
