@@ -14,7 +14,7 @@ import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
-import { getAllVisitationsInfo, selectAllCalls } from "src/redux/selectors";
+import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { isCatchClause } from "typescript";
 import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
@@ -29,7 +29,7 @@ const { Column } = Table;
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  logs: getAllVisitationsInfo(state, selectAllCalls(state)).filter(
+  logs: getAllCallsInfo(state, selectAllCalls(state)).filter(
     (x) => x.startTime && x.endTime
   ) as RecordedVisitation[],
   selected: state.visitations.selectedPastVisitation,

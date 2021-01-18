@@ -1,4 +1,10 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveVisitation/RoomClient";
@@ -15,18 +21,19 @@ import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import { CallAlert } from "src/typings/Call";
 import { cloneObject } from "src/utils/utils";
+import { couldStartTrivia } from "typescript";
 
 interface Props {
   width: number | string;
   height: number | string;
-  callId: number;
+  call: LiveVisitation;
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
-  terminateCall: (callId: number) => void;
-  muteCall: (callId: number) => void;
-  unmuteCall: (callId: number) => void;
+  terminateCall: (id: number) => void;
+  muteCall: (id: number) => void;
+  unmuteCall: (id: number) => void;
   isAudioOn: boolean;
-  lockCall: (callId: number) => void;
+  lockCall: (id: number) => void;
 }
 
 declare global {
@@ -37,17 +44,17 @@ declare global {
 
 function Loader(): ReactElement {
   return (
-    <Space direction="vertical" className="video-loading-spinner">
-      <Spin />
-      <span className="video-loading-spinner-span ">Loading video call...</span>
-    </Space>
+    <div className="video-loading-spinner">
+      <Spin tip="Loading video call..." />
+    </div>
   );
 }
+
 const VideoChat: React.FC<Props> = React.memo(
   ({
+    call,
     width,
     height,
-    callId,
     socket,
     alerts,
     terminateCall,
@@ -56,18 +63,23 @@ const VideoChat: React.FC<Props> = React.memo(
     unmuteCall,
     isAudioOn,
   }) => {
-    const ref = React.createRef<HTMLDivElement>();
-
     const token = useSelector(
       (state: RootState) => state.session.authInfo.apiToken
     );
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);
-    const [video, setVideo] = useState<HTMLVideoElement>();
-    const [audio, setAudio] = useState();
+    const [isAuthed, setIsAuthed] = useState(false);
+    const [rc, setRc] = useState<RoomClient>();
 
-    console.log(isAudioOn);
+    const callId = call.id;
+
+    const joinRoom = useCallback(async () => {
+      const rc = new RoomClient(mediasoupClient, socket, callId);
+      await rc.init();
+      setRc(rc);
+    }, [socket, callId]);
+
     const emitAlert = async (alert: CallAlert) => {
       const { participants } = await new Promise((resolve, reject) => {
         socket.emit("info", { callId }, resolve);
@@ -83,11 +95,8 @@ const VideoChat: React.FC<Props> = React.memo(
     // Asynchronously load the room
     useEffect(() => {
       setLoading(true);
-      if (ref.current) {
-        console.log("Reinitializing videochat." + callId);
+      if (!isAuthed) {
         (async () => {
-          console.log("Connection state", socket.connected);
-
           if (!socket.connected) {
             console.log("Not connected, so waiting until connected.");
             window.Debug = socket;
@@ -107,59 +116,51 @@ const VideoChat: React.FC<Props> = React.memo(
               resolve
             );
           });
-
-          const rc = new RoomClient(mediasoupClient, socket, callId);
-          await rc.init();
-
-          console.log(rc);
-
-          // This will occur whenever we have JUST joined, or whenever
-          // a NEW participant arrives.
-          rc.on("consume", async (kind: string, stream: MediaStream) => {
-            // console.log("GOT CONSUME");
-            // console.log(stream);
-            while (!ref.current) {
-              await new Promise((resolve) => setTimeout(resolve, 100));
-            }
-
-            // if (ref.current) {
-            switch (kind) {
-              case "video":
-                if (video) break;
-                const newVideo = document.createElement("video");
-                newVideo.srcObject = stream;
-                newVideo.style.width = `100%`;
-                newVideo.style.height = `100%`;
-                newVideo.autoplay = true;
-                ref.current.appendChild(newVideo);
-                setVideo(newVideo);
-
-                break;
-              case "audio":
-                if (!isAudioOn) break;
-                if (audio) break;
-                const newAudio = document.createElement("audio");
-                newAudio.srcObject = stream;
-                newAudio.autoplay = true;
-                document.body.appendChild(newAudio);
-                break;
-            }
-            setLoading(false);
-          });
+          await joinRoom();
+          console.log("authenticated");
+          setIsAuthed(true);
         })();
       }
-    }, [
-      callId,
-      id,
-      ref,
-      token,
-      socket,
-      width,
-      height,
-      isAudioOn,
-      audio,
-      video,
-    ]);
+    }, [call.id, id, token, socket, joinRoom, isAuthed]);
+
+    const measuredRef = useCallback(
+      (node) => {
+        console.log(isAudioOn);
+        if (node !== null && rc && isAuthed) {
+          (async () => {
+            rc.on(
+              "consume",
+              async (
+                kind: string,
+                stream: MediaStream,
+                user: { type: string; id: number }
+              ) => {
+                if (node) {
+                  if (kind === "video") {
+                    const video = document.createElement("video");
+                    video.style.width = "50%";
+                    video.style.height = "100%";
+                    video.srcObject = stream;
+                    video.autoplay = true;
+                    node.appendChild(video);
+                  } else if (kind === "audio") {
+                    const audio = document.createElement("audio");
+                    audio.srcObject = stream;
+                    audio.autoplay = true;
+                    node.appendChild(audio);
+                  }
+
+                  setLoading(false);
+                }
+              }
+            );
+          })();
+        }
+      },
+      [rc, isAuthed, isAudioOn]
+    );
+
+    useEffect(() => {}, [isAudioOn]);
 
     return (
       <div
@@ -168,8 +169,12 @@ const VideoChat: React.FC<Props> = React.memo(
           width,
           height,
         }}
-        ref={ref}
+        ref={measuredRef}
       >
+        {/* <video id="visitor-video"/>
+        <video id="inmate-video"/>
+        <audio id="visitor-audio"/>
+        <audio id="inmate-audio"/> */}
         <VideoOverlay
           alerts={alerts}
           terminateCall={() => terminateCall(callId)}

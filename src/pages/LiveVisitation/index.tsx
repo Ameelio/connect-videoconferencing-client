@@ -19,7 +19,7 @@ import { genFullName } from "src/utils/utils";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
 import io from "socket.io-client";
-import { getAllVisitationsInfo, selectAllCalls } from "src/redux/selectors";
+import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import {
   Menu,
   Button,
@@ -43,7 +43,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
-  visitations: getAllVisitationsInfo(
+  visitations: getAllCallsInfo(
     state,
     selectAllCalls(state)
   ) as LiveVisitation[],
@@ -90,10 +90,14 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   }, [fetchCalls]);
 
   useEffect(() => {
-    if (!socket)
+    if (!socket) {
       setSocket(
-        io.connect("ws://localhost:8000", { transports: ["websocket"] })
+        io.connect(
+          process.env.REACT_APP_MEDIASOUP_HOSTNAME || "localhost:8000",
+          { transports: ["websocket"] }
+        )
       );
+    }
   }, [setSocket, socket]);
 
   useEffect(() => {
@@ -121,7 +125,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     </Menu>
   );
 
-  console.log(consumeAudioRecord);
+  // console.log(consumeAudioRecord);
   return (
     <Content style={WRAPPER_STYLE}>
       <Space direction="vertical" style={{ width: "100% " }}>
@@ -136,20 +140,18 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                 <VideoChat
                   height={`${frameVhHeight}vh`}
                   socket={socket}
-                  callId={visibleCalls[idx].id}
+                  call={visibleCalls[idx]}
                   width="100%"
                   alerts={CALL_ALERTS}
                   terminateCall={handleVideoTermination}
                   muteCall={(callId: number) => {
-                    console.log(callId);
-                    console.log({ ...consumeAudioRecord, [callId]: true });
+                    setConsumeAudioRecord(_.omit(consumeAudioRecord, callId));
+                  }}
+                  unmuteCall={(callId: number) =>
                     setConsumeAudioRecord({
                       ...consumeAudioRecord,
                       [callId]: true,
-                    });
-                  }}
-                  unmuteCall={(callId: number) =>
-                    setConsumeAudioRecord(_.omit(consumeAudioRecord, callId))
+                    })
                   }
                   isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
                   lockCall={(callId: number) => {

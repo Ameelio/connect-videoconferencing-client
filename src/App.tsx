@@ -17,7 +17,7 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/User";
 import Menu from "./components/headers/Menu";
-import { Avatar, Layout, PageHeader } from "antd";
+import { Avatar, Layout, PageHeader, Menu as AntdMenu } from "antd";
 import { logout } from "src/redux/modules/user";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
@@ -42,6 +42,8 @@ const mapDispatchToProps = { logout, fetchFacilities, selectActiveFacility };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const { Header } = Layout;
 
 function App({
   session,
@@ -86,6 +88,13 @@ function App({
 
   return (
     <ConnectedRouter history={history}>
+      {/* <Header>
+        <AntdMenu mode="horizontal" defaultSelectedKeys={['2']}>
+          <AntdMenu.Item key="1">nav 1</AntdMenu.Item>
+          <AntdMenu.Item key="2">nav 2</AntdMenu.Item>
+          <AntdMenu.Item key="3">nav 3</AntdMenu.Item>
+        </AntdMenu>
+      </Header> */}
       <Layout style={{ minHeight: "100vh" }}>
         {selected && (
           <Menu

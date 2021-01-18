@@ -29,9 +29,9 @@ export const fetchCalls = createAsyncThunk(
 );
 
 export const fetchRecording = createAsyncThunk(
-  "bloo/fetchRecording",
+  "call/fetchRecording",
   async (callId: number) => {
-    const body = await fetchAuthenticated(`/call/${callId}`);
+    const body = await fetchAuthenticated(`/call/recording/${callId}`);
     if (body.status !== 200) {
       throw body;
     }

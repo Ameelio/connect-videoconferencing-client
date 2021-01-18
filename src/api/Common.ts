@@ -3,9 +3,9 @@ import url from "url";
 import { getApprovedConnections } from "./Connection";
 import { getContacts, getInmates, getStaff } from "./Persona";
 
-export const GENERAL_URL = "/";
+export const API_URL = `${process.env.REACT_APP_BASE_URL}api/`;
 
-export const API_URL = "api/";
+console.log(API_URL);
 
 export interface ApiResponse {
   date: number;
@@ -26,7 +26,7 @@ export function fetchTimeout(
 
   console.log(fetchUrl);
   return Promise.race([
-    fetch(fetchUrl, options),
+    fetch(fetchUrl, { ...options, mode: "cors" }),
     new Promise<Response>((_, reject) =>
       setTimeout(() => reject(new Error("timeout")), timeout)
     ),

@@ -7,13 +7,10 @@ import { bindActionCreators, Dispatch } from "redux";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
-import { getAllVisitationsInfo } from "src/redux/selectors";
+import { getAllCallsInfo } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: getAllVisitationsInfo(
-    state,
-    state.visitations.scheduledVisitations
-  ),
+  visitations: getAllCallsInfo(state, state.visitations.scheduledVisitations),
   hasLoadedScheduledVisitations:
     state.visitations.hasLoadedScheduledVisitations,
 });

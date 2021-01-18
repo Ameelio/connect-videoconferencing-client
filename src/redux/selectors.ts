@@ -76,11 +76,20 @@ export const getVisitationEntities = (
   return { ...visitation, connection: detailedConnection };
 };
 
-export const getAllVisitationsInfo = (
+export const getAllCallsInfo = (
   state: RootState,
   visitations: BaseVisitation[]
 ): Visitation[] => {
   return visitations.map((visitation) =>
     getVisitationEntities(state, visitation)
   );
+};
+
+export const getCallInfo = (
+  state: RootState,
+  callId: number
+): Visitation | null => {
+  const plainCall = selectCallById(state, callId);
+  if (!plainCall) return null;
+  return getVisitationEntities(state, plainCall) as Visitation;
 };
