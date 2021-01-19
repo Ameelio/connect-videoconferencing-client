@@ -70,7 +70,6 @@ function App({
       try {
         await loginWithToken();
         await fetchFacilities();
-        // await loadData();
       } catch (err) {}
     })();
   }, [fetchFacilities]);
@@ -88,13 +87,6 @@ function App({
 
   return (
     <ConnectedRouter history={history}>
-      {/* <Header>
-        <AntdMenu mode="horizontal" defaultSelectedKeys={['2']}>
-          <AntdMenu.Item key="1">nav 1</AntdMenu.Item>
-          <AntdMenu.Item key="2">nav 2</AntdMenu.Item>
-          <AntdMenu.Item key="3">nav 3</AntdMenu.Item>
-        </AntdMenu>
-      </Header> */}
       <Layout style={{ minHeight: "100vh" }}>
         {selected && (
           <Menu

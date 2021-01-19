@@ -62,7 +62,6 @@ function RecordingBase({
 
   useEffect(() => {
     if (call && call?.videoReady && !call.recordingUrl) {
-      console.log(call);
       fetchRecording(parseInt(callId));
     }
   }, [callId, call, fetchRecording]);

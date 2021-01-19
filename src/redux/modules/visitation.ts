@@ -198,10 +198,3 @@ export const terminateLiveVisitation = (
 ): AppThunk => async (dispatch) => {
   dispatch(deleteLiveVisitation(visitation));
 };
-
-export const fetchVideoRecording = (
-  visitation: RecordedVisitation
-): AppThunk => async (dispatch) => {
-  const { id } = visitation;
-  dispatch(addRecording(id, process.env.PUBLIC_URL + "/recording_demo.mp4"));
-};

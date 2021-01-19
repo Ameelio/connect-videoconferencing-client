@@ -5,10 +5,7 @@ import { bindActionCreators, Dispatch } from "redux";
 import Sidebar from "src/components/containers/Sidebar";
 import Wrapper from "src/components/containers/Wrapper";
 import Container from "src/components/containers/Container";
-import {
-  selectPastVisitation,
-  fetchVideoRecording,
-} from "src/redux/modules/visitation";
+import { selectPastVisitation } from "src/redux/modules/visitation";
 import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";

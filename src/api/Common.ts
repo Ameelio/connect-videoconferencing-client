@@ -5,8 +5,6 @@ import { getContacts, getInmates, getStaff } from "./Persona";
 
 export const API_URL = `${process.env.REACT_APP_BASE_URL}api/`;
 
-console.log(API_URL);
-
 export interface ApiResponse {
   date: number;
   good: boolean;
@@ -20,11 +18,6 @@ export function fetchTimeout(
   options: Record<string, unknown>,
   timeout = 15000
 ): Promise<Response> {
-  // if (fetchUrl === 'api/node/2/call/1') {
-  //   console.log(fetchUrl);
-  // }
-
-  console.log(fetchUrl);
   return Promise.race([
     fetch(fetchUrl, { ...options, mode: "cors" }),
     new Promise<Response>((_, reject) =>
@@ -54,14 +47,10 @@ export async function fetchAuthenticated(
     },
   };
 
-  const response = await fetchTimeout(
-    `${API_URL}${
-      nodeResource ? `node/${state.facilities.selected?.nodeId}` : ""
-    }${fetchUrl}`,
-    requestOptions,
-    timeout
-  );
-  console.log(response);
+  const url = `${API_URL}${
+    nodeResource ? `node/${state.facilities.selected?.nodeId}` : ""
+  }${fetchUrl}`;
+  const response = await fetchTimeout(url, requestOptions, timeout);
   const body = await response.json();
   return body;
 }
