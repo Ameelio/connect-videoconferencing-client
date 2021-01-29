@@ -139,6 +139,7 @@ const VideoChat: React.FC<Props> = React.memo(
                     video.style.width = "50%";
                     video.style.height = "100%";
                     video.srcObject = stream;
+                    video.id = `${user.type}-video`;
                     video.autoplay = true;
                     node.appendChild(video);
                   } else if (kind === "audio") {

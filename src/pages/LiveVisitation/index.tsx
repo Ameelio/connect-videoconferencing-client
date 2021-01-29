@@ -75,12 +75,19 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
+  const [lockedCall, setLockedCall] = useState<LiveVisitation>();
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>
   >({});
 
   useEffect(() => {
+    const now = new Date().getTime();
+    fetchCalls({
+      approved: true,
+      firstLive: [0, now].join(","),
+      end: [now, now + 1e8].join(","),
+    });
     const interval = setInterval(() => {
       const now = new Date().getTime();
       fetchCalls({
@@ -88,7 +95,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         firstLive: [0, now].join(","),
         end: [now, now + 1e8].join(","),
       });
-    }, 3000);
+    }, 30000);
     return () => clearInterval(interval);
   }, [fetchCalls]);
 
@@ -159,6 +166,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                   isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
                   lockCall={(callId: number) => {
                     console.log(callId);
+                    const call = visitations.find((call) => call.id === callId);
+                    if (call) setLockedCall(call);
                   }}
                 />
               ) : (

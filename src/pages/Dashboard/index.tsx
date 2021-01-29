@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import MetricCard from "src/components/cards/MetricCard";
 import Container from "src/components/containers/Container";
 import LineChart from "src/components/charts/LineChart";
@@ -23,6 +23,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import { format } from "date-fns";
+import PDFDownloadButton from "./PDFDownloadButton";
 
 const { Content } = Layout;
 const MyDoc = () => (
@@ -48,12 +49,21 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default function Dashboard({
+function Dashboard({
   facility,
   visitations,
   fetchCalls,
 }: PropsFromRedux): ReactElement {
   // const Memoized = React.memo(MyDoc);
+
+  useEffect(() => {
+    const now = new Date().getTime();
+    fetchCalls({
+      approved: true,
+      firstLive: [0, now].join(","),
+      end: [now, now + 1e8].join(","),
+    });
+  }, [fetchCalls]);
 
   return (
     <Content style={WRAPPER_STYLE}>
@@ -70,7 +80,7 @@ export default function Dashboard({
           </Col>
         </Row>   
       </div>     */}
-      <PDFDownloadLink
+      {/* <PDFDownloadLink
         document={<MyDoc />}
         fileName={`Daily Schedule | ${facility?.name}@${format(
           new Date(),
@@ -78,7 +88,8 @@ export default function Dashboard({
         )}`}
       >
         <Button type="primary">Download Schedule</Button>
-      </PDFDownloadLink>
+      </PDFDownloadLink> */}
+      <PDFDownloadButton calls={visitations} facility={facility} />
       <div className="d-flex flex-row">
         <Container rounded fluid>
           <LineChart />
@@ -91,3 +102,5 @@ export default function Dashboard({
     </Content>
   );
 }
+
+export default connector(Dashboard);
