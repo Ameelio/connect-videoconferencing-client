@@ -2,23 +2,17 @@ import React, { useState, useEffect, useCallback } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import Sidebar from "src/components/containers/Sidebar";
-import Wrapper from "src/components/containers/Wrapper";
-import Container from "src/components/containers/Container";
 import { selectPastVisitation } from "src/redux/modules/visitation";
-import SidebarCard from "src/components/cards/SidebarCard";
 import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
-import { isCatchClause } from "typescript";
 import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
 import { Table, Tag, Space, Layout, Button } from "antd";
-import { DownloadOutlined, TeamOutlined } from "@ant-design/icons";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 
@@ -58,14 +52,14 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [maxDuration, setMaxDuration] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const debounceUpdate = useCallback(
-    _.debounce(() => setGlobal(searchQuery), 1000),
-    [searchQuery]
-  );
+  // const debounceUpdate = useCallback(
+  //   _.debounce(() => setGlobal(searchQuery), 1000),
+  //   [searchQuery]
+  // );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    debounceUpdate();
+    // debounceUpdate();
   };
 
   useEffect(() => {
@@ -92,7 +86,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           value={searchQuery}
           onChange={handleSearchChange}
           onSearch={(value) => {
-            setSearchQuery(value);
+            setGlobal(value);
           }}
         />
         <CallFiltersHeader
@@ -187,24 +181,6 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
         </Table>
       </Space>
-      {/* <Container>
-        <Table responsive>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Date</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Inmate Name</th>
-              <th>Inmate ID</th>
-              <th>Visitor Name</th>
-              <th>Visitor ID</th>
-              <th>Facility</th>
-            </tr>
-          </thead>
-          <tbody>{logs.map(renderItem)}</tbody>
-        </Table>
-      </Container> */}
     </Content>
   );
 };

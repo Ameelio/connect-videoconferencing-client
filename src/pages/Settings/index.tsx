@@ -1,7 +1,16 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { TimePicker, Layout, Row, Col, Space, Button, Divider } from "antd";
+import {
+  TimePicker,
+  Layout,
+  Row,
+  Col,
+  Space,
+  Button,
+  Divider,
+  Typography,
+} from "antd";
 import { Header } from "antd/lib/layout/layout";
 import { NodeCallSlot } from "src/typings/Node";
 import {
@@ -81,46 +90,53 @@ function SettingsContainer({
   };
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
     return (
-      <Space direction="vertical">
-        <Divider orientation="left">{dayOfWeekAsString(day)}</Divider>
+      <Row style={{ width: "100%", margin: 16 }}>
+        <Col flex={1} span={12}>
+          <Typography.Text>{dayOfWeekAsString(day)}</Typography.Text>
+        </Col>
         {/* <Col> */}
-        <Space direction="vertical">
-          {ranges.length > 0 ? (
-            ranges.map((time) => (
+        <Col flex={1} span={12}>
+          <Space direction="vertical">
+            {ranges.length > 0 ? (
+              ranges.map((time) => (
+                <RangePicker
+                  minuteStep={30}
+                  use12Hours={true}
+                  defaultValue={[
+                    moment(
+                      format(new Date(time.start), dateFormat),
+                      dateFormat
+                    ),
+                    moment(format(new Date(time.end), dateFormat), dateFormat),
+                  ]}
+                  onChange={(values) => {
+                    if (!values || !values[0] || !values[1]) return;
+                    // TODO with date range picker, convert to right day
+                    onChange(
+                      values[0].toDate(),
+                      values[1].toDate(),
+                      day,
+                      time.idx
+                    );
+                  }}
+                  format={dateFormat}
+                />
+              ))
+            ) : (
               <RangePicker
+                format={dateFormat}
                 minuteStep={30}
                 use12Hours={true}
-                defaultValue={[
-                  moment(format(new Date(time.start), dateFormat), dateFormat),
-                  moment(format(new Date(time.end), dateFormat), dateFormat),
-                ]}
                 onChange={(values) => {
                   if (!values || !values[0] || !values[1]) return;
-                  // TODO with date range picker, convert to right day
-                  onChange(
-                    values[0].toDate(),
-                    values[1].toDate(),
-                    day,
-                    time.idx
-                  );
+                  onChange(values[0].toDate(), values[1].toDate(), day, 0);
                 }}
-                format={dateFormat}
               />
-            ))
-          ) : (
-            <RangePicker
-              format={dateFormat}
-              minuteStep={30}
-              use12Hours={true}
-              onChange={(values) => {
-                if (!values || !values[0] || !values[1]) return;
-                onChange(values[0].toDate(), values[1].toDate(), day, 0);
-              }}
-            />
-          )}
-        </Space>
+            )}
+          </Space>
+        </Col>
         {/* </Col> */}
-      </Space>
+      </Row>
     );
   };
 
@@ -128,13 +144,13 @@ function SettingsContainer({
     <Content style={WRAPPER_STYLE}>
       <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
         <TabPane tab="General Settings" key="setting"></TabPane>
-        <TabPane tab="Facility Settings" key="facility"></TabPane>
-        <TabPane tab="Call Hours" key="facility"></TabPane>
+        {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
+        <TabPane tab="Call Hours" key="facility"></TabPane> */}
       </Tabs>
       <Content className="main-content-container">
         <Space direction="vertical">
           {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
-          <Button type="primary" onClick={handleSubmission}>
+          <Button type="primary" block onClick={handleSubmission}>
             Save Changes
           </Button>
         </Space>

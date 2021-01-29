@@ -37,11 +37,11 @@ export const TOKEN_KEY = "apiToken";
 export const REMEMBER_TOKEN_KEY = "rememberToken";
 
 export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
-  allowRead: "Allow Read",
-  allowCalltimes: "allowCalltimes",
-  allowApproval: "allowApproval",
-  allowRestructure: "allowRestructure",
-  allowMonitor: "allowMonitor",
+  allowRead: "Can view",
+  allowCalltimes: "Manage calltimes",
+  allowApproval: "Approve connections",
+  allowRestructure: "Reorganize facility",
+  allowMonitor: "Monitor live calls",
 };
 
 export enum WeekdayMap {
@@ -54,7 +54,7 @@ export enum WeekdayMap {
   Saturday = 6,
 }
 
-export const PADDING = 16;
+export const PADDING = 24;
 export const WRAPPER_STYLE = { padding: PADDING, paddingTop: 0 };
 
 export const ROUTES: Route[] = [
@@ -65,8 +65,8 @@ export const ROUTES: Route[] = [
   { path: "/members", component: InmatesPage, label: "Inmates" },
   { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
   { path: "/settings", component: SettingsPage, label: "Settings" },
-  { path: "/", component: DashboardPage, label: "Dashboard" },
   { path: "/call/:id", component: RecordingPage, label: "" },
+  { path: "/", component: DashboardPage, label: "Dashboard" },
 ];
 
 export const WEEKDAYS = [

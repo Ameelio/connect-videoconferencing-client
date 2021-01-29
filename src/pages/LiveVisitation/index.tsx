@@ -81,20 +81,23 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   >({});
 
   useEffect(() => {
-    const now = new Date().getTime();
-    fetchCalls({
-      approved: true,
-      firstLive: [0, now].join(","),
-      end: [now, now + 1e8].join(","),
-    });
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      fetchCalls({
+        approved: true,
+        firstLive: [0, now].join(","),
+        end: [now, now + 1e8].join(","),
+      });
+    }, 3000);
+    return () => clearInterval(interval);
   }, [fetchCalls]);
 
   useEffect(() => {
     if (!socket) {
       setSocket(
         io.connect(
-          process.env.REACT_APP_MEDIASOUP_HOSTNAME || "localhost:8000",
-          { transports: ["websocket"] }
+          process.env.REACT_APP_MEDIASOUP_HOSTNAME || "localhost:8000"
+          // { transports: ["websocket"] }
         )
       );
     }

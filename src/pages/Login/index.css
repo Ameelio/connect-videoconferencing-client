@@ -1,9 +1,17 @@
-.login-form {
-  width: 620px;
-  height: 450px;
+.login-form-container {
+  width: 450px;
+  height: 500px;
   margin: auto;
   background-color: white;
-  padding: 16px;
+  padding: 32px;
   display: flex;
-  align-items: center;
+  margin-top: 5em;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.login-form {
+  margin: 48px auto;
 }

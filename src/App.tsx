@@ -28,9 +28,6 @@ import { initializeAppData } from "./api/Common";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
 import { History } from "history";
-import Icon, { BellFilled, BellOutlined, BulbFilled } from "@ant-design/icons";
-import { InitialsAvatar } from "./components/avatar/InitialsAvatar";
-import { genFullName } from "./utils/utils";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -100,16 +97,16 @@ function App({
         <Layout>
           <PageHeader
             title={header}
-            extra={[
-              <BellFilled key="bell" />,
-              <BulbFilled key="bulb" />,
-              <InitialsAvatar
-                name={genFullName(session.user)}
-                size="default"
-                shape="circle"
-                key="avatar"
-              />,
-            ]}
+            // extra={[
+            //   <BellFilled key="bell" />,
+            //   <BulbFilled key="bulb" />,
+            //   <InitialsAvatar
+            //     name={genFullName(session.user)}
+            //     size="default"
+            //     shape="circle"
+            //     key="avatar"
+            //   />,
+            // ]}
           />
           <Switch>
             <Route exact path="/login" component={Login}></Route>

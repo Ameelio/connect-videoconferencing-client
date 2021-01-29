@@ -13,8 +13,7 @@ import { contactsSlice } from "./modules/contact";
 import { callsSlice } from "./modules/call";
 import { facilitiesSlice } from "./modules/facility";
 import { connectRouter, routerMiddleware } from "connected-react-router";
-import { History } from "history";
-import { createBrowserHistory } from "history";
+import { createBrowserHistory, History } from "history";
 import { socketsSlice } from "./modules/socket";
 
 export const history = createBrowserHistory();

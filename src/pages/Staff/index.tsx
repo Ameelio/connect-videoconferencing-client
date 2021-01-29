@@ -158,12 +158,13 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
         onCancel={() => setModalType(null)}
       >
         {selected && (
-          <div className="d-flex flex-column">
-            <span>{genFullName(selected)}</span>
-            <span>{selected.role}</span>
-            <span>{selected.email}</span>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <span>Name: {genFullName(selected)}</span>
+            <span>Role: {selected.role}</span>
+            <span>Email: {selected.email}</span>
+            <Divider />
             {Object.keys(STAFF_PERMISSION_OPTIONS).map((key) => (
-              <div>
+              <Space>
                 <span>{STAFF_PERMISSION_OPTIONS[key as Permission]}</span>
                 <Switch
                   defaultChecked={selected.permissions.includes(
@@ -179,9 +180,9 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
                     setSelectedPermissions(update);
                   }}
                 />
-              </div>
+              </Space>
             ))}
-          </div>
+          </Space>
         )}
       </Modal>
     </Content>

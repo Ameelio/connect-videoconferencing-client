@@ -9,19 +9,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveVisitation/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
-import io from "socket.io-client";
 import { Menu, Spin, Dropdown, Button, Space } from "antd";
-import {
-  LockFilled,
-  MessageFilled,
-  MoreOutlined,
-  SettingFilled,
-} from "@ant-design/icons";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import { CallAlert } from "src/typings/Call";
-import { cloneObject } from "src/utils/utils";
-import { couldStartTrivia } from "typescript";
+import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
+import { openNotificationWithIcon } from "src/utils/utils";
 
 interface Props {
   width: number | string;
@@ -90,6 +83,12 @@ const VideoChat: React.FC<Props> = React.memo(
         contents: alert.body,
         recipients: participants,
       });
+
+      openNotificationWithIcon(
+        "Alert succesfully issue.",
+        "Both parties have been notified.",
+        "success"
+      );
     };
 
     // Asynchronously load the room
@@ -125,7 +124,6 @@ const VideoChat: React.FC<Props> = React.memo(
 
     const measuredRef = useCallback(
       (node) => {
-        console.log(isAudioOn);
         if (node !== null && rc && isAuthed) {
           (async () => {
             rc.on(
@@ -147,6 +145,9 @@ const VideoChat: React.FC<Props> = React.memo(
                     const audio = document.createElement("audio");
                     audio.srcObject = stream;
                     audio.autoplay = true;
+                    audio.id = `${user.type}-audio`;
+                    audio.muted = isAudioOn;
+
                     node.appendChild(audio);
                   }
 
@@ -160,7 +161,22 @@ const VideoChat: React.FC<Props> = React.memo(
       [rc, isAuthed, isAudioOn]
     );
 
-    useEffect(() => {}, [isAudioOn]);
+    useEffect(() => {
+      console.log(isAudioOn);
+      const inmate = document.getElementById("inmate-audio");
+      const user = document.getElementById("user-audio");
+      if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
+      if (user) (user as HTMLAudioElement).muted = isAudioOn;
+    }, [isAudioOn]);
+
+    useEffect(() => {
+      if (rc && call) {
+        const interval = setInterval(() => {
+          rc.socket.emit("heartbeat", { callId: call.id });
+        }, 1000);
+        return () => clearInterval(interval);
+      }
+    }, [rc, call]);
 
     return (
       <div
@@ -175,9 +191,29 @@ const VideoChat: React.FC<Props> = React.memo(
         <video id="inmate-video"/>
         <audio id="visitor-audio"/>
         <audio id="inmate-audio"/> */}
+        {!isAudioOn && (
+          <AudioMutedOutlined
+            style={{
+              position: "absolute",
+              bottom: 24,
+              right: 24,
+              fontSize: 36,
+              color: "red",
+            }}
+          />
+        )}
         <VideoOverlay
           alerts={alerts}
-          terminateCall={() => terminateCall(callId)}
+          terminateCall={() => {
+            if (rc) {
+              rc.terminate();
+              openNotificationWithIcon(
+                `Call #${call.id} terminated`,
+                "We notified both participants of the incident.",
+                "info"
+              );
+            }
+          }}
           lockCall={() => lockCall(callId)}
           muteCall={() => muteCall(callId)}
           unmuteCall={() => unmuteCall(callId)}

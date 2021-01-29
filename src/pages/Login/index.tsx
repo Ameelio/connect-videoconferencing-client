@@ -25,23 +25,7 @@ const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function LoginContainer({ session }: PropsFromRedux): ReactElement {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  // const tryLogin = async (e: React.MouseEvent) => {
-  //   e.preventDefault();
-  //   const cred: UserLoginInfo = {
-  //     email,
-  //     password,
-  //     remember: false,
-  //   };
-  //   try {
-  //     await loginWithCredentials(cred);
-  //   } catch (err) {
-  //     setError("Invalid email or password");
-  //   }
-  // };
 
   if (session.isLoggedIn) return <Redirect to="/" />;
 
@@ -57,19 +41,19 @@ function LoginContainer({ session }: PropsFromRedux): ReactElement {
     }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
+  const onFinishFailed = (_errorInfo: any) => {
     setError("Invalid email or password");
   };
 
   return (
     <Content>
-      <div className="login-form">
-        <div className="login-form-right-column" />
+      <div className="login-form-container">
         <Form
           name="basic"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
+          className="login-form"
         >
           <Form.Item
             name="email"
@@ -96,8 +80,8 @@ function LoginContainer({ session }: PropsFromRedux): ReactElement {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
+            <Button type="primary" htmlType="submit" size="large" block>
+              Log In
             </Button>
           </Form.Item>
         </Form>

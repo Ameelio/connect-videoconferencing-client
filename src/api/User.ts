@@ -36,8 +36,10 @@ function cleanUser(user: RawUser): User {
 }
 
 async function initializeSession(body: any) {
+  console.log("initiaalizing session");
   const user = cleanUser(body.data as RawUser);
   const { token: apiToken, remember: rememberToken } = body.data;
+  console.log("setting session");
   Store.dispatch(
     setSession({
       user,
