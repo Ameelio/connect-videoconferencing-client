@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
-import { Store } from "./redux";
+import { history, Store } from "./redux";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={Store}>
-      <App />
+      <App history={history} />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

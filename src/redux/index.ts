@@ -7,22 +7,38 @@ import { sessionReducer } from "./modules/user";
 import { connectionsSlice } from "./modules/connections";
 
 import { createStore, applyMiddleware } from "redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
-import { recordingsSlice } from "./modules/recording";
+import { callsSlice } from "./modules/call";
+import { facilitiesSlice } from "./modules/facility";
+import { connectRouter, routerMiddleware } from "connected-react-router";
+import { createBrowserHistory, History } from "history";
+import { socketsSlice } from "./modules/socket";
 
-export const rootReducer = combineReducers({
-  visitations: visitationsReducer,
-  requests: connectionsReducer,
-  staff: staffSlice.reducer,
-  session: sessionReducer,
-  inmates: inmatesSlice.reducer,
-  contacts: contactsSlice.reducer,
-  connections: connectionsSlice.reducer,
-  recordings: recordingsSlice.reducer,
+export const history = createBrowserHistory();
+
+export const createRootReducer = (history: History) =>
+  combineReducers({
+    visitations: visitationsReducer,
+    requests: connectionsReducer,
+    staff: staffSlice.reducer,
+    session: sessionReducer,
+    inmates: inmatesSlice.reducer,
+    contacts: contactsSlice.reducer,
+    connections: connectionsSlice.reducer,
+    calls: callsSlice.reducer,
+    facilities: facilitiesSlice.reducer,
+    router: connectRouter(history),
+    sockets: socketsSlice.reducer,
+  });
+
+export const rootReducer = createRootReducer(history);
+
+export const Store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(routerMiddleware(history)),
 });
-
-export const Store = configureStore({ reducer: rootReducer });
 
 export type RootState = ReturnType<typeof rootReducer>;

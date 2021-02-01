@@ -27,12 +27,6 @@ export const setSession = (userState: SessionState): UserActionTypes => {
   };
 };
 
-// const fromStorage: string | null = sessionStorage.getItem('userState');
-// let storedUserState: SessionState | null = null;
-// if (fromStorage) {
-//   storedUserState = JSON.parse(fromStorage);
-// }
-
 // Reducer
 const initialState: SessionState = {
   authInfo: { apiToken: "", rememberToken: "" },

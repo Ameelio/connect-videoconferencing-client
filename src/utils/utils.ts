@@ -1,7 +1,11 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { STAFF_PERMISSION_OPTIONS } from "./constants";
+import { NodeCallSlot } from "src/typings/Node";
+import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
+import { CallBlock, Weekday } from "src/typings/Call";
+import _ from "lodash";
+import { notification } from "antd";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -49,9 +53,8 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
     ["limit", filters.limit?.toString() || "100"],
     ["offset", filters.offset?.toString() || "0"],
   ];
-
-  console.log("here");
-  console.log(filters);
+  if (filters.firstLive) options.push(["first_live", filters.firstLive]);
+  if (filters.end) options.push(["end", filters.end]);
   if (filters.startDate && filters.endDate)
     options.push(["start", `${filters.startDate},${filters.endDate}`]);
   if (filters.minDuration && filters.maxDuration)
@@ -62,4 +65,43 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
   if (filters.query?.length) options.push(["global", filters.query]);
   console.log(options);
   return toQueryString(options);
+};
+export const getInitials = (str: string) => {
+  return str
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+};
+
+function hashCode(str: string): number {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 6) - hash);
+  }
+  return hash;
+}
+
+export function generateBgColor(label: string): string {
+  const BACKGROUND_COLORS = [
+    "#093145",
+    "#3C6478",
+    "#107896",
+    "#43ABC9",
+    "#C2571A",
+    "#9A2617",
+  ];
+  return BACKGROUND_COLORS[
+    Math.abs(hashCode(label) % BACKGROUND_COLORS.length)
+  ];
+}
+
+export const openNotificationWithIcon = (
+  message: string,
+  description: string,
+  type: "success" | "info" | "error" | "warning"
+) => {
+  notification[type]({
+    message,
+    description,
+  });
 };

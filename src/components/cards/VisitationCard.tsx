@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import VideoChat from "src/components/videoconference/VideoChat";
+import VideoChat from "src/pages/LiveVisitation/VideoChat";
 import { genFullName } from "src/utils/utils";
 import VisitationCardHeader from "../headers/VisitationCardHeader";
 import { CardType } from "src/utils/constants";
@@ -40,8 +40,8 @@ const VisitationCard: React.FC<Props> = ({
 
   const genMainComponent = (): JSX.Element => {
     switch (type) {
-      case CardType.LiveVisitation:
-        return <VideoChat callId={callId} socket={socket} />;
+      // case CardType.LiveVisitation:
+      //   return <VideoChat callId={callId} socket={socket} />;
       default:
         return <div />;
     }

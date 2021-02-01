@@ -1,7 +1,17 @@
-.login-form {
-  width: 625px;
+.login-form-container {
+  width: 450px;
+  height: 500px;
+  margin: auto;
+  background-color: white;
+  padding: 32px;
+  display: flex;
+  margin-top: 5em;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.facility-name {
-  margin-left: 2rem;
+.login-form {
+  margin: 48px auto;
 }

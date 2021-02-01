@@ -7,7 +7,7 @@ interface BasePersona {
 
 interface Inmate extends BasePersona {
   inmateNumber: string;
-  dateOfBirth: Date;
+  dob: string;
   quota: number;
   sentence: string;
   sentnceLength: string;
@@ -20,6 +20,7 @@ interface Contact extends BasePersona {
   relationship: string;
   details: string;
   email: string;
+  dob: string;
 }
 
 type StaffRole = "admin" | "supervisor" | "operator" | "investigator";
@@ -35,8 +36,6 @@ interface Staff extends BasePersona {
   permissions: Permission[];
   role: StaffRole;
   email: string;
-  // TODO move this to a different place on the redux store. It's gonna be selected beforehand.
-  // facility: AmeelioNode;
 }
 
 interface UserLoginInfo {

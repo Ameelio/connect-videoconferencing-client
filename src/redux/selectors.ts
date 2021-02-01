@@ -3,8 +3,9 @@ import { connectionsAdapter } from "./modules/connections";
 import { contactsAdapter } from "./modules/contact";
 import { inmatesActions, inmatesAdapter } from "./modules/inmate";
 import { createSelector } from "reselect";
-import { recordingsAdapter } from "./modules/recording";
+import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
+import { facilitiesAdapter } from "./modules/facility";
 
 // get selectors from entity adapter
 export const {
@@ -23,14 +24,19 @@ export const {
 } = contactsAdapter.getSelectors<RootState>((state) => state.contacts);
 
 export const {
-  selectById: selectRecordingById,
-  selectAll: selectAllRecordings,
-} = recordingsAdapter.getSelectors<RootState>((state) => state.recordings);
+  selectById: selectCallById,
+  selectAll: selectAllCalls,
+} = callsAdapter.getSelectors<RootState>((state) => state.calls);
 
 export const {
   selectById: selectStaffByIdd,
   selectAll: selectAllStaff,
 } = staffAdapter.getSelectors<RootState>((state) => state.staff);
+
+export const {
+  selectById: selectFacilityById,
+  selectAll: selectAllFacilities,
+} = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
 
 // helper selectors
 const getConnectionEntities = (
@@ -40,8 +46,14 @@ const getConnectionEntities = (
   const inmate = selectInmateById(state, connection.inmateId);
   const contact = selectContactById(state, connection.userId);
   // TODO improve this
-  if (!inmate || !contact)
-    throw new Error("Failed to locate connection information");
+  if (!inmate)
+    throw new Error(
+      `Failed to locate information for inmate ${connection.inmateId}`
+    );
+  if (!contact)
+    throw new Error(
+      `Failed to locate information for contact ${connection.userId}`
+    );
   return { inmate, contact, ...connection };
 };
 
@@ -64,11 +76,20 @@ export const getVisitationEntities = (
   return { ...visitation, connection: detailedConnection };
 };
 
-export const getAllVisitationsInfo = (
+export const getAllCallsInfo = (
   state: RootState,
   visitations: BaseVisitation[]
 ): Visitation[] => {
   return visitations.map((visitation) =>
     getVisitationEntities(state, visitation)
   );
+};
+
+export const getCallInfo = (
+  state: RootState,
+  callId: number
+): Visitation | null => {
+  const plainCall = selectCallById(state, callId);
+  if (!plainCall) return null;
+  return getVisitationEntities(state, plainCall) as Visitation;
 };

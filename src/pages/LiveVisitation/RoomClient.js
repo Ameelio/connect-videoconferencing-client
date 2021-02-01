@@ -1,16 +1,32 @@
+/*
+  Copyright 2020 Ameelio.org.
+  Published under the GPL v3.
+
+  You can obtain a copy of the GPL v3 at:
+  https://www.gnu.org/licenses/gpl-3.0.en.html
+
+  This file was inspired by code from https://github.com/Dirvann/mediasoup-sfu-webrtc-video-rooms,
+  which was published under the Apache License.
+  Copyright 2020 github.com/Dirvann.
+
+  You can obtain a copy of the Apache License at:
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  This file was substantially modified by Ameelio to streamline
+  the signalling protocol and change the structure of how a RoomClient
+  is initialized and what events it exposes for easier use by
+  Ameelio's client-side code, and to refactor and restructure the code
+  for easier maintainenance, among other changes.
+*/
 const MEDIA_TYPE = {
   audio: "audioType",
   video: "videoType",
   screen: "screenType",
 };
 
-/*
-DEBUGGING
-
 window.rc = null;
 window.consumers = [];
 window.producers = [];
-*/
 
 const config = {
   video: {
@@ -47,7 +63,7 @@ class RoomClient {
     this.callId = callId;
 
     // We will eventually have...
-    // Two transports
+    // Two transports (or one, if we are a monitor)
     this.producerTransport = null;
     this.consumerTransport = null;
 
@@ -105,10 +121,12 @@ class RoomClient {
     // Set up both transports and promise to send
     // dtls info when they connect (this won't occur until
     // someone actually produces).
-    this.producerTransport = this.device.createSendTransport(
-      producerTransportInfo
-    );
-    this.handleTransportConnect(this.producerTransport);
+    if (producerTransportInfo) {
+      this.producerTransport = this.device.createSendTransport(
+        producerTransportInfo
+      );
+      this.handleTransportConnect(this.producerTransport);
+    }
 
     this.consumerTransport = this.device.createRecvTransport(
       consumerTransportInfo
@@ -125,20 +143,23 @@ class RoomClient {
 
     // When our producer transport is producing a new stream,
     // inform the server.
-    this.producerTransport.on(
-      "produce",
-      async ({ kind, rtpParameters }, callback, errback) => {
-        console.log("Sending produce request");
 
-        const { producerId } = await this.request("produce", {
-          callId: this.callId,
-          kind,
-          rtpParameters,
-        });
+    if (this.producerTransport) {
+      this.producerTransport.on(
+        "produce",
+        async ({ kind, rtpParameters }, callback, errback) => {
+          console.log("Sending produce request");
 
-        callback({ id: producerId });
-      }
-    );
+          const { producerId } = await this.request("produce", {
+            callId: this.callId,
+            kind,
+            rtpParameters,
+          });
+
+          callback({ id: producerId });
+        }
+      );
+    }
 
     // When we get a consumer, fire an event.
     this.socket.on("consume", async (info) => {
@@ -149,7 +170,7 @@ class RoomClient {
         consumerId: consumer.id,
       });
 
-      this.handlers.consume.forEach((f) => f(info.kind, stream));
+      this.handlers.consume.forEach((f) => f(info.kind, stream, info.user));
     });
   }
 

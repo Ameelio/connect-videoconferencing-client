@@ -9,9 +9,11 @@ interface BaseVisitation {
   connectionId: number;
   kiosk: Kiosk;
   approved: boolean;
+  videoReady: boolean;
   endTime?: number;
   startTime?: number;
   liveStatus?: string;
+  recordingUrl?: string;
 }
 
 interface Visitation extends BaseVisitation {
@@ -21,7 +23,9 @@ interface Visitation extends BaseVisitation {
 interface LiveVisitation extends Visitation {
   startTime: number;
   liveStatus: string;
+  isUnmuted?: boolean;
 }
+
 interface RecordedVisitation extends LiveVisitation {
   endTime: number;
 }
@@ -35,9 +39,6 @@ interface CallFilters {
   limit?: number;
   offset?: number;
   approved?: boolean;
+  firstLive?: string;
+  end?: string;
 }
-// type VisitationFilterType = 'approved' | 'query' | 'approved' | 'limit' | 'offset' | 'global';
-
-// interface CallFilters<T> {
-//   [Key: VisitatinFilterType]: T;
-// }

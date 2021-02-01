@@ -1,5 +1,6 @@
-@import "./scss/custom.scss";
+// @import "./scss/custom.scss";
 @import "~antd/dist/antd.css";
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@200;300;400;500;600;700;800&display=swap");
 
 :root {
   --main-primary-color: #0089ff;
@@ -21,6 +22,7 @@
   --main-blue-200: #9ac1ec;
   --main-blue-100: #eef6ff;
   --main-lightpurple: #e7dff0;
+  --main-background: #fafafb;
 }
 
 html {
@@ -33,9 +35,9 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Rubik", sans-serif !important;
   color: var(--main-black-600) !important;
-  background-color: var(--main-black-200) !important;
+  background-color: var(--main-background) !important;
 }
 
 .primary {
@@ -239,6 +241,12 @@ body {
 }
 
 /* Common Elements */
+
+.main-content-container {
+  background-color: white;
+  padding: 16px;
+}
+
 .left-sidebar {
   display: "flex";
   flex-direction: "column";

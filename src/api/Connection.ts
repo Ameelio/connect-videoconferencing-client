@@ -9,11 +9,9 @@ import { connectionsActions } from "src/redux/modules/connections";
 import camelcaseKeys from "camelcase-keys";
 
 export async function getApprovedConnections(): Promise<BaseConnection[]> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/2/connections?status=approved`)
-  );
+  const body = await fetchAuthenticated(`/connections?status=approved`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -27,20 +25,15 @@ export async function getApprovedConnections(): Promise<BaseConnection[]> {
 }
 
 export async function getConnectionRequests(): Promise<BaseConnection[]> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/2/connections?status=pending`)
-  );
-
-  if (!body.good || !body.data) {
+  const body = await fetchAuthenticated(`/connections?status=pending`);
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
-  console.log(body);
   const connections = ((body.data as Record<string, unknown>)
     .connections as Object[]).map((connection) =>
     camelcaseKeys(connection)
   ) as BaseConnection[];
-
   console.log(connections);
 
   Store.dispatch(setConnectionRequests(connections));
@@ -51,15 +44,12 @@ export async function updateConnection(
   connectionId: number,
   status: "approved" | "pending" | "denied"
 ): Promise<void> {
-  const body = await fetchAuthenticated(
-    url.resolve(API_URL, `node/2/connection`),
-    {
-      method: "PUT",
-      body: JSON.stringify({ connection_id: connectionId, status }),
-    }
-  );
+  const body = await fetchAuthenticated("/connection", {
+    method: "PUT",
+    body: JSON.stringify({ connection_id: connectionId, status }),
+  });
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 }

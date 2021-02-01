@@ -2,49 +2,33 @@ import React, { useState, useEffect, useCallback } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import Sidebar from "src/components/containers/Sidebar";
-import Wrapper from "src/components/containers/Wrapper";
-import Container from "src/components/containers/Container";
-import {
-  selectPastVisitation,
-  fetchVideoRecording,
-} from "src/redux/modules/visitation";
-import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType, LoadingTypes } from "src/utils/constants";
-import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
-import {
-  Dropdown,
-  DropdownButton,
-  Form,
-  FormControl,
-  Table,
-} from "react-bootstrap";
+import { selectPastVisitation } from "src/redux/modules/visitation";
+import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
 import VisitationCard from "src/components/cards/VisitationCard";
 import { WithLoading } from "src/components/hocs/WithLoadingProps";
-import {
-  getAllVisitationsInfo,
-  selectAllRecordings,
-} from "src/redux/selectors";
-import { isCatchClause } from "typescript";
+import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format, getDate, getTime } from "date-fns";
-import { getRecordings } from "src/redux/modules/recording";
+import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
+import { Table, Tag, Space, Layout, Button } from "antd";
+import Search from "antd/lib/input/Search";
+import { push } from "connected-react-router";
 
-const mapStateToProps = (state: RootState) => {
-  console.log("Calling mapstatetoprops");
+const { Column } = Table;
+const { Content } = Layout;
 
-  return {
-    logs: getAllVisitationsInfo(state, selectAllRecordings(state)).filter(
-      (x) => x.startTime && x.endTime
-    ) as RecordedVisitation[],
-    selected: state.visitations.selectedPastVisitation,
-  };
-};
+const mapStateToProps = (state: RootState) => ({
+  logs: getAllCallsInfo(state, selectAllCalls(state)).filter(
+    (x) => x.startTime && x.endTime
+  ) as RecordedVisitation[],
+  selected: state.visitations.selectedPastVisitation,
+  history: state.router,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ getRecordings, selectPastVisitation }, dispatch);
+  bindActionCreators({ fetchCalls, selectPastVisitation, push }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -56,7 +40,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   logs,
   selected,
   selectPastVisitation,
-  getRecordings,
+  fetchCalls,
+  push,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
@@ -65,20 +50,22 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [startDate, setStartDate] = useState<number>();
   const [endDate, setEndDate] = useState<number>();
   const [maxDuration, setMaxDuration] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const debounceUpdate = useCallback(
-    _.debounce(() => setGlobal(searchQuery), 1000),
-    [searchQuery]
-  );
+  // const debounceUpdate = useCallback(
+  //   _.debounce(() => setGlobal(searchQuery), 1000),
+  //   [searchQuery]
+  // );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    debounceUpdate();
+    // debounceUpdate();
   };
 
   useEffect(() => {
+    setLoading(true);
     (async () =>
-      getRecordings({
+      fetchCalls({
         query: global,
         startDate,
         endDate,
@@ -87,60 +74,114 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         limit,
         offset,
       }))();
-  }, [getRecordings, limit, offset, startDate, endDate, maxDuration, global]);
-
-  const renderItem = (visitation: RecordedVisitation): JSX.Element => {
-    console.log("Rendering vistation:", visitation);
-
-    return (
-      <tr>
-        <td></td>
-        <td>{format(visitation.startTime, "MM/dd/yy")}</td>
-        <td>{format(visitation.startTime, "HH:mm")}</td>
-        <td>{format(visitation.endTime, "HH:mm")}</td>
-        <td>{genFullName(visitation.connection.inmate)}</td>
-        <td>{visitation.connection.inmate.inmateNumber}</td>
-        <td>{genFullName(visitation.connection.contact)}</td>
-        <td>{visitation.connection.contact.id}</td>
-        <td>Facility</td>
-      </tr>
-    );
-  };
+    setLoading(false);
+  }, [fetchCalls, limit, offset, startDate, endDate, maxDuration, global]);
 
   return (
-    <div className="d-flex flex-column">
-      <Form className="mt-3 w-100">
-        <FormControl
-          type="text"
+    <Content style={{ padding: PADDING }}>
+      <Space direction="vertical" style={{ width: "100% " }}>
+        <Search
           placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
+          allowClear
           value={searchQuery}
           onChange={handleSearchChange}
+          onSearch={(value) => {
+            setGlobal(value);
+          }}
         />
-      </Form>
-      <CallFiltersHeader
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setDuration={setMaxDuration}
-      />
-      <Container>
-        <Table responsive>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Date</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Inmate Name</th>
-              <th>Inmate ID</th>
-              <th>Visitor Name</th>
-              <th>Visitor ID</th>
-              <th>Facility</th>
-            </tr>
-          </thead>
-          <tbody>{logs.map(renderItem)}</tbody>
+        <CallFiltersHeader
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setDuration={setMaxDuration}
+        />
+
+        <Table dataSource={logs} loading={loading}>
+          <Column
+            title="Date"
+            dataIndex="startTime"
+            key="date"
+            render={(time) => (
+              <>
+                <span>{format(time, "MM/dd/yy")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Start Time"
+            dataIndex="startTime"
+            key="startTime"
+            render={(time) => (
+              <>
+                <span>{format(time, "HH:mm")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="End Time"
+            dataIndex="endTime"
+            key="endTime"
+            render={(time) => (
+              <>
+                <span>{format(time, "HH:mm")}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Inmate Name"
+            dataIndex="connection"
+            key="connection"
+            render={(connection: Connection) => (
+              <>
+                <span>{genFullName(connection.inmate)}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Inmate ID"
+            dataIndex="connection"
+            key="inmateId"
+            render={(connection: Connection) => (
+              <>
+                <span>{connection.inmate.inmateNumber}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Contact Name"
+            dataIndex="connection"
+            key="contactName"
+            render={(connection: Connection) => (
+              <>
+                <span>{genFullName(connection.contact)}</span>
+              </>
+            )}
+          />
+          {/* Change this */}
+          <Column
+            title="Location"
+            dataIndex="connection"
+            key="location"
+            render={(connection: Connection) => (
+              <>
+                <span>{connection.inmate.location}</span>
+              </>
+            )}
+          />
+
+          <Column
+            title="Recording"
+            key="action"
+            render={(_text, visitation: RecordedVisitation) => (
+              <Space size="middle">
+                <Button onClick={() => push(`/call/${visitation.id}`)}>
+                  View
+                </Button>
+              </Space>
+            )}
+          />
         </Table>
-      </Container>
-    </div>
+      </Space>
+    </Content>
   );
 };
 

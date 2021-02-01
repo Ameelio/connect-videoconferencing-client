@@ -6,9 +6,9 @@ import camelcaseKeys from "camelcase-keys";
 import { contactsActions } from "src/redux/modules/contact";
 
 export async function getInmates(): Promise<Inmate[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/2/inmates`));
+  const body = await fetchAuthenticated(`/inmates`, {}, false);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -20,9 +20,9 @@ export async function getInmates(): Promise<Inmate[]> {
 }
 
 export async function getStaff(): Promise<Staff[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/2/admins`));
+  const body = await fetchAuthenticated(`/admins`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
@@ -33,15 +33,16 @@ export async function getStaff(): Promise<Staff[]> {
 }
 
 export async function getContacts(): Promise<Contact[]> {
-  const body = await fetchAuthenticated(url.resolve(API_URL, `node/2/users`));
+  const body = await fetchAuthenticated(`/users`);
 
-  if (!body.good || !body.data) {
+  if (body.status !== 200 || !body.data) {
     throw body;
   }
 
   const contacts = ((body.data as Record<string, unknown>)
     .users as Object[]).map((contact) => camelcaseKeys(contact)) as Contact[];
 
+  console.log(contacts);
   Store.dispatch(contactsActions.contactsAddMany(contacts));
   return contacts;
 }
