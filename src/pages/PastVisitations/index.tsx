@@ -12,6 +12,8 @@ import _ from "lodash";
 import { Table, Space, Layout, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
+import { Connection } from "src/typings/Connection";
+import { RecordedVisitation } from "src/typings/Call";
 
 const { Column } = Table;
 const { Content } = Layout;

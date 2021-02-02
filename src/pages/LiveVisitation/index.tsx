@@ -24,7 +24,7 @@ import {
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveVisitation/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { GridOption } from "src/typings/Call";
+import { GridOption, LiveVisitation } from "src/typings/Call";
 import _ from "lodash";
 
 const { Content } = Layout;

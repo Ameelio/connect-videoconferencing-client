@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { PADDING } from "src/utils/constants";
 import {
   getAllConnectionsInfo,
   selectConnectionRequests,
 } from "src/redux/selectors";
-import { Table, Tag, Space, Layout, Avatar, Button } from "antd";
-import { format } from "date-fns";
+import { Table, Space, Layout, Avatar, Button } from "antd";
 import { genFullName } from "src/utils/utils";
 import { updateConnection } from "src/redux/modules/connections";
+import { BaseConnection, Connection } from "src/typings/Connection";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -28,14 +28,8 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   updateConnection,
   requests,
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-
   const handleAccept = (request: BaseConnection): void => {
     updateConnection({ connectionId: request.id, status: "approved" });
-    setLoading(true);
-    setTimeout(function () {
-      setLoading(false);
-    }, 3000);
   };
 
   const handleDecline = (request: BaseConnection): void => {

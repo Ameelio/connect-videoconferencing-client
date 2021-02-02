@@ -28,6 +28,7 @@ import {
   InfoCircleOutlined,
   InfoOutlined,
 } from "@ant-design/icons";
+import { RecordedVisitation } from "src/typings/Call";
 
 const { Content } = Layout;
 

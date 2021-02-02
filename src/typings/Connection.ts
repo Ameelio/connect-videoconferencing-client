@@ -1,6 +1,6 @@
-type ConnectionRequestStatus = "approved" | "rejected" | "pending";
+export type ConnectionStatus = "approved" | "denied" | "pending";
 
-interface BaseConnection {
+export interface BaseConnection {
   id: number;
   requestedAt: number;
   approvedAt: number;
@@ -8,11 +8,11 @@ interface BaseConnection {
   requestDetails: string;
   inmateId: number;
   userId: number;
-  status: ConnectionRequestStatus;
+  status: ConnectionStatus;
   statusDetails: string;
 }
 
-interface Connection extends BaseConnection {
+export interface Connection extends BaseConnection {
   inmate: Inmate;
   contact: Contact;
 }

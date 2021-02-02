@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { SelectedFacility } from "src/typings/Node";
 import { format } from "date-fns";
+import { LiveVisitation } from "src/typings/Call";
 
 const MyDoc = (calls: LiveVisitation[]) => (
   <Document>

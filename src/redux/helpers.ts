@@ -1,6 +1,8 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
+import { BaseConnection } from "src/typings/Connection";
+import { BaseVisitation, CallStatus, Kiosk } from "src/typings/Call";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,

@@ -1,39 +1,41 @@
-interface Kiosk {
-  id: number;
-}
+// import { Connection } from "./Connection";
 
-type CallStatus =
-  | "scheduled"
-  | "missing-monitor"
-  | "live"
-  | "ended"
-  | "terminated";
+// interface Kiosk {
+//   id: number;
+// }
 
-interface BaseVisitation {
-  id: number;
-  scheduledStartTime: number;
-  scheduledEndTime: number;
-  connectionId: number;
-  kiosk: Kiosk;
-  approved: boolean;
-  videoReady: boolean;
-  endTime?: number;
-  startTime?: number;
-  liveStatus?: string;
-  recordingUrl?: string;
-  status: CallStatus;
-}
+// type CallStatus =
+//   | "scheduled"
+//   | "missing-monitor"
+//   | "live"
+//   | "ended"
+//   | "terminated";
 
-interface Visitation extends BaseVisitation {
-  connection: Connection;
-}
+// interface BaseVisitation {
+//   id: number;
+//   scheduledStartTime: number;
+//   scheduledEndTime: number;
+//   connectionId: number;
+//   kiosk: Kiosk;
+//   approved: boolean;
+//   videoReady: boolean;
+//   endTime?: number;
+//   startTime?: number;
+//   liveStatus?: string;
+//   recordingUrl?: string;
+//   status: CallStatus;
+// }
 
-interface LiveVisitation extends Visitation {
-  startTime: number;
-  liveStatus: string;
-  isUnmuted?: boolean;
-}
+// interface Visitation extends BaseVisitation {
+//   connection: Connection;
+// }
 
-interface RecordedVisitation extends LiveVisitation {
-  endTime: number;
-}
+// interface LiveVisitation extends Visitation {
+//   startTime: number;
+//   liveStatus: string;
+//   isUnmuted?: boolean;
+// }
+
+// interface RecordedVisitation extends LiveVisitation {
+//   endTime: number;
+// }

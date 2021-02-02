@@ -6,10 +6,11 @@ import {
 import { fetchAuthenticated } from "src/api/Common";
 import camelcaseKeys from "camelcase-keys";
 import { openNotificationWithIcon } from "src/utils/utils";
+import { BaseConnection, ConnectionStatus } from "src/typings/Connection";
 
 export const updateConnection = createAsyncThunk(
   "connection/updateConnection",
-  async (args: { connectionId: number; status: "approved" | "denied" }) => {
+  async (args: { connectionId: number; status: ConnectionStatus }) => {
     const body = await fetchAuthenticated("/connection", {
       method: "PUT",
       body: JSON.stringify({

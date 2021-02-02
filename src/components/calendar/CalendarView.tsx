@@ -9,6 +9,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./CalendarView.css";
 import { VisitationToEventInput } from "src/utils/utils";
+import { Visitation } from "src/typings/Call";
 
 interface Props {
   visitations: Visitation[];

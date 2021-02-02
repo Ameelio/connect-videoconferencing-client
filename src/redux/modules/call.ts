@@ -7,7 +7,11 @@ import {
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanVisitation, RawVisitation } from "../helpers";
 import { createCallOptionsParam } from "src/utils/utils";
-import { CallFilters } from "src/typings/Call";
+import {
+  BaseVisitation,
+  CallFilters,
+  RecordedVisitation,
+} from "src/typings/Call";
 
 export const callsAdapter = createEntityAdapter<BaseVisitation>();
 

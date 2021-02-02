@@ -12,7 +12,7 @@ import * as mediasoupClient from "mediasoup-client";
 import { Menu, Spin, Dropdown, Button, Space } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import { CallAlert } from "src/typings/Call";
+import { CallAlert, LiveVisitation } from "src/typings/Call";
 import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils/utils";
 

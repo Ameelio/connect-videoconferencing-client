@@ -2,7 +2,6 @@ import React from "react";
 import UserSnippetCard from "./UserSnippetCard";
 import { CardType, CardSize } from "src/utils/constants";
 import { Spinner } from "react-bootstrap";
-import RecordedVisitationSnippetCard from "./RecordedVisitationSnippetCard";
 import "./ConnectionDetailsCard.css";
 
 interface Props {

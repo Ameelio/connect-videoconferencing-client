@@ -24,6 +24,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import { format } from "date-fns";
 import PDFDownloadButton from "./PDFDownloadButton";
+import { LiveVisitation } from "src/typings/Call";
 
 const { Content } = Layout;
 const MyDoc = () => (

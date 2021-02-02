@@ -6,6 +6,8 @@ import { createSelector } from "reselect";
 import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
+import { BaseConnection, Connection } from "src/typings/Connection";
+import { BaseVisitation, Visitation } from "src/typings/Call";
 
 // get selectors from entity adapter
 export const {
