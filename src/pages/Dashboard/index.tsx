@@ -52,16 +52,14 @@ function Dashboard({
   visitations,
   fetchCalls,
 }: PropsFromRedux): ReactElement {
-  // const Memoized = React.memo(MyDoc);
-
-  useEffect(() => {
-    const now = new Date().getTime();
-    fetchCalls({
-      approved: true,
-      firstLive: [0, now].join(","),
-      end: [now, now + 1e8].join(","),
-    });
-  }, [fetchCalls]);
+  // useEffect(() => {
+  //   const now = new Date().getTime();
+  //   fetchCalls({
+  //     approved: true,
+  //     firstLive: [0, now].join(","),
+  //     end: [now, now + 1e8].join(","),
+  //   });
+  // }, [fetchCalls]);
 
   return (
     <Content style={WRAPPER_STYLE}>

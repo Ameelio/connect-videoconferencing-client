@@ -40,7 +40,7 @@ export const {
   selectAll: selectAllFacilities,
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
 
-// helper selectors
+// Connections
 const getConnectionEntities = (
   state: RootState,
   connection: BaseConnection
@@ -78,7 +78,8 @@ export const getAllConnectionsInfo = (
   return requests.map((request) => getConnectionEntities(state, request));
 };
 
-export const getVisitationEntities = (
+// Calls
+export const getCallEntities = (
   state: RootState,
   visitation: BaseCall
 ): Visitation => {
@@ -94,9 +95,7 @@ export const getAllCallsInfo = (
   state: RootState,
   visitations: BaseCall[]
 ): Visitation[] => {
-  return visitations.map((visitation) =>
-    getVisitationEntities(state, visitation)
-  );
+  return visitations.map((visitation) => getCallEntities(state, visitation));
 };
 
 export const getCallInfo = (
@@ -105,5 +104,15 @@ export const getCallInfo = (
 ): Visitation | null => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return null;
-  return getVisitationEntities(state, plainCall) as Visitation;
+  return getCallEntities(state, plainCall) as Visitation;
+};
+
+export const selectLiveCalls = (state: RootState): Visitation[] => {
+  const calls = selectAllCalls(state);
+  return getAllCallsInfo(
+    state,
+    calls.filter(
+      (call) => call.status === "missing-monitor" || call.status === "live"
+    )
+  );
 };

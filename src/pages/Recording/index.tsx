@@ -3,11 +3,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { fetchCalls, fetchRecording } from "src/redux/modules/call";
-import {
-  getCallInfo,
-  getVisitationEntities,
-  selectCallById,
-} from "src/redux/selectors";
+import { getCallInfo } from "src/redux/selectors";
 import {
   Breadcrumb,
   Button,

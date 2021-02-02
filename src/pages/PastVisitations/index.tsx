@@ -9,11 +9,11 @@ import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
-import { Table, Space, Layout, Button } from "antd";
+import { Table, Space, Layout, Button, Tag } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 import { Connection } from "src/typings/Connection";
-import { RecordedCall } from "src/typings/Call";
+import { CallStatus, RecordedCall } from "src/typings/Call";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -158,6 +158,16 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             render={(connection: Connection) => (
               <>
                 <span>{connection.inmate.location}</span>
+              </>
+            )}
+          />
+          <Column
+            title="Status"
+            dataIndex="status"
+            key="location"
+            render={(status: CallStatus) => (
+              <>
+                <Tag>{status}</Tag>
               </>
             )}
           />

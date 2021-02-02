@@ -10,7 +10,7 @@ import {
   WRAPPER_STYLE,
 } from "src/utils/constants";
 import io from "socket.io-client";
-import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
+import { selectLiveCalls } from "src/redux/selectors";
 import {
   Menu,
   Button,
@@ -28,12 +28,10 @@ import { GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
 
 const { Content } = Layout;
-// const { setSocket } = socketsActions;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
-  visitations: getAllCallsInfo(state, selectAllCalls(state)) as LiveCall[],
-  // socket: state.sockets.socket,
+  visitations: selectLiveCalls(state) as LiveCall[],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -128,7 +126,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         <Dropdown overlay={GridMenu} placement="bottomLeft">
           <Button>View by {grid}</Button>
         </Dropdown>
-        {/* <Carousel style={{ width: "100% " }}> */}
         <Row>
           {Array.from(Array(grid).keys()).map((idx) => (
             <Col span={GRID_TO_SPAN_WIDTH[grid]}>
@@ -151,7 +148,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                   }
                   isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
                   lockCall={(callId: number) => {
-                    console.log(callId);
                     const call = visitations.find((call) => call.id === callId);
                     if (call) setLockedCall(call);
                   }}
@@ -162,7 +158,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
             </Col>
           ))}
         </Row>
-        {/* </Carousel> */}
       </Space>
     </Content>
   );

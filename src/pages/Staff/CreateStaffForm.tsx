@@ -75,11 +75,6 @@ export default function CreateStaffForm({
           </div>
         ))}
       </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
     </Form>
   );
 }
