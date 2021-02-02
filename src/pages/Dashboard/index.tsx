@@ -80,15 +80,6 @@ function Dashboard({
           </Col>
         </Row>   
       </div>     */}
-      {/* <PDFDownloadLink
-        document={<MyDoc />}
-        fileName={`Daily Schedule | ${facility?.name}@${format(
-          new Date(),
-          "MM/dd/yyyy-HH:mm"
-        )}`}
-      >
-        <Button type="primary">Download Schedule</Button>
-      </PDFDownloadLink> */}
       <PDFDownloadButton calls={visitations} facility={facility} />
       <div className="d-flex flex-row">
         <Container rounded fluid>

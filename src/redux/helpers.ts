@@ -24,6 +24,7 @@ export interface RawVisitation {
   kiosk_id: number;
   approved: boolean;
   video_ready: boolean;
+  status: CallStatus;
 }
 
 export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
@@ -38,5 +39,6 @@ export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
     videoReady: visitation.video_ready,
+    status: visitation.status,
   } as BaseVisitation;
 }

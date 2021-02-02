@@ -2,6 +2,13 @@ interface Kiosk {
   id: number;
 }
 
+type CallStatus =
+  | "scheduled"
+  | "missing-monitor"
+  | "live"
+  | "ended"
+  | "terminated";
+
 interface BaseVisitation {
   id: number;
   scheduledStartTime: number;
@@ -14,6 +21,7 @@ interface BaseVisitation {
   startTime?: number;
   liveStatus?: string;
   recordingUrl?: string;
+  status: CallStatus;
 }
 
 interface Visitation extends BaseVisitation {
@@ -28,17 +36,4 @@ interface LiveVisitation extends Visitation {
 
 interface RecordedVisitation extends LiveVisitation {
   endTime: number;
-}
-
-interface CallFilters {
-  query?: string;
-  startDate?: number;
-  endDate?: number;
-  minDuration?: number;
-  maxDuration?: number;
-  limit?: number;
-  offset?: number;
-  approved?: boolean;
-  firstLive?: string;
-  end?: string;
 }

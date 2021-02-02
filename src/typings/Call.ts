@@ -28,3 +28,16 @@ export interface CallAlert {
   title: string;
   body: string;
 }
+
+export interface CallFilters {
+  query?: string;
+  startDate?: number;
+  endDate?: number;
+  minDuration?: number;
+  maxDuration?: number;
+  limit?: number;
+  offset?: number;
+  approved?: boolean;
+  firstLive?: string;
+  end?: string;
+}

@@ -8,7 +8,7 @@ interface BaseConnection {
   requestDetails: string;
   inmateId: number;
   userId: number;
-  status: "approved" | "pending" | "denied";
+  status: ConnectionRequestStatus;
   statusDetails: string;
 }
 
