@@ -1,4 +1,4 @@
-import LiveVisitationsPage from "src/pages/LiveVisitation";
+import LiveVisitationsPage from "src/pages/LiveCall";
 import CalendarPage from "src/pages/Calendar";
 import RequestsPage from "src/pages/ConnectionRequests";
 import LogsPage from "src/pages/PastVisitations";
@@ -11,7 +11,7 @@ import { CallAlert, GridOption } from "src/typings/Call";
 import { Route } from "src/typings/Common";
 
 export enum CardType {
-  LiveVisitation = "live",
+  LiveCall = "live",
   Contact = "contact",
   ConnectionRequest = "request",
   ApprovedConnectioo = "connection",

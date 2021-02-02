@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import FormControl from "react-bootstrap/FormControl";
-import Form from "react-bootstrap/Form";
-import SidebarCard from "src/components/cards/SidebarCard";
-import VisitationCard from "src/components/cards/VisitationCard";
 
 import {
   CALL_ALERTS,
@@ -13,13 +9,8 @@ import {
   GRID_TO_VH_HEIGHT,
   WRAPPER_STYLE,
 } from "src/utils/constants";
-import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
-import Sidebar from "src/components/containers/Sidebar";
-import { genFullName } from "src/utils/utils";
-import Container from "src/components/containers/Container";
-import Wrapper from "src/components/containers/Wrapper";
 import io from "socket.io-client";
-import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
+import { selectLiveCalls } from "src/redux/selectors";
 import {
   Menu,
   Button,
@@ -31,23 +22,16 @@ import {
   Carousel,
 } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
-import VideoChat from "src/pages/LiveVisitation/VideoChat";
+import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { chownSync } from "fs";
-import { GridOption } from "src/typings/Call";
-import { socketsActions } from "src/redux/modules/socket";
+import { GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
 
 const { Content } = Layout;
-// const { setSocket } = socketsActions;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
-  visitations: getAllCallsInfo(
-    state,
-    selectAllCalls(state)
-  ) as LiveVisitation[],
-  // socket: state.sockets.socket,
+  visitations: selectLiveCalls(state) as LiveCall[],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -72,10 +56,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   // setSocket,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
+  const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
-  const [lockedCall, setLockedCall] = useState<LiveVisitation>();
+  const [lockedCall, setLockedCall] = useState<LiveCall>();
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>
@@ -142,7 +126,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         <Dropdown overlay={GridMenu} placement="bottomLeft">
           <Button>View by {grid}</Button>
         </Dropdown>
-        {/* <Carousel style={{ width: "100% " }}> */}
         <Row>
           {Array.from(Array(grid).keys()).map((idx) => (
             <Col span={GRID_TO_SPAN_WIDTH[grid]}>
@@ -165,7 +148,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                   }
                   isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
                   lockCall={(callId: number) => {
-                    console.log(callId);
                     const call = visitations.find((call) => call.id === callId);
                     if (call) setLockedCall(call);
                   }}
@@ -176,7 +158,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
             </Col>
           ))}
         </Row>
-        {/* </Carousel> */}
       </Space>
     </Content>
   );

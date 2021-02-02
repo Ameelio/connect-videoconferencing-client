@@ -24,6 +24,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import { format } from "date-fns";
 import PDFDownloadButton from "./PDFDownloadButton";
+import { LiveCall } from "src/typings/Call";
 
 const { Content } = Layout;
 const MyDoc = () => (
@@ -37,10 +38,7 @@ const MyDoc = () => (
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
   facility: state.facilities.selected,
-  visitations: getAllCallsInfo(
-    state,
-    selectAllCalls(state)
-  ) as LiveVisitation[],
+  visitations: getAllCallsInfo(state, selectAllCalls(state)) as LiveCall[],
 });
 
 const mapDispatchToProps = { fetchCalls };
@@ -54,16 +52,14 @@ function Dashboard({
   visitations,
   fetchCalls,
 }: PropsFromRedux): ReactElement {
-  // const Memoized = React.memo(MyDoc);
-
-  useEffect(() => {
-    const now = new Date().getTime();
-    fetchCalls({
-      approved: true,
-      firstLive: [0, now].join(","),
-      end: [now, now + 1e8].join(","),
-    });
-  }, [fetchCalls]);
+  // useEffect(() => {
+  //   const now = new Date().getTime();
+  //   fetchCalls({
+  //     approved: true,
+  //     firstLive: [0, now].join(","),
+  //     end: [now, now + 1e8].join(","),
+  //   });
+  // }, [fetchCalls]);
 
   return (
     <Content style={WRAPPER_STYLE}>
@@ -80,15 +76,6 @@ function Dashboard({
           </Col>
         </Row>   
       </div>     */}
-      {/* <PDFDownloadLink
-        document={<MyDoc />}
-        fileName={`Daily Schedule | ${facility?.name}@${format(
-          new Date(),
-          "MM/dd/yyyy-HH:mm"
-        )}`}
-      >
-        <Button type="primary">Download Schedule</Button>
-      </PDFDownloadLink> */}
       <PDFDownloadButton calls={visitations} facility={facility} />
       <div className="d-flex flex-row">
         <Container rounded fluid>

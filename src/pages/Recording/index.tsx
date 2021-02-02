@@ -3,11 +3,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { fetchCalls, fetchRecording } from "src/redux/modules/call";
-import {
-  getCallInfo,
-  getVisitationEntities,
-  selectCallById,
-} from "src/redux/selectors";
+import { getCallInfo } from "src/redux/selectors";
 import {
   Breadcrumb,
   Button,
@@ -28,6 +24,7 @@ import {
   InfoCircleOutlined,
   InfoOutlined,
 } from "@ant-design/icons";
+import { RecordedCall } from "src/typings/Call";
 
 const { Content } = Layout;
 
@@ -35,10 +32,7 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  call: getCallInfo(
-    state,
-    parseInt(ownProps.match.params.id)
-  ) as RecordedVisitation,
+  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as RecordedCall,
 });
 
 const mapDispatchToProps = { fetchRecording };

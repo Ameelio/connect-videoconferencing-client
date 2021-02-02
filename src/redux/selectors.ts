@@ -6,6 +6,8 @@ import { createSelector } from "reselect";
 import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
+import { BaseConnection, Connection } from "src/typings/Connection";
+import { BaseCall, Visitation } from "src/typings/Call";
 
 // get selectors from entity adapter
 export const {
@@ -38,7 +40,7 @@ export const {
   selectAll: selectAllFacilities,
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
 
-// helper selectors
+// Connections
 const getConnectionEntities = (
   state: RootState,
   connection: BaseConnection
@@ -57,6 +59,18 @@ const getConnectionEntities = (
   return { inmate, contact, ...connection };
 };
 
+export const selectConnectionRequests = (state: RootState) => {
+  return selectAllConnections(state).filter(
+    (connection) => connection.status === "pending"
+  );
+};
+
+export const selectApprovedConnections = (state: RootState) => {
+  return selectAllConnections(state).map(
+    (connection) => connection.status === "approved"
+  );
+};
+
 export const getAllConnectionsInfo = (
   state: RootState,
   requests: BaseConnection[]
@@ -64,9 +78,10 @@ export const getAllConnectionsInfo = (
   return requests.map((request) => getConnectionEntities(state, request));
 };
 
-export const getVisitationEntities = (
+// Calls
+export const getCallEntities = (
   state: RootState,
-  visitation: BaseVisitation
+  visitation: BaseCall
 ): Visitation => {
   const connection = selectConnectionById(state, visitation.connectionId);
   if (!connection) throw new Error("Failed to locate connection information");
@@ -78,11 +93,9 @@ export const getVisitationEntities = (
 
 export const getAllCallsInfo = (
   state: RootState,
-  visitations: BaseVisitation[]
+  visitations: BaseCall[]
 ): Visitation[] => {
-  return visitations.map((visitation) =>
-    getVisitationEntities(state, visitation)
-  );
+  return visitations.map((visitation) => getCallEntities(state, visitation));
 };
 
 export const getCallInfo = (
@@ -91,5 +104,15 @@ export const getCallInfo = (
 ): Visitation | null => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return null;
-  return getVisitationEntities(state, plainCall) as Visitation;
+  return getCallEntities(state, plainCall) as Visitation;
+};
+
+export const selectLiveCalls = (state: RootState): Visitation[] => {
+  const calls = selectAllCalls(state);
+  return getAllCallsInfo(
+    state,
+    calls.filter(
+      (call) => call.status === "missing-monitor" || call.status === "live"
+    )
+  );
 };

@@ -4,12 +4,12 @@ import {
   createAsyncThunk,
   EntityState,
 } from "@reduxjs/toolkit";
-import { API_URL, fetchAuthenticated, toQueryString } from "src/api/Common";
-import { AppThunk, cleanVisitation, RawVisitation } from "../helpers";
-import url from "url";
+import { fetchAuthenticated } from "src/api/Common";
+import { cleanVisitation, RawVisitation } from "../helpers";
 import { createCallOptionsParam } from "src/utils/utils";
+import { BaseCall, CallFilters, RecordedCall } from "src/typings/Call";
 
-export const callsAdapter = createEntityAdapter<BaseVisitation>();
+export const callsAdapter = createEntityAdapter<BaseCall>();
 
 export const fetchCalls = createAsyncThunk(
   "calls/fetchAll",
@@ -22,7 +22,7 @@ export const fetchCalls = createAsyncThunk(
     }
 
     const visitations = ((body.data as Record<string, unknown>)
-      .calls as RawVisitation[]).map(cleanVisitation) as RecordedVisitation[];
+      .calls as RawVisitation[]).map(cleanVisitation) as RecordedCall[];
 
     return visitations;
   }
@@ -41,7 +41,7 @@ export const fetchRecording = createAsyncThunk(
   }
 );
 
-interface VisitationState extends EntityState<BaseVisitation> {
+interface VisitationState extends EntityState<BaseCall> {
   error?: string;
 }
 
@@ -57,7 +57,8 @@ export const callsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCalls.fulfilled, (state, action) => {
       // TODO make this a set all and filter
-      callsAdapter.addMany(state, action.payload);
+      // callsAdapter.addMany(state, action.payload);
+      callsAdapter.upsertMany(state, action.payload);
     });
     builder.addCase(fetchCalls.rejected, (state, action) => ({
       ...state,

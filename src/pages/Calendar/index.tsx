@@ -1,18 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CalendarView from "src/components/calendar/CalendarView";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import { bindActionCreators, Dispatch } from "redux";
-
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import Wrapper from "src/components/containers/Wrapper";
-import { getAllCallsInfo } from "src/redux/selectors";
+import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: getAllCallsInfo(state, state.visitations.scheduledVisitations),
-  hasLoadedScheduledVisitations:
-    state.visitations.hasLoadedScheduledVisitations,
+  visitations: getAllCallsInfo(state, selectAllCalls(state)),
 });
 
 const connector = connect(mapStateToProps);
@@ -37,16 +33,10 @@ function fridayEvening(): Date {
 
 const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   visitations,
-  hasLoadedScheduledVisitations,
 }) => {
-  // useEffect(() => {
-  //   if (!hasLoadedScheduledVisitations)
-  //     getVisitations(mondayMorning(), fridayEvening());
-  // });
-
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Video BaseVisitation Calendar"></Sidebar>
+      <Sidebar title="Video BaseCall Calendar"></Sidebar>
       <Wrapper>
         <Container>
           <CalendarView visitations={visitations} />

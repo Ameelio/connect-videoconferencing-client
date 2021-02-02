@@ -141,14 +141,13 @@ export default function Menu({
         >
           Staff
         </AntdMenu.Item>
-        {/* <AntdMenu.Item
+        <AntdMenu.Item
           key="members"
           icon={<TeamOutlined />}
           onClick={() => history.push("/members")}
         >
-          Members
-        </AntdMenu.Item> */}
-
+          Incarcerated People
+        </AntdMenu.Item>
         <AntdMenu.Item
           key="settings"
           icon={<SettingOutlined />}

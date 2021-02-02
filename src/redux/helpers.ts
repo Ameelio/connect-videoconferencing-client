@@ -1,6 +1,8 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
+import { BaseConnection } from "src/typings/Connection";
+import { BaseCall, CallStatus, Kiosk } from "src/typings/Call";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -24,9 +26,10 @@ export interface RawVisitation {
   kiosk_id: number;
   approved: boolean;
   video_ready: boolean;
+  status: CallStatus;
 }
 
-export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
+export function cleanVisitation(visitation: RawVisitation): BaseCall {
   return {
     id: visitation.id,
     connectionId: visitation.connection_id,
@@ -38,5 +41,6 @@ export function cleanVisitation(visitation: RawVisitation): BaseVisitation {
     approved: visitation.approved,
     kiosk: { id: visitation.kiosk_id } as Kiosk,
     videoReady: visitation.video_ready,
-  } as BaseVisitation;
+    status: visitation.status,
+  } as BaseCall;
 }

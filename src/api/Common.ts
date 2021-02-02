@@ -1,7 +1,5 @@
 import { Store } from "src/redux";
 import url from "url";
-import { getApprovedConnections } from "./Connection";
-import { getContacts, getInmates, getStaff } from "./Persona";
 
 export const API_URL = `${process.env.REACT_APP_BASE_URL}api/`;
 
@@ -53,13 +51,4 @@ export async function fetchAuthenticated(
   const response = await fetchTimeout(url, requestOptions, timeout);
   const body = await response.json();
   return body;
-}
-
-export async function initializeAppData() {
-  await Promise.allSettled([
-    getInmates(),
-    getApprovedConnections(),
-    getStaff(),
-    getContacts(),
-  ]);
 }

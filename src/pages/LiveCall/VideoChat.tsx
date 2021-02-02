@@ -7,19 +7,19 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
-import RoomClient from "src/pages/LiveVisitation/RoomClient";
+import RoomClient from "src/pages/LiveCall/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
 import { Menu, Spin, Dropdown, Button, Space } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import { CallAlert } from "src/typings/Call";
+import { CallAlert, LiveCall } from "src/typings/Call";
 import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils/utils";
 
 interface Props {
   width: number | string;
   height: number | string;
-  call: LiveVisitation;
+  call: LiveCall;
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
   terminateCall: (id: number) => void;

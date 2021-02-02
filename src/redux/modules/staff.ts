@@ -5,12 +5,23 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import { API_URL, fetchAuthenticated } from "src/api/Common";
-import { getStaff } from "src/api/Persona";
-import { AppThunk } from "../helpers";
 import url from "url";
 import camelcaseKeys from "camelcase-keys";
 
 export const staffAdapter = createEntityAdapter<Staff>();
+
+export const fetchStaff = createAsyncThunk("staff/fetchStaff", async () => {
+  const body = await fetchAuthenticated(`/admins`);
+
+  if (body.status !== 200 || !body.data) {
+    throw body;
+  }
+
+  const staff = ((body.data as Record<string, unknown>)
+    .admins as Object[]).map((admin) => camelcaseKeys(admin)) as Staff[];
+
+  return staff;
+});
 
 export const updateStaff = createAsyncThunk(
   "staff/updateStaff",
@@ -73,19 +84,26 @@ export const staffSlice = createSlice({
     staffUpdateOne: staffAdapter.updateOne,
   },
   extraReducers: (builder) => {
-    builder.addCase(updateStaff.fulfilled, (state, action) => {
+    builder.addCase(fetchStaff.fulfilled, (state, action) =>
+      staffAdapter.addMany(state, action.payload)
+    );
+    builder.addCase(fetchStaff.rejected, (state, action) => ({
+      ...state,
+      error: action.error.message,
+    }));
+    builder.addCase(updateStaff.fulfilled, (state, action) =>
       staffAdapter.updateOne(state, {
         id: action.payload.userId,
         changes: action.payload.changes,
-      });
-    });
+      })
+    );
     builder.addCase(updateStaff.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
     }));
-    builder.addCase(createStaff.fulfilled, (state, action) => {
-      staffAdapter.addOne(state, action.payload);
-    });
+    builder.addCase(createStaff.fulfilled, (state, action) =>
+      staffAdapter.addOne(state, action.payload)
+    );
     builder.addCase(createStaff.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
@@ -94,9 +112,3 @@ export const staffSlice = createSlice({
 });
 
 export const staffActions = staffSlice.actions;
-
-export const loadStaff = (): AppThunk => async (dispatch) => {
-  // TODO move this to async thunk
-  const staff = await getStaff();
-  dispatch(staffActions.staffSetAll(staff));
-};

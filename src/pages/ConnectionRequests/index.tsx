@@ -1,76 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { connect, ConnectedProps, useSelector } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import React, { useState } from "react";
+import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import Sidebar from "src/components/containers/Sidebar";
-import Wrapper from "src/components/containers/Wrapper";
+import { PADDING } from "src/utils/constants";
 import {
-  acceptConnectionRequest,
-  declineConnectionRequest,
-  selectConnectionRequest,
-} from "src/redux/modules/connection_requests";
-import SidebarCard from "src/components/cards/SidebarCard";
-import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
-import ConnectionRequestCard from "./ConnectionRequestCard";
-import { WithLoading } from "src/components/hocs/WithLoadingProps";
-import Container from "src/components/containers/Container";
-import { getConnectionRequests } from "src/api/Connection";
-import { selectInmateById, getAllConnectionsInfo } from "src/redux/selectors";
-import { Table, Tag, Space, Layout, Avatar, Button } from "antd";
-import { format } from "date-fns";
+  getAllConnectionsInfo,
+  selectConnectionRequests,
+} from "src/redux/selectors";
+import { Table, Space, Layout, Avatar, Button } from "antd";
 import { genFullName } from "src/utils/utils";
+import { updateConnection } from "src/redux/modules/connections";
+import { BaseConnection, Connection } from "src/typings/Connection";
 
 const { Column } = Table;
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  requests: getAllConnectionsInfo(state, state.requests.requests),
-  // selected: state.requests.selectedRequest,
+  requests: getAllConnectionsInfo(state, selectConnectionRequests(state)),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      acceptConnectionRequest,
-      declineConnectionRequest,
-      selectConnectionRequest,
-    },
-    dispatch
-  );
+const mapDispatchToProps = { updateConnection };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const ConnectionRequestWithLoading = WithLoading(ConnectionRequestCard);
-
 const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
+  updateConnection,
   requests,
-  // selected,
-  acceptConnectionRequest,
-  declineConnectionRequest,
-  selectConnectionRequest,
 }) => {
-  //TODO replace this with appropriate Redux Logic
-
-  const [loading, setLoading] = useState<boolean>(false);
-
   const handleAccept = (request: BaseConnection): void => {
-    acceptConnectionRequest(request);
-    setLoading(true);
-    setTimeout(function () {
-      setLoading(false);
-    }, 3000);
+    updateConnection({ connectionId: request.id, status: "approved" });
   };
 
   const handleDecline = (request: BaseConnection): void => {
-    declineConnectionRequest(request);
+    updateConnection({ connectionId: request.id, status: "denied" });
   };
-
-  useEffect(() => {
-    //TODO, replace this with loading logic
-    getConnectionRequests();
-  }, []);
 
   return (
     <Content style={{ padding: PADDING }}>
@@ -149,18 +113,6 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
           )}
         />
       </Table>
-      {/* <Wrapper>
-        {requests.map((request) => (
-          <ConnectionRequestWithLoading
-            accept={() => handleAccept(request)}
-            decline={() => handleDecline(request)}
-            contact={request.contact}
-            inmate={request.inmate}
-            loading={loading}
-            loadingType={LoadingTypes.AcceptConnection}
-          />
-        ))}
-      </Wrapper> */}
     </Content>
   );
 };
