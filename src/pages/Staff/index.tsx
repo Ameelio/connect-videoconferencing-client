@@ -2,14 +2,8 @@ import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { loadStaff, updateStaff } from "src/redux/modules/staff";
-import Wrapper from "src/components/containers/Wrapper";
-import SidebarCard from "src/components/cards/SidebarCard";
-import {
-  CardType,
-  PADDING,
-  STAFF_PERMISSION_OPTIONS,
-} from "src/utils/constants";
+import { updateStaff } from "src/redux/modules/staff";
+import { PADDING, STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
 import Sidebar from "src/components/containers/Sidebar";
 import Container from "src/components/containers/Container";
 import UserDetailsCard from "src/components/cards/UserDetailsCard";
@@ -30,16 +24,12 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ loadStaff, updateStaff }, dispatch);
+  bindActionCreators({ updateStaff }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const StaffContainer: React.FC<PropsFromRedux> = ({
-  staff,
-  updateStaff,
-  loadStaff,
-}) => {
+const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
   const [modalType, setModalType] = useState<"create" | "edit" | null>(null);
   const [selected, setSelected] = useState<Staff>();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -82,10 +72,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({
 
     setConfirmLoading(false);
   };
-
-  useEffect(() => {
-    loadStaff();
-  }, [loadStaff]);
 
   useEffect(() => {
     if (selected)

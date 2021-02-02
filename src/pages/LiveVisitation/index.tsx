@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
-import FormControl from "react-bootstrap/FormControl";
-import Form from "react-bootstrap/Form";
-import SidebarCard from "src/components/cards/SidebarCard";
-import VisitationCard from "src/components/cards/VisitationCard";
 
 import {
   CALL_ALERTS,
@@ -13,11 +9,6 @@ import {
   GRID_TO_VH_HEIGHT,
   WRAPPER_STYLE,
 } from "src/utils/constants";
-import ConnectionDetailsCard from "src/components/cards/ConnectionDetailsCard";
-import Sidebar from "src/components/containers/Sidebar";
-import { genFullName } from "src/utils/utils";
-import Container from "src/components/containers/Container";
-import Wrapper from "src/components/containers/Wrapper";
 import io from "socket.io-client";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import {
@@ -33,9 +24,7 @@ import {
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveVisitation/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { chownSync } from "fs";
 import { GridOption } from "src/typings/Call";
-import { socketsActions } from "src/redux/modules/socket";
 import _ from "lodash";
 
 const { Content } = Layout;

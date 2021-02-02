@@ -1,18 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { selectPastVisitation } from "src/redux/modules/visitation";
-import { CardType, LoadingTypes, PADDING } from "src/utils/constants";
+import { PADDING } from "src/utils/constants";
 import { genFullName } from "src/utils/utils";
-import VisitationCard from "src/components/cards/VisitationCard";
-import { WithLoading } from "src/components/hocs/WithLoadingProps";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
-import { Table, Tag, Space, Layout, Button } from "antd";
+import { Table, Space, Layout, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 
@@ -23,23 +20,18 @@ const mapStateToProps = (state: RootState) => ({
   logs: getAllCallsInfo(state, selectAllCalls(state)).filter(
     (x) => x.startTime && x.endTime
   ) as RecordedVisitation[],
-  selected: state.visitations.selectedPastVisitation,
   history: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ fetchCalls, selectPastVisitation, push }, dispatch);
+  bindActionCreators({ fetchCalls, push }, dispatch);
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const VisitationCardWithLoading = WithLoading(VisitationCard);
-
 const LogsContainer: React.FC<PropsFromRedux> = ({
   logs,
-  selected,
-  selectPastVisitation,
   fetchCalls,
   push,
 }) => {

@@ -57,6 +57,18 @@ const getConnectionEntities = (
   return { inmate, contact, ...connection };
 };
 
+export const selectConnectionRequests = (state: RootState) => {
+  return selectAllConnections(state).filter(
+    (connection) => connection.status === "pending"
+  );
+};
+
+export const selectApprovedConnections = (state: RootState) => {
+  return selectAllConnections(state).map(
+    (connection) => connection.status === "approved"
+  );
+};
+
 export const getAllConnectionsInfo = (
   state: RootState,
   requests: BaseConnection[]

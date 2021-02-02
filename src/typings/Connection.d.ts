@@ -8,7 +8,7 @@ interface BaseConnection {
   requestDetails: string;
   inmateId: number;
   userId: number;
-  status: string;
+  status: "approved" | "pending" | "denied";
   statusDetails: string;
 }
 
@@ -16,6 +16,3 @@ interface Connection extends BaseConnection {
   inmate: Inmate;
   contact: Contact;
 }
-
-// type ConnectionRequest = BaseConnection & { status: 'pending'};
-// type ApprovedConnection = BaseConnection & { status: 'approved'; approvedAt: Date }

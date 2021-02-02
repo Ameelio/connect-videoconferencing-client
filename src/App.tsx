@@ -28,13 +28,25 @@ import { initializeAppData } from "./api/Common";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
 import { History } from "history";
+import { fetchContacts } from "./redux/modules/contact";
+import { fetchStaff } from "./redux/modules/staff";
+import { fetchInmates } from "./redux/modules/inmate";
+import { fetchConnections } from "./redux/modules/connections";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
   pathname: state.router.location,
 });
-const mapDispatchToProps = { logout, fetchFacilities, selectActiveFacility };
+const mapDispatchToProps = {
+  logout,
+  fetchFacilities,
+  selectActiveFacility,
+  fetchContacts,
+  fetchStaff,
+  fetchInmates,
+  fetchConnections,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -49,6 +61,10 @@ function App({
   selectActiveFacility,
   logout,
   fetchFacilities,
+  fetchContacts,
+  fetchInmates,
+  fetchStaff,
+  fetchConnections,
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
@@ -73,9 +89,16 @@ function App({
 
   useEffect(() => {
     if (selected) {
-      (async () => await initializeAppData())();
+      (async () => {
+        Promise.allSettled([
+          fetchContacts(),
+          fetchStaff(),
+          fetchInmates(),
+          fetchConnections(),
+        ]);
+      })();
     }
-  }, [selected]);
+  }, [selected, fetchContacts, fetchStaff, fetchConnections, fetchInmates]);
 
   useEffect(() => {
     const route = ROUTES.find((route) => route.path === pathname.pathname);

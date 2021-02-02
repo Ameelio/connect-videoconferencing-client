@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-import { visitationsReducer } from "./modules/visitation";
 import { connectionsReducer } from "./modules/connection_requests";
 import { staffSlice } from "./modules/staff";
 import { inmatesSlice } from "./modules/inmate";
@@ -20,7 +19,6 @@ export const history = createBrowserHistory();
 
 export const createRootReducer = (history: History) =>
   combineReducers({
-    visitations: visitationsReducer,
     requests: connectionsReducer,
     staff: staffSlice.reducer,
     session: sessionReducer,

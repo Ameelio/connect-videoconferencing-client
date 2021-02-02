@@ -4,9 +4,8 @@ import {
   createAsyncThunk,
   EntityState,
 } from "@reduxjs/toolkit";
-import { API_URL, fetchAuthenticated, toQueryString } from "src/api/Common";
-import { AppThunk, cleanVisitation, RawVisitation } from "../helpers";
-import url from "url";
+import { fetchAuthenticated } from "src/api/Common";
+import { cleanVisitation, RawVisitation } from "../helpers";
 import { createCallOptionsParam } from "src/utils/utils";
 
 export const callsAdapter = createEntityAdapter<BaseVisitation>();
