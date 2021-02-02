@@ -36,7 +36,7 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
 }) => {
   return (
     <div className="d-flex flex-row">
-      <Sidebar title="Video BaseVisitation Calendar"></Sidebar>
+      <Sidebar title="Video BaseCall Calendar"></Sidebar>
       <Wrapper>
         <Container>
           <CalendarView visitations={visitations} />

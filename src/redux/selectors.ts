@@ -7,7 +7,7 @@ import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
-import { BaseVisitation, Visitation } from "src/typings/Call";
+import { BaseCall, Visitation } from "src/typings/Call";
 
 // get selectors from entity adapter
 export const {
@@ -80,7 +80,7 @@ export const getAllConnectionsInfo = (
 
 export const getVisitationEntities = (
   state: RootState,
-  visitation: BaseVisitation
+  visitation: BaseCall
 ): Visitation => {
   const connection = selectConnectionById(state, visitation.connectionId);
   if (!connection) throw new Error("Failed to locate connection information");
@@ -92,7 +92,7 @@ export const getVisitationEntities = (
 
 export const getAllCallsInfo = (
   state: RootState,
-  visitations: BaseVisitation[]
+  visitations: BaseCall[]
 ): Visitation[] => {
   return visitations.map((visitation) =>
     getVisitationEntities(state, visitation)

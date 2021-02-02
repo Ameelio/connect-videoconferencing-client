@@ -22,9 +22,9 @@ import {
   Carousel,
 } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
-import VideoChat from "src/pages/LiveVisitation/VideoChat";
+import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { GridOption, LiveVisitation } from "src/typings/Call";
+import { GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
 
 const { Content } = Layout;
@@ -32,10 +32,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
-  visitations: getAllCallsInfo(
-    state,
-    selectAllCalls(state)
-  ) as LiveVisitation[],
+  visitations: getAllCallsInfo(state, selectAllCalls(state)) as LiveCall[],
   // socket: state.sockets.socket,
 });
 
@@ -61,10 +58,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   // setSocket,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [visibleCalls, setVisibleCalls] = useState<LiveVisitation[]>([]);
+  const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
-  const [lockedCall, setLockedCall] = useState<LiveVisitation>();
+  const [lockedCall, setLockedCall] = useState<LiveCall>();
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>

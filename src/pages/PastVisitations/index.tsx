@@ -13,7 +13,7 @@ import { Table, Space, Layout, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 import { Connection } from "src/typings/Connection";
-import { RecordedVisitation } from "src/typings/Call";
+import { RecordedCall } from "src/typings/Call";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -21,7 +21,7 @@ const { Content } = Layout;
 const mapStateToProps = (state: RootState) => ({
   logs: getAllCallsInfo(state, selectAllCalls(state)).filter(
     (x) => x.startTime && x.endTime
-  ) as RecordedVisitation[],
+  ) as RecordedCall[],
   history: state.router,
 });
 
@@ -165,7 +165,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Recording"
             key="action"
-            render={(_text, visitation: RecordedVisitation) => (
+            render={(_text, visitation: RecordedCall) => (
               <Space size="middle">
                 <Button onClick={() => push(`/call/${visitation.id}`)}>
                   View

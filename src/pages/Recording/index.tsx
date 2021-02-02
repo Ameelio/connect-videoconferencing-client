@@ -28,7 +28,7 @@ import {
   InfoCircleOutlined,
   InfoOutlined,
 } from "@ant-design/icons";
-import { RecordedVisitation } from "src/typings/Call";
+import { RecordedCall } from "src/typings/Call";
 
 const { Content } = Layout;
 
@@ -36,10 +36,7 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  call: getCallInfo(
-    state,
-    parseInt(ownProps.match.params.id)
-  ) as RecordedVisitation,
+  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as RecordedCall,
 });
 
 const mapDispatchToProps = { fetchRecording };

@@ -54,7 +54,7 @@ export type CallStatus =
   | "ended"
   | "terminated";
 
-export interface BaseVisitation {
+export interface BaseCall {
   id: number;
   scheduledStartTime: number;
   scheduledEndTime: number;
@@ -69,16 +69,16 @@ export interface BaseVisitation {
   status: CallStatus;
 }
 
-export interface Visitation extends BaseVisitation {
+export interface Visitation extends BaseCall {
   connection: Connection;
 }
 
-export interface LiveVisitation extends Visitation {
+export interface LiveCall extends Visitation {
   startTime: number;
   liveStatus: string;
   isUnmuted?: boolean;
 }
 
-export interface RecordedVisitation extends LiveVisitation {
+export interface RecordedCall extends LiveCall {
   endTime: number;
 }

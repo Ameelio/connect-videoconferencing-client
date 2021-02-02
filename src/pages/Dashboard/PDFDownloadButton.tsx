@@ -9,9 +9,9 @@ import {
 } from "@react-pdf/renderer";
 import { SelectedFacility } from "src/typings/Node";
 import { format } from "date-fns";
-import { LiveVisitation } from "src/typings/Call";
+import { LiveCall } from "src/typings/Call";
 
-const MyDoc = (calls: LiveVisitation[]) => (
+const MyDoc = (calls: LiveCall[]) => (
   <Document>
     <Page>
       <Text>Daily Schedule</Text>
@@ -29,7 +29,7 @@ const MyDoc = (calls: LiveVisitation[]) => (
 
 interface Props {
   facility?: SelectedFacility;
-  calls: LiveVisitation[];
+  calls: LiveCall[];
 }
 
 const PDFDownloadButton: React.FC<Props> = React.memo(({ calls, facility }) => {

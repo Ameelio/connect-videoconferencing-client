@@ -24,7 +24,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import { format } from "date-fns";
 import PDFDownloadButton from "./PDFDownloadButton";
-import { LiveVisitation } from "src/typings/Call";
+import { LiveCall } from "src/typings/Call";
 
 const { Content } = Layout;
 const MyDoc = () => (
@@ -38,10 +38,7 @@ const MyDoc = () => (
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
   facility: state.facilities.selected,
-  visitations: getAllCallsInfo(
-    state,
-    selectAllCalls(state)
-  ) as LiveVisitation[],
+  visitations: getAllCallsInfo(state, selectAllCalls(state)) as LiveCall[],
 });
 
 const mapDispatchToProps = { fetchCalls };
