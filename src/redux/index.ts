@@ -1,12 +1,9 @@
 import { combineReducers } from "redux";
-import { connectionsReducer } from "./modules/connection_requests";
 import { staffSlice } from "./modules/staff";
 import { inmatesSlice } from "./modules/inmate";
 import { sessionReducer } from "./modules/user";
 import { connectionsSlice } from "./modules/connections";
-
-import { createStore, applyMiddleware } from "redux";
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
 import { callsSlice } from "./modules/call";
@@ -19,7 +16,6 @@ export const history = createBrowserHistory();
 
 export const createRootReducer = (history: History) =>
   combineReducers({
-    requests: connectionsReducer,
     staff: staffSlice.reducer,
     session: sessionReducer,
     inmates: inmatesSlice.reducer,

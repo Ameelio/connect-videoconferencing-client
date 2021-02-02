@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, useSelector } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
 import { RootState } from "src/redux";
-import {
-  acceptConnectionRequest,
-  declineConnectionRequest,
-  selectConnectionRequest,
-} from "src/redux/modules/connection_requests";
 import { PADDING } from "src/utils/constants";
-import ConnectionRequestCard from "./ConnectionRequestCard";
-import { WithLoading } from "src/components/hocs/WithLoadingProps";
-import { getConnectionRequests } from "src/api/Connection";
 import {
-  selectInmateById,
   getAllConnectionsInfo,
   selectConnectionRequests,
 } from "src/redux/selectors";
@@ -34,8 +24,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const ConnectionRequestWithLoading = WithLoading(ConnectionRequestCard);
-
 const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   updateConnection,
   requests,
@@ -53,11 +41,6 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   const handleDecline = (request: BaseConnection): void => {
     updateConnection({ connectionId: request.id, status: "denied" });
   };
-
-  useEffect(() => {
-    //TODO, replace this with loading logic
-    getConnectionRequests();
-  }, []);
 
   return (
     <Content style={{ padding: PADDING }}>
