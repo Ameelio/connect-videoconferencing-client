@@ -1,15 +1,28 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { PADDING } from "src/utils/constants";
 import { selectAllInmates } from "src/redux/selectors";
 import { Layout, Avatar } from "antd";
 import EditableTable from "src/components/editable-table/EditableTable";
+import { updateInmate } from "src/redux/modules/inmate";
+import { RootState } from "src/redux";
 
 const { Content } = Layout;
 
-const InmateContainer: React.FC = () => {
-  const inmates = useSelector(selectAllInmates);
+const mapStateToProps = (state: RootState) => ({
+  inmates: selectAllInmates(state),
+});
 
+const mapDispatchToProps = { updateInmate };
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const InmateContainer: React.FC<PropsFromRedux> = ({
+  updateInmate,
+  inmates,
+}) => {
   const columns = [
     {
       title: "",
@@ -50,9 +63,13 @@ const InmateContainer: React.FC = () => {
 
   return (
     <Content style={{ padding: PADDING }}>
-      <EditableTable originalData={inmates} columns={columns} />
+      <EditableTable
+        originalData={inmates}
+        columns={columns}
+        onSave={(inmate: Inmate) => updateInmate({ inmate })}
+      />
     </Content>
   );
 };
 
-export default InmateContainer;
+export default connector(InmateContainer);

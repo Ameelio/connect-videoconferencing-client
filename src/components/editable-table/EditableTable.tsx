@@ -6,41 +6,43 @@ import EditableCell from "./EditableCell";
 interface Props {
   originalData: any;
   columns: any[];
+  onSave: Function;
 }
 
-const EditableTable = ({ originalData, columns }: Props) => {
+const EditableTable = ({ originalData, columns, onSave }: Props) => {
   const [form] = Form.useForm();
   const [data, setData] = useState(originalData);
-  const [editingKey, setEditingKey] = useState(null);
+  const [editingId, setEditingId] = useState(null);
 
-  const isEditing = (record: any) => record.id === editingKey;
+  const isEditing = (record: any) => record.id === editingId;
 
   const edit = (record: any) => {
     form.setFieldsValue({
       ...record,
     });
-    setEditingKey(record.id);
+    setEditingId(record.id);
   };
 
   const cancel = () => {
-    setEditingKey(null);
+    setEditingId(null);
   };
 
-  const save = async (key: any) => {
+  const save = async (id: number) => {
     try {
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => id === item.id);
 
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
+        await onSave(newData[index]);
         setData(newData);
-        setEditingKey(null);
+        setEditingId(null);
       } else {
         newData.push(row);
         setData(newData);
-        setEditingKey(null);
+        setEditingId(null);
       }
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
@@ -49,28 +51,27 @@ const EditableTable = ({ originalData, columns }: Props) => {
 
   const columnsWithEdit = columns.concat([
     {
-      title: "operation",
+      title: "",
       dataIndex: "operation",
       render: (_: any, record: any) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <a
-              href="javascript:;"
-              onClick={() => save(record.key)}
+            <Typography.Link
+              onClick={() => save(record.id)}
               style={{
                 marginRight: 8,
               }}
             >
               Save
-            </a>
+            </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <Typography.Link>Cancel</Typography.Link>
             </Popconfirm>
           </span>
         ) : (
           <Typography.Link
-            disabled={editingKey !== null}
+            disabled={editingId !== null}
             onClick={() => edit(record)}
           >
             Edit

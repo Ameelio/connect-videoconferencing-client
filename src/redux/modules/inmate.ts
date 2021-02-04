@@ -41,4 +41,26 @@ export const inmatesSlice = createSlice({
   },
 });
 
+export const updateInmate = createAsyncThunk(
+  "inmate/updateInmate",
+  async (args: { inmate: Inmate }) => {
+    const { inmate } = args;
+    await fetchAuthenticated(
+      `inmate/${inmate.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          inmate_number: inmate.inmateNumber,
+          first_name: inmate.firstName,
+          last_name: inmate.lastName,
+          location: inmate.location,
+        }),
+      },
+      false
+    );
+
+    return { inmateId: inmate.id };
+  }
+);
+
 export const inmatesActions = inmatesSlice.actions;
