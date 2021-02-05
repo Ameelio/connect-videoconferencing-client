@@ -66,6 +66,7 @@ export interface BaseCall {
   startTime?: number;
   liveStatus?: string;
   recordingUrl?: string;
+  rating: number;
   status: CallStatus;
 }
 

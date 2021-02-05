@@ -24,6 +24,9 @@ import { fetchInmates } from "./redux/modules/inmate";
 import { fetchConnections } from "./redux/modules/connections";
 import { fetchNodes } from "./redux/modules/node";
 import { fetchKiosks } from "./redux/modules/kiosk";
+import { fetchCalls } from "./redux/modules/call";
+import { startOfMonth } from "date-fns/esm";
+import { endOfMonth } from "date-fns";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -40,6 +43,7 @@ const mapDispatchToProps = {
   fetchConnections,
   fetchNodes,
   fetchKiosks,
+  fetchCalls,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -61,6 +65,7 @@ function App({
   fetchConnections,
   fetchNodes,
   fetchKiosks,
+  fetchCalls,
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
@@ -86,7 +91,7 @@ function App({
   useEffect(() => {
     if (selected) {
       (async () => {
-        Promise.allSettled([
+        await Promise.allSettled([
           fetchContacts(),
           fetchStaff(),
           fetchInmates(),
@@ -94,6 +99,10 @@ function App({
           fetchNodes(),
           fetchKiosks(),
         ]);
+        fetchCalls({
+          startDate: startOfMonth(new Date()).getTime(),
+          endDate: endOfMonth(new Date()).getTime(),
+        });
       })();
     }
   }, [selected, fetchContacts, fetchStaff, fetchConnections, fetchInmates]);

@@ -47,6 +47,14 @@ export const mapPermissionMap = (
 export const cloneObject = (obj: Object): Object =>
   JSON.parse(JSON.stringify(obj));
 
+export function onlyUnique(
+  value: number | string,
+  index: number,
+  self: (number | string)[]
+) {
+  return self.indexOf(value) === index;
+}
+
 export const createCallOptionsParam = (filters: CallFilters): string => {
   const options = [
     ["approved", filters.approved?.toString() || "true"],

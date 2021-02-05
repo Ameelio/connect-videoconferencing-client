@@ -20,6 +20,7 @@ export const {
 export const {
   selectById: selectInmateById,
   selectAll: selectAllInmates,
+  selectTotal: selectTotalInmates,
 } = inmatesAdapter.getSelectors<RootState>((state) => state.inmates);
 
 export const {

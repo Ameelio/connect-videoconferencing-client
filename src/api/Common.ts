@@ -6,7 +6,7 @@ export const API_URL = `${process.env.REACT_APP_BASE_URL}api/`;
 export interface ApiResponse {
   date: number;
   good: boolean;
-  status?: "OK" | "ERROR" | "succeeded" | 200;
+  status: number;
   message?: string;
   data: Record<string, unknown> | Record<string, unknown>[] | unknown;
 }

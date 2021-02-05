@@ -11,8 +11,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// Visitation helpers
-export interface RawVisitation {
+// call helpers
+export interface RawCall {
   id: number;
   connection: BaseConnection;
   connection_id: number;
@@ -27,20 +27,22 @@ export interface RawVisitation {
   approved: boolean;
   video_ready: boolean;
   status: CallStatus;
+  rating: number;
 }
 
-export function cleanVisitation(visitation: RawVisitation): BaseCall {
+export function cleanCall(call: RawCall): BaseCall {
   return {
-    id: visitation.id,
-    connectionId: visitation.connection_id,
-    scheduledStartTime: visitation.start,
-    scheduledEndTime: visitation.end,
-    startTime: visitation.first_live,
-    endTime: visitation.last_live,
-    end: visitation.end,
-    approved: visitation.approved,
-    kiosk: { id: visitation.kiosk_id } as Kiosk,
-    videoReady: visitation.video_ready,
-    status: visitation.status,
+    id: call.id,
+    connectionId: call.connection_id,
+    scheduledStartTime: call.start,
+    scheduledEndTime: call.end,
+    startTime: call.first_live,
+    endTime: call.last_live,
+    end: call.end,
+    approved: call.approved,
+    kiosk: { id: call.kiosk_id } as Kiosk,
+    videoReady: call.video_ready,
+    status: call.status,
+    rating: call.rating,
   } as BaseCall;
 }
