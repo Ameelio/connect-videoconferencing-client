@@ -4,7 +4,7 @@ export interface Route {
   label: string;
 }
 
-export interface Column {
+export interface TableColumn {
   title: string;
   dataIndex: string;
   width?: string;

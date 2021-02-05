@@ -1,12 +1,12 @@
-import { Form, Popconfirm, Table, Typography } from "antd";
+import { Form, Popconfirm, Space, Table, Typography } from "antd";
 import React from "react";
 import { useState } from "react";
-import { Column } from "src/typings/Common";
+import { TableColumn } from "src/typings/Common";
 import EditableCell from "./EditableCell";
 
 interface Props {
-  originalData: any;
-  columns: Column[];
+  originalData: Record<string, any>[];
+  columns: TableColumn[];
   onSave: Function;
 }
 
@@ -61,19 +61,14 @@ export default function EditableTable({
       render: (_: any, record: any) => {
         const editable = isEditing(record);
         return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.id)}
-              style={{
-                marginRight: 8,
-              }}
-            >
+          <Space>
+            <Typography.Link onClick={() => save(record.id)}>
               Save
             </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
               <Typography.Link>Cancel</Typography.Link>
             </Popconfirm>
-          </span>
+          </Space>
         ) : (
           <Typography.Link
             disabled={editingId !== null}
