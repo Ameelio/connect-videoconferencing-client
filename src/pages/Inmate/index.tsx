@@ -6,6 +6,7 @@ import { Layout, Avatar } from "antd";
 import EditableTable from "src/components/editable-table/EditableTable";
 import { updateInmate } from "src/redux/modules/inmate";
 import { RootState } from "src/redux";
+import { TableColumn } from "src/typings/Common";
 
 const { Content } = Layout;
 
@@ -19,11 +20,11 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const InmateContainer: React.FC<PropsFromRedux> = ({
+const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   updateInmate,
   inmates,
 }) => {
-  const columns = [
+  const columns: TableColumn[] = [
     {
       title: "",
       dataIndex: "profileImgPath",
@@ -72,4 +73,4 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
   );
 };
 
-export default connector(InmateContainer);
+export default connector(UnconnectedInmateContainer);
