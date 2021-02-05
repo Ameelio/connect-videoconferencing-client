@@ -22,18 +22,11 @@ import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
-import { format } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import PDFDownloadButton from "./PDFDownloadButton";
 import { LiveCall } from "src/typings/Call";
 
 const { Content } = Layout;
-const MyDoc = () => (
-  <Document>
-    <Page>
-      <Text>// My document data</Text>
-    </Page>
-  </Document>
-);
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
@@ -52,14 +45,12 @@ function Dashboard({
   visitations,
   fetchCalls,
 }: PropsFromRedux): ReactElement {
-  // useEffect(() => {
-  //   const now = new Date().getTime();
-  //   fetchCalls({
-  //     approved: true,
-  //     firstLive: [0, now].join(","),
-  //     end: [now, now + 1e8].join(","),
-  //   });
-  // }, [fetchCalls]);
+  useEffect(() => {
+    fetchCalls({
+      startDate: startOfMonth(new Date()).getTime(),
+      endDate: endOfMonth(new Date()).getTime(),
+    });
+  }, [fetchCalls]);
 
   return (
     <Content style={WRAPPER_STYLE}>

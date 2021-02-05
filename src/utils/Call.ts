@@ -1,6 +1,6 @@
 import { addMilliseconds, getDay, getHours, getMinutes } from "date-fns";
 import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
-import { NodeCallSlot } from "src/typings/Node";
+import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
 

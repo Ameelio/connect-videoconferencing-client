@@ -22,6 +22,8 @@ import { fetchContacts } from "./redux/modules/contact";
 import { fetchStaff } from "./redux/modules/staff";
 import { fetchInmates } from "./redux/modules/inmate";
 import { fetchConnections } from "./redux/modules/connections";
+import { fetchNodes } from "./redux/modules/node";
+import { fetchKiosks } from "./redux/modules/kiosk";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -36,6 +38,8 @@ const mapDispatchToProps = {
   fetchStaff,
   fetchInmates,
   fetchConnections,
+  fetchNodes,
+  fetchKiosks,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -55,6 +59,8 @@ function App({
   fetchInmates,
   fetchStaff,
   fetchConnections,
+  fetchNodes,
+  fetchKiosks,
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
@@ -85,6 +91,8 @@ function App({
           fetchStaff(),
           fetchInmates(),
           fetchConnections(),
+          fetchNodes(),
+          fetchKiosks(),
         ]);
       })();
     }

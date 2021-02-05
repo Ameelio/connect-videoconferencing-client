@@ -12,7 +12,7 @@ import {
   Typography,
 } from "antd";
 import { Header } from "antd/lib/layout/layout";
-import { NodeCallSlot } from "src/typings/Node";
+import { NodeCallSlot } from "src/typings/Facility";
 import {
   PADDING,
   WRAPPER_STYLE,

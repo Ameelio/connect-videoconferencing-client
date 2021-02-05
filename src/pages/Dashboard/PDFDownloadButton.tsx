@@ -7,7 +7,7 @@ import {
   PDFViewer,
   Text,
 } from "@react-pdf/renderer";
-import { SelectedFacility } from "src/typings/Node";
+import { SelectedFacility } from "src/typings/Facility";
 import { format } from "date-fns";
 import { LiveCall } from "src/typings/Call";
 
@@ -16,7 +16,7 @@ const MyDoc = (calls: LiveCall[]) => (
     <Page>
       <Text>Daily Schedule</Text>
       {calls.map((call) => (
-        <Text>
+        <Text key={call.id}>
           {call.connection.inmate.firstName}-{call.connection.contact.firstName}{" "}
           | {call.connection.relationship} |{" "}
           {format(new Date(call.scheduledStartTime), "HH:mm")}-

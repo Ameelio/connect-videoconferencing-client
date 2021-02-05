@@ -7,7 +7,8 @@ import {
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
 import { API_URL, fetchAuthenticated } from "src/api/Common";
-import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Node";
+import { Kiosk } from "src/typings/Kiosk";
+import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Facility";
 import { mapCallBlockToCallSlots } from "src/utils/Call";
 import url from "url";
 import { Store } from "..";
@@ -17,19 +18,17 @@ export const facilitiesAdapter = createEntityAdapter<Facility>();
 export const selectActiveFacility = createAsyncThunk(
   "facility/selectActiveFacility",
   async (facility: Facility) => {
-    const body = await fetchAuthenticated(
+    // need to harcode the nodeId for initialization,
+    const bodyCt = await fetchAuthenticated(
       `node/${facility.nodeId}/times`,
       {},
       false
     );
 
-    console.log(body);
-    if (!body.data) {
-      throw new Error("Could not load facility data");
-    }
+    if (!bodyCt.data) throw new Error("Could not load facility data");
 
     const callTimes = camelcaseKeys(
-      (body.data as Record<string, unknown>).call_times as Object
+      (bodyCt.data as Record<string, unknown>).call_times as Object
     ) as NodeCallSlot[];
 
     return { ...facility, callTimes };

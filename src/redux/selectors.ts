@@ -8,6 +8,8 @@ import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Visitation } from "src/typings/Call";
+import { nodesAdapter } from "./modules/node";
+import { kiosksAdapter } from "./modules/kiosk";
 
 // get selectors from entity adapter
 export const {
@@ -39,6 +41,16 @@ export const {
   selectById: selectFacilityById,
   selectAll: selectAllFacilities,
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
+
+export const {
+  selectById: selectNodeById,
+  selectAll: selectAllNodes,
+} = nodesAdapter.getSelectors<RootState>((state) => state.nodes);
+
+export const {
+  selectById: selectKioskById,
+  selectAll: selectAllKiosks,
+} = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
 // Connections
 const getConnectionEntities = (

@@ -1,11 +1,11 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { NodeCallSlot } from "src/typings/Node";
+import { NodeCallSlot } from "src/typings/Facility";
 import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
 import { CallBlock, CallFilters, Visitation, Weekday } from "src/typings/Call";
 import _ from "lodash";
-import { notification } from "antd";
+import { notification, message } from "antd";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -104,4 +104,30 @@ export const openNotificationWithIcon = (
     message,
     description,
   });
+};
+
+export const showToast = (
+  key: string,
+  content: string,
+  type: "success" | "error" | "warning" | "loading" | "info",
+  duration = 3
+) => {
+  console.log(type);
+  switch (type) {
+    case "success":
+      message.success({ content, key, duration });
+      break;
+    case "error":
+      message.error({ content, key, duration });
+      break;
+    case "warning":
+      message.warning({ content, key, duration });
+      break;
+    case "loading":
+      message.loading({ content, key, duration });
+      break;
+    default:
+      message.info({ content, key, duration });
+      break;
+  }
 };

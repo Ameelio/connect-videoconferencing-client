@@ -37,6 +37,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   fetchCalls,
   push,
 }) => {
+  // TODO refactor filter to filter based on store instead of displaying redux data
+  // Always call API while waiting
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
