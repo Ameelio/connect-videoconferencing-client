@@ -5,7 +5,7 @@ interface Props {
   editing: boolean;
   dataIndex: string;
   title: string;
-  inputType: string;
+  inputType: "text" | "number";
   record: any;
   index: number;
 }

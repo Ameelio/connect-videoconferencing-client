@@ -1,15 +1,20 @@
 import { Form, Popconfirm, Table, Typography } from "antd";
 import React from "react";
 import { useState } from "react";
+import { Column } from "src/typings/Common";
 import EditableCell from "./EditableCell";
 
 interface Props {
   originalData: any;
-  columns: any[];
+  columns: Column[];
   onSave: Function;
 }
 
-const EditableTable = ({ originalData, columns, onSave }: Props) => {
+export default function EditableTable({
+  originalData,
+  columns,
+  onSave,
+}: Props) {
   const [form] = Form.useForm();
   const [data, setData] = useState(originalData);
   const [editingId, setEditingId] = useState(null);
@@ -44,8 +49,8 @@ const EditableTable = ({ originalData, columns, onSave }: Props) => {
         setData(newData);
         setEditingId(null);
       }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
+    } catch (err) {
+      console.log("Validate Failed:", err);
     }
   };
 
@@ -81,20 +86,18 @@ const EditableTable = ({ originalData, columns, onSave }: Props) => {
     },
   ]);
   const mergedColumns = columnsWithEdit.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-
-    return {
-      ...col,
-      onCell: (record: any) => ({
-        record,
-        inputType: "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
+    return col.editable
+      ? {
+          ...col,
+          onCell: (record: any) => ({
+            record,
+            inputType: "text",
+            dataIndex: col.dataIndex,
+            title: col.title,
+            editing: isEditing(record),
+          }),
+        }
+      : col;
   });
   return (
     <Form form={form} component={false}>
@@ -106,14 +109,11 @@ const EditableTable = ({ originalData, columns, onSave }: Props) => {
         }}
         bordered
         dataSource={data}
-        columns={mergedColumns}
-        rowClassName="editable-row"
+        columns={mergedColumns as any}
         pagination={{
           onChange: cancel,
         }}
       />
     </Form>
   );
-};
-
-export default EditableTable;
+}

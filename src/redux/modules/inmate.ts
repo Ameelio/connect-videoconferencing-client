@@ -22,6 +22,35 @@ export const fetchInmates = createAsyncThunk(
   }
 );
 
+export const updateInmate = createAsyncThunk(
+  "inmate/updateInmate",
+  async (inmate: Inmate) => {
+    await fetchAuthenticated(
+      `inmate/${inmate.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          inmate_number: inmate.inmateNumber,
+          first_name: inmate.firstName,
+          last_name: inmate.lastName,
+          location: inmate.location,
+        }),
+      },
+      false
+    );
+
+    return {
+      inmateId: inmate.id,
+      changes: {
+        inmateNumber: inmate.inmateNumber,
+        firstName: inmate.firstName,
+        lastName: inmate.lastName,
+        location: inmate.location,
+      },
+    };
+  }
+);
+
 export const inmatesAdapter = createEntityAdapter<Inmate>();
 
 export const inmatesSlice = createSlice({
@@ -38,29 +67,17 @@ export const inmatesSlice = createSlice({
     builder.addCase(fetchInmates.rejected, (state, action) =>
       console.log("error")
     );
+    builder.addCase(updateInmate.fulfilled, (state, action) =>
+      inmatesAdapter.updateOne(state, {
+        id: action.payload.inmateId,
+        changes: action.payload.changes,
+      })
+    );
+    builder.addCase(updateInmate.rejected, (state, action) => ({
+      ...state,
+      error: action.error.message,
+    }));
   },
 });
-
-export const updateInmate = createAsyncThunk(
-  "inmate/updateInmate",
-  async (args: { inmate: Inmate }) => {
-    const { inmate } = args;
-    await fetchAuthenticated(
-      `inmate/${inmate.id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          inmate_number: inmate.inmateNumber,
-          first_name: inmate.firstName,
-          last_name: inmate.lastName,
-          location: inmate.location,
-        }),
-      },
-      false
-    );
-
-    return { inmateId: inmate.id };
-  }
-);
 
 export const inmatesActions = inmatesSlice.actions;

@@ -66,7 +66,7 @@ const InmateContainer: React.FC<PropsFromRedux> = ({
       <EditableTable
         originalData={inmates}
         columns={columns}
-        onSave={(inmate: Inmate) => updateInmate({ inmate })}
+        onSave={(inmate: Inmate) => updateInmate(inmate)}
       />
     </Content>
   );
