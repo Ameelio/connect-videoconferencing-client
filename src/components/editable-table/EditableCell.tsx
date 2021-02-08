@@ -31,7 +31,7 @@ const EditableCell: React.FC<Props> = ({
           }}
           rules={[
             {
-              required: true,
+              required: false,
               message: `Please Input ${title}!`,
             },
           ]}
