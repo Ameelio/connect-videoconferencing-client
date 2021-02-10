@@ -1,12 +1,11 @@
 import {
   addMilliseconds,
   format,
-  getDay,
   getHours,
   getMinutes,
   startOfMonth,
 } from "date-fns";
-import { BaseCall, CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
+import { BaseCall, CallBlock, Call, WeeklySchedule } from "src/typings/Call";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
@@ -173,31 +172,41 @@ function mondayMorning(date: Date): Date {
   return date;
 }
 
-export const callsToWeeklyData = (
-  calls: BaseCall[]
-): Record<string, number> => {
+function sundayEvening(date: Date): Date {
+  const day = date.getDay();
+  date.setDate(date.getDate() - day + 7);
+  date.setHours(23, 59, 59, 0);
+  return date;
+}
+
+const callsWithinPeriod = (calls: Call[], start: Date, end: Date): Call[] => {
+  return calls.filter(
+    (call) =>
+      new Date(call.scheduledEndTime) >= start &&
+      new Date(call.scheduledEndTime) <= end
+  );
+};
+
+export const callsToday = (calls: Call[]): Call[] => {
+  const morning = new Date();
+  morning.setHours(0, 0, 0, 0);
+  const evening = new Date();
+  evening.setHours(23, 59, 59, 59);
+  return callsWithinPeriod(calls, morning, evening);
+};
+
+export const callsToWeeklyData = (calls: Call[]): Record<string, number> => {
   const now = new Date();
   const thisMonday = mondayMorning(now);
-  const start = mondayMorning(startOfMonth(now));
 
   const data: Record<string, number> = {};
 
+  const start = mondayMorning(startOfMonth(now));
   let curr = start;
   while (curr <= thisMonday) {
-    // get number of calls within time period
     const next = addWeeks(curr, 1);
-    console.log(curr);
-    console.log(calls);
-    data[format(curr, "MMM dd")] = calls.filter(
-      (call) =>
-        new Date(call.scheduledEndTime) >= curr &&
-        new Date(call.scheduledEndTime) < next
-    ).length;
-
+    data[format(curr, "MMM dd")] = callsWithinPeriod(calls, curr, next).length;
     curr = next;
   }
-
-  console.log(data);
-
   return data;
 };

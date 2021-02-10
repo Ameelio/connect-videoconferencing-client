@@ -70,11 +70,11 @@ export interface BaseCall {
   status: CallStatus;
 }
 
-export interface Visitation extends BaseCall {
+export interface Call extends BaseCall {
   connection: Connection;
 }
 
-export interface LiveCall extends Visitation {
+export interface LiveCall extends Call {
   startTime: number;
   liveStatus: string;
   isUnmuted?: boolean;

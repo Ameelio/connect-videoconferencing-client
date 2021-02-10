@@ -1,7 +1,7 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { CallFilters, Visitation } from "src/typings/Call";
+import { CallFilters, Call } from "src/typings/Call";
 import _ from "lodash";
 import { notification, message } from "antd";
 
@@ -12,7 +12,7 @@ export const genImageUri = (user?: BasePersona): string => {
   return user?.profileImgPath || "default.jpg";
 };
 
-export const VisitationToEventInput = (visitation: Visitation): EventInput => {
+export const VisitationToEventInput = (visitation: Call): EventInput => {
   return {
     title: `${genFullName(visitation.connection.inmate)} <> ${genFullName(
       visitation.connection.contact

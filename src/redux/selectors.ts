@@ -7,7 +7,7 @@ import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
-import { BaseCall, Visitation } from "src/typings/Call";
+import { BaseCall, Call } from "src/typings/Call";
 import { nodesAdapter } from "./modules/node";
 import { kiosksAdapter } from "./modules/kiosk";
 
@@ -95,7 +95,7 @@ export const getAllConnectionsInfo = (
 export const getCallEntities = (
   state: RootState,
   visitation: BaseCall
-): Visitation => {
+): Call => {
   const connection = selectConnectionById(state, visitation.connectionId);
   if (!connection) throw new Error("Failed to locate connection information");
 
@@ -107,20 +107,17 @@ export const getCallEntities = (
 export const getAllCallsInfo = (
   state: RootState,
   visitations: BaseCall[]
-): Visitation[] => {
+): Call[] => {
   return visitations.map((visitation) => getCallEntities(state, visitation));
 };
 
-export const getCallInfo = (
-  state: RootState,
-  callId: number
-): Visitation | null => {
+export const getCallInfo = (state: RootState, callId: number): Call | null => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return null;
-  return getCallEntities(state, plainCall) as Visitation;
+  return getCallEntities(state, plainCall) as Call;
 };
 
-export const selectLiveCalls = (state: RootState): Visitation[] => {
+export const selectLiveCalls = (state: RootState): Call[] => {
   const calls = selectAllCalls(state);
   return getAllCallsInfo(
     state,

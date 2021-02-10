@@ -100,28 +100,33 @@ export const GRID_TO_VH_HEIGHT: { [key in GridOption]: number } = {
 
 export const CALL_ALERTS: CallAlert[] = [
   {
+    id: 0,
+    title: "Unallowed visitor",
+    body:
+      "All participants on the call must have  been registered and pre-approved ahead of time. The presence of unallowed visitors may lead to call termination.",
+  },
+  {
     id: 1,
     title: "Appropriate clothing",
     body:
-      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+      "All adult and minor visitors, including attorneys, must be fully dressed in appopriate, conventional clothing which is not unduly provocative, suggestive, or revealing and does not resemble offender attire or present adornments which could be used as a weapon.",
   },
   {
     id: 2,
     title: "Clothing exposure",
     body:
-      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+      "Any clothing worn on the top half of the body must have sleeves and not expose the cleavage line, back, midriff and/or underarm at any time while standing, sitting, and/or bending down.",
   },
   {
     id: 3,
     title: "Appropriate undergarments",
-    body:
-      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+    body: "Appropriate undergarments are required, and will not be visible.",
   },
   {
     id: 4,
     title: "No sheer clothing",
     body:
-      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+      "Clothing which is sheer or transparent will not be permitted. Clothing that contains holes and/or rips will not be permitted.",
   },
   {
     id: 5,
@@ -133,6 +138,6 @@ export const CALL_ALERTS: CallAlert[] = [
     id: 6,
     title: "Leggings no shorter than knee",
     body:
-      "Outer garments worn on the bottom half of the body must be no shorter than the knee while standing.",
+      "Leggings and jeggings may only be worn under outer garments that must be no shorter than the knee while standing.",
   },
 ];
