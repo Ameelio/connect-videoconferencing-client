@@ -6,7 +6,7 @@ import {
 import { fetchAuthenticated } from "src/api/Common";
 import camelcaseKeys from "camelcase-keys";
 import { AmeelioNode } from "src/typings/Node";
-import { showToast } from "src/utils/utils";
+import { UI } from "src/utils";
 
 export const fetchNodes = createAsyncThunk("node/fetchNodes", async () => {
   const body = await fetchAuthenticated(`/subnodes`, {});
@@ -37,7 +37,7 @@ export const nodesSlice = createSlice({
       nodesAdapter.setAll(state, action.payload)
     );
     builder.addCase(fetchNodes.rejected, (_state, _action) =>
-      showToast("nodes", "Could not load facility information", "error")
+      UI.showToast("nodes", "Could not load facility information", "error")
     );
   },
 });

@@ -13,7 +13,7 @@ import "./index.css";
 import { Redirect } from "react-router";
 import { loginWithCredentials } from "src/api/User";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { showToast } from "src/utils/utils";
+import { UI } from "src/utils";
 
 const { Content } = Layout;
 
@@ -33,12 +33,16 @@ function UnconnectedLoginContainer({
   facility,
 }: PropsFromRedux): ReactElement {
   if (session.isLoggedIn) {
-    showToast(TOAST_KEY, `Welcome back, ${session.user.firstName}!`, "success");
+    UI.showToast(
+      TOAST_KEY,
+      `Welcome back, ${session.user.firstName}!`,
+      "success"
+    );
     return <Redirect to="/" />;
   }
 
   const onFinish = async (values: any) => {
-    showToast(TOAST_KEY, "Authenticating with credentials...", "loading");
+    UI.showToast(TOAST_KEY, "Authenticating with credentials...", "loading");
     try {
       await loginWithCredentials({
         email: values.email,
@@ -46,12 +50,12 @@ function UnconnectedLoginContainer({
         remember: values.remember,
       });
     } catch (err) {
-      showToast(TOAST_KEY, "Invalid email or password", "error");
+      UI.showToast(TOAST_KEY, "Invalid email or password", "error");
     }
   };
 
   const onFinishFailed = (_errorInfo: any) => {
-    showToast(TOAST_KEY, "Invalid email or password", "error");
+    UI.showToast(TOAST_KEY, "Invalid email or password", "error");
   };
 
   return (

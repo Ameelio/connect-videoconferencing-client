@@ -67,7 +67,9 @@ function Dashboard({
     <Content>
       <PageHeader
         title="Dashboard"
-        extra={[<PDFDownloadButton calls={calls} facility={facility} />]}
+        extra={[
+          <PDFDownloadButton calls={callsToday(calls)} facility={facility} />,
+        ]}
       />
       <Space
         direction="vertical"
@@ -77,7 +79,7 @@ function Dashboard({
         <Row gutter={16}>
           <Col span={8} className="bg-white">
             <MetricCard
-              title="Calls this week"
+              title="Calls This Week"
               value={Object.values(callVolume)[-1]}
               prefix={<StarOutlined />}
               suffix={`calls`}

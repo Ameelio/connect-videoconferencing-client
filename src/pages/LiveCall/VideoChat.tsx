@@ -9,12 +9,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
-import { Menu, Spin, Dropdown, Button, Space } from "antd";
+import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import { CallAlert, LiveCall } from "src/typings/Call";
-import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
-import { openNotificationWithIcon } from "src/utils/utils";
+import { AudioMutedOutlined } from "@ant-design/icons";
+import { UI } from "src/utils";
 
 interface Props {
   width: number | string;
@@ -84,7 +84,7 @@ const VideoChat: React.FC<Props> = React.memo(
         recipients: participants,
       });
 
-      openNotificationWithIcon(
+      UI.openNotificationWithIcon(
         "Alert succesfully issue.",
         "Both parties have been notified.",
         "success"
@@ -208,7 +208,7 @@ const VideoChat: React.FC<Props> = React.memo(
           terminateCall={() => {
             if (rc) {
               rc.terminate();
-              openNotificationWithIcon(
+              UI.openNotificationWithIcon(
                 `Call #${call.id} terminated`,
                 "We notified both participants of the incident.",
                 "info"
