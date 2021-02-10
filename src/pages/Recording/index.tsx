@@ -14,16 +14,10 @@ import {
   Space,
 } from "antd";
 import ReactPlayer from "react-player";
-import PageLoader from "src/components/loaders/PageLoader";
 import { WRAPPER_STYLE } from "src/utils/constants";
 import { format } from "date-fns";
 import { genFullName } from "src/utils/utils";
-import IconLink from "src/components/icons/IconLink";
-import {
-  DownloadOutlined,
-  InfoCircleOutlined,
-  InfoOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { RecordedCall } from "src/typings/Call";
 
 const { Content } = Layout;

@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import "./Video.css";
-import { Menu, Spin, Dropdown, Button, Modal } from "antd";
+import { Menu, Dropdown, Button, Modal } from "antd";
 import {
   AudioMutedOutlined,
   AudioOutlined,

@@ -2,9 +2,6 @@ import React from "react";
 import CalendarView from "src/components/calendar/CalendarView";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import Sidebar from "src/components/containers/Sidebar";
-import Container from "src/components/containers/Container";
-import Wrapper from "src/components/containers/Wrapper";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 
 const mapStateToProps = (state: RootState) => ({
@@ -35,13 +32,8 @@ const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   visitations,
 }) => {
   return (
-    <div className="d-flex flex-row">
-      <Sidebar title="Video BaseCall Calendar"></Sidebar>
-      <Wrapper>
-        <Container>
-          <CalendarView visitations={visitations} />
-        </Container>
-      </Wrapper>
+    <div className="">
+      <CalendarView visitations={visitations} />
     </div>
   );
 };

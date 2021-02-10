@@ -60,6 +60,7 @@ export default function Menu({
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
+  console.log(session);
   if (!session.isLoggedIn) return <div />;
 
   const headerMenu = (

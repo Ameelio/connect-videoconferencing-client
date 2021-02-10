@@ -89,6 +89,10 @@ function App({
   }, [fetchFacilities]);
 
   useEffect(() => {
+    if (session.isLoggedIn) fetchFacilities();
+  }, [session.isLoggedIn]);
+
+  useEffect(() => {
     if (selected) {
       (async () => {
         await Promise.allSettled([

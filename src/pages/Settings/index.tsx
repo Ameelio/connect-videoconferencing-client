@@ -1,20 +1,9 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import {
-  TimePicker,
-  Layout,
-  Row,
-  Col,
-  Space,
-  Button,
-  Divider,
-  Typography,
-} from "antd";
-import { Header } from "antd/lib/layout/layout";
+import { TimePicker, Layout, Row, Col, Space, Button, Typography } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import {
-  PADDING,
   WRAPPER_STYLE,
   WeekdayMap,
   WEEKDAYS,
@@ -80,7 +69,6 @@ function SettingsContainer({
       idx,
       day,
     };
-    const h = mapCallBlockToCallSlots(r);
     setCallSlots(mapCallBlockToCallSlots(r));
     setRanges(r);
   };

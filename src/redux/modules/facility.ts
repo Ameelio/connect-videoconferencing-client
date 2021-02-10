@@ -6,11 +6,8 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
-import { API_URL, fetchAuthenticated } from "src/api/Common";
-import { Kiosk } from "src/typings/Kiosk";
+import { fetchAuthenticated } from "src/api/Common";
 import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Facility";
-import { mapCallBlockToCallSlots } from "src/utils/Call";
-import url from "url";
 import { Store } from "..";
 
 export const facilitiesAdapter = createEntityAdapter<Facility>();
