@@ -7,7 +7,9 @@ import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
-import { BaseCall, Visitation } from "src/typings/Call";
+import { BaseCall, Call } from "src/typings/Call";
+import { nodesAdapter } from "./modules/node";
+import { kiosksAdapter } from "./modules/kiosk";
 
 // get selectors from entity adapter
 export const {
@@ -18,6 +20,7 @@ export const {
 export const {
   selectById: selectInmateById,
   selectAll: selectAllInmates,
+  selectTotal: selectTotalInmates,
 } = inmatesAdapter.getSelectors<RootState>((state) => state.inmates);
 
 export const {
@@ -39,6 +42,16 @@ export const {
   selectById: selectFacilityById,
   selectAll: selectAllFacilities,
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
+
+export const {
+  selectById: selectNodeById,
+  selectAll: selectAllNodes,
+} = nodesAdapter.getSelectors<RootState>((state) => state.nodes);
+
+export const {
+  selectById: selectKioskById,
+  selectAll: selectAllKiosks,
+} = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
 // Connections
 const getConnectionEntities = (
@@ -79,35 +92,32 @@ export const getAllConnectionsInfo = (
 };
 
 // Calls
-export const getCallEntities = (
-  state: RootState,
-  visitation: BaseCall
-): Visitation => {
-  const connection = selectConnectionById(state, visitation.connectionId);
+export const getCallEntities = (state: RootState, call: BaseCall): Call => {
+  const connection = selectConnectionById(state, call.connectionId);
   if (!connection) throw new Error("Failed to locate connection information");
+
+  const kiosk = selectKioskById(state, call.kioskId);
+  if (!kiosk) throw new Error("Failed to locate kiosk information");
 
   // TODO add error handling
   const detailedConnection = getConnectionEntities(state, connection);
-  return { ...visitation, connection: detailedConnection };
+  return { ...call, connection: detailedConnection, kiosk };
 };
 
 export const getAllCallsInfo = (
   state: RootState,
   visitations: BaseCall[]
-): Visitation[] => {
+): Call[] => {
   return visitations.map((visitation) => getCallEntities(state, visitation));
 };
 
-export const getCallInfo = (
-  state: RootState,
-  callId: number
-): Visitation | null => {
+export const getCallInfo = (state: RootState, callId: number): Call | null => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return null;
-  return getCallEntities(state, plainCall) as Visitation;
+  return getCallEntities(state, plainCall) as Call;
 };
 
-export const selectLiveCalls = (state: RootState): Visitation[] => {
+export const selectLiveCalls = (state: RootState): Call[] => {
   const calls = selectAllCalls(state);
   return getAllCallsInfo(
     state,

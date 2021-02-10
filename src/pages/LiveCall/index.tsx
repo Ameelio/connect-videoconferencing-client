@@ -7,11 +7,11 @@ import {
   CALL_ALERTS,
   GRID_TO_SPAN_WIDTH,
   GRID_TO_VH_HEIGHT,
-  WRAPPER_STYLE,
 } from "src/utils/constants";
+import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import { Layout, Row, Col, Space, Pagination } from "antd";
+import { Layout, Row, Col, Space, Pagination, PageHeader } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
@@ -21,7 +21,6 @@ import _ from "lodash";
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  // TODO update this once we have status selecotr
   visitations: selectLiveCalls(state) as LiveCall[],
 });
 
@@ -29,7 +28,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchCalls,
-      // setSocket
     },
     dispatch
   );
@@ -43,8 +41,6 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   fetchCalls,
-  // socket,
-  // setSocket,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
@@ -112,8 +108,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   };
 
   return (
-    <Content style={WRAPPER_STYLE}>
-      <Space direction="vertical" style={{ width: "100% " }}>
+    <Content>
+      <PageHeader title="Live Calls" />
+      <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
         {visitations.length > 0 && (
           <Pagination
             defaultCurrent={1}

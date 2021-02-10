@@ -1,8 +1,15 @@
-import { addMilliseconds, getDay, getHours, getMinutes } from "date-fns";
-import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
-import { NodeCallSlot } from "src/typings/Node";
+import {
+  addMilliseconds,
+  format,
+  getHours,
+  getMinutes,
+  startOfMonth,
+} from "date-fns";
+import { BaseCall, CallBlock, Call, WeeklySchedule } from "src/typings/Call";
+import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
+import { addWeeks } from "@fullcalendar/react";
 
 const callSlotToDateString = (time: NodeCallSlot): string => {
   const date = new Date();
@@ -156,4 +163,50 @@ export const dayOfWeekAsString = (dayIndex: WeekdayMap): string => {
       "Saturday",
     ][dayIndex] || ""
   );
+};
+
+function mondayMorning(date: Date): Date {
+  const day = date.getDay();
+  date.setDate(date.getDate() - day + 1);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function sundayEvening(date: Date): Date {
+  const day = date.getDay();
+  date.setDate(date.getDate() - day + 7);
+  date.setHours(23, 59, 59, 0);
+  return date;
+}
+
+const callsWithinPeriod = (calls: Call[], start: Date, end: Date): Call[] => {
+  return calls.filter(
+    (call) =>
+      new Date(call.scheduledEndTime) >= start &&
+      new Date(call.scheduledEndTime) <= end
+  );
+};
+
+export const callsToday = (calls: Call[]): Call[] => {
+  const morning = new Date();
+  morning.setHours(0, 0, 0, 0);
+  const evening = new Date();
+  evening.setHours(23, 59, 59, 59);
+  return callsWithinPeriod(calls, morning, evening);
+};
+
+export const callsToWeeklyData = (calls: Call[]): Record<string, number> => {
+  const now = new Date();
+  const thisMonday = mondayMorning(now);
+
+  const data: Record<string, number> = {};
+
+  const start = mondayMorning(startOfMonth(now));
+  let curr = start;
+  while (curr <= thisMonday) {
+    const next = addWeeks(curr, 1);
+    data[format(curr, "MMM dd")] = callsWithinPeriod(calls, curr, next).length;
+    curr = next;
+  }
+  return data;
 };

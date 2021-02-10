@@ -1,49 +1,42 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { Button } from "antd";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  PDFViewer,
-  Text,
-} from "@react-pdf/renderer";
-import { SelectedFacility } from "src/typings/Node";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { SelectedFacility } from "src/typings/Facility";
 import { format } from "date-fns";
-import { LiveCall } from "src/typings/Call";
-
-const MyDoc = (calls: LiveCall[]) => (
-  <Document>
-    <Page>
-      <Text>Daily Schedule</Text>
-      {calls.map((call) => (
-        <Text>
-          {call.connection.inmate.firstName}-{call.connection.contact.firstName}{" "}
-          | {call.connection.relationship} |{" "}
-          {format(new Date(call.scheduledStartTime), "HH:mm")}-
-          {format(new Date(call.scheduledEndTime), "HH:mm")}
-        </Text>
-      ))}
-    </Page>
-  </Document>
-);
+import { Call } from "src/typings/Call";
+import DailyReport from "./DailyReport";
+import _ from "lodash";
 
 interface Props {
   facility?: SelectedFacility;
-  calls: LiveCall[];
+  calls: Call[];
 }
 
 const PDFDownloadButton: React.FC<Props> = React.memo(({ calls, facility }) => {
-  console.log(calls);
-  if (!calls) return <div />;
+  if (!facility || !calls.length)
+    return (
+      <Button type="primary" size="large" disabled>
+        No calls today
+      </Button>
+    );
+  console.log(_.groupBy(calls, (call) => call.scheduledStartTime));
   return (
     <PDFDownloadLink
-      document={MyDoc(calls)}
+      document={
+        <DailyReport
+          callBlocks={_.groupBy(calls, (call) => call.scheduledStartTime)}
+          facility={facility}
+          canViewDetails={true}
+        />
+      }
       fileName={`Daily Schedule | ${facility?.name}@${format(
         new Date(),
         "MM/dd/yyyy-HH:mm"
       )}`}
     >
-      <Button type="primary">Download Schedule</Button>
+      <Button type="primary" size="large">
+        Print Daily Schedule
+      </Button>
     </PDFDownloadLink>
   );
 });

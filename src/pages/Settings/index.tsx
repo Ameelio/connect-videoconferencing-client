@@ -8,18 +8,12 @@ import {
   Col,
   Space,
   Button,
-  Divider,
   Typography,
+  PageHeader,
 } from "antd";
-import { Header } from "antd/lib/layout/layout";
-import { NodeCallSlot } from "src/typings/Node";
-import {
-  PADDING,
-  WRAPPER_STYLE,
-  WeekdayMap,
-  WEEKDAYS,
-  DEFAULT_DURATION_MS,
-} from "src/utils/constants";
+import { NodeCallSlot } from "src/typings/Facility";
+import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
@@ -80,7 +74,6 @@ function SettingsContainer({
       idx,
       day,
     };
-    const h = mapCallBlockToCallSlots(r);
     setCallSlots(mapCallBlockToCallSlots(r));
     setRanges(r);
   };
@@ -141,20 +134,23 @@ function SettingsContainer({
   };
 
   return (
-    <Content style={WRAPPER_STYLE}>
-      <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
-        <TabPane tab="General Settings" key="setting"></TabPane>
-        {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
+    <Content>
+      <PageHeader title="Settings" />
+      <div style={WRAPPER_STYLE}>
+        <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+          <TabPane tab="General Settings" key="setting"></TabPane>
+          {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
         <TabPane tab="Call Hours" key="facility"></TabPane> */}
-      </Tabs>
-      <Content className="main-content-container">
-        <Space direction="vertical">
-          {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
-          <Button type="primary" block onClick={handleSubmission}>
-            Save Changes
-          </Button>
-        </Space>
-      </Content>
+        </Tabs>
+        <Content className="main-content-container">
+          <Space direction="vertical">
+            {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
+            <Button type="primary" block onClick={handleSubmission}>
+              Save Changes
+            </Button>
+          </Space>
+        </Content>
+      </div>
     </Content>
   );
 }

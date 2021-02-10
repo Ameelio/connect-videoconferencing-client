@@ -96,18 +96,5 @@ export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {
   });
   const body = await response.json();
   if (body.status !== 200) throw body;
-  console.log(body);
-  // const user = cleanUser(body.data as RawUser);
-  // const { token: apiToken, remember: rememberToken } = body.data;
-  // Store.dispatch(
-  //   setSession({
-  //     user,
-  //     authInfo: { rememberToken, apiToken },
-  //     isLoggedIn: true,
-  //   })
-  // );
-  // // TO
-  // localStorage.setItem(TOKEN_KEY, apiToken);
-  // localStorage.setItem(REMEMBER_TOKEN_KEY, rememberToken);
   await initializeSession(body);
 }

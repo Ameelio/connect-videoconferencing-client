@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import { PADDING } from "src/utils/constants";
+import { PADDING, WRAPPER_STYLE } from "src/styles/styles";
 import {
   getAllConnectionsInfo,
   selectConnectionRequests,
 } from "src/redux/selectors";
-import { Table, Space, Layout, Avatar, Button } from "antd";
+import { Table, Space, Layout, Avatar, Button, PageHeader } from "antd";
 import { genFullName } from "src/utils/utils";
 import { updateConnection } from "src/redux/modules/connections";
 import { BaseConnection, Connection } from "src/typings/Connection";
@@ -37,8 +37,9 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   };
 
   return (
-    <Content style={{ padding: PADDING }}>
-      <Table dataSource={requests}>
+    <Content>
+      <PageHeader title="Connection Requests" />
+      <Table dataSource={requests} style={WRAPPER_STYLE}>
         <Column
           title=""
           dataIndex="inmate"

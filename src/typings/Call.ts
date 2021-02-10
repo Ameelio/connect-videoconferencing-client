@@ -1,5 +1,6 @@
 import { WeekdayMap } from "src/utils/constants";
 import { Connection } from "./Connection";
+import { Kiosk } from "./Kiosk";
 
 export type Weekday =
   | "Sunday"
@@ -43,10 +44,6 @@ export interface CallFilters {
   end?: string;
 }
 
-export interface Kiosk {
-  id: number;
-}
-
 export type CallStatus =
   | "scheduled"
   | "missing-monitor"
@@ -59,21 +56,23 @@ export interface BaseCall {
   scheduledStartTime: number;
   scheduledEndTime: number;
   connectionId: number;
-  kiosk: Kiosk;
+  kioskId: number;
   approved: boolean;
   videoReady: boolean;
   endTime?: number;
   startTime?: number;
   liveStatus?: string;
   recordingUrl?: string;
+  rating: number;
   status: CallStatus;
 }
 
-export interface Visitation extends BaseCall {
+export interface Call extends BaseCall {
   connection: Connection;
+  kiosk: Kiosk;
 }
 
-export interface LiveCall extends Visitation {
+export interface LiveCall extends Call {
   startTime: number;
   liveStatus: string;
   isUnmuted?: boolean;

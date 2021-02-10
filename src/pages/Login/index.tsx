@@ -13,23 +13,36 @@ import "./index.css";
 import { Redirect } from "react-router";
 import { loginWithCredentials } from "src/api/User";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { UI } from "src/utils";
 
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
+  facility: state.facilities.selected,
 });
 
 const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function LoginContainer({ session }: PropsFromRedux): ReactElement {
-  const [error, setError] = useState("");
+const TOAST_KEY = "login";
 
-  if (session.isLoggedIn) return <Redirect to="/" />;
+function UnconnectedLoginContainer({
+  session,
+  facility,
+}: PropsFromRedux): ReactElement {
+  if (session.isLoggedIn) {
+    UI.showToast(
+      TOAST_KEY,
+      `Welcome back, ${session.user.firstName}!`,
+      "success"
+    );
+    return <Redirect to="/" />;
+  }
 
   const onFinish = async (values: any) => {
+    UI.showToast(TOAST_KEY, "Authenticating with credentials...", "loading");
     try {
       await loginWithCredentials({
         email: values.email,
@@ -37,12 +50,12 @@ function LoginContainer({ session }: PropsFromRedux): ReactElement {
         remember: values.remember,
       });
     } catch (err) {
-      setError("Invalid email or password");
+      UI.showToast(TOAST_KEY, "Invalid email or password", "error");
     }
   };
 
   const onFinishFailed = (_errorInfo: any) => {
-    setError("Invalid email or password");
+    UI.showToast(TOAST_KEY, "Invalid email or password", "error");
   };
 
   return (
@@ -90,4 +103,4 @@ function LoginContainer({ session }: PropsFromRedux): ReactElement {
   );
 }
 
-export default connector(LoginContainer);
+export default connector(UnconnectedLoginContainer);

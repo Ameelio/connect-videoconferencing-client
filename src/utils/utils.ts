@@ -1,11 +1,9 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { NodeCallSlot } from "src/typings/Node";
-import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
-import { CallBlock, CallFilters, Visitation, Weekday } from "src/typings/Call";
+import { CallFilters, Call } from "src/typings/Call";
 import _ from "lodash";
-import { notification } from "antd";
+import { notification, message } from "antd";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -14,7 +12,7 @@ export const genImageUri = (user?: BasePersona): string => {
   return user?.profileImgPath || "default.jpg";
 };
 
-export const VisitationToEventInput = (visitation: Visitation): EventInput => {
+export const VisitationToEventInput = (visitation: Call): EventInput => {
   return {
     title: `${genFullName(visitation.connection.inmate)} <> ${genFullName(
       visitation.connection.contact
@@ -46,6 +44,14 @@ export const mapPermissionMap = (
 
 export const cloneObject = (obj: Object): Object =>
   JSON.parse(JSON.stringify(obj));
+
+export function onlyUnique(
+  value: number | string,
+  index: number,
+  self: (number | string)[]
+) {
+  return self.indexOf(value) === index;
+}
 
 export const createCallOptionsParam = (filters: CallFilters): string => {
   const options = [
@@ -94,14 +100,3 @@ export function generateBgColor(label: string): string {
     Math.abs(hashCode(label) % BACKGROUND_COLORS.length)
   ];
 }
-
-export const openNotificationWithIcon = (
-  message: string,
-  description: string,
-  type: "success" | "info" | "error" | "warning"
-) => {
-  notification[type]({
-    message,
-    description,
-  });
-};

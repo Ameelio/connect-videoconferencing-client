@@ -5,7 +5,7 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import { cleanVisitation, RawVisitation } from "../helpers";
+import { cleanCall, RawCall } from "../helpers";
 import { createCallOptionsParam } from "src/utils/utils";
 import { BaseCall, CallFilters, RecordedCall } from "src/typings/Call";
 
@@ -22,7 +22,7 @@ export const fetchCalls = createAsyncThunk(
     }
 
     const visitations = ((body.data as Record<string, unknown>)
-      .calls as RawVisitation[]).map(cleanVisitation) as RecordedCall[];
+      .calls as RawCall[]).map(cleanCall) as RecordedCall[];
 
     return visitations;
   }

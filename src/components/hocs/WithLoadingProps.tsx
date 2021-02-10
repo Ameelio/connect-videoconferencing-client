@@ -4,7 +4,7 @@ import LottieSpinner from "src/assets/lotties/LottieSpinner.json";
 
 import Lottie from "react-lottie";
 import { LoadingTypes } from "src/utils/constants";
-import { Spinner } from "react-bootstrap";
+import { Spin } from "antd";
 
 interface WithLoadingProps {
   loading: boolean;
@@ -28,7 +28,7 @@ export const WithLoading = <P extends object>(
   };
 
   const genFeedback = (): JSX.Element => {
-    if (!loadingType) return <Spinner animation="border" />;
+    if (!loadingType) return <Spin />;
     switch (loadingType) {
       case LoadingTypes.AcceptConnection:
         // defaultOptions.animationData = CaringFamily;
@@ -51,7 +51,7 @@ export const WithLoading = <P extends object>(
           </div>
         );
       default:
-        return <Spinner animation="border" />;
+        return <Spin />;
     }
   };
   return loading ? (

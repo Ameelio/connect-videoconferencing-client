@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/User";
 import Menu from "./components/headers/Menu";
-import { Avatar, Layout, PageHeader, Menu as AntdMenu } from "antd";
+import { Layout } from "antd";
 import { logout } from "src/redux/modules/user";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
@@ -22,6 +22,11 @@ import { fetchContacts } from "./redux/modules/contact";
 import { fetchStaff } from "./redux/modules/staff";
 import { fetchInmates } from "./redux/modules/inmate";
 import { fetchConnections } from "./redux/modules/connections";
+import { fetchNodes } from "./redux/modules/node";
+import { fetchKiosks } from "./redux/modules/kiosk";
+import { fetchCalls } from "./redux/modules/call";
+import { startOfMonth } from "date-fns/esm";
+import { endOfMonth } from "date-fns";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -36,6 +41,9 @@ const mapDispatchToProps = {
   fetchStaff,
   fetchInmates,
   fetchConnections,
+  fetchNodes,
+  fetchKiosks,
+  fetchCalls,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -55,6 +63,9 @@ function App({
   fetchInmates,
   fetchStaff,
   fetchConnections,
+  fetchNodes,
+  fetchKiosks,
+  fetchCalls,
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
@@ -63,8 +74,6 @@ function App({
   };
 
   const facilities = useSelector(selectAllFacilities);
-  // const history = useHistory();
-  const [header, setHeader] = useState("");
 
   useEffect(() => {
     // localStorage.setItem("debug", "*");
@@ -78,22 +87,36 @@ function App({
   }, [fetchFacilities]);
 
   useEffect(() => {
+    if (session.isLoggedIn) fetchFacilities();
+  }, [session.isLoggedIn, fetchFacilities]);
+
+  useEffect(() => {
     if (selected) {
       (async () => {
-        Promise.allSettled([
+        await Promise.allSettled([
           fetchContacts(),
           fetchStaff(),
           fetchInmates(),
           fetchConnections(),
+          fetchNodes(),
+          fetchKiosks(),
         ]);
+        fetchCalls({
+          startDate: startOfMonth(new Date()).getTime(),
+          endDate: endOfMonth(new Date()).getTime(),
+        });
       })();
     }
-  }, [selected, fetchContacts, fetchStaff, fetchConnections, fetchInmates]);
-
-  useEffect(() => {
-    const route = ROUTES.find((route) => route.path === pathname.pathname);
-    if (route) setHeader(route.label);
-  }, [pathname]);
+  }, [
+    selected,
+    fetchContacts,
+    fetchStaff,
+    fetchConnections,
+    fetchInmates,
+    fetchNodes,
+    fetchCalls,
+    fetchKiosks,
+  ]);
 
   return (
     <ConnectedRouter history={history}>
@@ -108,19 +131,6 @@ function App({
           />
         )}
         <Layout>
-          <PageHeader
-            title={header}
-            // extra={[
-            //   <BellFilled key="bell" />,
-            //   <BulbFilled key="bulb" />,
-            //   <InitialsAvatar
-            //     name={genFullName(session.user)}
-            //     size="default"
-            //     shape="circle"
-            //     key="avatar"
-            //   />,
-            // ]}
-          />
           <Switch>
             <Route exact path="/login" component={Login}></Route>
             {ROUTES.map((route) => (

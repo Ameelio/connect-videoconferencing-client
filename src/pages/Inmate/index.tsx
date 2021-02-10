@@ -1,12 +1,12 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { PADDING } from "src/utils/constants";
 import { selectAllInmates } from "src/redux/selectors";
-import { Layout, Avatar } from "antd";
+import { Layout, Avatar, PageHeader } from "antd";
 import EditableTable from "src/components/editable-table/EditableTable";
 import { updateInmate } from "src/redux/modules/inmate";
 import { RootState } from "src/redux";
 import { TableColumn } from "src/typings/Common";
+import { WRAPPER_STYLE } from "src/styles/styles";
 
 const { Content } = Layout;
 
@@ -63,12 +63,15 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   ];
 
   return (
-    <Content style={{ padding: PADDING }}>
-      <EditableTable
-        originalData={inmates}
-        columns={columns}
-        onSave={(inmate: Inmate) => updateInmate(inmate)}
-      />
+    <Content>
+      <PageHeader title="Incarcerated People" />
+      <div style={WRAPPER_STYLE}>
+        <EditableTable
+          originalData={inmates}
+          columns={columns}
+          onSave={(inmate: Inmate) => updateInmate(inmate)}
+        />
+      </div>
     </Content>
   );
 };

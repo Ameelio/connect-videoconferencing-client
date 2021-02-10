@@ -9,10 +9,10 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./CalendarView.css";
 import { VisitationToEventInput } from "src/utils/utils";
-import { Visitation } from "src/typings/Call";
+import { Call } from "src/typings/Call";
 
 interface Props {
-  visitations: Visitation[];
+  visitations: Call[];
 }
 
 const CalendarView: React.FC<Props> = ({ visitations }) => {

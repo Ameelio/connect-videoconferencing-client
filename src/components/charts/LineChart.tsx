@@ -1,3 +1,4 @@
+import { Card } from "antd";
 import React from "react";
 import { Line } from "react-chartjs-2";
 
@@ -5,14 +6,19 @@ const COLOR = "rgba(0, 137, 255, 1)";
 const BG = "rgba(0, 137, 255, 0.4)";
 const DARKER_COLOR = "rgba(2, 117, 216, 1)";
 
-interface Props {}
+interface Props {
+  title: string;
+  labels: string[];
+  label: string;
+  data: number[];
+}
 
-const LineChart: React.FC<Props> = () => {
-  const data = {
-    labels: ["July 6", "July 13", "July 20", "July 27", "Aug 3", "Aug 10"],
+const LineChart: React.FC<Props> = ({ title, label, labels, data }) => {
+  const chartData = {
+    labels,
     datasets: [
       {
-        label: "# of Visitations",
+        label,
         lineTension: 0.1,
         backgroundColor: BG,
         borderColor: COLOR,
@@ -29,16 +35,15 @@ const LineChart: React.FC<Props> = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [34, 59, 44, 72, 80, 90, 40],
+        data,
       },
     ],
   };
 
   return (
-    <div>
-      <span className="p3 font-weight-bold">Visitations</span>
-      <Line data={data} />
-    </div>
+    <Card title={title}>
+      <Line data={chartData} />
+    </Card>
   );
 };
 

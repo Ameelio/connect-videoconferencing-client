@@ -23,7 +23,7 @@ import { useHistory } from "react-router-dom";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { logout } from "src/redux/modules/user";
-import { Facility, SelectedFacility } from "src/typings/Node";
+import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
@@ -60,6 +60,7 @@ export default function Menu({
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
+  console.log(session);
   if (!session.isLoggedIn) return <div />;
 
   const headerMenu = (

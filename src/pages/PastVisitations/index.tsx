@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PADDING } from "src/utils/constants";
+import { FULL_WIDTH, PADDING, WRAPPER_STYLE } from "src/styles/styles";
 import { genFullName } from "src/utils/utils";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format, getDate, getTime } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import _ from "lodash";
-import { Table, Space, Layout, Button, Tag } from "antd";
+import { Table, Space, Layout, Button, Tag, PageHeader } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 import { Connection } from "src/typings/Connection";
@@ -37,6 +37,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   fetchCalls,
   push,
 }) => {
+  // TODO refactor filter to filter based on store instead of displaying redux data
+  // Always call API while waiting
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
@@ -72,8 +74,9 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   }, [fetchCalls, limit, offset, startDate, endDate, maxDuration, global]);
 
   return (
-    <Content style={{ padding: PADDING }}>
-      <Space direction="vertical" style={{ width: "100% " }}>
+    <Content>
+      <PageHeader title="Search for Calls" />
+      <Space direction="vertical" style={{ ...WRAPPER_STYLE, ...FULL_WIDTH }}>
         <Search
           placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."
           allowClear
