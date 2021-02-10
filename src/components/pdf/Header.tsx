@@ -1,7 +1,6 @@
-import React, { ReactElement } from "react";
+import React from "react";
 
-import { Link, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { format } from "date-fns";
+import { Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   container: {
@@ -48,7 +47,7 @@ interface Props {
 }
 
 const Header = ({ title, subtitle, extra }: Props) => (
-  <View>
+  <View style={styles.container}>
     <View style={styles.detailColumn}>
       <Text style={styles.name}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>

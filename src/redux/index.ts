@@ -4,7 +4,6 @@ import { inmatesSlice } from "./modules/inmate";
 import { sessionReducer } from "./modules/user";
 import { connectionsSlice } from "./modules/connections";
 import { configureStore } from "@reduxjs/toolkit";
-import thunk from "redux-thunk";
 import { contactsSlice } from "./modules/contact";
 import { callsSlice } from "./modules/call";
 import { facilitiesSlice } from "./modules/facility";

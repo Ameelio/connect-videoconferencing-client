@@ -92,16 +92,16 @@ export const getAllConnectionsInfo = (
 };
 
 // Calls
-export const getCallEntities = (
-  state: RootState,
-  visitation: BaseCall
-): Call => {
-  const connection = selectConnectionById(state, visitation.connectionId);
+export const getCallEntities = (state: RootState, call: BaseCall): Call => {
+  const connection = selectConnectionById(state, call.connectionId);
   if (!connection) throw new Error("Failed to locate connection information");
+
+  const kiosk = selectKioskById(state, call.kioskId);
+  if (!kiosk) throw new Error("Failed to locate kiosk information");
 
   // TODO add error handling
   const detailedConnection = getConnectionEntities(state, connection);
-  return { ...visitation, connection: detailedConnection };
+  return { ...call, connection: detailedConnection, kiosk };
 };
 
 export const getAllCallsInfo = (

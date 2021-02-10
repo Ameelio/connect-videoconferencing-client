@@ -2,7 +2,8 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
 import { BaseConnection } from "src/typings/Connection";
-import { BaseCall, CallStatus, Kiosk } from "src/typings/Call";
+import { BaseCall, CallStatus } from "src/typings/Call";
+import { Kiosk } from "src/typings/Kiosk";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -40,7 +41,8 @@ export function cleanCall(call: RawCall): BaseCall {
     endTime: call.last_live,
     end: call.end,
     approved: call.approved,
-    kiosk: { id: call.kiosk_id } as Kiosk,
+    // TODO find right kiosks
+    kioskId: call.kiosk_id,
     videoReady: call.video_ready,
     status: call.status,
     rating: call.rating,

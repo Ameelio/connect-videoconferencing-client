@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     borderBottomStyle: "solid",
     justifyContent: "space-between",
     flexDirection: "row",
-    marginBottom: 8,
+    marginVertical: 8,
   },
   header: {
     textDecoration: "underline",
@@ -42,7 +42,7 @@ const DailyReportCall = ({ block, calls, canViewDetails }: Props) => (
           </View>
           <View>
             <Text style={styles.header}>Call Station</Text>
-            <Text>{call.kiosk.id}</Text>
+            <Text>{call.kiosk.name}</Text>
           </View>
         </View>
         <View style={styles.row}>

@@ -118,7 +118,6 @@ export const showToast = (
   type: "success" | "error" | "warning" | "loading" | "info",
   duration = 3
 ) => {
-  console.log(type);
   switch (type) {
     case "success":
       message.success({ content, key, duration });

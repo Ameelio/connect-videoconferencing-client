@@ -4,7 +4,7 @@ import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { updateStaff } from "src/redux/modules/staff";
 import { STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
-import { PADDING } from "src/styles/styles";
+import { PADDING, WRAPPER_STYLE } from "src/styles/styles";
 import {
   Table,
   Tag,
@@ -15,6 +15,7 @@ import {
   Modal,
   Button,
   Switch,
+  PageHeader,
 } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
 import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
@@ -83,53 +84,57 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
   }, [selected]);
 
   return (
-    <Content style={{ padding: PADDING }}>
-      {/* <Space align="end" direction="vertical" style={{ flex: 1 }}> */}
-      <Button type="primary" onClick={() => setModalType("create")}>
-        Add
-      </Button>
-      <Divider />
-
-      <Table dataSource={staff}>
-        <Column
-          title=""
-          dataIndex="profileImgPath"
-          key="profileImgPath"
-          render={(img) => (
-            <>
-              <Avatar src={img} size="large" />
-            </>
-          )}
-        />
-        <Column title="First Name" dataIndex="firstName" key="firstName" />
-        <Column title="Last Name" dataIndex="lastName" key="lastName" />
-        <Column
-          title="Role"
-          dataIndex="role"
-          key="role"
-          render={(role) => (
-            <>
-              <Tag color="blue" key={role}>
-                {role || "Operator"}
-              </Tag>
-            </>
-          )}
-        />
-        <Column
-          title=""
-          key="edit"
-          render={(_text, record: Staff) => (
-            <Button
-              onClick={() => {
-                setSelected(record);
-                setModalType("edit");
-              }}
-            >
-              Edit
-            </Button>
-          )}
-        />
-      </Table>
+    <Content>
+      <PageHeader
+        title="Staff"
+        extra={[
+          <Button type="primary" onClick={() => setModalType("create")}>
+            Add
+          </Button>,
+        ]}
+      />
+      <div style={WRAPPER_STYLE}>
+        <Table dataSource={staff}>
+          <Column
+            title=""
+            dataIndex="profileImgPath"
+            key="profileImgPath"
+            render={(img) => (
+              <>
+                <Avatar src={img} size="large" />
+              </>
+            )}
+          />
+          <Column title="First Name" dataIndex="firstName" key="firstName" />
+          <Column title="Last Name" dataIndex="lastName" key="lastName" />
+          <Column
+            title="Role"
+            dataIndex="role"
+            key="role"
+            render={(role) => (
+              <>
+                <Tag color="blue" key={role}>
+                  {role || "Operator"}
+                </Tag>
+              </>
+            )}
+          />
+          <Column
+            title=""
+            key="edit"
+            render={(_text, record: Staff) => (
+              <Button
+                onClick={() => {
+                  setSelected(record);
+                  setModalType("edit");
+                }}
+              >
+                Edit
+              </Button>
+            )}
+          />
+        </Table>
+      </div>
       {/* </Space> */}
       <Modal
         title="Add Staff"

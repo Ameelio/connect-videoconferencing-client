@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/User";
 import Menu from "./components/headers/Menu";
-import { Avatar, Layout, PageHeader, Menu as AntdMenu } from "antd";
+import { Layout } from "antd";
 import { logout } from "src/redux/modules/user";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
@@ -74,8 +74,6 @@ function App({
   };
 
   const facilities = useSelector(selectAllFacilities);
-  // const history = useHistory();
-  const [header, setHeader] = useState("");
 
   useEffect(() => {
     // localStorage.setItem("debug", "*");
@@ -90,7 +88,7 @@ function App({
 
   useEffect(() => {
     if (session.isLoggedIn) fetchFacilities();
-  }, [session.isLoggedIn]);
+  }, [session.isLoggedIn, fetchFacilities]);
 
   useEffect(() => {
     if (selected) {
@@ -109,12 +107,16 @@ function App({
         });
       })();
     }
-  }, [selected, fetchContacts, fetchStaff, fetchConnections, fetchInmates]);
-
-  useEffect(() => {
-    const route = ROUTES.find((route) => route.path === pathname.pathname);
-    if (route) setHeader(route.label);
-  }, [pathname]);
+  }, [
+    selected,
+    fetchContacts,
+    fetchStaff,
+    fetchConnections,
+    fetchInmates,
+    fetchNodes,
+    fetchCalls,
+    fetchKiosks,
+  ]);
 
   return (
     <ConnectedRouter history={history}>
@@ -129,19 +131,6 @@ function App({
           />
         )}
         <Layout>
-          <PageHeader
-            title={header}
-            // extra={[
-            //   <BellFilled key="bell" />,
-            //   <BulbFilled key="bulb" />,
-            //   <InitialsAvatar
-            //     name={genFullName(session.user)}
-            //     size="default"
-            //     shape="circle"
-            //     key="avatar"
-            //   />,
-            // ]}
-          />
           <Switch>
             <Route exact path="/login" component={Login}></Route>
             {ROUTES.map((route) => (

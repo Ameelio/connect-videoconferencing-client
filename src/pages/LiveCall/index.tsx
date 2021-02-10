@@ -8,7 +8,7 @@ import {
   GRID_TO_SPAN_WIDTH,
   GRID_TO_VH_HEIGHT,
 } from "src/utils/constants";
-import { WRAPPER_STYLE } from "src/styles/styles";
+import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
 import {
@@ -20,6 +20,7 @@ import {
   Col,
   Space,
   Carousel,
+  PageHeader,
 } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
@@ -30,7 +31,6 @@ import _ from "lodash";
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  // TODO update this once we have status selecotr
   visitations: selectLiveCalls(state) as LiveCall[],
 });
 
@@ -38,7 +38,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchCalls,
-      // setSocket
     },
     dispatch
   );
@@ -52,8 +51,6 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   fetchCalls,
-  // socket,
-  // setSocket,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
@@ -121,8 +118,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   // console.log(consumeAudioRecord);
   return (
-    <Content style={WRAPPER_STYLE}>
-      <Space direction="vertical" style={{ width: "100% " }}>
+    <Content>
+      <PageHeader title="Live Calls" />
+      <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
         <Dropdown overlay={GridMenu} placement="bottomLeft">
           <Button>View by {grid}</Button>
         </Dropdown>

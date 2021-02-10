@@ -1,38 +1,11 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { Button } from "antd";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  PDFViewer,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { SelectedFacility } from "src/typings/Facility";
 import { format } from "date-fns";
-import { BaseCall, Call, LiveCall } from "src/typings/Call";
+import { Call } from "src/typings/Call";
 import DailyReport from "./DailyReport";
 import _ from "lodash";
-
-const styles = {};
-const MyDoc = (calls: LiveCall[]) => (
-  <Document>
-    <Page size="letter">
-      <Text>Ameelio Connect Daily Activity Report</Text>
-      <Text>{format(new Date(), "MMMM dd, YYYY")}</Text>
-
-      <View></View>
-      {calls.map((call) => (
-        <Text key={call.id}>
-          {call.connection.inmate.firstName}-{call.connection.contact.firstName}{" "}
-          | {call.connection.relationship} |{" "}
-          {format(new Date(call.scheduledStartTime), "HH:mm")}-
-          {format(new Date(call.scheduledEndTime), "HH:mm")}
-        </Text>
-      ))}
-    </Page>
-  </Document>
-);
 
 interface Props {
   facility?: SelectedFacility;

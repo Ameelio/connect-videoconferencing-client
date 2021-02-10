@@ -15,16 +15,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
-  footer: {
-    fontSize: 12,
-    fontFamily: "Lato Bold",
-    textAlign: "center",
-    marginTop: 25,
-    paddingTop: 10,
-    borderWidth: 3,
-    borderColor: "gray",
-    borderStyle: "dashed",
-  },
 });
 
 interface Props {
@@ -43,7 +33,7 @@ const DailyReport = ({ callBlocks, facility, canViewDetails }: Props) => (
       <Header
         title="Daily Activity Report"
         subtitle={`${facility.fullName}`}
-        extra={`Generated on${format(new Date(), "MMMM/dd/yyyy HH:mm:ss")}`}
+        extra={`Generated on ${format(new Date(), "MMMM/dd/yyyy HH:mm:ss")}`}
       />
 
       {Object.keys(callBlocks).map((block) => (

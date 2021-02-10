@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import LineChart from "src/components/charts/LineChart";
-import BarChart from "src/components/charts/BarChart";
-import { Row, Col, Layout, Button, Space } from "antd";
+import DonutChart from "src/components/charts/DonutChart";
+import { Row, Col, Layout, Space, PageHeader } from "antd";
 import {
   StarOutlined,
   VideoCameraOutlined,
@@ -64,13 +64,16 @@ function Dashboard({
   if (!ratingsCount || !callVolume || !facility) return <div />;
 
   return (
-    <Content style={WRAPPER_STYLE}>
-      <Space direction="vertical" style={FULL_WIDTH} size="large">
-        <Row justify="end">
-          <Col>
-            <PDFDownloadButton calls={callsToday(calls)} facility={facility} />
-          </Col>
-        </Row>
+    <Content>
+      <PageHeader
+        title="Dashboard"
+        extra={[<PDFDownloadButton calls={calls} facility={facility} />]}
+      />
+      <Space
+        direction="vertical"
+        style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
+        size="large"
+      >
         <Row gutter={16}>
           <Col span={8} className="bg-white">
             <MetricCard
@@ -113,7 +116,7 @@ function Dashboard({
             />
           </Col>
           <Col span={12}>
-            <BarChart
+            <DonutChart
               title={`Ratings Breakdown ${format(new Date(), "MMMM")}`}
               data={ratingsCount}
               backgroundColor={BASE_CHART_COLORS}

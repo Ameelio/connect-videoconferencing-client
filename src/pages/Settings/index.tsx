@@ -1,7 +1,16 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { TimePicker, Layout, Row, Col, Space, Button, Typography } from "antd";
+import {
+  TimePicker,
+  Layout,
+  Row,
+  Col,
+  Space,
+  Button,
+  Typography,
+  PageHeader,
+} from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { WRAPPER_STYLE } from "src/styles/styles";
@@ -125,20 +134,23 @@ function SettingsContainer({
   };
 
   return (
-    <Content style={WRAPPER_STYLE}>
-      <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
-        <TabPane tab="General Settings" key="setting"></TabPane>
-        {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
+    <Content>
+      <PageHeader title="Settings" />
+      <div style={WRAPPER_STYLE}>
+        <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+          <TabPane tab="General Settings" key="setting"></TabPane>
+          {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
         <TabPane tab="Call Hours" key="facility"></TabPane> */}
-      </Tabs>
-      <Content className="main-content-container">
-        <Space direction="vertical">
-          {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
-          <Button type="primary" block onClick={handleSubmission}>
-            Save Changes
-          </Button>
-        </Space>
-      </Content>
+        </Tabs>
+        <Content className="main-content-container">
+          <Space direction="vertical">
+            {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
+            <Button type="primary" block onClick={handleSubmission}>
+              Save Changes
+            </Button>
+          </Space>
+        </Content>
+      </div>
     </Content>
   );
 }

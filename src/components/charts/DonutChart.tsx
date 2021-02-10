@@ -10,7 +10,7 @@ interface Props {
   backgroundColor: string[];
   hoverBackgroundColor: string[];
 }
-export default function BarChart({
+export default function DonutChart({
   title,
   labels,
   data,
