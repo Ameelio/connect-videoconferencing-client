@@ -114,7 +114,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   return (
     <Content style={WRAPPER_STYLE}>
       <Space direction="vertical" style={{ width: "100% " }}>
-        {visitations.length !== 0 ? (
+        {visitations.length > 0 && (
           <Pagination
             defaultCurrent={1}
             defaultPageSize={grid}
@@ -125,7 +125,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
             showSizeChanger={true}
             onShowSizeChange={onShowSizeChange}
           />
-        ) : null}
+        )}
         <Row>
           {Array.from(Array(grid).keys()).map((idx) => (
             <Col span={GRID_TO_SPAN_WIDTH[grid]}>
