@@ -11,16 +11,7 @@ import {
 } from "src/utils/constants";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import {
-  Menu,
-  Button,
-  Dropdown,
-  Layout,
-  Row,
-  Col,
-  Space,
-  Carousel,
-} from "antd";
+import { Layout, Row, Col, Space, Pagination } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
@@ -109,23 +100,32 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   };
 
   const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
-  const GridMenu = (
-    <Menu>
-      {OPTIONS.map((option) => (
-        <Menu.Item>
-          <span onClick={() => handleGridChange(option)}>View by {option}</span>
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
 
-  // console.log(consumeAudioRecord);
+  const onPageChange = (page: number, _?: number) => {
+    const startIdx = (page - 1) * grid;
+    const endIdx = startIdx + grid;
+    setVisibleCalls(visitations.slice(startIdx, endIdx));
+  };
+
+  const onShowSizeChange = (_: number, pageSize: number) => {
+    handleGridChange(pageSize as GridOption);
+  };
+
   return (
     <Content style={WRAPPER_STYLE}>
       <Space direction="vertical" style={{ width: "100% " }}>
-        <Dropdown overlay={GridMenu} placement="bottomLeft">
-          <Button>View by {grid}</Button>
-        </Dropdown>
+        {visitations.length !== 0 ? (
+          <Pagination
+            defaultCurrent={1}
+            defaultPageSize={grid}
+            onChange={onPageChange}
+            pageSize={grid}
+            pageSizeOptions={OPTIONS.map((e) => `${e}`)}
+            total={visitations.length}
+            showSizeChanger={true}
+            onShowSizeChange={onShowSizeChange}
+          />
+        ) : null}
         <Row>
           {Array.from(Array(grid).keys()).map((idx) => (
             <Col span={GRID_TO_SPAN_WIDTH[grid]}>
