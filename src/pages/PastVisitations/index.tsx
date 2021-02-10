@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PADDING } from "src/utils/constants";
+import { PADDING } from "src/styles/styles";
 import { genFullName } from "src/utils/utils";
 import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format, getDate, getTime } from "date-fns";

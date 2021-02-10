@@ -1,8 +1,16 @@
-import { addMilliseconds, getDay, getHours, getMinutes } from "date-fns";
-import { CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
+import {
+  addMilliseconds,
+  format,
+  getDay,
+  getHours,
+  getMinutes,
+  startOfMonth,
+} from "date-fns";
+import { BaseCall, CallBlock, Weekday, WeeklySchedule } from "src/typings/Call";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
+import { addWeeks } from "@fullcalendar/react";
 
 const callSlotToDateString = (time: NodeCallSlot): string => {
   const date = new Date();
@@ -156,4 +164,40 @@ export const dayOfWeekAsString = (dayIndex: WeekdayMap): string => {
       "Saturday",
     ][dayIndex] || ""
   );
+};
+
+function mondayMorning(date: Date): Date {
+  const day = date.getDay();
+  date.setDate(date.getDate() - day + 1);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+export const callsToWeeklyData = (
+  calls: BaseCall[]
+): Record<string, number> => {
+  const now = new Date();
+  const thisMonday = mondayMorning(now);
+  const start = mondayMorning(startOfMonth(now));
+
+  const data: Record<string, number> = {};
+
+  let curr = start;
+  while (curr <= thisMonday) {
+    // get number of calls within time period
+    const next = addWeeks(curr, 1);
+    console.log(curr);
+    console.log(calls);
+    data[format(curr, "MMM dd")] = calls.filter(
+      (call) =>
+        new Date(call.scheduledEndTime) >= curr &&
+        new Date(call.scheduledEndTime) < next
+    ).length;
+
+    curr = next;
+  }
+
+  console.log(data);
+
+  return data;
 };

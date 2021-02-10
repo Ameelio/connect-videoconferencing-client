@@ -33,7 +33,6 @@ interface Props {
 }
 
 const PDFDownloadButton: React.FC<Props> = React.memo(({ calls, facility }) => {
-  console.log(calls);
   if (!calls) return <div />;
   return (
     <PDFDownloadLink

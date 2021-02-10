@@ -1,13 +1,13 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import LineChart from "src/components/charts/LineChart";
 import BarChart from "src/components/charts/BarChart";
-import { Statistic, Row, Col, Layout, Button } from "antd";
+import { Row, Col, Layout, Button } from "antd";
 import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
 } from "@ant-design/icons";
-import { WRAPPER_STYLE } from "src/utils/constants";
+import { BASE_CHART_COLORS, WRAPPER_STYLE } from "src/styles/styles";
 import {
   getAllCallsInfo,
   selectAllCalls,
@@ -19,6 +19,10 @@ import { fetchCalls } from "src/redux/modules/call";
 import PDFDownloadButton from "./PDFDownloadButton";
 import { LiveCall } from "src/typings/Call";
 import { onlyUnique } from "src/utils/utils";
+import MetricCard from "./MetricCard";
+import { format, getMonth } from "date-fns";
+import _ from "lodash";
+import { callsToWeeklyData } from "src/utils/Call";
 
 const { Content } = Layout;
 
@@ -40,32 +44,46 @@ function Dashboard({
   calls,
   numInmates,
 }: PropsFromRedux): ReactElement {
+  const [ratingsCount, setRatingsCount] = useState<number[]>();
+  const [callVolume, setCallVolume] = useState<Record<string, number>>();
+
+  useEffect(() => {
+    const groups = _.groupBy(
+      calls.filter((call) => !!call.rating),
+      (call) => call.rating
+    );
+    const sortedKeys = _.keys(groups).sort();
+    setRatingsCount(sortedKeys.map((key) => groups[key].length));
+    setCallVolume(callsToWeeklyData(calls));
+  }, [calls]);
+
+  if (!ratingsCount || !callVolume) return <div />;
+
   return (
     <Content style={WRAPPER_STYLE}>
       <Row gutter={8}>
         <Col span={8} className="bg-white" style={WRAPPER_STYLE}>
-          <Statistic
+          <MetricCard
             title="Average Rating"
-            value={
-              calls
-                .filter((call) => call.rating)
-                .reduce((prev, curr) => prev + curr.rating, 0) /
+            value={(
+              calls.reduce((prev, curr) => prev + curr.rating || 0, 0) /
               calls.filter((call) => call.status === "ended").length
-            }
+            ).toFixed(1)}
             prefix={<StarOutlined />}
             suffix={`/5.0`}
           />
         </Col>
         <Col span={8} className="bg-white" style={WRAPPER_STYLE}>
-          <Statistic
+          <MetricCard
             title="Live Video Calls"
             value={calls.filter((call) => call.status === "live").length}
             prefix={<VideoCameraOutlined />}
+            suffix="calls"
           />
         </Col>
         <Col span={8} className="bg-white" style={WRAPPER_STYLE}>
-          <Statistic
-            title="Video Usage"
+          <MetricCard
+            title="Facility Video Usage"
             value={
               (calls.map((call) => call.connection.inmateId).filter(onlyUnique)
                 .length *
@@ -78,14 +96,24 @@ function Dashboard({
         </Col>
       </Row>
       <PDFDownloadButton calls={calls} facility={facility} />
-      <Row className="d-flex flex-row">
-        {/* <Container rounded fluid> */}
-        <LineChart />
-        {/* </Container> */}
-
-        {/* <Container rounded fluid> */}
-        <BarChart />
-        {/* </Container> */}
+      <Row>
+        <Col span={12}>
+          <LineChart
+            title="Calls"
+            label="# calls"
+            labels={Object.keys(callVolume)}
+            data={Object.values(callVolume)}
+          />
+        </Col>
+        <Col span={12}>
+          <BarChart
+            title={`Ratings Breakdown ${format(new Date(), "MMMM")}`}
+            data={ratingsCount}
+            backgroundColor={BASE_CHART_COLORS}
+            hoverBackgroundColor={BASE_CHART_COLORS}
+            labels={["Terrible", "Poor", "Okay", "Good", "Amazing"]}
+          />
+        </Col>
       </Row>
     </Content>
   );

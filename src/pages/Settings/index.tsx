@@ -3,12 +3,8 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { TimePicker, Layout, Row, Col, Space, Button, Typography } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
-import {
-  WRAPPER_STYLE,
-  WeekdayMap,
-  WEEKDAYS,
-  DEFAULT_DURATION_MS,
-} from "src/utils/constants";
+import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import { PADDING } from "src/utils/constants";
+import { PADDING } from "src/styles/styles";
 import {
   getAllConnectionsInfo,
   selectConnectionRequests,

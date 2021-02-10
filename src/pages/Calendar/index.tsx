@@ -12,22 +12,6 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function mondayMorning(): Date {
-  const now = new Date();
-  const day = now.getDay();
-  now.setDate(now.getDate() - day + 1);
-  now.setHours(0, 0, 0, 0);
-  return now;
-}
-
-function fridayEvening(): Date {
-  const now = new Date();
-  const day = now.getDay();
-  now.setDate(now.getDate() - day + 5);
-  now.setHours(23, 59, 59, 0);
-  return now;
-}
-
 const UnconnectedKioskCalendarContainer: React.FC<PropsFromRedux> = ({
   visitations,
 }) => {

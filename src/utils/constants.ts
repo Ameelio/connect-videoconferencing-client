@@ -54,9 +54,6 @@ export enum WeekdayMap {
   Saturday = 6,
 }
 
-export const PADDING = 24;
-export const WRAPPER_STYLE = { padding: PADDING, paddingTop: 0 };
-
 export const ROUTES: Route[] = [
   { path: "/login", component: CalendarPage, label: "Login" },
   { path: "/calendar", component: CalendarPage, label: "Page" },

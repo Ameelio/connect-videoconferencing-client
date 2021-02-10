@@ -2,19 +2,11 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { fetchCalls, fetchRecording } from "src/redux/modules/call";
+import { fetchRecording } from "src/redux/modules/call";
 import { getCallInfo } from "src/redux/selectors";
-import {
-  Breadcrumb,
-  Button,
-  Descriptions,
-  Layout,
-  PageHeader,
-  Row,
-  Space,
-} from "antd";
+import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
-import { WRAPPER_STYLE } from "src/utils/constants";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
 import { genFullName } from "src/utils/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";

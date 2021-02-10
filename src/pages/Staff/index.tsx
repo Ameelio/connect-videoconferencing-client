@@ -3,13 +3,20 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { updateStaff } from "src/redux/modules/staff";
-import { PADDING, STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
-import { Table, Tag, Space, Layout, Avatar, Divider } from "antd";
+import { STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
+import { PADDING } from "src/styles/styles";
+import {
+  Table,
+  Tag,
+  Space,
+  Layout,
+  Avatar,
+  Divider,
+  Modal,
+  Button,
+  Switch,
+} from "antd";
 import { selectAllStaff } from "src/redux/selectors";
-import { Image } from "antd";
-import { Modal, Button } from "antd";
-import { Switch } from "antd";
-import { SwitchChangeEventHandler } from "antd/lib/switch";
 import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 

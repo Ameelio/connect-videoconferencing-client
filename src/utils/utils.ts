@@ -1,9 +1,7 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { NodeCallSlot } from "src/typings/Facility";
-import { STAFF_PERMISSION_OPTIONS, WeekdayMap } from "./constants";
-import { CallBlock, CallFilters, Visitation, Weekday } from "src/typings/Call";
+import { CallFilters, Visitation } from "src/typings/Call";
 import _ from "lodash";
 import { notification, message } from "antd";
 

@@ -7,8 +7,8 @@ import {
   CALL_ALERTS,
   GRID_TO_SPAN_WIDTH,
   GRID_TO_VH_HEIGHT,
-  WRAPPER_STYLE,
 } from "src/utils/constants";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
 import {
