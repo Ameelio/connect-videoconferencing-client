@@ -4,23 +4,25 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import camelcaseKeys from "camelcase-keys";
 import { AmeelioNode } from "src/typings/Node";
 import { UI } from "src/utils";
 
 export const fetchNodes = createAsyncThunk("node/fetchNodes", async () => {
-  const body = await fetchAuthenticated(`/subnodes`, {});
+  console.log("before fetchnodes");
+  const body = await fetchAuthenticated(`/subnodes`, {
+    method: "POST",
+    body: JSON.stringify({
+      recursive: true,
+    }),
+  });
 
   if (body.status !== 200) {
     throw body;
   }
 
-  const nodes = ((body.data as Record<string, unknown>)
-    .subnodes as Object[]).map((inmate) =>
-    camelcaseKeys(inmate)
-  ) as AmeelioNode[];
+  const nodes = (body.data as Record<string, unknown>).subnodes;
 
-  return nodes;
+  return [nodes] as AmeelioNode[];
 });
 
 export const nodesAdapter = createEntityAdapter<AmeelioNode>();

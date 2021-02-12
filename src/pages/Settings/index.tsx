@@ -10,6 +10,7 @@ import {
   Button,
   Typography,
   PageHeader,
+  Tree,
 } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
@@ -25,6 +26,8 @@ import {
 import { cloneObject } from "src/utils/utils";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
+import { selectAllNodes } from "src/redux/selectors";
+import { DataNode } from "antd/lib/tree";
 
 const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
@@ -32,6 +35,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   facility: state.facilities.selected,
+  nodes: selectAllNodes(state),
 });
 const mapDispatchToProps = { updateCallTimes };
 
@@ -43,6 +47,7 @@ type Tab = "setting" | "facility";
 
 function SettingsContainer({
   facility,
+  nodes,
   updateCallTimes,
 }: PropsFromRedux): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
@@ -137,18 +142,27 @@ function SettingsContainer({
     <Content>
       <PageHeader title="Settings" />
       <div style={WRAPPER_STYLE}>
-        <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
-          <TabPane tab="General Settings" key="setting"></TabPane>
-          {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
-        <TabPane tab="Call Hours" key="facility"></TabPane> */}
-        </Tabs>
         <Content className="main-content-container">
-          <Space direction="vertical">
-            {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
-            <Button type="primary" block onClick={handleSubmission}>
-              Save Changes
-            </Button>
-          </Space>
+          <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+            <TabPane tab="General Settings" key="setting">
+              <Space direction="vertical">
+                {WEEKDAYS.map((weekday) =>
+                  renderItem(weekday, ranges[weekday])
+                )}
+                <Button type="primary" block onClick={handleSubmission}>
+                  Save Changes
+                </Button>
+              </Space>
+            </TabPane>
+            <TabPane tab="Facility" key="facility">
+              <Tree
+                treeData={nodes as DataNode[]}
+                defaultExpandAll={true}
+                draggable={true}
+              />
+            </TabPane>
+            {/* <TabPane tab="Call Hours" key="facility"></TabPane> */}
+          </Tabs>
         </Content>
       </div>
     </Content>
