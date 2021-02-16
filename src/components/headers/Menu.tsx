@@ -1,12 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import {
-  Layout,
-  Menu as AntdMenu,
-  Select,
-  Avatar,
-  Space,
-  Dropdown,
-} from "antd";
+import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -22,8 +15,6 @@ import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
-
-const { Option } = Select;
 
 const { Sider } = Layout;
 const { SubMenu } = AntdMenu;

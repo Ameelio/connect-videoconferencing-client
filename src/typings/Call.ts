@@ -63,6 +63,7 @@ export interface BaseCall {
   startTime?: number;
   liveStatus?: string;
   recordingUrl?: string;
+  messages?: CallMessage[];
   rating: number;
   status: CallStatus;
 }
@@ -80,4 +81,15 @@ export interface LiveCall extends Call {
 
 export interface RecordedCall extends LiveCall {
   endTime: number;
+}
+
+export interface CallParticipant {
+  type: "monitor" | "inmate" | "user";
+  id: number;
+}
+
+export interface CallMessage {
+  content: string;
+  from: CallParticipant;
+  timestamp: string;
 }

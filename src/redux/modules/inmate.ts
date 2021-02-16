@@ -26,7 +26,7 @@ export const updateInmate = createAsyncThunk(
   "inmate/updateInmate",
   async (inmate: Inmate) => {
     await fetchAuthenticated(
-      `inmate/${inmate.id}`,
+      `/inmate/${inmate.id}`,
       {
         method: "PUT",
         body: JSON.stringify({

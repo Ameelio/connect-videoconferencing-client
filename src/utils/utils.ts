@@ -2,8 +2,6 @@ import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
 import { CallFilters, Call } from "src/typings/Call";
-import _ from "lodash";
-import { notification, message } from "antd";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";

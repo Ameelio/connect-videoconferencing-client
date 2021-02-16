@@ -4,7 +4,7 @@ import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { updateStaff } from "src/redux/modules/staff";
 import { STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
-import { PADDING, WRAPPER_STYLE } from "src/styles/styles";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import {
   Table,
   Tag,
@@ -52,11 +52,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
     allowRestructure: false,
     allowMonitor: false,
   });
-
-  // create d
-  const showModal = (record: Staff) => {
-    setSelected(record);
-  };
 
   const handleOk = () => {
     setConfirmLoading(true);
