@@ -31,7 +31,6 @@ import { endOfMonth } from "date-fns";
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
-  pathname: state.router.location,
 });
 const mapDispatchToProps = {
   logout,
@@ -55,7 +54,6 @@ const { Header } = Layout;
 function App({
   session,
   selected,
-  pathname,
   selectActiveFacility,
   logout,
   fetchFacilities,
@@ -69,7 +67,7 @@ function App({
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
-    isAuthenticated: session.authInfo.apiToken !== "", // TODO: improve this later
+    isAuthenticated: session.user.token !== "", // TODO: improve this later
     authenticationPath: "/login",
   };
 
@@ -123,7 +121,8 @@ function App({
       <Layout style={{ minHeight: "100vh" }}>
         {selected && (
           <Menu
-            session={session}
+            user={session.user}
+            isLoggedIn={session.isLoggedIn}
             logout={logout}
             selected={selected}
             facilities={facilities}

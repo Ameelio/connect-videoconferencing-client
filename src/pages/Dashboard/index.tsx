@@ -67,9 +67,11 @@ function Dashboard({
     <Content>
       <PageHeader
         title="Dashboard"
-        extra={[
-          <PDFDownloadButton calls={callsToday(calls)} facility={facility} />,
-        ]}
+        extra={
+          [
+            // <PDFDownloadButton calls={callsToday(calls)} facility={facility} />,
+          ]
+        }
       />
       <Space
         direction="vertical"

@@ -56,9 +56,7 @@ const VideoChat: React.FC<Props> = React.memo(
     unmuteCall,
     isAudioOn,
   }) => {
-    const token = useSelector(
-      (state: RootState) => state.session.authInfo.apiToken
-    );
+    const token = useSelector((state: RootState) => state.session.user.token);
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);

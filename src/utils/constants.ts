@@ -33,8 +33,8 @@ export enum LoadingTypes {
 
 export const UNAUTHENTICATED_USER_ID = -999;
 
-export const TOKEN_KEY = "apiToken";
-export const REMEMBER_TOKEN_KEY = "rememberToken";
+export const TOKEN_KEY = "token";
+export const REMEMBER_TOKEN_KEY = "remember";
 
 export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
   allowRead: "Can view",

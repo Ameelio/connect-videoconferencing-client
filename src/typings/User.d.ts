@@ -37,24 +37,3 @@ interface Staff extends BasePersona {
   role: StaffRole;
   email: string;
 }
-
-interface UserLoginInfo {
-  email: string;
-  password: string;
-  remember?: boolean;
-}
-
-interface User extends BasePersona {
-  email: string;
-}
-
-interface AuthInfo {
-  apiToken: string;
-  rememberToken: string;
-}
-
-interface SessionState {
-  isLoggedIn: boolean;
-  authInfo: AuthInfo;
-  user: User;
-}

@@ -1,4 +1,10 @@
+import { User } from "src/typings/Session";
 import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
+
+interface SessionState {
+  isLoggedIn: boolean;
+  user: User;
+}
 
 // Constants & Shapes
 const SET_SESSION = "user/SET_SESSION";
@@ -29,12 +35,13 @@ export const setSession = (userState: SessionState): UserActionTypes => {
 
 // Reducer
 const initialState: SessionState = {
-  authInfo: { apiToken: "", rememberToken: "" },
   user: {
     id: UNAUTHENTICATED_USER_ID,
     firstName: "",
     lastName: "",
     email: "",
+    token: "",
+    remember: "",
   },
   isLoggedIn: false,
 };
@@ -50,12 +57,13 @@ export function sessionReducer(
       //   sessionStorage.clear();
       return {
         ...state,
-        authInfo: { apiToken: "", rememberToken: "" },
         user: {
           id: UNAUTHENTICATED_USER_ID,
           firstName: "",
           lastName: "",
           email: "",
+          token: "",
+          remember: "",
         },
         isLoggedIn: false,
       };

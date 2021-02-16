@@ -27,6 +27,7 @@ import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
+import { User } from "src/typings/Session";
 
 const { Option } = Select;
 
@@ -34,7 +35,8 @@ const { Sider } = Layout;
 const { SubMenu } = AntdMenu;
 
 interface Props {
-  session: SessionState;
+  isLoggedIn: boolean;
+  user: User;
   selected: SelectedFacility;
   facilities: Facility[];
   logout: () => void;
@@ -52,7 +54,8 @@ const FacilityAvatar = ({ facility }: { facility: Facility }): JSX.Element => (
 );
 
 export default function Menu({
-  session,
+  isLoggedIn,
+  user,
   selected,
   facilities,
   select,
@@ -60,8 +63,7 @@ export default function Menu({
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
-  console.log(session);
-  if (!session.isLoggedIn) return <div />;
+  if (!isLoggedIn) return <div />;
 
   const headerMenu = (
     <AntdMenu>
@@ -97,9 +99,7 @@ export default function Menu({
                 <span className="menu-header-facility">{selected.name}</span>
                 <DownOutlined style={{ color: "white" }} />
               </Space>
-              <span className="menu-header-name">
-                {genFullName(session.user)}
-              </span>
+              <span className="menu-header-name">{genFullName(user)}</span>
             </Space>
           )}
         </Space>

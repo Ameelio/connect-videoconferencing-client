@@ -1,9 +1,11 @@
-import { API_URL, fetchAuthenticated, fetchTimeout } from "./Common";
+import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
 import { setSession } from "src/redux/modules/user";
 import { Store } from "src/redux";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 import { fetchFacilities } from "src/redux/modules/facility";
+import camelcaseKeys from "camelcase-keys";
+import { User, UserCredentials } from "src/typings/Session";
 
 interface RawUser {
   id: number;
@@ -25,40 +27,26 @@ interface RawUser {
   referral_link: string;
 }
 
-function cleanUser(user: RawUser): User {
-  return {
-    id: user.id,
-    firstName: user.first_name,
-    lastName: user.last_name,
-    email: user.email,
-    profileImgPath: user.profile_img_path,
-  };
-}
-
 async function initializeSession(body: any) {
-  console.log("initiaalizing session");
-  const user = cleanUser(body.data as RawUser);
-  const { token: apiToken, remember: rememberToken } = body.data;
-  console.log("setting session");
+  const user = camelcaseKeys(body.data) as User;
   Store.dispatch(
     setSession({
       user,
-      authInfo: { rememberToken, apiToken },
       isLoggedIn: true,
     })
   );
 
   Store.dispatch(fetchFacilities);
   // TO
-  localStorage.setItem(TOKEN_KEY, apiToken);
-  localStorage.setItem(REMEMBER_TOKEN_KEY, rememberToken);
+  localStorage.setItem(TOKEN_KEY, user.token);
+  localStorage.setItem(REMEMBER_TOKEN_KEY, user.remember);
   // loadData();
 }
 
 export async function loginWithToken(): Promise<void> {
   try {
-    const rememberToken = await localStorage.getItem(REMEMBER_TOKEN_KEY);
-    if (!rememberToken) {
+    const remember = await localStorage.getItem(REMEMBER_TOKEN_KEY);
+    if (!remember) {
       throw Error("Cannot load token");
     }
     const response = await fetchTimeout(
@@ -70,7 +58,7 @@ export async function loginWithToken(): Promise<void> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          remember: rememberToken,
+          remember: remember,
         }),
       }
     );
@@ -82,7 +70,9 @@ export async function loginWithToken(): Promise<void> {
   }
 }
 
-export async function loginWithCredentials(cred: UserLoginInfo): Promise<void> {
+export async function loginWithCredentials(
+  cred: UserCredentials
+): Promise<void> {
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
