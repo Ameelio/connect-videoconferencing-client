@@ -7,10 +7,10 @@ import { connect, ConnectedProps, useSelector } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
-import { loginWithToken } from "./api/User";
+import { loginWithToken } from "./api/Session";
 import Menu from "./components/headers/Menu";
 import { Layout } from "antd";
-import { logout } from "src/redux/modules/user";
+import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
 import { selectAllFacilities } from "./redux/selectors";
@@ -31,6 +31,7 @@ import { endOfMonth } from "date-fns";
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
+  pathname: state.router.location.pathname,
 });
 const mapDispatchToProps = {
   logout,
@@ -43,17 +44,19 @@ const mapDispatchToProps = {
   fetchNodes,
   fetchKiosks,
   fetchCalls,
+  setRedirectUrl,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const { Header } = Layout;
+const LOGIN_PATH = "/login";
 
 function App({
   session,
   selected,
+  pathname,
   selectActiveFacility,
   logout,
   fetchFacilities,
@@ -64,11 +67,12 @@ function App({
   fetchNodes,
   fetchKiosks,
   fetchCalls,
+  setRedirectUrl,
   history,
 }: PropsFromRedux & { history: History }) {
   const defaultProtectedRouteProps: ProtectedRouteProps = {
-    isAuthenticated: session.user.token !== "", // TODO: improve this later
-    authenticationPath: "/login",
+    isAuthenticated: session.isLoggedIn,
+    authenticationPath: LOGIN_PATH,
   };
 
   const facilities = useSelector(selectAllFacilities);
@@ -87,6 +91,11 @@ function App({
   useEffect(() => {
     if (session.isLoggedIn) fetchFacilities();
   }, [session.isLoggedIn, fetchFacilities]);
+
+  useEffect(() => {
+    if (!session.isLoggedIn && pathname !== LOGIN_PATH)
+      setRedirectUrl(pathname);
+  }, [setRedirectUrl, session.isLoggedIn, pathname]);
 
   useEffect(() => {
     if (selected) {
@@ -131,7 +140,7 @@ function App({
         )}
         <Layout>
           <Switch>
-            <Route exact path="/login" component={Login}></Route>
+            <Route exact path={LOGIN_PATH} component={Login}></Route>
             {ROUTES.map((route) => (
               <ProtectedRoute
                 exact

@@ -6,7 +6,7 @@ import { fetchRecording } from "src/redux/modules/call";
 import { getCallInfo } from "src/redux/selectors";
 import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
-import { WRAPPER_STYLE } from "src/styles/styles";
+import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
 import { genFullName } from "src/utils/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
@@ -62,7 +62,21 @@ function RecordingBase({
   return (
     <Content style={WRAPPER_STYLE}>
       {/* TODO add more Breadcrumb items once we fetch all nodes for a facility */}
-      <Space direction="vertical" align="center" size="large">
+      <Space
+        direction="vertical"
+        align="center"
+        size="large"
+        style={FULL_WIDTH}
+      >
+        <ReactPlayer
+          autoplay={true}
+          muted={true}
+          controls={true}
+          url={
+            call.recordingUrl ||
+            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+          }
+        />
         <PageHeader
           ghost={false}
           onBack={() => window.history.back()}
@@ -119,15 +133,6 @@ function RecordingBase({
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>
-        <ReactPlayer
-          autoplay={true}
-          muted={true}
-          controls={true}
-          url={
-            call.recordingUrl ||
-            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-          }
-        />
       </Space>
     </Content>
   );

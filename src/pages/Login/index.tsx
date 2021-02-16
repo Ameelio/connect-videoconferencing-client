@@ -11,7 +11,7 @@ import { Input, Layout, Button, Form, Checkbox } from "antd";
 
 import "./index.css";
 import { Redirect } from "react-router";
-import { loginWithCredentials } from "src/api/User";
+import { loginWithCredentials } from "src/api/Session";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { UI } from "src/utils";
 
@@ -19,7 +19,6 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
-  facility: state.facilities.selected,
 });
 
 const connector = connect(mapStateToProps);
@@ -28,17 +27,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const TOAST_KEY = "login";
 
-function UnconnectedLoginContainer({
-  session,
-  facility,
-}: PropsFromRedux): ReactElement {
+function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
   if (session.isLoggedIn) {
     UI.showToast(
       TOAST_KEY,
       `Welcome back, ${session.user.firstName}!`,
       "success"
     );
-    return <Redirect to="/" />;
+    return <Redirect to={session.redirectUrl} />;
   }
 
   const onFinish = async (values: any) => {
