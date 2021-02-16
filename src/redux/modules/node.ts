@@ -8,7 +8,6 @@ import { AmeelioNode } from "src/typings/Node";
 import { UI } from "src/utils";
 
 export const fetchNodes = createAsyncThunk("node/fetchNodes", async () => {
-  console.log("before fetchnodes");
   const body = await fetchAuthenticated(`/subnodes`, {
     method: "POST",
     body: JSON.stringify({
