@@ -92,7 +92,11 @@ function Dashboard({
             <Col span={8} className="bg-white">
               <MetricCard
                 title="Calls This Week"
-                value={Object.values(callVolume)[-1]}
+                value={
+                  Object.values(callVolume)[
+                    Object.values(callVolume).length - 1
+                  ]
+                }
                 prefix={<StarOutlined />}
                 suffix={`calls`}
               />
@@ -100,7 +104,13 @@ function Dashboard({
             <Col span={8} className="bg-white">
               <MetricCard
                 title="Live Video Calls"
-                value={calls.filter((call) => call.status === "live").length}
+                value={
+                  calls.filter(
+                    (call) =>
+                      call.status === "live" ||
+                      call.status === "missing-monitor"
+                  ).length
+                }
                 prefix={<VideoCameraOutlined />}
                 suffix="calls"
               />
