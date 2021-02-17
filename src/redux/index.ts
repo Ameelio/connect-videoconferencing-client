@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { staffSlice } from "./modules/staff";
 import { inmatesSlice } from "./modules/inmate";
-import { sessionReducer } from "./modules/user";
+import { sessionReducer } from "./modules/session";
 import { connectionsSlice } from "./modules/connections";
 import { configureStore } from "@reduxjs/toolkit";
 import { contactsSlice } from "./modules/contact";

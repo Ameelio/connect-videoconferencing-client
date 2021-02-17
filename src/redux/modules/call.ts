@@ -6,8 +6,13 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanCall, RawCall } from "../helpers";
-import { createCallOptionsParam } from "src/utils/utils";
-import { BaseCall, CallFilters, RecordedCall } from "src/typings/Call";
+import { createCallOptionsParam } from "src/utils/Common";
+import {
+  BaseCall,
+  CallFilters,
+  CallMessage,
+  RecordedCall,
+} from "src/typings/Call";
 
 export const callsAdapter = createEntityAdapter<BaseCall>();
 
@@ -29,15 +34,17 @@ export const fetchCalls = createAsyncThunk(
 );
 
 export const fetchRecording = createAsyncThunk(
-  "call/fetchRecording",
+  "/call/fetchRecording",
   async (callId: number) => {
-    const body = await fetchAuthenticated(`/call/recording/${callId}`);
+    const body = await fetchAuthenticated(`/call/${callId}`);
     if (body.status !== 200) {
       throw body;
     }
     const recordingUrl = (body.data as Record<string, unknown>).url as string;
+    const messages = (body.data as Record<string, unknown>)
+      .messages as CallMessage[];
 
-    return { callId, recordingUrl };
+    return { callId, recordingUrl, messages };
   }
 );
 
@@ -67,7 +74,10 @@ export const callsSlice = createSlice({
     builder.addCase(fetchRecording.fulfilled, (state, action) =>
       callsAdapter.updateOne(state, {
         id: action.payload.callId,
-        changes: { recordingUrl: action.payload.recordingUrl },
+        changes: {
+          recordingUrl: action.payload.recordingUrl,
+          messages: action.payload.messages,
+        },
       })
     );
     builder.addCase(fetchRecording.rejected, (state, action) => ({

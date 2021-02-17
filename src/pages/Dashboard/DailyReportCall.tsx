@@ -2,7 +2,7 @@ import React from "react";
 import { Text, Document, Page, View, StyleSheet } from "@react-pdf/renderer";
 import SectionHeader from "src/components/pdf/SectionHeader";
 import { format } from "date-fns";
-import { genFullName } from "src/utils/utils";
+import { genFullName } from "src/utils/Common";
 import { Call } from "src/typings/Call";
 
 interface Props {

@@ -4,8 +4,7 @@ import {
   createAsyncThunk,
   EntityState,
 } from "@reduxjs/toolkit";
-import { API_URL, fetchAuthenticated } from "src/api/Common";
-import url from "url";
+import { fetchAuthenticated } from "src/api/Common";
 import camelcaseKeys from "camelcase-keys";
 
 export const staffAdapter = createEntityAdapter<Staff>();
@@ -26,16 +25,16 @@ export const fetchStaff = createAsyncThunk("staff/fetchStaff", async () => {
 export const updateStaff = createAsyncThunk(
   "staff/updateStaff",
   async (args: { userId: number; permissions: Permission[] }) => {
-    const body = await fetchAuthenticated(
-      url.resolve(API_URL, `node/1/admin`),
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user_id: args.userId,
-          permissions: args.permissions,
-        }),
-      }
-    );
+    const body = await fetchAuthenticated("/admin", {
+      method: "POST",
+      body: JSON.stringify({
+        user_id: args.userId,
+        permissions: args.permissions,
+      }),
+    });
+
+    if (body.status !== 200)
+      throw new Error("Failed to update staff member information");
 
     //TODO update this with API return when it's actually supported
     // const staff = camelcaseKeys((body.data as Record<string, unknown>)
@@ -48,17 +47,14 @@ export const updateStaff = createAsyncThunk(
 export const createStaff = createAsyncThunk(
   "staff/createStaff",
   async (args: { email: string; role: string; permissions: Permission[] }) => {
-    const body = await fetchAuthenticated(
-      url.resolve(API_URL, `node/1/admin`),
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: args.email,
-          role: args.role,
-          permissions: args.permissions,
-        }),
-      }
-    );
+    const body = await fetchAuthenticated(`/admin`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: args.email,
+        role: args.role,
+        permissions: args.permissions,
+      }),
+    });
 
     //TODO update this with API return when it's actually supported
     const staff = camelcaseKeys(

@@ -9,12 +9,11 @@ import {
   Space,
   Button,
   Typography,
-  PageHeader,
   Tree,
 } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
-import { WRAPPER_STYLE } from "src/styles/styles";
+import { WHITE_BACKGROUND_LAYOUT, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
@@ -23,9 +22,10 @@ import {
   mapCallSlotsToTimeBlock,
   mapCallBlockToCallSlots,
 } from "src/utils/Call";
-import { cloneObject } from "src/utils/utils";
+import { cloneObject } from "src/utils/Common";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
+import Header from "src/components/Header/Header";
 import { selectAllNodes } from "src/redux/selectors";
 import { DataNode } from "antd/lib/tree";
 
@@ -140,9 +140,12 @@ function SettingsContainer({
 
   return (
     <Content>
-      <PageHeader title="Settings" />
+      <Header
+        title="Settings"
+        subtitle="Adjust the call hours, facility information, and facility kiosk directory as needed."
+      />
       <div style={WRAPPER_STYLE}>
-        <Content className="main-content-container">
+        <Content style={WHITE_BACKGROUND_LAYOUT}>
           <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
             <TabPane tab="General Settings" key="setting">
               <Space direction="vertical">

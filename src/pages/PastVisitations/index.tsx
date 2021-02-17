@@ -2,24 +2,24 @@ import React, { useState, useEffect } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { FULL_WIDTH, PADDING, WRAPPER_STYLE } from "src/styles/styles";
-import { genFullName } from "src/utils/utils";
-import { getAllCallsInfo, selectAllCalls } from "src/redux/selectors";
-import { format, getDate, getTime } from "date-fns";
+import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
+import { genFullName } from "src/utils/Common";
+import { getCallsInfo, selectAllCalls } from "src/redux/selectors";
+import { format } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
-import _ from "lodash";
-import { Table, Space, Layout, Button, Tag, PageHeader } from "antd";
+import { Table, Space, Layout, Button, Tag } from "antd";
 import Search from "antd/lib/input/Search";
 import { push } from "connected-react-router";
 import { Connection } from "src/typings/Connection";
 import { CallStatus, RecordedCall } from "src/typings/Call";
+import Header from "src/components/Header/Header";
 
 const { Column } = Table;
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  logs: getAllCallsInfo(state, selectAllCalls(state)).filter(
+  logs: getCallsInfo(state, selectAllCalls(state)).filter(
     (x) => x.startTime && x.endTime
   ) as RecordedCall[],
   history: state.router,
@@ -42,7 +42,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
-  const [offset, setOffset] = useState(0);
+  const [offset] = useState(0);
   const [startDate, setStartDate] = useState<number>();
   const [endDate, setEndDate] = useState<number>();
   const [maxDuration, setMaxDuration] = useState<number>();
@@ -75,7 +75,10 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <Content>
-      <PageHeader title="Search for Calls" />
+      <Header
+        title="Search for Call Logs"
+        subtitle="Search by different parameters and retrieve recordings of past calls"
+      />
       <Space direction="vertical" style={{ ...WRAPPER_STYLE, ...FULL_WIDTH }}>
         <Search
           placeholder="Search by Name, Inmate ID, Facility, Pod ID, ..."

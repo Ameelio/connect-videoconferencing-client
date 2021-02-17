@@ -8,11 +8,12 @@ import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName } from "src/utils/utils";
+import { genFullName } from "src/utils/Common";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { RecordedCall } from "src/typings/Call";
+import { CallMessage, RecordedCall } from "src/typings/Call";
+import { MessageDisplay } from "./MessageDisplay";
 
-const { Content } = Layout;
+const { Content, Sider } = Layout;
 
 const mapStateToProps = (
   state: RootState,
@@ -35,16 +36,30 @@ function RecordingBase({
   fetchRecording,
 }: PropsFromRedux & RouteComponentProps<TParams>): ReactElement {
   const [callId] = useState(match.params.id);
+  const [chatCollapsed, setChatCollapsed] = useState(false);
+  const [recordingUrl, setRecordingUrl] = useState<string>();
+  const [messages, setMessages] = useState<CallMessage[]>([]);
 
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
   useEffect(() => {
-    if (call && call?.videoReady && !call.recordingUrl) {
-      fetchRecording(parseInt(callId));
+    // TODO what if data is not loaded
+    if (call && !call.recordingUrl) {
+      // TODO this can lead to infinite loops, add loaded flag to model
+      fetchRecording(call.id);
     }
-  }, [callId, call, fetchRecording]);
+  }, [call, fetchRecording]);
+
+  useEffect(() => {
+    if (call?.recordingUrl) {
+      setRecordingUrl(call.recordingUrl);
+    }
+    if (call?.messages) {
+      setMessages(call.messages);
+    }
+  }, [call, setRecordingUrl]);
 
   const routes = [
     {
@@ -60,9 +75,15 @@ function RecordingBase({
   if (!call) return <div />;
 
   return (
-    <Content style={WRAPPER_STYLE}>
-      {/* TODO add more Breadcrumb items once we fetch all nodes for a facility */}
-      <Space direction="vertical" align="center" size="large">
+    <Layout>
+      <Content style={WRAPPER_STYLE}>
+        <ReactPlayer
+          autoplay={true}
+          muted={true}
+          controls={true}
+          width="100%"
+          url={call.recordingUrl}
+        />
         <PageHeader
           ghost={false}
           onBack={() => window.history.back()}
@@ -75,10 +96,7 @@ function RecordingBase({
               download
               target={"_blank"}
               icon={<DownloadOutlined />}
-              href={
-                call.recordingUrl ||
-                "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-              }
+              href={recordingUrl}
             >
               Download
             </Button>,
@@ -119,17 +137,37 @@ function RecordingBase({
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>
-        <ReactPlayer
-          autoplay={true}
-          muted={true}
-          controls={true}
-          url={
-            call.recordingUrl ||
-            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-          }
-        />
-      </Space>
-    </Content>
+      </Content>
+      <Sider
+        theme="light"
+        style={{ height: "100vh", maxHeight: "100vh" }}
+        width={300}
+        collapsible
+        collapsed={chatCollapsed}
+        onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+      >
+        {!chatCollapsed && (
+          <div>
+            <PageHeader title="Chat" />{" "}
+            <div style={WRAPPER_STYLE}>
+              <Space
+                direction="vertical"
+                style={{
+                  overflowY: "scroll",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+              >
+                {messages.map((message) => (
+                  <MessageDisplay message={message} />
+                ))}
+              </Space>
+            </div>
+          </div>
+        )}
+      </Sider>
+    </Layout>
   );
 }
 

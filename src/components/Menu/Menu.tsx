@@ -1,35 +1,20 @@
 import React, { ReactElement, useState } from "react";
-import {
-  Layout,
-  Menu as AntdMenu,
-  Row,
-  Col,
-  Select,
-  Avatar,
-  Space,
-  Dropdown,
-} from "antd";
+import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
-  FileOutlined,
   TeamOutlined,
-  UserOutlined,
   SettingOutlined,
   UserAddOutlined,
   DownOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { RootState } from "src/redux";
-import { connect, ConnectedProps } from "react-redux";
-import { logout } from "src/redux/modules/user";
+import { logout } from "src/redux/modules/session";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
-import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
+import { genFullName, getInitials, generateBgColor } from "src/utils/Common";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
-
-const { Option } = Select;
 
 const { Sider } = Layout;
 const { SubMenu } = AntdMenu;

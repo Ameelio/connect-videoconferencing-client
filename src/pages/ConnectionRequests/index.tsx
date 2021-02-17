@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import { PADDING, WRAPPER_STYLE } from "src/styles/styles";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import {
-  getAllConnectionsInfo,
+  selectAllConnectionInfo,
   selectConnectionRequests,
 } from "src/redux/selectors";
-import { Table, Space, Layout, Avatar, Button, PageHeader } from "antd";
-import { genFullName } from "src/utils/utils";
+import { Table, Space, Layout, Avatar, Button } from "antd";
+import { genFullName } from "src/utils/Common";
 import { updateConnection } from "src/redux/modules/connections";
 import { BaseConnection, Connection } from "src/typings/Connection";
+import Header from "src/components/Header/Header";
 
 const { Column } = Table;
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
-  requests: getAllConnectionsInfo(state, selectConnectionRequests(state)),
+  requests: selectAllConnectionInfo(state, selectConnectionRequests(state)),
 });
 
 const mapDispatchToProps = { updateConnection };
@@ -38,7 +39,10 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <Content>
-      <PageHeader title="Connection Requests" />
+      <Header
+        title="Approval Requests"
+        subtitle="Review all connection requests between incarcerated people in your facility and their loved one on the outside."
+      />
       <Table dataSource={requests} style={WRAPPER_STYLE}>
         <Column
           title=""

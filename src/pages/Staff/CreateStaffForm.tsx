@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import { Form, Input, Button, Select, Switch } from "antd";
-import { UserOutlined, SendOutlined } from "@ant-design/icons";
+import { Form, Input, Select, Switch } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 import { STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
 
 const { Option } = Select;

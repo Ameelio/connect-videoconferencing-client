@@ -5,7 +5,7 @@ import {
   getMinutes,
   startOfMonth,
 } from "date-fns";
-import { BaseCall, CallBlock, Call, WeeklySchedule } from "src/typings/Call";
+import { CallBlock, Call, WeeklySchedule } from "src/typings/Call";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
@@ -21,7 +21,7 @@ const callSlotToDateString = (time: NodeCallSlot): string => {
 const calcEndCallSlot = (time: NodeCallSlot): string => {
   const date = new Date();
   // TODO fix this
-  const offset = date.getDay() - time.start.day;
+  // const offset = date.getDay() - time.start.day;
   //     date.setDate(date.getDate() + offset);
   //   date.setDate(time.start.day);
   date.setHours(time.start.hour);
@@ -169,13 +169,6 @@ function mondayMorning(date: Date): Date {
   const day = date.getDay();
   date.setDate(date.getDate() - day + 1);
   date.setHours(0, 0, 0, 0);
-  return date;
-}
-
-function sundayEvening(date: Date): Date {
-  const day = date.getDay();
-  date.setDate(date.getDate() - day + 7);
-  date.setHours(23, 59, 59, 0);
   return date;
 }
 

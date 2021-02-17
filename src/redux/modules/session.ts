@@ -4,21 +4,28 @@ import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
 interface SessionState {
   isLoggedIn: boolean;
   user: User;
+  redirectUrl: string;
 }
 
 // Constants & Shapes
 const SET_SESSION = "user/SET_SESSION";
+const SET_REDIRECT_URL = "user/SET_REDIRECT_URL";
 const LOGOUT = "user/LOGOUT";
 
 interface SetSessionAction {
   type: typeof SET_SESSION;
-  payload: SessionState;
+  payload: User;
 }
 interface LogoutAction {
   type: typeof LOGOUT;
 }
 
-type UserActionTypes = LogoutAction | SetSessionAction;
+interface SetRedirectUrl {
+  type: typeof SET_REDIRECT_URL;
+  payload: string;
+}
+
+type UserActionTypes = LogoutAction | SetSessionAction | SetRedirectUrl;
 
 export const logout = (): UserActionTypes => {
   return {
@@ -26,13 +33,19 @@ export const logout = (): UserActionTypes => {
   };
 };
 
-export const setSession = (userState: SessionState): UserActionTypes => {
+export const setSession = (user: User): UserActionTypes => {
   return {
     type: SET_SESSION,
-    payload: userState,
+    payload: user,
   };
 };
 
+export const setRedirectUrl = (url: string): UserActionTypes => {
+  return {
+    type: SET_REDIRECT_URL,
+    payload: url,
+  };
+};
 // Reducer
 const initialState: SessionState = {
   user: {
@@ -44,6 +57,7 @@ const initialState: SessionState = {
     remember: "",
   },
   isLoggedIn: false,
+  redirectUrl: "/",
 };
 
 export function sessionReducer(
@@ -52,7 +66,7 @@ export function sessionReducer(
 ): SessionState {
   switch (action.type) {
     case SET_SESSION:
-      return action.payload;
+      return { ...state, user: action.payload, isLoggedIn: true };
     case LOGOUT:
       //   sessionStorage.clear();
       return {
@@ -66,7 +80,10 @@ export function sessionReducer(
           remember: "",
         },
         isLoggedIn: false,
+        redirectUrl: "/",
       };
+    case SET_REDIRECT_URL:
+      return { ...state, redirectUrl: action.payload };
     default:
       return state;
   }

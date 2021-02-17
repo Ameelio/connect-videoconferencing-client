@@ -17,7 +17,7 @@ export const selectActiveFacility = createAsyncThunk(
   async (facility: Facility) => {
     // need to harcode the nodeId for initialization,
     const bodyCt = await fetchAuthenticated(
-      `node/${facility.nodeId}/times`,
+      `/node/${facility.nodeId}/times`,
       {},
       false
     );
@@ -37,7 +37,7 @@ export const fetchFacilities = createAsyncThunk(
   async () => {
     // TODO refactor this to use some APIServiceManager
     const fBody = await fetchAuthenticated(
-      `user/${Store.getState().session.user.id}/facilities`,
+      `/user/${Store.getState().session.user.id}/facilities`,
       {},
       false
     );

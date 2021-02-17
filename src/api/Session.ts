@@ -1,43 +1,17 @@
 import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
-import { setSession } from "src/redux/modules/user";
+import { setSession } from "src/redux/modules/session";
 import { Store } from "src/redux";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 import { fetchFacilities } from "src/redux/modules/facility";
 import camelcaseKeys from "camelcase-keys";
 import { User, UserCredentials } from "src/typings/Session";
 
-interface RawUser {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  addr_line_1: string;
-  addr_line_2: string;
-  city: string;
-  state: string;
-  postal: string;
-  credit: number;
-  coins: number;
-  profile_img_path: string;
-  phone: string;
-  referer: string;
-  country: string;
-  created_at: string;
-  referral_link: string;
-}
-
 async function initializeSession(body: any) {
   const user = camelcaseKeys(body.data) as User;
-  Store.dispatch(
-    setSession({
-      user,
-      isLoggedIn: true,
-    })
-  );
+  Store.dispatch(setSession(user));
 
   Store.dispatch(fetchFacilities);
-  // TO
   localStorage.setItem(TOKEN_KEY, user.token);
   localStorage.setItem(REMEMBER_TOKEN_KEY, user.remember);
   // loadData();

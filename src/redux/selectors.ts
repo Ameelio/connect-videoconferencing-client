@@ -1,8 +1,7 @@
 import { RootState } from ".";
 import { connectionsAdapter } from "./modules/connections";
 import { contactsAdapter } from "./modules/contact";
-import { inmatesActions, inmatesAdapter } from "./modules/inmate";
-import { createSelector } from "reselect";
+import { inmatesAdapter } from "./modules/inmate";
 import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
@@ -10,6 +9,7 @@ import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Call } from "src/typings/Call";
 import { nodesAdapter } from "./modules/node";
 import { kiosksAdapter } from "./modules/kiosk";
+import { notEmpty } from "src/utils/Common";
 
 // get selectors from entity adapter
 export const {
@@ -57,18 +57,12 @@ export const {
 const getConnectionEntities = (
   state: RootState,
   connection: BaseConnection
-): Connection => {
+) => {
   const inmate = selectInmateById(state, connection.inmateId);
   const contact = selectContactById(state, connection.userId);
   // TODO improve this
-  if (!inmate)
-    throw new Error(
-      `Failed to locate information for inmate ${connection.inmateId}`
-    );
-  if (!contact)
-    throw new Error(
-      `Failed to locate information for contact ${connection.userId}`
-    );
+  if (!inmate) return;
+  if (!contact) return;
   return { inmate, contact, ...connection };
 };
 
@@ -84,45 +78,75 @@ export const selectApprovedConnections = (state: RootState) => {
   );
 };
 
-export const getAllConnectionsInfo = (
+export const selectAllConnectionInfo = (
   state: RootState,
   requests: BaseConnection[]
 ): Connection[] => {
-  return requests.map((request) => getConnectionEntities(state, request));
+  return requests
+    .map((request) => getConnectionEntities(state, request))
+    .filter(notEmpty);
 };
 
 // Calls
-export const getCallEntities = (state: RootState, call: BaseCall): Call => {
+const getCallEntities = (
+  state: RootState,
+  call: BaseCall
+): Call | undefined => {
   const connection = selectConnectionById(state, call.connectionId);
-  if (!connection) throw new Error("Failed to locate connection information");
+  if (!connection) return;
 
   const kiosk = selectKioskById(state, call.kioskId);
-  if (!kiosk) throw new Error("Failed to locate kiosk information");
+  if (!kiosk) return;
 
   // TODO add error handling
   const detailedConnection = getConnectionEntities(state, connection);
+  if (!detailedConnection) return;
   return { ...call, connection: detailedConnection, kiosk };
 };
 
-export const getAllCallsInfo = (
+export const getCallsInfo = (
   state: RootState,
   visitations: BaseCall[]
 ): Call[] => {
-  return visitations.map((visitation) => getCallEntities(state, visitation));
+  return visitations
+    .map((visitation) => getCallEntities(state, visitation))
+    .filter(notEmpty);
 };
 
-export const getCallInfo = (state: RootState, callId: number): Call | null => {
+export const getCallInfo = (state: RootState, callId: number) => {
   const plainCall = selectCallById(state, callId);
-  if (!plainCall) return null;
+  if (!plainCall) return;
   return getCallEntities(state, plainCall) as Call;
 };
 
 export const selectLiveCalls = (state: RootState): Call[] => {
   const calls = selectAllCalls(state);
-  return getAllCallsInfo(
+  return getCallsInfo(
     state,
     calls.filter(
       (call) => call.status === "missing-monitor" || call.status === "live"
     )
   );
+};
+
+// Inmate
+
+export const selectInmateConnectionsById = (
+  state: RootState,
+  inmateId: number
+) => {
+  const inmate = selectInmateById(state, inmateId);
+  if (!inmate) return;
+  const connections = selectAllConnections(state);
+  return selectAllConnectionInfo(
+    state,
+    connections.filter((connection) => connection.inmateId === inmateId)
+  );
+};
+
+export const selectInmateCallsById = (state: RootState, inmateId: number) => {
+  const inmate = selectInmateById(state, inmateId);
+  if (!inmate) return;
+  const calls = selectAllCalls(state);
+  return calls.filter((call) => call.inmateId === inmateId);
 };
