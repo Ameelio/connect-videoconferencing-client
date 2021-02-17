@@ -8,7 +8,7 @@ import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName } from "src/utils/utils";
+import { genFullName } from "src/utils/Common";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { CallMessage, RecordedCall } from "src/typings/Call";
 import { MessageDisplay } from "./MessageDisplay";
@@ -73,8 +73,6 @@ function RecordingBase({
   ];
 
   if (!call) return <div />;
-
-  console.log(messages);
 
   return (
     <Layout>
@@ -148,23 +146,24 @@ function RecordingBase({
         collapsed={chatCollapsed}
         onCollapse={(collapsed) => setChatCollapsed(collapsed)}
       >
-        {!chatCollapsed && <PageHeader title="Chat" />}
-
         {!chatCollapsed && (
-          <div style={WRAPPER_STYLE}>
-            <Space
-              direction="vertical"
-              style={{
-                overflowY: "scroll",
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-              }}
-            >
-              {messages.map((message) => (
-                <MessageDisplay message={message} />
-              ))}
-            </Space>
+          <div>
+            <PageHeader title="Chat" />{" "}
+            <div style={WRAPPER_STYLE}>
+              <Space
+                direction="vertical"
+                style={{
+                  overflowY: "scroll",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+              >
+                {messages.map((message) => (
+                  <MessageDisplay message={message} />
+                ))}
+              </Space>
+            </div>
           </div>
         )}
       </Sider>

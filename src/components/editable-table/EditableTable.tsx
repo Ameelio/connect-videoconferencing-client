@@ -8,12 +8,14 @@ interface Props {
   originalData: Record<string, any>[];
   columns: TableColumn[];
   onSave: Function;
+  onViewItem: (id: number) => void;
 }
 
 export default function EditableTable({
   originalData,
   columns,
   onSave,
+  onViewItem,
 }: Props) {
   const [form] = Form.useForm();
   const [data, setData] = useState(originalData);
@@ -70,12 +72,20 @@ export default function EditableTable({
             </Popconfirm>
           </Space>
         ) : (
-          <Typography.Link
-            disabled={editingId !== null}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
+          <Space>
+            <Typography.Link
+              disabled={editingId !== null}
+              onClick={() => edit(record)}
+            >
+              Quick Edit
+            </Typography.Link>
+            <Typography.Link
+              disabled={editingId !== null}
+              onClick={() => onViewItem(record.id)}
+            >
+              View Item
+            </Typography.Link>
+          </Space>
         );
       },
     },

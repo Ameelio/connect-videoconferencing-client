@@ -1,19 +1,10 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import {
-  TimePicker,
-  Layout,
-  Row,
-  Col,
-  Space,
-  Button,
-  Typography,
-  PageHeader,
-} from "antd";
+import { TimePicker, Layout, Row, Col, Space, Button, Typography } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
-import { WRAPPER_STYLE } from "src/styles/styles";
+import { WHITE_BACKGROUND_LAYOUT, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
@@ -22,9 +13,10 @@ import {
   mapCallSlotsToTimeBlock,
   mapCallBlockToCallSlots,
 } from "src/utils/Call";
-import { cloneObject } from "src/utils/utils";
+import { cloneObject } from "src/utils/Common";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
+import Header from "src/components/Header/Header";
 
 const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
@@ -135,14 +127,17 @@ function SettingsContainer({
 
   return (
     <Content>
-      <PageHeader title="Settings" />
+      <Header
+        title="Settings"
+        subtitle="Adjust the call hours, facility information, and facility kiosk directory as needed."
+      />
       <div style={WRAPPER_STYLE}>
         <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
           <TabPane tab="General Settings" key="setting"></TabPane>
           {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
         <TabPane tab="Call Hours" key="facility"></TabPane> */}
         </Tabs>
-        <Content className="main-content-container">
+        <Content style={WHITE_BACKGROUND_LAYOUT}>
           <Space direction="vertical">
             {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
             <Button type="primary" block onClick={handleSubmission}>

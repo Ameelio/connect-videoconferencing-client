@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import LineChart from "src/components/charts/LineChart";
 import DonutChart from "src/components/charts/DonutChart";
-import { Row, Col, Layout, Space, PageHeader } from "antd";
+import { Row, Col, Layout, Space } from "antd";
 import {
   StarOutlined,
   VideoCameraOutlined,
@@ -13,7 +13,7 @@ import {
   WRAPPER_STYLE,
 } from "src/styles/styles";
 import {
-  getAllCallsInfo,
+  getCallsInfo,
   selectAllCalls,
   selectTotalInmates,
 } from "src/redux/selectors";
@@ -22,18 +22,19 @@ import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import PDFDownloadButton from "./PDFDownloadButton";
 import { LiveCall } from "src/typings/Call";
-import { onlyUnique } from "src/utils/utils";
+import { onlyUnique } from "src/utils/Common";
 import MetricCard from "./MetricCard";
 import { format } from "date-fns";
 import _ from "lodash";
 import { callsToday, callsToWeeklyData } from "src/utils/Call";
+import Header from "src/components/Header/Header";
 
 const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
   facility: state.facilities.selected,
-  calls: getAllCallsInfo(state, selectAllCalls(state)) as LiveCall[],
+  calls: getCallsInfo(state, selectAllCalls(state)) as LiveCall[],
   numInmates: selectTotalInmates(state),
 });
 
@@ -64,15 +65,12 @@ function Dashboard({
   if (!ratingsCount || !callVolume || !facility) return <div />;
 
   return (
-    <Content>
-      <PageHeader
+    <Layout>
+      <Header
         title="Dashboard"
-        extra={
-          [
-            // <PDFDownloadButton calls={callsToday(calls)} facility={facility} />,
-          ]
-        }
+        subtitle="Analyze your facility data and print the daily call schedule."
       />
+      {/* <PDFDownloadButton calls={callsToday(calls)} facility={facility} /> */}
       <Space
         direction="vertical"
         style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
@@ -130,7 +128,7 @@ function Dashboard({
           </Col>
         </Row>
       </Space>
-    </Content>
+    </Layout>
   );
 }
 

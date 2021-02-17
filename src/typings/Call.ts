@@ -49,13 +49,16 @@ export type CallStatus =
   | "missing-monitor"
   | "live"
   | "ended"
-  | "terminated";
+  | "terminated"
+  | "cancelled";
 
 export interface BaseCall {
   id: number;
   scheduledStartTime: number;
   scheduledEndTime: number;
   connectionId: number;
+  inmateId: number;
+  requesterId: number;
   kioskId: number;
   approved: boolean;
   videoReady: boolean;

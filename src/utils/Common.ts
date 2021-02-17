@@ -98,3 +98,9 @@ export function generateBgColor(label: string): string {
     Math.abs(hashCode(label) % BACKGROUND_COLORS.length)
   ];
 }
+
+export function notEmpty<TParam>(
+  value: TParam | null | undefined
+): value is TParam {
+  return value !== null && value !== undefined;
+}

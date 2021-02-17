@@ -15,11 +15,11 @@ import {
   Modal,
   Button,
   Switch,
-  PageHeader,
 } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
-import { cloneObject, genFullName, mapPermissionMap } from "src/utils/utils";
+import { cloneObject, genFullName, mapPermissionMap } from "src/utils/Common";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
+import Header from "src/components/Header/Header";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -80,14 +80,13 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
 
   return (
     <Content>
-      <PageHeader
+      <Header
         title="Staff"
-        extra={[
-          <Button type="primary" onClick={() => setModalType("create")}>
-            Add
-          </Button>,
-        ]}
+        subtitle="Manage your staff, edit their access permissions, and add new members."
       />
+      <Button type="primary" onClick={() => setModalType("create")}>
+        Add
+      </Button>
       <div style={WRAPPER_STYLE}>
         <Table dataSource={staff}>
           <Column

@@ -11,12 +11,13 @@ import {
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import { Layout, Row, Col, Space, Pagination, PageHeader } from "antd";
+import { Layout, Row, Col, Space, Pagination } from "antd";
 import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
 import { GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
+import Header from "src/components/Header/Header";
 
 const { Content } = Layout;
 
@@ -109,7 +110,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   return (
     <Content>
-      <PageHeader title="Live Calls" />
+      <Header
+        title="Live Calls"
+        subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
+      />
       <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
         {visitations.length > 0 && (
           <Pagination

@@ -8,7 +8,7 @@ import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/Session";
-import Menu from "./components/headers/Menu";
+import Menu from "./components/Menu/Menu";
 import { Layout } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { Footer } from "antd/lib/layout/layout";

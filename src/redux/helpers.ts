@@ -3,7 +3,6 @@ import { RootState } from "./index";
 import { Action } from "redux";
 import { BaseConnection } from "src/typings/Connection";
 import { BaseCall, CallStatus } from "src/typings/Call";
-import { Kiosk } from "src/typings/Kiosk";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -29,6 +28,8 @@ export interface RawCall {
   video_ready: boolean;
   status: CallStatus;
   rating: number;
+  requester_id: number;
+  inmate_id: number;
 }
 
 export function cleanCall(call: RawCall): BaseCall {
@@ -46,5 +47,7 @@ export function cleanCall(call: RawCall): BaseCall {
     videoReady: call.video_ready,
     status: call.status,
     rating: call.rating,
+    requesterId: call.requester_id,
+    inmateId: call.inmate_id,
   } as BaseCall;
 }

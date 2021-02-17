@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";

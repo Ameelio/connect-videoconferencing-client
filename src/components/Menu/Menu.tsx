@@ -12,7 +12,7 @@ import { useHistory } from "react-router-dom";
 import { logout } from "src/redux/modules/session";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
-import { genFullName, getInitials, generateBgColor } from "src/utils/utils";
+import { genFullName, getInitials, generateBgColor } from "src/utils/Common";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
 

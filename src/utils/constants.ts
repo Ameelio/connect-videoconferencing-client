@@ -3,7 +3,9 @@ import CalendarPage from "src/pages/Calendar";
 import RequestsPage from "src/pages/ConnectionRequests";
 import LogsPage from "src/pages/PastVisitations";
 import StaffPage from "src/pages/Staff";
-import InmatesPage from "src/pages/Inmate";
+import InmatesPage from "src/pages/Inmates";
+import InmateDetailPage from "src/pages/Inmate";
+
 import DashboardPage from "src/pages/Dashboard";
 import SettingsPage from "src//pages/Settings";
 import RecordingPage from "src/pages/Recording";
@@ -60,9 +62,14 @@ export const ROUTES: Route[] = [
   { path: "/logs", component: LogsPage, label: "Search for Visits" },
   { path: "/staff", component: StaffPage, label: "Staff" },
   { path: "/members", component: InmatesPage, label: "Inmates" },
+  {
+    path: "/members/:id",
+    component: InmateDetailPage,
+    label: "Incarcerated Individual",
+  },
   { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
   { path: "/settings", component: SettingsPage, label: "Settings" },
-  { path: "/call/:id", component: RecordingPage, label: "" },
+  { path: "/call/:id", component: RecordingPage, label: "Past Call" },
   { path: "/", component: DashboardPage, label: "Dashboard" },
 ];
 
