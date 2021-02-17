@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode } from "react";
-import { Typography, Layout, Space } from "antd";
+import { Typography, Layout, Space, Col, Row } from "antd";
 import { FULL_WIDTH, PADDING } from "src/styles/styles";
 
 interface Props {
@@ -42,9 +42,11 @@ export default function Header({
             style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
           />
         )}
-        <Space align="end" style={FULL_WIDTH}>
-          {extra}
-        </Space>
+        <Row gutter={16}>
+          {extra?.map((item) => (
+            <Col>{item}</Col>
+          ))}
+        </Row>
       </Space>
     </Layout.Header>
   );

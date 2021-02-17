@@ -108,13 +108,13 @@ function Dashboard({
             <Col span={8} className="bg-white">
               <MetricCard
                 title="Facility Video Usage"
-                value={
+                value={(
                   (calls
                     .map((call) => call.connection.inmateId)
                     .filter(onlyUnique).length *
                     100) /
                   numInmates
-                }
+                ).toFixed(2)}
                 suffix="%"
                 prefix={<GlobalOutlined />}
               />
