@@ -1,7 +1,16 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
-import { TimePicker, Layout, Row, Col, Space, Button, Typography } from "antd";
+import {
+  TimePicker,
+  Layout,
+  Row,
+  Col,
+  Space,
+  Button,
+  Typography,
+  Tree,
+} from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { WHITE_BACKGROUND_LAYOUT, WRAPPER_STYLE } from "src/styles/styles";
@@ -17,6 +26,8 @@ import { cloneObject } from "src/utils/Common";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
 import Header from "src/components/Header/Header";
+import { selectAllNodes } from "src/redux/selectors";
+import { DataNode } from "antd/lib/tree";
 
 const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
@@ -24,6 +35,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   facility: state.facilities.selected,
+  nodes: selectAllNodes(state),
 });
 const mapDispatchToProps = { updateCallTimes };
 
@@ -35,6 +47,7 @@ type Tab = "setting" | "facility";
 
 function SettingsContainer({
   facility,
+  nodes,
   updateCallTimes,
 }: PropsFromRedux): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
@@ -132,18 +145,27 @@ function SettingsContainer({
         subtitle="Adjust the call hours, facility information, and facility kiosk directory as needed."
       />
       <div style={WRAPPER_STYLE}>
-        <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
-          <TabPane tab="General Settings" key="setting"></TabPane>
-          {/* <TabPane tab="Facility Settings" key="facility"></TabPane>
-        <TabPane tab="Call Hours" key="facility"></TabPane> */}
-        </Tabs>
         <Content style={WHITE_BACKGROUND_LAYOUT}>
-          <Space direction="vertical">
-            {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
-            <Button type="primary" block onClick={handleSubmission}>
-              Save Changes
-            </Button>
-          </Space>
+          <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+            <TabPane tab="General Settings" key="setting">
+              <Space direction="vertical">
+                {WEEKDAYS.map((weekday) =>
+                  renderItem(weekday, ranges[weekday])
+                )}
+                <Button type="primary" block onClick={handleSubmission}>
+                  Save Changes
+                </Button>
+              </Space>
+            </TabPane>
+            <TabPane tab="Facility" key="facility">
+              <Tree
+                treeData={nodes as DataNode[]}
+                defaultExpandAll={true}
+                draggable={true}
+              />
+            </TabPane>
+            {/* <TabPane tab="Call Hours" key="facility"></TabPane> */}
+          </Tabs>
         </Content>
       </div>
     </Content>
