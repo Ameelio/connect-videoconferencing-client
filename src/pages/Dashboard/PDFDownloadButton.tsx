@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { SelectedFacility } from "src/typings/Facility";

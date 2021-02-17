@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Call } from "src/typings/Call";
 import { Document, Page, View, StyleSheet } from "@react-pdf/renderer";
 import { format } from "date-fns";

@@ -82,63 +82,65 @@ function Dashboard({
           />,
         ]}
       />
-      <Space
-        direction="vertical"
-        style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
-        size="large"
-      >
-        <Row gutter={16}>
-          <Col span={8} className="bg-white">
-            <MetricCard
-              title="Calls This Week"
-              value={Object.values(callVolume)[-1]}
-              prefix={<StarOutlined />}
-              suffix={`calls`}
-            />
-          </Col>
-          <Col span={8} className="bg-white">
-            <MetricCard
-              title="Live Video Calls"
-              value={calls.filter((call) => call.status === "live").length}
-              prefix={<VideoCameraOutlined />}
-              suffix="calls"
-            />
-          </Col>
-          <Col span={8} className="bg-white">
-            <MetricCard
-              title="Facility Video Usage"
-              value={
-                (calls
-                  .map((call) => call.connection.inmateId)
-                  .filter(onlyUnique).length *
-                  100) /
-                numInmates
-              }
-              suffix="%"
-              prefix={<GlobalOutlined />}
-            />
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <LineChart
-              title="Calls"
-              label="# calls"
-              labels={Object.keys(callVolume)}
-              data={Object.values(callVolume)}
-            />
-          </Col>
-          <Col span={12}>
-            <DonutChart
-              title={`Ratings Breakdown ${format(new Date(), "MMMM")}`}
-              data={ratingsCount}
-              backgroundColor={BASE_CHART_COLORS}
-              hoverBackgroundColor={BASE_CHART_COLORS}
-              labels={["Terrible", "Poor", "Okay", "Good", "Amazing"]}
-            />
-          </Col>
-        </Row>
-      </Space>
+      <Content>
+        <Space
+          direction="vertical"
+          style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
+          size="large"
+        >
+          <Row gutter={16}>
+            <Col span={8} className="bg-white">
+              <MetricCard
+                title="Calls This Week"
+                value={Object.values(callVolume)[-1]}
+                prefix={<StarOutlined />}
+                suffix={`calls`}
+              />
+            </Col>
+            <Col span={8} className="bg-white">
+              <MetricCard
+                title="Live Video Calls"
+                value={calls.filter((call) => call.status === "live").length}
+                prefix={<VideoCameraOutlined />}
+                suffix="calls"
+              />
+            </Col>
+            <Col span={8} className="bg-white">
+              <MetricCard
+                title="Facility Video Usage"
+                value={
+                  (calls
+                    .map((call) => call.connection.inmateId)
+                    .filter(onlyUnique).length *
+                    100) /
+                  numInmates
+                }
+                suffix="%"
+                prefix={<GlobalOutlined />}
+              />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <LineChart
+                title="Calls"
+                label="# calls"
+                labels={Object.keys(callVolume)}
+                data={Object.values(callVolume)}
+              />
+            </Col>
+            <Col span={12}>
+              <DonutChart
+                title={`Ratings Breakdown ${format(new Date(), "MMMM")}`}
+                data={ratingsCount}
+                backgroundColor={BASE_CHART_COLORS}
+                hoverBackgroundColor={BASE_CHART_COLORS}
+                labels={["Terrible", "Poor", "Okay", "Good", "Amazing"]}
+              />
+            </Col>
+          </Row>
+        </Space>
+      </Content>
     </Layout>
   );
 }

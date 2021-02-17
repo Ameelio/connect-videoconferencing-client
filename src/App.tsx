@@ -13,7 +13,11 @@ import { Layout } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
-import { selectAllFacilities } from "./redux/selectors";
+import {
+  selectAllFacilities,
+  selectConnectionRequests,
+  selectLiveCalls,
+} from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
@@ -27,11 +31,14 @@ import { fetchKiosks } from "./redux/modules/kiosk";
 import { fetchCalls } from "./redux/modules/call";
 import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
+import { Facility } from "./typings/Facility";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
   pathname: state.router.location.pathname,
+  liveCallsCount: selectLiveCalls(state).length,
+  requestsCount: selectConnectionRequests(state).length,
 });
 const mapDispatchToProps = {
   logout,
@@ -57,6 +64,8 @@ function App({
   session,
   selected,
   pathname,
+  liveCallsCount,
+  requestsCount,
   selectActiveFacility,
   logout,
   fetchFacilities,
@@ -135,7 +144,9 @@ function App({
             logout={logout}
             selected={selected}
             facilities={facilities}
-            select={(facility) => selectActiveFacility(facility)}
+            select={(facility: Facility) => selectActiveFacility(facility)}
+            liveCallsCount={liveCallsCount}
+            requestsCount={requestsCount}
           />
         )}
         <Layout>

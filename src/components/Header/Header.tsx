@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode } from "react";
-import { Typography, Layout, Space, Divider } from "antd";
+import { Typography, Layout, Space } from "antd";
 import { FULL_WIDTH, PADDING } from "src/styles/styles";
 
 interface Props {
