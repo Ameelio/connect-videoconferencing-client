@@ -11,7 +11,7 @@ import { format } from "date-fns";
 import { genFullName } from "src/utils/Common";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { CallMessage, RecordedCall } from "src/typings/Call";
-import { MessageDisplay } from "./MessageDisplay";
+import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
 const { Content, Sider } = Layout;
 

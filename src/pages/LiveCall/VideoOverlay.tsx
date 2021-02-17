@@ -21,6 +21,9 @@ interface Props {
   unmuteCall: () => void;
   emitAlert: (alert: CallAlert) => void;
   isAudioOn: boolean;
+  openChat: () => void;
+  collapseChat: () => void;
+  chatCollapsed: boolean;
 }
 
 export default function VideoOverlay({
@@ -30,6 +33,9 @@ export default function VideoOverlay({
   muteCall,
   unmuteCall,
   isAudioOn,
+  openChat,
+  collapseChat,
+  chatCollapsed,
   emitAlert,
 }: Props): ReactElement {
   const [selectedAlert, setSelectedAlert] = useState<CallAlert | null>(null);
@@ -64,6 +70,13 @@ export default function VideoOverlay({
         onClick={() => (isAudioOn ? muteCall() : unmuteCall())}
       >
         {isAudioOn ? "Mute" : "Unmute"}
+      </Menu.Item>
+      <Menu.Item
+        key="chat"
+        icon={chatCollapsed ? <AudioMutedOutlined /> : <AudioOutlined />}
+        onClick={() => (chatCollapsed ? openChat() : collapseChat())}
+      >
+        {chatCollapsed ? "View Chat" : "Close Chat"}
       </Menu.Item>
     </Menu>
   );

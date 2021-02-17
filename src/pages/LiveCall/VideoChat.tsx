@@ -3,12 +3,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
-import { Spin } from "antd";
+import { PageHeader, Space, Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import { CallAlert, LiveCall } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { UI } from "src/utils";
+import Sider from "antd/lib/layout/Sider";
+import { WRAPPER_STYLE } from "src/styles/styles";
 
 interface Props {
   width: number | string;
@@ -55,6 +57,7 @@ const VideoChat: React.FC<Props> = React.memo(
 
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
+    const [chatCollapsed, setChatCollapsed] = useState(true);
     const [rc, setRc] = useState<RoomClient>();
 
     const callId = call.id;
@@ -212,8 +215,41 @@ const VideoChat: React.FC<Props> = React.memo(
           unmuteCall={() => unmuteCall(callId)}
           isAudioOn={isAudioOn}
           emitAlert={emitAlert}
+          openChat={() => setChatCollapsed(false)}
+          collapseChat={() => setChatCollapsed(true)}
+          chatCollapsed={chatCollapsed}
         />
         {loading && <Loader />}
+        <Sider
+          theme="light"
+          width={300}
+          collapsible
+          defaultCollapsed
+          reverseArrow
+          collapsed={chatCollapsed}
+          onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+        >
+          {!chatCollapsed && (
+            <div>
+              <PageHeader title="Chat" />{" "}
+              <div style={WRAPPER_STYLE}>
+                <Space
+                  direction="vertical"
+                  style={{
+                    overflowY: "scroll",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                  }}
+                >
+                  {/* {messages.map((message) => (
+                    <MessageDisplay message={message} />
+                  ))} */}
+                </Space>
+              </div>
+            </div>
+          )}
+        </Sider>
       </div>
     );
   }
