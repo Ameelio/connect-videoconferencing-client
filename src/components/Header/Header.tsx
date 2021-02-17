@@ -37,10 +37,14 @@ export default function Header({
           {title}
         </Typography.Title>
         <Typography.Text>{subtitle}</Typography.Text>
-        <hr
-          style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
-        />
-        <Space>{extra}</Space>
+        {extra?.length && (
+          <hr
+            style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
+          />
+        )}
+        <Space align="end" style={FULL_WIDTH}>
+          {extra}
+        </Space>
       </Space>
     </Layout.Header>
   );

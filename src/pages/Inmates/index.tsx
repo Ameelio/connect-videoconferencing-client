@@ -31,7 +31,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
     {
       title: "",
       dataIndex: "profileImgPath",
-      width: "10%",
+      // width: "10%",
       editable: false,
       render: (img: any) => (
         <>
@@ -42,25 +42,21 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
     {
       title: "Inmate Number",
       dataIndex: "inmateNumber",
-      width: "15%",
       editable: true,
     },
     {
       title: "First Name",
       dataIndex: "firstName",
-      width: "20%",
       editable: true,
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
-      width: "25%",
       editable: true,
     },
     {
       title: "Location",
       dataIndex: "location",
-      width: "25%",
       editable: true,
     },
   ];
