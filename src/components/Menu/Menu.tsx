@@ -9,7 +9,6 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { logout } from "src/redux/modules/session";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/Common";

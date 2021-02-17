@@ -12,8 +12,6 @@ const HEADER_STYLE = {
   backgroundColor: "white",
   boxShadow: "0 2px 4px rgb(53 72 88 / 7%",
   marginBottom: "16px",
-  paddingTop: "48px",
-  paddingBottom: "48px",
   paddingLeft: PADDING,
   paddingRight: PADDING,
   display: "flex",
@@ -27,13 +25,22 @@ export default function Header({
   extra,
 }: Props): ReactElement {
   return (
-    <Layout.Header style={HEADER_STYLE}>
+    <Layout.Header
+      style={{
+        ...HEADER_STYLE,
+        paddingTop: extra?.length ? "72px" : "48px",
+        paddingBottom: extra?.length ? "72px" : "48px",
+      }}
+    >
       <Space direction="vertical" style={FULL_WIDTH}>
         <Typography.Title level={3} style={{ marginBottom: 0 }}>
           {title}
         </Typography.Title>
         <Typography.Text>{subtitle}</Typography.Text>
-        {extra}
+        <hr
+          style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
+        />
+        <Space>{extra}</Space>
       </Space>
     </Layout.Header>
   );

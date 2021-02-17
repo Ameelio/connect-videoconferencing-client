@@ -105,8 +105,8 @@ function App({
           fetchStaff(),
           fetchInmates(),
           fetchConnections(),
-          fetchNodes(),
           fetchKiosks(),
+          fetchNodes(),
         ]);
         fetchCalls({
           startDate: startOfMonth(new Date()).getTime(),
