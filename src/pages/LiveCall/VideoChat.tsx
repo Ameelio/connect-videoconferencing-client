@@ -211,50 +211,57 @@ const VideoChat: React.FC<Props> = React.memo(
 
     return (
       <div
-        className="video-wrapper"
         style={{
-          width,
-          height,
+          display: "flex",
+          flexDirection: "row",
         }}
-        ref={measuredRef}
       >
-        {/* <video id="visitor-video"/>
+        <div
+          className="video-wrapper"
+          style={{
+            width,
+            height,
+          }}
+          ref={measuredRef}
+        >
+          {/* <video id="visitor-video"/>
         <video id="inmate-video"/>
         <audio id="visitor-audio"/>
         <audio id="inmate-audio"/> */}
-        {!isAudioOn && (
-          <AudioMutedOutlined
-            style={{
-              position: "absolute",
-              bottom: 24,
-              right: 24,
-              fontSize: 36,
-              color: "red",
+          {!isAudioOn && (
+            <AudioMutedOutlined
+              style={{
+                position: "absolute",
+                bottom: 24,
+                right: 24,
+                fontSize: 36,
+                color: "red",
+              }}
+            />
+          )}
+          <VideoOverlay
+            alerts={alerts}
+            terminateCall={() => {
+              if (rc) {
+                rc.terminate();
+                UI.openNotificationWithIcon(
+                  `Call #${call.id} terminated`,
+                  "We notified both participants of the incident.",
+                  "info"
+                );
+              }
             }}
+            lockCall={() => lockCall(callId)}
+            muteCall={() => muteCall(callId)}
+            unmuteCall={() => unmuteCall(callId)}
+            isAudioOn={isAudioOn}
+            emitAlert={emitAlert}
+            openChat={() => setChatCollapsed(false)}
+            collapseChat={() => setChatCollapsed(true)}
+            chatCollapsed={chatCollapsed}
           />
-        )}
-        <VideoOverlay
-          alerts={alerts}
-          terminateCall={() => {
-            if (rc) {
-              rc.terminate();
-              UI.openNotificationWithIcon(
-                `Call #${call.id} terminated`,
-                "We notified both participants of the incident.",
-                "info"
-              );
-            }
-          }}
-          lockCall={() => lockCall(callId)}
-          muteCall={() => muteCall(callId)}
-          unmuteCall={() => unmuteCall(callId)}
-          isAudioOn={isAudioOn}
-          emitAlert={emitAlert}
-          openChat={() => setChatCollapsed(false)}
-          collapseChat={() => setChatCollapsed(true)}
-          chatCollapsed={chatCollapsed}
-        />
-        {loading && <Loader />}
+          {loading && <Loader />}
+        </div>
         <Sider
           theme="light"
           width={300}
