@@ -1,9 +1,8 @@
 import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
-import { setSession } from "src/redux/modules/session";
+import { setLoading, setSession } from "src/redux/modules/session";
 import { Store } from "src/redux";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
-import { fetchFacilities } from "src/redux/modules/facility";
 import camelcaseKeys from "camelcase-keys";
 import { User, UserCredentials } from "src/typings/Session";
 
@@ -11,15 +10,15 @@ async function initializeSession(body: any) {
   const user = camelcaseKeys(body.data) as User;
   Store.dispatch(setSession(user));
 
-  Store.dispatch(fetchFacilities);
   localStorage.setItem(TOKEN_KEY, user.token);
   localStorage.setItem(REMEMBER_TOKEN_KEY, user.remember);
   // loadData();
 }
 
 export async function loginWithToken(): Promise<void> {
+  Store.dispatch(setLoading());
   try {
-    const remember = await localStorage.getItem(REMEMBER_TOKEN_KEY);
+    const remember = localStorage.getItem(REMEMBER_TOKEN_KEY);
     if (!remember) {
       throw Error("Cannot load token");
     }
@@ -47,6 +46,7 @@ export async function loginWithToken(): Promise<void> {
 export async function loginWithCredentials(
   cred: UserCredentials
 ): Promise<void> {
+  Store.dispatch(setLoading());
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {

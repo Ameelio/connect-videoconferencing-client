@@ -1,8 +1,10 @@
 import { User } from "src/typings/Session";
 import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
 
+// TODO migrate this to redux slice
+// @gabe: I attempted the migraton, but it's creating some wild circular dependeies
 interface SessionState {
-  isLoggedIn: boolean;
+  status: "inactive" | "active" | "loading";
   user: User;
   redirectUrl: string;
 }
@@ -11,6 +13,7 @@ interface SessionState {
 const SET_SESSION = "user/SET_SESSION";
 const SET_REDIRECT_URL = "user/SET_REDIRECT_URL";
 const LOGOUT = "user/LOGOUT";
+const SET_LOADING = "user/SET_LOADING";
 
 interface SetSessionAction {
   type: typeof SET_SESSION;
@@ -25,7 +28,15 @@ interface SetRedirectUrl {
   payload: string;
 }
 
-type UserActionTypes = LogoutAction | SetSessionAction | SetRedirectUrl;
+interface SetLoadingAction {
+  type: typeof SET_LOADING;
+}
+
+type UserActionTypes =
+  | LogoutAction
+  | SetSessionAction
+  | SetRedirectUrl
+  | SetLoadingAction;
 
 export const logout = (): UserActionTypes => {
   return {
@@ -46,6 +57,12 @@ export const setRedirectUrl = (url: string): UserActionTypes => {
     payload: url,
   };
 };
+
+export const setLoading = (): UserActionTypes => {
+  return {
+    type: SET_LOADING,
+  };
+};
 // Reducer
 const initialState: SessionState = {
   user: {
@@ -56,7 +73,7 @@ const initialState: SessionState = {
     token: "",
     remember: "",
   },
-  isLoggedIn: false,
+  status: "inactive",
   redirectUrl: "/",
 };
 
@@ -66,7 +83,7 @@ export function sessionReducer(
 ): SessionState {
   switch (action.type) {
     case SET_SESSION:
-      return { ...state, user: action.payload, isLoggedIn: true };
+      return { ...state, user: action.payload, status: "active" };
     case LOGOUT:
       //   sessionStorage.clear();
       return {
@@ -79,11 +96,13 @@ export function sessionReducer(
           token: "",
           remember: "",
         },
-        isLoggedIn: false,
+        status: "inactive",
         redirectUrl: "/",
       };
     case SET_REDIRECT_URL:
       return { ...state, redirectUrl: action.payload };
+    case SET_LOADING:
+      return { ...state, status: "loading" };
     default:
       return state;
   }

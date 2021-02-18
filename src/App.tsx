@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
 import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
@@ -9,9 +9,8 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/Session";
 import Menu from "./components/Menu/Menu";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
-import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
 import {
   selectAllFacilities,
@@ -60,6 +59,12 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const LOGIN_PATH = "/login";
 
+const Loader = () => (
+  <div style={{ display: "flex", minHeight: "100vh", minWidth: "100vw" }}>
+    <Spin size="large" style={{ margin: "auto" }} tip={"Loading workpace..."} />
+  </div>
+);
+
 function App({
   session,
   selected,
@@ -79,8 +84,17 @@ function App({
   setRedirectUrl,
   history,
 }: PropsFromRedux & { history: History }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    session.status === "active"
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => setIsAuthenticated(session.status === "active"), [
+    session.status,
+  ]);
+
   const defaultProtectedRouteProps: ProtectedRouteProps = {
-    isAuthenticated: session.isLoggedIn,
+    isAuthenticated,
     authenticationPath: LOGIN_PATH,
   };
 
@@ -98,16 +112,16 @@ function App({
   }, [fetchFacilities]);
 
   useEffect(() => {
-    if (session.isLoggedIn) fetchFacilities();
-  }, [session.isLoggedIn, fetchFacilities]);
+    if (isAuthenticated) fetchFacilities();
+  }, [isAuthenticated, fetchFacilities]);
 
   useEffect(() => {
-    if (!session.isLoggedIn && pathname !== LOGIN_PATH)
-      setRedirectUrl(pathname);
-  }, [setRedirectUrl, session.isLoggedIn, pathname]);
+    if (!isAuthenticated && pathname !== LOGIN_PATH) setRedirectUrl(pathname);
+  }, [setRedirectUrl, isAuthenticated, pathname]);
 
   useEffect(() => {
     if (selected) {
+      setIsLoading(true);
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
@@ -121,7 +135,7 @@ function App({
           startDate: startOfMonth(new Date()).getTime(),
           endDate: endOfMonth(new Date()).getTime(),
         });
-      })();
+      })().then(() => setIsLoading(false));
     }
   }, [
     selected,
@@ -140,7 +154,7 @@ function App({
         {selected && (
           <Menu
             user={session.user}
-            isLoggedIn={session.isLoggedIn}
+            isLoggedIn={isAuthenticated}
             logout={logout}
             selected={selected}
             facilities={facilities}
@@ -150,6 +164,7 @@ function App({
           />
         )}
         <Layout>
+          {(isLoading || session.status === "loading") && <Loader />}
           <Switch>
             <Route exact path={LOGIN_PATH} component={Login}></Route>
             {ROUTES.map((route) => (
@@ -162,9 +177,6 @@ function App({
               ></ProtectedRoute>
             ))}
           </Switch>
-          <Footer style={{ textAlign: "center" }}>
-            Connect ©2021 Created by Ameelio Inc.
-          </Footer>
         </Layout>
       </Layout>
     </ConnectedRouter>

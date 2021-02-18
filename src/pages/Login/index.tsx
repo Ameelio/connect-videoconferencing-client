@@ -28,7 +28,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 const TOAST_KEY = "login";
 
 function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
-  if (session.isLoggedIn) {
+  if (session.status === "active") {
     UI.showToast(
       TOAST_KEY,
       `Welcome back, ${session.user.firstName}!`,
@@ -89,7 +89,13 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" size="large" block>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={session.status === "loading"}
+            >
               Log In
             </Button>
           </Form.Item>

@@ -43,8 +43,8 @@ export default function Header({
           />
         )}
         <Row gutter={16}>
-          {extra?.map((item) => (
-            <Col>{item}</Col>
+          {extra?.map((item, idx) => (
+            <Col key={idx}>{item}</Col>
           ))}
         </Row>
       </Space>
