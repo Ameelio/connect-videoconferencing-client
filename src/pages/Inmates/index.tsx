@@ -31,7 +31,6 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
     {
       title: "",
       dataIndex: "profileImgPath",
-      // width: "10%",
       editable: false,
       render: (img: any) => (
         <>

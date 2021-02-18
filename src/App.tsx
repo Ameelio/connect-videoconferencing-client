@@ -60,8 +60,8 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 const LOGIN_PATH = "/login";
 
 const Loader = () => (
-  <div style={{ display: "flex", minHeight: "100vh", minWidth: "100vw" }}>
-    <Spin size="large" style={{ margin: "auto" }} tip={"Loading workpace..."} />
+  <div className="d-flex vh-100 vw-100">
+    <Spin size="large" className="m-auto" tip={"Loading workpace..."} />
   </div>
 );
 
