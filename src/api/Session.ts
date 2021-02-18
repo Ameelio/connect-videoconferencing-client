@@ -1,6 +1,6 @@
 import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
-import { setLoading, setSession } from "src/redux/modules/session";
+import { setSessiooStatus, setSession } from "src/redux/modules/session";
 import { Store } from "src/redux";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 import camelcaseKeys from "camelcase-keys";
@@ -16,12 +16,12 @@ async function initializeSession(body: any) {
 }
 
 export async function loginWithToken(): Promise<void> {
-  Store.dispatch(setLoading());
   try {
     const remember = localStorage.getItem(REMEMBER_TOKEN_KEY);
     if (!remember) {
       throw Error("Cannot load token");
     }
+    Store.dispatch(setSessiooStatus("loading"));
     const response = await fetchTimeout(
       url.resolve(API_URL, "auth/login/remember"),
       {
@@ -36,7 +36,10 @@ export async function loginWithToken(): Promise<void> {
       }
     );
     const body = await response.json();
-    if (body.status !== 200) throw body;
+    if (body.status !== 200) {
+      Store.dispatch(setSessiooStatus("inactive"));
+      throw body;
+    }
     await initializeSession(body);
   } catch (err) {
     throw Error(err);
@@ -46,7 +49,7 @@ export async function loginWithToken(): Promise<void> {
 export async function loginWithCredentials(
   cred: UserCredentials
 ): Promise<void> {
-  Store.dispatch(setLoading());
+  Store.dispatch(setSessiooStatus("loading"));
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
@@ -59,6 +62,9 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
-  if (body.status !== 200) throw body;
+  if (body.status !== 200) {
+    Store.dispatch(setSessiooStatus("inactive"));
+    throw body;
+  }
   await initializeSession(body);
 }

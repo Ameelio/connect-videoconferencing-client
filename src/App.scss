@@ -102,4 +102,15 @@ body {
   }
 }
 
-/* Common Elements */
+/* Common Layouts */
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.m-auto {
+  margin: auto;
+}

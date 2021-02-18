@@ -87,7 +87,7 @@ function App({
   const [isAuthenticated, setIsAuthenticated] = useState(
     session.status === "active"
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitingData, setIsInitingData] = useState(true);
 
   useEffect(() => setIsAuthenticated(session.status === "active"), [
     session.status,
@@ -121,7 +121,7 @@ function App({
 
   useEffect(() => {
     if (selected) {
-      setIsLoading(true);
+      setIsInitingData(true);
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
@@ -135,7 +135,7 @@ function App({
           startDate: startOfMonth(new Date()).getTime(),
           endDate: endOfMonth(new Date()).getTime(),
         });
-      })().then(() => setIsLoading(false));
+      })().then(() => setIsInitingData(false));
     }
   }, [
     selected,
@@ -164,7 +164,8 @@ function App({
           />
         )}
         <Layout>
-          {(isLoading || session.status === "loading") && <Loader />}
+          {((isInitingData && isAuthenticated) ||
+            session.status === "loading") && <Loader />}
           <Switch>
             <Route exact path={LOGIN_PATH} component={Login}></Route>
             {ROUTES.map((route) => (

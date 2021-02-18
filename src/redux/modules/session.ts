@@ -1,10 +1,17 @@
 import { User } from "src/typings/Session";
-import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
+import {
+  REMEMBER_TOKEN_KEY,
+  TOKEN_KEY,
+  UNAUTHENTICATED_USER_ID,
+} from "src/utils/constants";
 
 // TODO migrate this to redux slice
 // @gabe: I attempted the migraton, but it's creating some wild circular dependeies
+
+type SessionStatus = "inactive" | "active" | "loading";
+
 interface SessionState {
-  status: "inactive" | "active" | "loading";
+  status: SessionStatus;
   user: User;
   redirectUrl: string;
 }
@@ -13,7 +20,7 @@ interface SessionState {
 const SET_SESSION = "user/SET_SESSION";
 const SET_REDIRECT_URL = "user/SET_REDIRECT_URL";
 const LOGOUT = "user/LOGOUT";
-const SET_LOADING = "user/SET_LOADING";
+const SET_SESSION_STATUS = "user/SET_SESSION_STATUS";
 
 interface SetSessionAction {
   type: typeof SET_SESSION;
@@ -23,20 +30,21 @@ interface LogoutAction {
   type: typeof LOGOUT;
 }
 
-interface SetRedirectUrl {
+interface SetRedirectUrlAction {
   type: typeof SET_REDIRECT_URL;
   payload: string;
 }
 
-interface SetLoadingAction {
-  type: typeof SET_LOADING;
+interface SetSessionStatusAction {
+  type: typeof SET_SESSION_STATUS;
+  payload: SessionStatus;
 }
 
 type UserActionTypes =
   | LogoutAction
   | SetSessionAction
-  | SetRedirectUrl
-  | SetLoadingAction;
+  | SetRedirectUrlAction
+  | SetSessionStatusAction;
 
 export const logout = (): UserActionTypes => {
   return {
@@ -58,9 +66,10 @@ export const setRedirectUrl = (url: string): UserActionTypes => {
   };
 };
 
-export const setLoading = (): UserActionTypes => {
+export const setSessiooStatus = (status: SessionStatus): UserActionTypes => {
   return {
-    type: SET_LOADING,
+    type: SET_SESSION_STATUS,
+    payload: status,
   };
 };
 // Reducer
@@ -85,7 +94,8 @@ export function sessionReducer(
     case SET_SESSION:
       return { ...state, user: action.payload, status: "active" };
     case LOGOUT:
-      //   sessionStorage.clear();
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(REMEMBER_TOKEN_KEY);
       return {
         ...state,
         user: {
@@ -101,8 +111,8 @@ export function sessionReducer(
       };
     case SET_REDIRECT_URL:
       return { ...state, redirectUrl: action.payload };
-    case SET_LOADING:
-      return { ...state, status: "loading" };
+    case SET_SESSION_STATUS:
+      return { ...state, status: action.payload };
     default:
       return state;
   }
