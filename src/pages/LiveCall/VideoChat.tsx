@@ -6,11 +6,17 @@ import * as mediasoupClient from "mediasoup-client";
 import { PageHeader, Space, Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import { CallAlert, LiveCall } from "src/typings/Call";
+import {
+  CallAlert,
+  CallMessage,
+  CallParticipant,
+  LiveCall,
+} from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { UI } from "src/utils";
 import Sider from "antd/lib/layout/Sider";
 import { WRAPPER_STYLE } from "src/styles/styles";
+import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
 interface Props {
   width: number | string;
@@ -58,6 +64,7 @@ const VideoChat: React.FC<Props> = React.memo(
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
     const [chatCollapsed, setChatCollapsed] = useState(true);
+    const [messages, setMessages] = useState<CallMessage[]>([]);
     const [rc, setRc] = useState<RoomClient>();
 
     const callId = call.id;
@@ -166,6 +173,34 @@ const VideoChat: React.FC<Props> = React.memo(
     }, [isAudioOn]);
 
     useEffect(() => {
+      if (rc && isAuthed) {
+        console.log("listening to text message");
+        rc.socket.on(
+          "textMessage",
+          async ({
+            from,
+            contents,
+          }: {
+            from: CallParticipant;
+            contents: string;
+            meta: string;
+          }) => {
+            console.log(contents);
+            console.log(from);
+            setMessages([
+              ...messages,
+              {
+                content: contents,
+                from,
+                timestamp: new Date().toLocaleDateString(),
+              },
+            ]);
+          }
+        );
+      }
+    }, [isAuthed, messages, rc]);
+
+    useEffect(() => {
       if (rc && call) {
         const interval = setInterval(() => {
           rc.socket.emit("heartbeat", { callId: call.id });
@@ -242,9 +277,9 @@ const VideoChat: React.FC<Props> = React.memo(
                     height: "100%",
                   }}
                 >
-                  {/* {messages.map((message) => (
+                  {messages.map((message) => (
                     <MessageDisplay message={message} />
-                  ))} */}
+                  ))}
                 </Space>
               </div>
             </div>
