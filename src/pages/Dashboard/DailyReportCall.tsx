@@ -1,7 +1,5 @@
 import React from "react";
-import { Text, Document, Page, View, StyleSheet } from "@react-pdf/renderer";
-import SectionHeader from "src/components/pdf/SectionHeader";
-import { format } from "date-fns";
+import { Text, View, StyleSheet } from "@react-pdf/renderer";
 import { genFullName } from "src/utils/Common";
 import { Call } from "src/typings/Call";
 

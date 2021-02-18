@@ -20,6 +20,7 @@ import { selectAllStaff } from "src/redux/selectors";
 import { cloneObject, genFullName, mapPermissionMap } from "src/utils/Common";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 import Header from "src/components/Header/Header";
+import { UserAddOutlined } from "@ant-design/icons";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -83,10 +84,15 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
       <Header
         title="Staff"
         subtitle="Manage your staff, edit their access permissions, and add new members."
+        extra={[
+          <Button
+            onClick={() => setModalType("create")}
+            icon={<UserAddOutlined />}
+          >
+            Add Staff Member
+          </Button>,
+        ]}
       />
-      <Button type="primary" onClick={() => setModalType("create")}>
-        Add
-      </Button>
       <div style={WRAPPER_STYLE}>
         <Table dataSource={staff}>
           <Column

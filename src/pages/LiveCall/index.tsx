@@ -47,7 +47,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
-  const [lockedCall, setLockedCall] = useState<LiveCall>();
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>
@@ -150,7 +149,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                   isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
                   lockCall={(callId: number) => {
                     const call = visitations.find((call) => call.id === callId);
-                    if (call) setLockedCall(call);
+                    // TODO add call lock logic
+                    // https://github.com/Ameelio/connect-doc-client/issues/38
+                    if (call) console.log("call locked!");
                   }}
                 />
               ) : (

@@ -1,4 +1,5 @@
-import { Form, Popconfirm, Space, Table, Typography } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
+import { Button, Form, Popconfirm, Space, Table, Typography } from "antd";
 import React from "react";
 import { useState } from "react";
 import { TableColumn } from "src/typings/Common";
@@ -72,19 +73,20 @@ export default function EditableTable({
             </Popconfirm>
           </Space>
         ) : (
-          <Space>
+          <Space size="large">
             <Typography.Link
               disabled={editingId !== null}
               onClick={() => edit(record)}
             >
               Quick Edit
             </Typography.Link>
-            <Typography.Link
+            <Button
               disabled={editingId !== null}
               onClick={() => onViewItem(record.id)}
+              icon={<EyeOutlined />}
             >
-              View Item
-            </Typography.Link>
+              View
+            </Button>
           </Space>
         );
       },

@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown } from "antd";
+import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown, Badge } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -9,7 +9,6 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { logout } from "src/redux/modules/session";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils/Common";
@@ -26,6 +25,8 @@ interface Props {
   facilities: Facility[];
   logout: () => void;
   select: (facility: Facility) => void;
+  requestsCount: number;
+  liveCallsCount: number;
 }
 
 const FacilityAvatar = ({ facility }: { facility: Facility }): JSX.Element => (
@@ -45,6 +46,8 @@ export default function Menu({
   facilities,
   select,
   logout,
+  requestsCount,
+  liveCallsCount,
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
@@ -54,7 +57,7 @@ export default function Menu({
     <AntdMenu>
       <SubMenu key="sub2" title="Switch Organization">
         {facilities.map((facility) => (
-          <AntdMenu.Item onClick={() => select(facility)}>
+          <AntdMenu.Item key={facility.nodeId} onClick={() => select(facility)}>
             <Space>
               <FacilityAvatar facility={facility} />
               <span>{facility.name}</span>
@@ -105,6 +108,7 @@ export default function Menu({
           onClick={() => history.push("/visitations")}
         >
           Live Video Calls
+          <Badge count={liveCallsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="requests"
@@ -112,6 +116,7 @@ export default function Menu({
           onClick={() => history.push("/requests")}
         >
           Approval Requests
+          <Badge count={requestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="search"
