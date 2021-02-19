@@ -8,20 +8,13 @@ import { AmeelioNode } from "src/typings/Node";
 import { UI } from "src/utils";
 
 export const fetchNodes = createAsyncThunk("node/fetchNodes", async () => {
-  const body = await fetchAuthenticated(`/subnodes`, {
-    method: "POST",
-    body: JSON.stringify({
-      recursive: true,
-    }),
-  });
+  const body = await fetchAuthenticated(`/subnodes`);
 
   if (body.status !== 200) {
     throw body;
   }
-
   const nodes = (body.data as Record<string, unknown>).subnodes;
-
-  return [nodes] as AmeelioNode[];
+  return nodes as AmeelioNode[];
 });
 
 export const nodesAdapter = createEntityAdapter<AmeelioNode>();

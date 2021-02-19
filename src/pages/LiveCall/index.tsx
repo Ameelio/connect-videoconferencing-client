@@ -56,7 +56,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   const [chatCollapsed, setChatCollapsed] = useState(true);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
-  const [lockedCall, setLockedCall] = useState<LiveCall>();
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>

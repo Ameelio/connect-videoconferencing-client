@@ -1,8 +1,17 @@
 import { User } from "src/typings/Session";
-import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
+import {
+  REMEMBER_TOKEN_KEY,
+  TOKEN_KEY,
+  UNAUTHENTICATED_USER_ID,
+} from "src/utils/constants";
+
+// TODO migrate this to redux slice
+// @gabe: I attempted the migraton, but it's creating some wild circular dependeies
+
+type SessionStatus = "inactive" | "active" | "loading";
 
 interface SessionState {
-  isLoggedIn: boolean;
+  status: SessionStatus;
   user: User;
   redirectUrl: string;
 }
@@ -11,6 +20,7 @@ interface SessionState {
 const SET_SESSION = "user/SET_SESSION";
 const SET_REDIRECT_URL = "user/SET_REDIRECT_URL";
 const LOGOUT = "user/LOGOUT";
+const SET_SESSION_STATUS = "user/SET_SESSION_STATUS";
 
 interface SetSessionAction {
   type: typeof SET_SESSION;
@@ -20,12 +30,21 @@ interface LogoutAction {
   type: typeof LOGOUT;
 }
 
-interface SetRedirectUrl {
+interface SetRedirectUrlAction {
   type: typeof SET_REDIRECT_URL;
   payload: string;
 }
 
-type UserActionTypes = LogoutAction | SetSessionAction | SetRedirectUrl;
+interface SetSessionStatusAction {
+  type: typeof SET_SESSION_STATUS;
+  payload: SessionStatus;
+}
+
+type UserActionTypes =
+  | LogoutAction
+  | SetSessionAction
+  | SetRedirectUrlAction
+  | SetSessionStatusAction;
 
 export const logout = (): UserActionTypes => {
   return {
@@ -46,6 +65,13 @@ export const setRedirectUrl = (url: string): UserActionTypes => {
     payload: url,
   };
 };
+
+export const setSessiooStatus = (status: SessionStatus): UserActionTypes => {
+  return {
+    type: SET_SESSION_STATUS,
+    payload: status,
+  };
+};
 // Reducer
 const initialState: SessionState = {
   user: {
@@ -56,7 +82,7 @@ const initialState: SessionState = {
     token: "",
     remember: "",
   },
-  isLoggedIn: false,
+  status: "inactive",
   redirectUrl: "/",
 };
 
@@ -66,9 +92,10 @@ export function sessionReducer(
 ): SessionState {
   switch (action.type) {
     case SET_SESSION:
-      return { ...state, user: action.payload, isLoggedIn: true };
+      return { ...state, user: action.payload, status: "active" };
     case LOGOUT:
-      //   sessionStorage.clear();
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(REMEMBER_TOKEN_KEY);
       return {
         ...state,
         user: {
@@ -79,11 +106,13 @@ export function sessionReducer(
           token: "",
           remember: "",
         },
-        isLoggedIn: false,
+        status: "inactive",
         redirectUrl: "/",
       };
     case SET_REDIRECT_URL:
       return { ...state, redirectUrl: action.payload };
+    case SET_SESSION_STATUS:
+      return { ...state, status: action.payload };
     default:
       return state;
   }

@@ -67,7 +67,6 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
       `${filters.minDuration}, ${filters.maxDuration}`,
     ]);
   if (filters.query?.length) options.push(["global", filters.query]);
-  console.log(options);
   return toQueryString(options);
 };
 export const getInitials = (str: string) => {

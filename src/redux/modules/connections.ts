@@ -41,6 +41,7 @@ export const fetchConnections = createAsyncThunk(
       camelcaseKeys(connection)
     ) as BaseConnection[];
 
+    console.log(connections);
     return connections;
   }
 );

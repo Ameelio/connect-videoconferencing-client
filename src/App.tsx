@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
 import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
@@ -9,11 +9,14 @@ import ProtectedRoute, {
 } from "./components/hocs/ProtectedRoute";
 import { loginWithToken } from "./api/Session";
 import Menu from "./components/Menu/Menu";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
-import { Footer } from "antd/lib/layout/layout";
 import { fetchFacilities } from "./redux/modules/facility";
-import { selectAllFacilities } from "./redux/selectors";
+import {
+  selectAllFacilities,
+  selectConnectionRequests,
+  selectLiveCalls,
+} from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
@@ -27,11 +30,14 @@ import { fetchKiosks } from "./redux/modules/kiosk";
 import { fetchCalls } from "./redux/modules/call";
 import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
+import { Facility } from "./typings/Facility";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
   pathname: state.router.location.pathname,
+  liveCallsCount: selectLiveCalls(state).length,
+  requestsCount: selectConnectionRequests(state).length,
 });
 const mapDispatchToProps = {
   logout,
@@ -53,10 +59,18 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const LOGIN_PATH = "/login";
 
+const Loader = () => (
+  <div className="d-flex vh-100 vw-100">
+    <Spin size="large" className="m-auto" tip={"Loading workpace..."} />
+  </div>
+);
+
 function App({
   session,
   selected,
   pathname,
+  liveCallsCount,
+  requestsCount,
   selectActiveFacility,
   logout,
   fetchFacilities,
@@ -70,8 +84,17 @@ function App({
   setRedirectUrl,
   history,
 }: PropsFromRedux & { history: History }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    session.status === "active"
+  );
+  const [isInitingData, setIsInitingData] = useState(true);
+
+  useEffect(() => setIsAuthenticated(session.status === "active"), [
+    session.status,
+  ]);
+
   const defaultProtectedRouteProps: ProtectedRouteProps = {
-    isAuthenticated: session.isLoggedIn,
+    isAuthenticated,
     authenticationPath: LOGIN_PATH,
   };
 
@@ -89,30 +112,30 @@ function App({
   }, [fetchFacilities]);
 
   useEffect(() => {
-    if (session.isLoggedIn) fetchFacilities();
-  }, [session.isLoggedIn, fetchFacilities]);
+    if (isAuthenticated) fetchFacilities();
+  }, [isAuthenticated, fetchFacilities]);
 
   useEffect(() => {
-    if (!session.isLoggedIn && pathname !== LOGIN_PATH)
-      setRedirectUrl(pathname);
-  }, [setRedirectUrl, session.isLoggedIn, pathname]);
+    if (!isAuthenticated && pathname !== LOGIN_PATH) setRedirectUrl(pathname);
+  }, [setRedirectUrl, isAuthenticated, pathname]);
 
   useEffect(() => {
     if (selected) {
+      setIsInitingData(true);
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
           fetchStaff(),
           fetchInmates(),
           fetchConnections(),
-          fetchNodes(),
           fetchKiosks(),
+          fetchNodes(),
         ]);
         fetchCalls({
           startDate: startOfMonth(new Date()).getTime(),
           endDate: endOfMonth(new Date()).getTime(),
         });
-      })();
+      })().then(() => setIsInitingData(false));
     }
   }, [
     selected,
@@ -131,14 +154,18 @@ function App({
         {selected && (
           <Menu
             user={session.user}
-            isLoggedIn={session.isLoggedIn}
+            isLoggedIn={isAuthenticated}
             logout={logout}
             selected={selected}
             facilities={facilities}
-            select={(facility) => selectActiveFacility(facility)}
+            select={(facility: Facility) => selectActiveFacility(facility)}
+            liveCallsCount={liveCallsCount}
+            requestsCount={requestsCount}
           />
         )}
         <Layout>
+          {((isInitingData && isAuthenticated) ||
+            session.status === "loading") && <Loader />}
           <Switch>
             <Route exact path={LOGIN_PATH} component={Login}></Route>
             {ROUTES.map((route) => (
@@ -151,9 +178,6 @@ function App({
               ></ProtectedRoute>
             ))}
           </Switch>
-          <Footer style={{ textAlign: "center" }}>
-            Connect ©2021 Created by Ameelio Inc.
-          </Footer>
         </Layout>
       </Layout>
     </ConnectedRouter>

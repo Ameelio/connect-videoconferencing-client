@@ -1,11 +1,10 @@
 .login-form-container {
-  width: 450px;
-  height: 500px;
+  width: 500px;
+  height: 450px;
   margin: auto;
   background-color: white;
   padding: 32px;
   display: flex;
-  margin-top: 5em;
   flex-direction: column;
   align-self: center;
   justify-content: center;
@@ -14,4 +13,8 @@
 
 .login-form {
   margin: 48px auto;
+}
+
+.login-logo {
+  width: 250px;
 }
