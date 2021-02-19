@@ -11,15 +11,19 @@ import {
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import { Layout, Row, Col, Space, Pagination } from "antd";
-import { fetchCalls } from "src/redux/modules/call";
+import { Layout, Row, Col, Space, Pagination, PageHeader } from "antd";
+import { fetchCalls, callsActions } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { GridOption, LiveCall } from "src/typings/Call";
+import { CallMessage, GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
+import Sider from "antd/lib/layout/Sider";
+import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
 const { Content } = Layout;
+
+const { replaceMessages } = callsActions;
 
 const mapStateToProps = (state: RootState) => ({
   visitations: selectLiveCalls(state) as LiveCall[],
@@ -29,6 +33,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchCalls,
+      replaceMessages,
     },
     dispatch
   );
@@ -42,9 +47,13 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   fetchCalls,
+  replaceMessages,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
+  const [chatCallId, setChatCallId] = useState(0);
+  const [messages, setMessages] = useState<CallMessage[]>([]);
+  const [chatCollapsed, setChatCollapsed] = useState(true);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
   const [lockedCall, setLockedCall] = useState<LiveCall>();
@@ -86,6 +95,11 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     setVisibleCalls(visitations.slice(0, grid));
   }, [grid, visitations]);
 
+  useEffect(() => {
+    const call = visitations.find((call) => call.id === chatCallId);
+    setMessages(call?.messages || []);
+  }, [chatCallId, visitations]);
+
   const handleVideoTermination = () => {
     // TODO add redux store request
   };
@@ -108,59 +122,113 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     handleGridChange(pageSize as GridOption);
   };
 
+  const addMessage = (callId: number, message: CallMessage) => {
+    replaceMessages(callId, [...messages, message]);
+  };
+
   return (
-    <Content>
-      <Header
-        title="Live Calls"
-        subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
-      />
-      <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
-        {visitations.length > 0 && (
-          <Pagination
-            defaultCurrent={1}
-            defaultPageSize={grid}
-            onChange={onPageChange}
-            pageSize={grid}
-            pageSizeOptions={OPTIONS.map((e) => `${e}`)}
-            total={visitations.length}
-            showSizeChanger={true}
-            onShowSizeChange={onShowSizeChange}
-          />
+    <Layout>
+      <Content style={WRAPPER_STYLE}>
+        <Header
+          title="Live Calls"
+          subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
+        />
+        <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
+          {visitations.length > 0 && (
+            <Pagination
+              defaultCurrent={1}
+              defaultPageSize={grid}
+              onChange={onPageChange}
+              pageSize={grid}
+              pageSizeOptions={OPTIONS.map((e) => `${e}`)}
+              total={visitations.length}
+              showSizeChanger={true}
+              onShowSizeChange={onShowSizeChange}
+            />
+          )}
+          <Row>
+            {Array.from(Array(grid).keys()).map((idx) => (
+              <Col span={GRID_TO_SPAN_WIDTH[grid]}>
+                {visibleCalls.length - 1 >= idx && socket ? (
+                  <VideoChat
+                    height={`${frameVhHeight}vh`}
+                    socket={socket}
+                    call={Object.assign({}, visibleCalls[idx], {
+                      messages: undefined,
+                    })}
+                    width="100%"
+                    alerts={CALL_ALERTS}
+                    terminateCall={handleVideoTermination}
+                    muteCall={(callId: number) => {
+                      setConsumeAudioRecord(_.omit(consumeAudioRecord, callId));
+                    }}
+                    unmuteCall={(callId: number) =>
+                      setConsumeAudioRecord({
+                        ...consumeAudioRecord,
+                        [callId]: true,
+                      })
+                    }
+                    isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
+                    openChat={(callId: number) => {
+                      const call = visitations.find(
+                        (call) => call.id === callId
+                      );
+                      setChatCallId(callId);
+                      setMessages(call?.messages || []);
+                      setChatCollapsed(false);
+                    }}
+                    closeChat={(callId: number) => {
+                      console.log(callId);
+                      setChatCollapsed(true);
+                    }}
+                    chatCollapsed={chatCollapsed}
+                    addMessage={addMessage}
+                    lockCall={(callId: number) => {
+                      const call = visitations.find(
+                        (call) => call.id === callId
+                      );
+                      if (call) setLockedCall(call);
+                    }}
+                  />
+                ) : (
+                  <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
+                )}
+              </Col>
+            ))}
+          </Row>
+        </Space>
+      </Content>
+      <Sider
+        theme="light"
+        width={300}
+        collapsible
+        defaultCollapsed
+        reverseArrow
+        collapsed={chatCollapsed}
+        onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+      >
+        {!chatCollapsed && (
+          <div>
+            <PageHeader title="Chat" />{" "}
+            <div style={WRAPPER_STYLE}>
+              <Space
+                direction="vertical"
+                style={{
+                  overflowY: "scroll",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+              >
+                {messages.map((message) => (
+                  <MessageDisplay message={message} />
+                ))}
+              </Space>
+            </div>
+          </div>
         )}
-        <Row>
-          {Array.from(Array(grid).keys()).map((idx) => (
-            <Col span={GRID_TO_SPAN_WIDTH[grid]}>
-              {visibleCalls.length - 1 >= idx && socket ? (
-                <VideoChat
-                  height={`${frameVhHeight}vh`}
-                  socket={socket}
-                  call={visibleCalls[idx]}
-                  width="100%"
-                  alerts={CALL_ALERTS}
-                  terminateCall={handleVideoTermination}
-                  muteCall={(callId: number) => {
-                    setConsumeAudioRecord(_.omit(consumeAudioRecord, callId));
-                  }}
-                  unmuteCall={(callId: number) =>
-                    setConsumeAudioRecord({
-                      ...consumeAudioRecord,
-                      [callId]: true,
-                    })
-                  }
-                  isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
-                  lockCall={(callId: number) => {
-                    const call = visitations.find((call) => call.id === callId);
-                    if (call) setLockedCall(call);
-                  }}
-                />
-              ) : (
-                <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
-              )}
-            </Col>
-          ))}
-        </Row>
-      </Space>
-    </Content>
+      </Sider>
+    </Layout>
   );
 };
 

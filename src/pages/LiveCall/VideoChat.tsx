@@ -21,14 +21,18 @@ import { MessageDisplay } from "src/components/calls/MessageDisplay";
 interface Props {
   width: number | string;
   height: number | string;
-  call: LiveCall;
+  call: Omit<LiveCall, "messages">;
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
   terminateCall: (id: number) => void;
   muteCall: (id: number) => void;
   unmuteCall: (id: number) => void;
   isAudioOn: boolean;
+  openChat: (id: number) => void;
+  closeChat: (id: number) => void;
+  chatCollapsed: boolean;
   lockCall: (id: number) => void;
+  addMessage: (id: number, message: CallMessage) => void;
 }
 
 declare global {
@@ -57,14 +61,16 @@ const VideoChat: React.FC<Props> = React.memo(
     muteCall,
     unmuteCall,
     isAudioOn,
+    openChat,
+    closeChat,
+    chatCollapsed,
+    addMessage,
   }) => {
     const token = useSelector((state: RootState) => state.session.user.token);
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
-    const [chatCollapsed, setChatCollapsed] = useState(true);
-    const [messages, setMessages] = useState<CallMessage[]>([]);
     const [rc, setRc] = useState<RoomClient>();
 
     const callId = call.id;
@@ -124,6 +130,30 @@ const VideoChat: React.FC<Props> = React.memo(
       }
     }, [call.id, id, token, socket, joinRoom, isAuthed]);
 
+    useEffect(() => {
+      if (rc && isAuthed) {
+        rc.socket.on(
+          "textMessage",
+          ({
+            from,
+            contents,
+          }: {
+            from: CallParticipant;
+            contents: string;
+            meta: string;
+          }) => {
+            const message = {
+              content: contents,
+              from: from.type,
+              timestamp: new Date().toLocaleDateString(),
+            };
+            console.log("before add message");
+            addMessage(callId, message);
+          }
+        );
+      }
+    }, [addMessage, callId, isAuthed, rc]);
+
     const measuredRef = useCallback(
       (node) => {
         if (node !== null && rc && isAuthed) {
@@ -171,34 +201,6 @@ const VideoChat: React.FC<Props> = React.memo(
       if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
       if (user) (user as HTMLAudioElement).muted = isAudioOn;
     }, [isAudioOn]);
-
-    useEffect(() => {
-      if (rc && isAuthed) {
-        console.log("listening to text message");
-        rc.socket.on(
-          "textMessage",
-          async ({
-            from,
-            contents,
-          }: {
-            from: CallParticipant;
-            contents: string;
-            meta: string;
-          }) => {
-            console.log(contents);
-            console.log(from);
-            setMessages([
-              ...messages,
-              {
-                content: contents,
-                from,
-                timestamp: new Date().toLocaleDateString(),
-              },
-            ]);
-          }
-        );
-      }
-    }, [isAuthed, messages, rc]);
 
     useEffect(() => {
       if (rc && call) {
@@ -256,42 +258,12 @@ const VideoChat: React.FC<Props> = React.memo(
             unmuteCall={() => unmuteCall(callId)}
             isAudioOn={isAudioOn}
             emitAlert={emitAlert}
-            openChat={() => setChatCollapsed(false)}
-            collapseChat={() => setChatCollapsed(true)}
+            openChat={() => openChat(callId)}
+            closeChat={() => closeChat(callId)}
             chatCollapsed={chatCollapsed}
           />
           {loading && <Loader />}
         </div>
-        <Sider
-          theme="light"
-          width={300}
-          collapsible
-          defaultCollapsed
-          reverseArrow
-          collapsed={chatCollapsed}
-          onCollapse={(collapsed) => setChatCollapsed(collapsed)}
-        >
-          {!chatCollapsed && (
-            <div>
-              <PageHeader title="Chat" />{" "}
-              <div style={WRAPPER_STYLE}>
-                <Space
-                  direction="vertical"
-                  style={{
-                    overflowY: "scroll",
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                  }}
-                >
-                  {messages.map((message) => (
-                    <MessageDisplay message={message} />
-                  ))}
-                </Space>
-              </div>
-            </div>
-          )}
-        </Sider>
       </div>
     );
   }

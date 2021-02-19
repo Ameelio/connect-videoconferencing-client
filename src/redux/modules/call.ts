@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createAsyncThunk,
   EntityState,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanCall, RawCall } from "../helpers";
@@ -60,6 +61,23 @@ export const callsSlice = createSlice({
   reducers: {
     callsAddMany: callsAdapter.addMany,
     callsSetAll: callsAdapter.setAll,
+    replaceMessages: {
+      reducer(
+        state,
+        action: PayloadAction<{ id: number; messages: CallMessage[] }>
+      ) {
+        const { id, messages } = action.payload;
+        callsAdapter.updateOne(state, {
+          id: id,
+          changes: {
+            messages: messages,
+          },
+        });
+      },
+      prepare(id: number, messages: CallMessage[]) {
+        return { payload: { id, messages } };
+      },
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCalls.fulfilled, (state, action) => {

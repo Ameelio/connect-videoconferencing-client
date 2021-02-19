@@ -93,6 +93,6 @@ export interface CallParticipant {
 
 export interface CallMessage {
   content: string;
-  from: CallParticipant;
+  from: string;
   timestamp: string;
 }

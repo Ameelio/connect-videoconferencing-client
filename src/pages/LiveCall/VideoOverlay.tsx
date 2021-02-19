@@ -22,7 +22,7 @@ interface Props {
   emitAlert: (alert: CallAlert) => void;
   isAudioOn: boolean;
   openChat: () => void;
-  collapseChat: () => void;
+  closeChat: () => void;
   chatCollapsed: boolean;
 }
 
@@ -34,7 +34,7 @@ export default function VideoOverlay({
   unmuteCall,
   isAudioOn,
   openChat,
-  collapseChat,
+  closeChat,
   chatCollapsed,
   emitAlert,
 }: Props): ReactElement {
@@ -74,7 +74,7 @@ export default function VideoOverlay({
       <Menu.Item
         key="chat"
         icon={chatCollapsed ? <AudioMutedOutlined /> : <AudioOutlined />}
-        onClick={() => (chatCollapsed ? openChat() : collapseChat())}
+        onClick={() => (chatCollapsed ? openChat() : closeChat())}
       >
         {chatCollapsed ? "View Chat" : "Close Chat"}
       </Menu.Item>
