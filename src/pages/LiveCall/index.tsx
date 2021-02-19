@@ -186,7 +186,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                       const call = visitations.find(
                         (call) => call.id === callId
                       );
-                      if (call) setLockedCall(call);
+                      // TODO add call lock logic
+                      // https://github.com/Ameelio/connect-doc-client/issues/38
+                      if (call) console.log("call locked!");
                     }}
                   />
                 ) : (
