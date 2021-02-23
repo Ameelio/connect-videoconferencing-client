@@ -27,10 +27,12 @@ export const fetchCalls = createAsyncThunk(
       throw body;
     }
 
-    const visitations = ((body.data as Record<string, unknown>)
+    console.log(body.data);
+
+    const calls = ((body.data as Record<string, unknown>)
       .calls as RawCall[]).map(cleanCall) as RecordedCall[];
 
-    return visitations;
+    return calls;
   }
 );
 
@@ -61,22 +63,17 @@ export const callsSlice = createSlice({
   reducers: {
     callsAddMany: callsAdapter.addMany,
     callsSetAll: callsAdapter.setAll,
-    replaceMessages: {
-      reducer(
-        state,
-        action: PayloadAction<{ id: number; messages: CallMessage[] }>
-      ) {
-        const { id, messages } = action.payload;
-        callsAdapter.updateOne(state, {
-          id: id,
-          changes: {
-            messages: messages,
-          },
-        });
-      },
-      prepare(id: number, messages: CallMessage[]) {
-        return { payload: { id, messages } };
-      },
+    addMessage: (
+      state,
+      action: PayloadAction<{ id: number; message: CallMessage }>
+    ) => {
+      const { id, message } = action.payload;
+      const call = state.entities[id];
+      if (!call) return;
+      callsAdapter.updateOne(state, {
+        id,
+        changes: { messages: [...call.messages, message] },
+      });
     },
   },
   extraReducers: (builder) => {

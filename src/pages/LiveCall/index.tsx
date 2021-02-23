@@ -18,12 +18,11 @@ import VideoSkeleton from "./VideoSkeleton";
 import { CallMessage, GridOption, LiveCall } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
-import Sider from "antd/lib/layout/Sider";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
-const { Content } = Layout;
+const { Content, Sider } = Layout;
 
-const { replaceMessages } = callsActions;
+const { addMessage } = callsActions;
 
 const mapStateToProps = (state: RootState) => ({
   visitations: selectLiveCalls(state) as LiveCall[],
@@ -33,7 +32,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchCalls,
-      replaceMessages,
+      addMessage,
     },
     dispatch
   );
@@ -47,7 +46,6 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
   fetchCalls,
-  replaceMessages,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
@@ -122,114 +120,121 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   };
 
   const addMessage = (callId: number, message: CallMessage) => {
-    replaceMessages(callId, [...messages, message]);
+    addMessage(callId, message);
   };
 
   return (
-    <Layout>
-      <Content style={WRAPPER_STYLE}>
-        <Header
-          title="Live Calls"
-          subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
-        />
-        <Space direction="vertical" style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}>
-          {visitations.length > 0 && (
-            <Pagination
-              defaultCurrent={1}
-              defaultPageSize={grid}
-              onChange={onPageChange}
-              pageSize={grid}
-              pageSizeOptions={OPTIONS.map((e) => `${e}`)}
-              total={visitations.length}
-              showSizeChanger={true}
-              onShowSizeChange={onShowSizeChange}
-            />
-          )}
-          <Row>
-            {Array.from(Array(grid).keys()).map((idx) => (
-              <Col span={GRID_TO_SPAN_WIDTH[grid]}>
-                {visibleCalls.length - 1 >= idx && socket ? (
-                  <VideoChat
-                    height={`${frameVhHeight}vh`}
-                    socket={socket}
-                    call={Object.assign({}, visibleCalls[idx], {
-                      messages: undefined,
-                    })}
-                    width="100%"
-                    alerts={CALL_ALERTS}
-                    terminateCall={handleVideoTermination}
-                    muteCall={(callId: number) => {
-                      setConsumeAudioRecord(_.omit(consumeAudioRecord, callId));
-                    }}
-                    unmuteCall={(callId: number) =>
-                      setConsumeAudioRecord({
-                        ...consumeAudioRecord,
-                        [callId]: true,
-                      })
-                    }
-                    isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
-                    openChat={(callId: number) => {
-                      const call = visitations.find(
-                        (call) => call.id === callId
-                      );
-                      setChatCallId(callId);
-                      setMessages(call?.messages || []);
-                      setChatCollapsed(false);
-                    }}
-                    closeChat={(callId: number) => {
-                      console.log(callId);
-                      setChatCollapsed(true);
-                    }}
-                    chatCollapsed={chatCollapsed}
-                    addMessage={addMessage}
-                    lockCall={(callId: number) => {
-                      const call = visitations.find(
-                        (call) => call.id === callId
-                      );
-                      // TODO add call lock logic
-                      // https://github.com/Ameelio/connect-doc-client/issues/38
-                      if (call) console.log("call locked!");
-                    }}
-                  />
-                ) : (
-                  <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
-                )}
-              </Col>
-            ))}
-          </Row>
-        </Space>
-      </Content>
-      <Sider
-        theme="light"
-        width={300}
-        collapsible
-        defaultCollapsed
-        reverseArrow
-        collapsed={chatCollapsed}
-        onCollapse={(collapsed) => setChatCollapsed(collapsed)}
-      >
-        {!chatCollapsed && (
-          <div>
-            <PageHeader title="Chat" />{" "}
-            <div style={WRAPPER_STYLE}>
-              <Space
-                direction="vertical"
-                style={{
-                  overflowY: "scroll",
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                }}
-              >
-                {messages.map((message) => (
-                  <MessageDisplay message={message} />
-                ))}
-              </Space>
+    <Content>
+      <Header
+        title="Live Calls"
+        subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
+      />
+      <Layout>
+        <Content>
+          <Space
+            direction="vertical"
+            style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
+          >
+            {visitations.length > 0 && (
+              <Pagination
+                defaultCurrent={1}
+                defaultPageSize={grid}
+                onChange={onPageChange}
+                pageSize={grid}
+                pageSizeOptions={OPTIONS.map((e) => `${e}`)}
+                total={visitations.length}
+                showSizeChanger={true}
+                onShowSizeChange={onShowSizeChange}
+              />
+            )}
+            <Row>
+              {Array.from(Array(grid).keys()).map((idx) => (
+                <Col span={GRID_TO_SPAN_WIDTH[grid]}>
+                  {visibleCalls.length - 1 >= idx && socket ? (
+                    <VideoChat
+                      height={`${frameVhHeight}vh`}
+                      socket={socket}
+                      call={Object.assign({}, visibleCalls[idx], {
+                        messages: undefined,
+                      })}
+                      width="100%"
+                      alerts={CALL_ALERTS}
+                      terminateCall={handleVideoTermination}
+                      muteCall={(callId: number) => {
+                        setConsumeAudioRecord(
+                          _.omit(consumeAudioRecord, callId)
+                        );
+                      }}
+                      unmuteCall={(callId: number) =>
+                        setConsumeAudioRecord({
+                          ...consumeAudioRecord,
+                          [callId]: true,
+                        })
+                      }
+                      isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
+                      openChat={(callId: number) => {
+                        const call = visitations.find(
+                          (call) => call.id === callId
+                        );
+                        setChatCallId(callId);
+                        setMessages(call?.messages || []);
+                        setChatCollapsed(false);
+                      }}
+                      closeChat={(callId: number) => {
+                        console.log(callId);
+                        setChatCollapsed(true);
+                      }}
+                      chatCollapsed={chatCollapsed}
+                      addMessage={addMessage}
+                      lockCall={(callId: number) => {
+                        const call = visitations.find(
+                          (call) => call.id === callId
+                        );
+                        // TODO add call lock logic
+                        // https://github.com/Ameelio/connect-doc-client/issues/38
+                        if (call) console.log("call locked!");
+                      }}
+                    />
+                  ) : (
+                    <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
+                  )}
+                </Col>
+              ))}
+            </Row>
+          </Space>
+        </Content>
+        <Sider
+          theme="light"
+          width={300}
+          collapsible
+          defaultCollapsed
+          reverseArrow
+          collapsed={chatCollapsed}
+          onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+        >
+          {!chatCollapsed && (
+            <div>
+              <PageHeader title="Chat" />{" "}
+              <div style={WRAPPER_STYLE}>
+                <Space
+                  direction="vertical"
+                  style={{
+                    overflowY: "scroll",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                  }}
+                >
+                  {messages.map((message) => (
+                    <MessageDisplay message={message} />
+                  ))}
+                </Space>
+              </div>
             </div>
-          </div>
-        )}
-      </Sider>
-    </Layout>
+          )}
+        </Sider>
+      </Layout>
+    </Content>
   );
 };
 

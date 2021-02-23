@@ -226,10 +226,6 @@ const VideoChat: React.FC<Props> = React.memo(
           }}
           ref={measuredRef}
         >
-          {/* <video id="visitor-video"/>
-        <video id="inmate-video"/>
-        <audio id="visitor-audio"/>
-        <audio id="inmate-audio"/> */}
           {!isAudioOn && (
             <AudioMutedOutlined
               style={{

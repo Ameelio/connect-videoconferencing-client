@@ -95,12 +95,7 @@ const initialState: FacilitiesState = facilitiesAdapter.getInitialState({
 export const facilitiesSlice = createSlice({
   name: "facilities",
   initialState,
-  reducers: {
-    setSelected: (state, action: PayloadAction<SelectedFacility>) => ({
-      ...state,
-      selected: action.payload,
-    }),
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchFacilities.fulfilled, (state, action) => {
       const newState = facilitiesAdapter.setAll(
