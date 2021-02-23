@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
 import * as mediasoupClient from "mediasoup-client";
-import { PageHeader, Space, Spin } from "antd";
+import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import {
@@ -14,9 +14,6 @@ import {
 } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { UI } from "src/utils";
-import Sider from "antd/lib/layout/Sider";
-import { WRAPPER_STYLE } from "src/styles/styles";
-import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
 interface Props {
   width: number | string;
@@ -24,7 +21,6 @@ interface Props {
   call: Omit<LiveCall, "messages">;
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
-  terminateCall: (id: number) => void;
   muteCall: (id: number) => void;
   unmuteCall: (id: number) => void;
   isAudioOn: boolean;
@@ -56,7 +52,6 @@ const VideoChat: React.FC<Props> = React.memo(
     height,
     socket,
     alerts,
-    terminateCall,
     lockCall,
     muteCall,
     unmuteCall,
@@ -85,7 +80,6 @@ const VideoChat: React.FC<Props> = React.memo(
       const { participants } = await new Promise((resolve, reject) => {
         socket.emit("info", { callId }, resolve);
       });
-      console.log(participants);
       socket.emit("textMessage", {
         callId,
         contents: alert.body,
@@ -132,6 +126,7 @@ const VideoChat: React.FC<Props> = React.memo(
 
     useEffect(() => {
       if (rc && isAuthed) {
+        console.log("listening to text messsage for " + callId);
         rc.socket.on(
           "textMessage",
           ({
@@ -147,7 +142,6 @@ const VideoChat: React.FC<Props> = React.memo(
               from: from.type,
               timestamp: new Date().toLocaleDateString(),
             };
-            console.log("before add message");
             addMessage(callId, message);
           }
         );
@@ -167,21 +161,34 @@ const VideoChat: React.FC<Props> = React.memo(
               ) => {
                 if (node) {
                   if (kind === "video") {
-                    const video = document.createElement("video");
-                    video.style.width = "50%";
-                    video.style.height = "100%";
-                    video.srcObject = stream;
-                    video.id = `${user.type}-video`;
-                    video.autoplay = true;
-                    node.appendChild(video);
+                    const video = document.getElementById(
+                      `${user.type}-${user.id}-video`
+                    );
+                    if (video) {
+                      (video as HTMLVideoElement).srcObject = stream;
+                    } else {
+                      const newVideo = document.createElement("video");
+                      newVideo.style.width = "50%";
+                      newVideo.style.height = "100%";
+                      newVideo.srcObject = stream;
+                      newVideo.id = `${user.type}-video`;
+                      newVideo.autoplay = true;
+                      node.appendChild(newVideo);
+                    }
                   } else if (kind === "audio") {
-                    const audio = document.createElement("audio");
-                    audio.srcObject = stream;
-                    audio.autoplay = true;
-                    audio.id = `${user.type}-audio`;
-                    audio.muted = isAudioOn;
-
-                    node.appendChild(audio);
+                    const audio = document.getElementById(
+                      `${user.type}-${user.id}-audio`
+                    );
+                    if (audio) {
+                      (audio as HTMLAudioElement).srcObject = stream;
+                    } else {
+                      const newAudio = document.createElement("audio");
+                      newAudio.srcObject = stream;
+                      newAudio.autoplay = true;
+                      newAudio.id = `${user.type}-audio`;
+                      newAudio.muted = !isAudioOn;
+                      node.appendChild(newAudio);
+                    }
                   }
 
                   setLoading(false);
@@ -195,12 +202,15 @@ const VideoChat: React.FC<Props> = React.memo(
     );
 
     useEffect(() => {
-      console.log(isAudioOn);
-      const inmate = document.getElementById("inmate-audio");
-      const user = document.getElementById("user-audio");
+      const inmate = document.getElementById(
+        `inmate-${call.connection.inmateId}-audio`
+      );
+      const user = document.getElementById(
+        `user-${call.connection.userId}-audio`
+      );
       if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
       if (user) (user as HTMLAudioElement).muted = isAudioOn;
-    }, [isAudioOn]);
+    }, [isAudioOn, call.connection]);
 
     useEffect(() => {
       if (rc && call) {
@@ -214,8 +224,8 @@ const VideoChat: React.FC<Props> = React.memo(
     return (
       <div
         style={{
-          display: "flex",
-          flexDirection: "row",
+          width,
+          height,
         }}
       >
         <div

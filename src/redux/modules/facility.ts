@@ -3,7 +3,6 @@ import {
   createEntityAdapter,
   createSlice,
   EntityState,
-  PayloadAction,
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";

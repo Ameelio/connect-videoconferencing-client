@@ -27,8 +27,6 @@ export const fetchCalls = createAsyncThunk(
       throw body;
     }
 
-    console.log(body.data);
-
     const calls = ((body.data as Record<string, unknown>)
       .calls as RawCall[]).map(cleanCall) as RecordedCall[];
 

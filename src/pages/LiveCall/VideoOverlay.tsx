@@ -6,6 +6,7 @@ import {
   AudioOutlined,
   LockFilled,
   MessageFilled,
+  MessageOutlined,
   MoreOutlined,
   SettingFilled,
 } from "@ant-design/icons";
@@ -73,7 +74,7 @@ export default function VideoOverlay({
       </Menu.Item>
       <Menu.Item
         key="chat"
-        icon={chatCollapsed ? <AudioMutedOutlined /> : <AudioOutlined />}
+        icon={chatCollapsed ? <MessageOutlined /> : <MessageOutlined />}
         onClick={() => (chatCollapsed ? openChat() : closeChat())}
       >
         {chatCollapsed ? "View Chat" : "Close Chat"}

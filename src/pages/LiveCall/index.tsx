@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
-import { bindActionCreators, Dispatch } from "redux";
-
 import {
   CALL_ALERTS,
   GRID_TO_SPAN_WIDTH,
@@ -28,20 +26,17 @@ const mapStateToProps = (state: RootState) => ({
   visitations: selectLiveCalls(state) as LiveCall[],
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      fetchCalls,
-      addMessage,
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  fetchCalls,
+  addMessage,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const MAX_VH_HEIGHT_FRAMES = 80;
+const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   visitations,
@@ -49,23 +44,18 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
-  const [chatCallId, setChatCallId] = useState(0);
+  const [activeCallChatId, setActiveCallChatId] = useState<number>();
   const [messages, setMessages] = useState<CallMessage[]>([]);
-  const [chatCollapsed, setChatCollapsed] = useState(true);
+  const [chatCollapsed, setChatCollapsed] = useState(false);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
+  const [page, setPage] = useState(1);
 
   const [consumeAudioRecord, setConsumeAudioRecord] = useState<
     Record<number, boolean>
   >({});
 
   useEffect(() => {
-    const now = new Date().getTime();
-    fetchCalls({
-      approved: true,
-      firstLive: [0, now].join(","),
-      end: [now, now + 1e8].join(","),
-    });
     const interval = setInterval(() => {
       const now = new Date().getTime();
       fetchCalls({
@@ -90,16 +80,15 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     setVisibleCalls(visitations.slice(0, grid));
-  }, [grid, visitations]);
+    if (!activeCallChatId && visitations.length > 0) {
+      setActiveCallChatId(visitations[0].id);
+    }
+  }, [grid, visitations, activeCallChatId]);
 
   useEffect(() => {
-    const call = visitations.find((call) => call.id === chatCallId);
+    const call = visitations.find((call) => call.id === activeCallChatId);
     setMessages(call?.messages || []);
-  }, [chatCallId, visitations]);
-
-  const handleVideoTermination = () => {
-    // TODO add redux store request
-  };
+  }, [activeCallChatId, visitations]);
 
   // Grid options
   const handleGridChange = (grid: GridOption) => {
@@ -107,21 +96,23 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     setFrameVhHeight(GRID_TO_VH_HEIGHT[grid]);
   };
 
-  const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
-
   const onPageChange = (page: number, _?: number) => {
     const startIdx = (page - 1) * grid;
     const endIdx = startIdx + grid;
     setVisibleCalls(visitations.slice(startIdx, endIdx));
+    setPage(page);
   };
 
   const onShowSizeChange = (_: number, pageSize: number) => {
     handleGridChange(pageSize as GridOption);
   };
 
-  const addMessage = (callId: number, message: CallMessage) => {
-    addMessage(callId, message);
-  };
+  const handleNewMessage = useCallback(
+    (callId: number, message: CallMessage) => {
+      addMessage({ id: callId, message });
+    },
+    []
+  );
 
   return (
     <Content>
@@ -137,6 +128,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
           >
             {visitations.length > 0 && (
               <Pagination
+                current={page}
                 defaultCurrent={1}
                 defaultPageSize={grid}
                 onChange={onPageChange}
@@ -159,7 +151,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                       })}
                       width="100%"
                       alerts={CALL_ALERTS}
-                      terminateCall={handleVideoTermination}
                       muteCall={(callId: number) => {
                         setConsumeAudioRecord(
                           _.omit(consumeAudioRecord, callId)
@@ -176,7 +167,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                         const call = visitations.find(
                           (call) => call.id === callId
                         );
-                        setChatCallId(callId);
+                        setActiveCallChatId(callId);
                         setMessages(call?.messages || []);
                         setChatCollapsed(false);
                       }}
@@ -185,14 +176,18 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
-                      addMessage={addMessage}
+                      addMessage={handleNewMessage}
                       lockCall={(callId: number) => {
-                        const call = visitations.find(
+                        const idx = visitations.findIndex(
                           (call) => call.id === callId
                         );
+
                         // TODO add call lock logic
                         // https://github.com/Ameelio/connect-doc-client/issues/38
-                        if (call) console.log("call locked!");
+                        if (idx !== -1) {
+                          handleGridChange(1);
+                          setPage(idx + 1);
+                        }
                       }}
                     />
                   ) : (

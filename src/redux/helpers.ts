@@ -56,8 +56,6 @@ export function cleanCall(call: RawCall): BaseCall {
     connectionId: call.connection_id,
     scheduledStartTime: call.start,
     scheduledEndTime: call.end,
-    startTime: call.first_live,
-    endTime: call.last_live,
     end: call.end,
     approved: call.approved,
     // TODO find right kiosks
