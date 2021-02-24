@@ -9,7 +9,7 @@ import {
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import { Layout, Row, Col, Space, Pagination, PageHeader } from "antd";
+import { Layout, Row, Col, Space, Pagination, PageHeader, Select } from "antd";
 import { fetchCalls, callsActions } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
@@ -109,6 +109,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     },
     []
   );
+
   return (
     <Content>
       <Header
@@ -183,6 +184,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                         if (idx !== -1) {
                           handleGridChange(1);
                           setPage(idx + 1);
+                          setActiveCallChatId(idx);
                         }
                       }}
                     />
@@ -205,7 +207,21 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
         >
           {!chatCollapsed && (
             <div>
-              <PageHeader title="Chat" />{" "}
+              <PageHeader
+                title="Chat"
+                extra={[
+                  <Select
+                    value={activeCallChatId}
+                    onSelect={(value) => setActiveCallChatId(value as number)}
+                  >
+                    {visitations.map((visitation) => (
+                      <Select.Option value={visitation.id} key={visitation.id}>
+                        Call #{visitation.id}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                ]}
+              />{" "}
               <div style={WRAPPER_STYLE}>
                 <Space
                   direction="vertical"
