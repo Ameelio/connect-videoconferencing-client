@@ -12,7 +12,7 @@ export function MessageDisplay({
   const getDisplayName = () => {
     switch (type) {
       case "inmate":
-        return "Inmate";
+        return "Incarcerated Person";
       case "monitor":
         return "DOC";
       case "user":

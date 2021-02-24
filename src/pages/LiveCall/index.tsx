@@ -107,7 +107,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     handleGridChange(pageSize as GridOption);
   };
 
-  const handleNewMessage = useCallback(
+  const onMessageReceived = useCallback(
     (callId: number, message: CallMessage) => {
       addMessage({ id: callId, message });
     },
@@ -172,11 +172,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                         setChatCollapsed(false);
                       }}
                       closeChat={(callId: number) => {
-                        console.log(callId);
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
-                      addMessage={handleNewMessage}
+                      addMessage={onMessageReceived}
                       lockCall={(callId: number) => {
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
