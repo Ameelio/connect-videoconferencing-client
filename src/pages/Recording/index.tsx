@@ -82,7 +82,7 @@ function RecordingBase({
           muted={true}
           controls={true}
           width="100%"
-          url={call.recordingUrl}
+          url={"/recording_demo.mp4" || call.recordingUrl}
         />
         <PageHeader
           ghost={false}
@@ -123,13 +123,13 @@ function RecordingBase({
               {call.connection.relationship}
             </Descriptions.Item>
             <Descriptions.Item label="Date">
-              {format(call.startTime, "HH:mm")}
+              {format(call.scheduledStartTime, "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="Start Time">
-              {format(call.startTime, "HH:mm")}
+              {format(call.scheduledStartTime, "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="End Time">
-              {format(call.endTime, "HH:mm")}
+              {format(call.scheduledEndTime, "HH:mm")}
             </Descriptions.Item>
             {/* TODO add kiosk name once we incoporate the nodes endpoint */}
             <Descriptions.Item label="Location">

@@ -181,9 +181,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
                         );
-
-                        // TODO add call lock logic
-                        // https://github.com/Ameelio/connect-doc-client/issues/38
                         if (idx !== -1) {
                           handleGridChange(1);
                           setPage(idx + 1);

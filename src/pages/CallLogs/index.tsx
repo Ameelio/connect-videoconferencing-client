@@ -21,7 +21,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   logs: getCallsInfo(state, selectAllCalls(state)).filter(
-    (x) => x.startTime && x.endTime
+    (call) => call.status === "ended" || call.status === "terminated"
   ) as RecordedCall[],
   history: state.router,
 });
@@ -178,7 +178,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         <Table dataSource={filteredLogs} loading={loading}>
           <Column
             title="Date"
-            dataIndex="startTime"
+            dataIndex="scheduledStartTime"
             key="date"
             render={(time) => (
               <>
@@ -188,7 +188,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
           <Column
             title="Start Time"
-            dataIndex="startTime"
+            dataIndex="scheduledStartTime"
             key="startTime"
             render={(time) => (
               <>
@@ -198,7 +198,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
           <Column
             title="End Time"
-            dataIndex="endTime"
+            dataIndex="scheduledEndTime"
             key="endTime"
             render={(time) => (
               <>

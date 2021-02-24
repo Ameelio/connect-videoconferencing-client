@@ -2,12 +2,7 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
 import { BaseConnection } from "src/typings/Connection";
-import {
-  BaseCall,
-  CallMessage,
-  CallParticipant,
-  CallStatus,
-} from "src/typings/Call";
+import { BaseCall, CallMessage, CallStatus } from "src/typings/Call";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -46,7 +41,7 @@ export interface RawMessage {
 }
 
 export function cleanCall(call: RawCall): BaseCall {
-  const messages = call.messages.map((message) => ({
+  const messages: CallMessage[] = call.messages.map((message) => ({
     content: message.contents,
     from: message.fromType,
     timestamp: message.createdAt,
