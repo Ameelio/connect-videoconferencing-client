@@ -124,7 +124,6 @@ const VideoChat: React.FC<Props> = React.memo(
 
     useEffect(() => {
       if (rc && isAuthed) {
-        console.log("listening to text messsage for " + callId);
         rc.socket.on(
           "textMessage",
           ({
@@ -158,16 +157,19 @@ const VideoChat: React.FC<Props> = React.memo(
                 user: { type: string; id: number }
               ) => {
                 if (node) {
-                  // TODO for some reason room client is consuming from calls
-                  // This is very likely to be an API bug that's emiting events to every DOC client joined
-                  // regardless of whether or not it's the room client w/ that given person
-                  // To replicate the bug you can just uncomment this and join 2 calls at once
+                  // TODO for some reason room client is consuming streams from all calls (not just the one identified by callId)
+                  // This is very likely to be an API bug that relays the stream to all active rooms regardless of whether or not it's the room client w/ that given person
+                  // To replicate the bug you can just uncomment this scrappy check and join 2 calls at once
                   if (
                     user.id !== participants.userId &&
                     user.id !== participants.inmateId
                   )
                     return;
 
+                  // TODO there's a weird in which we receive the streams and instantiate the calls, but only the first call stream has actual footaage
+                  // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
+
+                  //  TODO move this logic to refs
                   if (kind === "video") {
                     const id = `${user.type}-${callId}-${user.id}-video`;
                     const video = document.getElementById(id);
