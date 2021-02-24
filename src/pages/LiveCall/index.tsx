@@ -43,7 +43,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   fetchCalls,
 }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [visibleCalls, setVisibleCalls] = useState<LiveCall[]>([]);
   const [activeCallChatId, setActiveCallChatId] = useState<number>();
   const [messages, setMessages] = useState<CallMessage[]>([]);
   const [chatCollapsed, setChatCollapsed] = useState(false);
@@ -79,7 +78,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   }, [setSocket, socket]);
 
   useEffect(() => {
-    setVisibleCalls(visitations.slice(0, grid));
+    // setVisibleCalls(visitations.slice(0, grid));
     if (!activeCallChatId && visitations.length > 0) {
       setActiveCallChatId(visitations[0].id);
     }
@@ -97,9 +96,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   };
 
   const onPageChange = (page: number, _?: number) => {
-    const startIdx = (page - 1) * grid;
-    const endIdx = startIdx + grid;
-    setVisibleCalls(visitations.slice(startIdx, endIdx));
     setPage(page);
   };
 
@@ -113,11 +109,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     },
     []
   );
-
   return (
     <Content>
       <Header
-        title="Live Calls"
+        title={`Live Calls (${visitations.length})`}
         subtitle="Monitor, send alerts and terminate calls if needed. All in real-time"
       />
       <Layout>
@@ -133,22 +128,27 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                 defaultPageSize={grid}
                 onChange={onPageChange}
                 pageSize={grid}
-                pageSizeOptions={OPTIONS.map((e) => `${e}`)}
+                pageSizeOptions={OPTIONS.filter(
+                  (option) => option <= visitations.length
+                ).map((e) => `${e}`)}
                 total={visitations.length}
                 showSizeChanger={true}
                 onShowSizeChange={onShowSizeChange}
               />
             )}
-            <Row>
-              {Array.from(Array(grid).keys()).map((idx) => (
-                <Col span={GRID_TO_SPAN_WIDTH[grid]}>
-                  {visibleCalls.length - 1 >= idx && socket ? (
+            <Row gutter={16}>
+              {visitations.map((visitation, idx) => (
+                <Col span={GRID_TO_SPAN_WIDTH[grid]} key={visitation.id}>
+                  {socket ? (
                     <VideoChat
                       height={`${frameVhHeight}vh`}
                       socket={socket}
-                      call={Object.assign({}, visibleCalls[idx], {
-                        messages: undefined,
-                      })}
+                      callId={visitation.id}
+                      participants={visitation.connection}
+                      isVisible={
+                        idx >= (page - 1) * grid &&
+                        idx < (page - 1) * grid + grid
+                      }
                       width="100%"
                       alerts={CALL_ALERTS}
                       muteCall={(callId: number) => {
@@ -162,7 +162,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                           [callId]: true,
                         })
                       }
-                      isAudioOn={visibleCalls[idx].id in consumeAudioRecord}
+                      isAudioOn={visitation.id in consumeAudioRecord}
                       openChat={(callId: number) => {
                         const call = visitations.find(
                           (call) => call.id === callId

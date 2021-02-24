@@ -6,19 +6,17 @@ import * as mediasoupClient from "mediasoup-client";
 import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import {
-  CallAlert,
-  CallMessage,
-  CallParticipant,
-  LiveCall,
-} from "src/typings/Call";
+import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { UI } from "src/utils";
+import { Connection } from "src/typings/Connection";
 
 interface Props {
+  isVisible: boolean;
   width: number | string;
   height: number | string;
-  call: Omit<LiveCall, "messages">;
+  callId: number;
+  participants: Connection;
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
   muteCall: (id: number) => void;
@@ -47,7 +45,9 @@ function Loader(): ReactElement {
 
 const VideoChat: React.FC<Props> = React.memo(
   ({
-    call,
+    callId,
+    participants,
+    isVisible,
     width,
     height,
     socket,
@@ -67,8 +67,6 @@ const VideoChat: React.FC<Props> = React.memo(
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
     const [rc, setRc] = useState<RoomClient>();
-
-    const callId = call.id;
 
     const joinRoom = useCallback(async () => {
       const rc = new RoomClient(mediasoupClient, socket, callId);
@@ -122,7 +120,7 @@ const VideoChat: React.FC<Props> = React.memo(
           setIsAuthed(true);
         })();
       }
-    }, [call.id, id, token, socket, joinRoom, isAuthed]);
+    }, [callId, id, token, socket, joinRoom, isAuthed]);
 
     useEffect(() => {
       if (rc && isAuthed) {
@@ -160,10 +158,19 @@ const VideoChat: React.FC<Props> = React.memo(
                 user: { type: string; id: number }
               ) => {
                 if (node) {
+                  // TODO for some reason room client is consuming from calls
+                  // This is very likely to be an API bug that's emiting events to every DOC client joined
+                  // regardless of whether or not it's the room client w/ that given person
+                  // To replicate the bug you can just uncomment this and join 2 calls at once
+                  if (
+                    user.id !== participants.userId &&
+                    user.id !== participants.inmateId
+                  )
+                    return;
+
                   if (kind === "video") {
-                    const video = document.getElementById(
-                      `${user.type}-${user.id}-video`
-                    );
+                    const id = `${user.type}-${callId}-${user.id}-video`;
+                    const video = document.getElementById(id);
                     if (video) {
                       (video as HTMLVideoElement).srcObject = stream;
                     } else {
@@ -171,21 +178,20 @@ const VideoChat: React.FC<Props> = React.memo(
                       newVideo.style.width = "50%";
                       newVideo.style.height = "100%";
                       newVideo.srcObject = stream;
-                      newVideo.id = `${user.type}-video`;
+                      newVideo.id = id;
                       newVideo.autoplay = true;
                       node.appendChild(newVideo);
                     }
                   } else if (kind === "audio") {
-                    const audio = document.getElementById(
-                      `${user.type}-${user.id}-audio`
-                    );
+                    const id = `${user.type}-${callId}-${user.id}-audio`;
+                    const audio = document.getElementById(id);
                     if (audio) {
                       (audio as HTMLAudioElement).srcObject = stream;
                     } else {
                       const newAudio = document.createElement("audio");
                       newAudio.srcObject = stream;
                       newAudio.autoplay = true;
-                      newAudio.id = `${user.type}-audio`;
+                      newAudio.id = id;
                       newAudio.muted = !isAudioOn;
                       node.appendChild(newAudio);
                     }
@@ -198,78 +204,74 @@ const VideoChat: React.FC<Props> = React.memo(
           })();
         }
       },
-      [rc, isAuthed, isAudioOn]
+      [rc, isAuthed, isAudioOn, callId, participants]
     );
 
     useEffect(() => {
       const inmate = document.getElementById(
-        `inmate-${call.connection.inmateId}-audio`
+        `inmate-${callId}-${participants.inmateId}-audio`
       );
       const user = document.getElementById(
-        `user-${call.connection.userId}-audio`
+        `user-${callId}-${participants.userId}-audio`
       );
       if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
       if (user) (user as HTMLAudioElement).muted = isAudioOn;
-    }, [isAudioOn, call.connection]);
+    }, [isAudioOn, participants, callId]);
 
     useEffect(() => {
-      if (rc && call) {
+      if (rc) {
         const interval = setInterval(() => {
-          rc.socket.emit("heartbeat", { callId: call.id });
+          rc.socket.emit("heartbeat", { callId });
         }, 1000);
         return () => clearInterval(interval);
       }
-    }, [rc, call]);
+    }, [rc, callId]);
 
     return (
       <div
+        className="video-wrapper"
+        id={`call-${callId}`}
         style={{
           width,
           height,
+          visibility: isVisible ? "visible" : "hidden",
+          display: isVisible ? "flex" : "none",
         }}
+        ref={measuredRef}
       >
-        <div
-          className="video-wrapper"
-          style={{
-            width,
-            height,
-          }}
-          ref={measuredRef}
-        >
-          {!isAudioOn && (
-            <AudioMutedOutlined
-              style={{
-                position: "absolute",
-                bottom: 24,
-                right: 24,
-                fontSize: 36,
-                color: "red",
-              }}
-            />
-          )}
-          <VideoOverlay
-            alerts={alerts}
-            terminateCall={() => {
-              if (rc) {
-                rc.terminate();
-                UI.openNotificationWithIcon(
-                  `Call #${call.id} terminated`,
-                  "We notified both participants of the incident.",
-                  "info"
-                );
-              }
+        {!isAudioOn && (
+          <AudioMutedOutlined
+            style={{
+              position: "absolute",
+              bottom: 24,
+              right: 24,
+              fontSize: 36,
+              color: "red",
             }}
-            lockCall={() => lockCall(callId)}
-            muteCall={() => muteCall(callId)}
-            unmuteCall={() => unmuteCall(callId)}
-            isAudioOn={isAudioOn}
-            emitAlert={emitAlert}
-            openChat={() => openChat(callId)}
-            closeChat={() => closeChat(callId)}
-            chatCollapsed={chatCollapsed}
           />
-          {loading && <Loader />}
-        </div>
+        )}
+        <VideoOverlay
+          alerts={alerts}
+          terminateCall={() => {
+            if (rc) {
+              rc.terminate();
+              UI.openNotificationWithIcon(
+                `Call #${callId} terminated`,
+                "We notified both participants of the incident.",
+                "info"
+              );
+            }
+          }}
+          lockCall={() => lockCall(callId)}
+          muteCall={() => muteCall(callId)}
+          unmuteCall={() => unmuteCall(callId)}
+          isAudioOn={isAudioOn}
+          emitAlert={emitAlert}
+          openChat={() => openChat(callId)}
+          closeChat={() => closeChat(callId)}
+          chatCollapsed={chatCollapsed}
+        />
+        {loading && <Loader />}
       </div>
     );
   }
