@@ -11,7 +11,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
-import { genFullName, getInitials, generateBgColor } from "src/utils/Common";
+import { genFullName, getInitials, generateBgColor } from "src/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
 

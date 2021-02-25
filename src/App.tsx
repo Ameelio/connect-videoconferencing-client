@@ -164,20 +164,23 @@ function App({
           />
         )}
         <Layout>
-          {((isInitingData && isAuthenticated) ||
-            session.status === "loading") && <Loader />}
-          <Switch>
-            <Route exact path={LOGIN_PATH} component={Login}></Route>
-            {ROUTES.map((route) => (
-              <ProtectedRoute
-                exact
-                {...defaultProtectedRouteProps}
-                path={route.path}
-                component={route.component}
-                key={route.label}
-              ></ProtectedRoute>
-            ))}
-          </Switch>
+          {(isInitingData && isAuthenticated) ||
+          session.status === "loading" ? (
+            <Loader />
+          ) : (
+            <Switch>
+              <Route exact path={LOGIN_PATH} component={Login}></Route>
+              {ROUTES.map((route) => (
+                <ProtectedRoute
+                  exact
+                  {...defaultProtectedRouteProps}
+                  path={route.path}
+                  component={route.component}
+                  key={route.label}
+                ></ProtectedRoute>
+              ))}
+            </Switch>
+          )}
         </Layout>
       </Layout>
     </ConnectedRouter>

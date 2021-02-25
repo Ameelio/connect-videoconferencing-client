@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
-import { genFullName } from "src/utils/Common";
+import { genFullName } from "src/utils";
 import { Call } from "src/typings/Call";
 
 interface Props {

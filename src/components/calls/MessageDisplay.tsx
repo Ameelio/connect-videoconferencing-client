@@ -8,11 +8,11 @@ export function MessageDisplay({
 }: {
   message: CallMessage;
 }): ReactElement {
-  const { type } = message.from;
+  const type = message.from;
   const getDisplayName = () => {
     switch (type) {
       case "inmate":
-        return "You";
+        return "Incarcerated Person";
       case "monitor":
         return "DOC";
       case "user":

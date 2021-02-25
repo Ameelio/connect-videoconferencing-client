@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { AmeelioNode } from "src/typings/Node";
-import { UI } from "src/utils";
+import { showToast } from "src/utils";
 
 export const fetchNodes = createAsyncThunk("node/fetchNodes", async () => {
   const body = await fetchAuthenticated(`/subnodes`);
@@ -31,7 +31,7 @@ export const nodesSlice = createSlice({
       nodesAdapter.setAll(state, action.payload)
     );
     builder.addCase(fetchNodes.rejected, (_state, _action) =>
-      UI.showToast("nodes", "Could not load facility information", "error")
+      showToast("nodes", "Could not load facility information", "error")
     );
   },
 });

@@ -22,11 +22,11 @@ import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import PDFDownloadButton from "./PDFDownloadButton";
 import { LiveCall } from "src/typings/Call";
-import { onlyUnique } from "src/utils/Common";
+import { onlyUnique } from "src/utils";
 import MetricCard from "./MetricCard";
 import { format } from "date-fns";
 import _ from "lodash";
-import { callsToday, callsToWeeklyData } from "src/utils/Call";
+import { callsToday, callsToWeeklyData } from "src/utils";
 import Header from "src/components/Header/Header";
 
 const { Content } = Layout;

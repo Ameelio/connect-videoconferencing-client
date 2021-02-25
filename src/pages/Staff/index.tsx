@@ -17,7 +17,7 @@ import {
   Switch,
 } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
-import { cloneObject, genFullName, mapPermissionMap } from "src/utils/Common";
+import { cloneObject, genFullName, mapPermissionMap } from "src/utils";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 import Header from "src/components/Header/Header";
 import { UserAddOutlined } from "@ant-design/icons";

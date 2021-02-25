@@ -3,10 +3,11 @@ import {
   createEntityAdapter,
   createAsyncThunk,
   EntityState,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanCall, RawCall } from "../helpers";
-import { createCallOptionsParam } from "src/utils/Common";
+import { createCallOptionsParam } from "src/utils";
 import {
   BaseCall,
   CallFilters,
@@ -26,10 +27,10 @@ export const fetchCalls = createAsyncThunk(
       throw body;
     }
 
-    const visitations = ((body.data as Record<string, unknown>)
+    const calls = ((body.data as Record<string, unknown>)
       .calls as RawCall[]).map(cleanCall) as RecordedCall[];
 
-    return visitations;
+    return calls;
   }
 );
 
@@ -60,6 +61,18 @@ export const callsSlice = createSlice({
   reducers: {
     callsAddMany: callsAdapter.addMany,
     callsSetAll: callsAdapter.setAll,
+    addMessage: (
+      state,
+      action: PayloadAction<{ id: number; message: CallMessage }>
+    ) => {
+      const { id, message } = action.payload;
+      const call = state.entities[id];
+      if (!call) return;
+      callsAdapter.updateOne(state, {
+        id,
+        changes: { messages: [...call.messages, message] },
+      });
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCalls.fulfilled, (state, action) => {
