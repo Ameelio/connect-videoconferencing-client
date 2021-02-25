@@ -7,6 +7,7 @@ import {
 import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";
 import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Facility";
+import { showToast } from "src/utils";
 import { Store } from "..";
 
 export const facilitiesAdapter = createEntityAdapter<Facility>();
@@ -60,8 +61,9 @@ export const fetchFacilities = createAsyncThunk(
   }
 );
 
+const UPDATE_CALL_HOURS = "facility/updateCallTimes";
 export const updateCallTimes = createAsyncThunk(
-  "facility/updateCallTimes",
+  UPDATE_CALL_HOURS,
   async (args: { callSlots: NodeCallSlot[]; zone: string }) => {
     const body = await fetchAuthenticated(`/times`, {
       method: "PUT",
@@ -123,12 +125,24 @@ export const facilitiesSlice = createSlice({
       ...state,
       loading: true,
     }));
-    builder.addCase(updateCallTimes.fulfilled, (state, action) => ({
-      ...state,
-      // TODO update store with new call times
-      // selected:  {...state.selected},
-      // selected: { ...state.selected, callTimes: action.payload },
-    }));
+    builder.addCase(updateCallTimes.pending, (state, action) => {
+      showToast(UPDATE_CALL_HOURS, "Processing request...", "loading");
+    });
+    builder.addCase(updateCallTimes.fulfilled, (state, action) => {
+      showToast(
+        UPDATE_CALL_HOURS,
+        "Succesfully updated the settings!",
+        "success"
+      );
+      if (!state.selected) return { ...state };
+      return {
+        ...state,
+        selected: { ...state.selected, callTimes: action.payload },
+      };
+    });
+    builder.addCase(updateCallTimes.rejected, (state, action) => {
+      showToast(UPDATE_CALL_HOURS, "Failed to update.", "success");
+    });
   },
 });
 

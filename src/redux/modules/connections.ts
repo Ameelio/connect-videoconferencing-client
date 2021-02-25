@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import camelcaseKeys from "camelcase-keys";
-import { UI } from "src/utils";
+import { openNotificationWithIcon } from "src/utils";
 import { BaseConnection, ConnectionStatus } from "src/typings/Connection";
 
 export const updateConnection = createAsyncThunk(
@@ -67,18 +67,10 @@ export const connectionsSlice = createSlice({
       const { status, connectionId } = action.payload;
       switch (status) {
         case "approved":
-          UI.openNotificationWithIcon(
-            "Connection created!",
-            "Hooray!",
-            "success"
-          );
+          openNotificationWithIcon("Connection created!", "Hooray!", "success");
           break;
         case "denied":
-          UI.openNotificationWithIcon(
-            "Connection rejected",
-            "Very sad",
-            "info"
-          );
+          openNotificationWithIcon("Connection rejected", "Very sad", "info");
           break;
       }
       connectionsAdapter.updateOne(state, {

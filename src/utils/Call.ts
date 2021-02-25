@@ -56,8 +56,7 @@ export const mapCallSlotsToTimeBlock = (
       ];
     }
   );
-  console.log("sorted:");
-  console.log(sorted);
+
   let idx = 0;
 
   const ranges: {
@@ -109,8 +108,6 @@ export const mapCallSlotsToTimeBlock = (
 
     return { [weekday]: timeRanges };
   });
-  console.log("output");
-  console.log(ranges);
   return Object.assign({}, ...ranges);
 };
 

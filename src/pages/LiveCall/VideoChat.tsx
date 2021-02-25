@@ -8,7 +8,7 @@ import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
 import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
-import { UI } from "src/utils";
+import { openNotificationWithIcon } from "src/utils";
 import { Connection } from "src/typings/Connection";
 
 interface Props {
@@ -84,7 +84,7 @@ const VideoChat: React.FC<Props> = React.memo(
         recipients: participants,
       });
 
-      UI.openNotificationWithIcon(
+      openNotificationWithIcon(
         "Alert succesfully issue.",
         "Both parties have been notified.",
         "success"
@@ -257,7 +257,7 @@ const VideoChat: React.FC<Props> = React.memo(
           terminateCall={() => {
             if (rc) {
               rc.terminate();
-              UI.openNotificationWithIcon(
+              openNotificationWithIcon(
                 `Call #${callId} terminated`,
                 "We notified both participants of the incident.",
                 "info"

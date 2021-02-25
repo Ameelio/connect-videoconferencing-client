@@ -10,10 +10,15 @@ import {
   Button,
   Typography,
   Tree,
+  Card,
 } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
-import { WHITE_BACKGROUND_LAYOUT, WRAPPER_STYLE } from "src/styles/styles";
+import {
+  FULL_WIDTH,
+  WHITE_BACKGROUND_LAYOUT,
+  WRAPPER_STYLE,
+} from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
@@ -86,54 +91,54 @@ function SettingsContainer({
   const handleSubmission = (e: React.MouseEvent) => {
     updateCallTimes({ callSlots, zone: "America_LosAngeles" });
   };
+
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
     return (
       <Row style={{ width: "100%", margin: 16 }}>
-        <Col flex={1} span={12}>
-          <Typography.Text>{dayOfWeekAsString(day)}</Typography.Text>
+        <Col span={12}>
+          <Typography.Title level={5}>
+            {dayOfWeekAsString(day)}
+          </Typography.Title>
         </Col>
-        {/* <Col> */}
-        <Col flex={1} span={12}>
-          <Space direction="vertical">
-            {ranges.length > 0 ? (
-              ranges.map((time) => (
-                <RangePicker
-                  minuteStep={30}
-                  use12Hours={true}
-                  defaultValue={[
-                    moment(
-                      format(new Date(time.start), dateFormat),
-                      dateFormat
-                    ),
-                    moment(format(new Date(time.end), dateFormat), dateFormat),
-                  ]}
-                  onChange={(values) => {
-                    if (!values || !values[0] || !values[1]) return;
-                    // TODO with date range picker, convert to right day
-                    onChange(
-                      values[0].toDate(),
-                      values[1].toDate(),
-                      day,
-                      time.idx
-                    );
-                  }}
-                  format={dateFormat}
-                />
-              ))
-            ) : (
+        <Col span={12}>
+          <Space direction="vertical" style={FULL_WIDTH}>
+            {ranges.map((time) => (
               <RangePicker
-                format={dateFormat}
                 minuteStep={30}
                 use12Hours={true}
+                defaultValue={[
+                  moment(format(new Date(time.start), dateFormat), dateFormat),
+                  moment(format(new Date(time.end), dateFormat), dateFormat),
+                ]}
                 onChange={(values) => {
                   if (!values || !values[0] || !values[1]) return;
-                  onChange(values[0].toDate(), values[1].toDate(), day, 0);
+                  // TODO with date range picker, convert to right day
+                  onChange(
+                    values[0].toDate(),
+                    values[1].toDate(),
+                    day,
+                    time.idx
+                  );
                 }}
+                format={dateFormat}
               />
-            )}
+            ))}
+            <RangePicker
+              format={dateFormat}
+              minuteStep={30}
+              use12Hours={true}
+              onChange={(values) => {
+                if (!values || !values[0] || !values[1]) return;
+                onChange(
+                  values[0].toDate(),
+                  values[1].toDate(),
+                  day,
+                  ranges.length
+                );
+              }}
+            />
           </Space>
         </Col>
-        {/* </Col> */}
       </Row>
     );
   };
@@ -145,17 +150,23 @@ function SettingsContainer({
         subtitle="Adjust the call hours, facility information, and facility kiosk directory as needed."
       />
       <div style={WRAPPER_STYLE}>
-        <Content style={WHITE_BACKGROUND_LAYOUT}>
+        <Content style={{ ...WRAPPER_STYLE }}>
           <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
             <TabPane tab="General Settings" key="setting">
-              <Space direction="vertical">
-                {WEEKDAYS.map((weekday) =>
-                  renderItem(weekday, ranges[weekday])
-                )}
-                <Button type="primary" block onClick={handleSubmission}>
-                  Save Changes
-                </Button>
-              </Space>
+              <Card
+                title="Call Hours"
+                extra={[
+                  <Button type="primary" onClick={handleSubmission}>
+                    Save Changes
+                  </Button>,
+                ]}
+              >
+                <Space direction="vertical">
+                  {WEEKDAYS.map((weekday) =>
+                    renderItem(weekday, ranges[weekday])
+                  )}
+                </Space>
+              </Card>
             </TabPane>
             <TabPane tab="Facility" key="facility">
               <Tree

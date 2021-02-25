@@ -10,6 +10,7 @@ import {
 } from "src/redux/selectors";
 import {
   Avatar,
+  Card,
   Col,
   Descriptions,
   Layout,
@@ -164,44 +165,37 @@ function InmateUnconnectedContainer({
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>
-        <Row justify="space-between">
-          <Col
-            flex={1}
-            style={{ ...WHITE_BACKGROUND_LAYOUT, ...WRAPPER_STYLE }}
-          >
-            <Space direction="vertical" style={FULL_WIDTH}>
-              <Typography.Title level={3}>Call Activity</Typography.Title>
+        <Row justify="space-between" gutter={12}>
+          <Col span={12}>
+            <Card title="Call Activity">
+              {!calls.length && <Typography.Text>No calls.</Typography.Text>}
               <Timeline mode={"left"}>{calls.map(renderItem)}</Timeline>
-            </Space>
+            </Card>
           </Col>
-          <Col
-            flex={1}
-            style={{ ...WHITE_BACKGROUND_LAYOUT, ...WRAPPER_STYLE }}
-          >
-            <Typography.Title level={3}>Connections</Typography.Title>
-            <Row style={{ ...WRAPPER_STYLE }} justify="space-between">
-              {connections.map((connection) => (
-                <Col span={8}>
-                  <Space direction="vertical">
-                    <Avatar
-                      src={connection.contact.profileImgPath}
-                      size={{
-                        xs: 24,
-                        sm: 32,
-                        md: 40,
-                        lg: 64,
-                        xl: 80,
-                        xxl: 100,
-                      }}
-                    />
-                    <Typography.Text>
-                      {genFullName(connection.contact)}
-                    </Typography.Text>
-                    <Typography.Text>{connection.relationship}</Typography.Text>
-                  </Space>
-                </Col>
-              ))}
-            </Row>
+          <Col span={12}>
+            <Card title="Connections">
+              <Row justify="space-between">
+                {!connections.length && (
+                  <Typography.Text>No connections.</Typography.Text>
+                )}
+                {connections.map((connection) => (
+                  <Col span={8}>
+                    <Space direction="vertical" align="center">
+                      <Avatar
+                        src={connection.contact.profileImgPath}
+                        size={80}
+                      />
+                      <Typography.Text>
+                        {genFullName(connection.contact)}
+                      </Typography.Text>
+                      <Typography.Text type="secondary">
+                        {connection.relationship}
+                      </Typography.Text>
+                    </Space>
+                  </Col>
+                ))}
+              </Row>
+            </Card>
           </Col>
         </Row>
       </Content>
