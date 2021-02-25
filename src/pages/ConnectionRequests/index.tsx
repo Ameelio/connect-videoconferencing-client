@@ -7,7 +7,7 @@ import {
   selectConnectionRequests,
 } from "src/redux/selectors";
 import { Table, Space, Layout, Avatar, Button } from "antd";
-import { genFullName } from "src/utils/Common";
+import { genFullName } from "src/utils";
 import { updateConnection } from "src/redux/modules/connections";
 import { BaseConnection, Connection } from "src/typings/Connection";
 import Header from "src/components/Header/Header";

@@ -3,7 +3,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
-import { genFullName } from "src/utils/Common";
+import { genFullName } from "src/utils";
 import { getCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";

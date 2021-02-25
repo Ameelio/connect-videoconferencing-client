@@ -8,7 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./CalendarView.css";
-import { VisitationToEventInput } from "src/utils/Common";
+import { VisitationToEventInput } from "src/utils";
 import { Call } from "src/typings/Call";
 
 interface Props {

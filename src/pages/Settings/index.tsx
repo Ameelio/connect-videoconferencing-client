@@ -14,11 +14,7 @@ import {
 } from "antd";
 import { NodeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
-import {
-  FULL_WIDTH,
-  WHITE_BACKGROUND_LAYOUT,
-  WRAPPER_STYLE,
-} from "src/styles/styles";
+import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
 import { CallBlock, WeeklySchedule } from "src/typings/Call";
 import { Tabs } from "antd";
@@ -26,8 +22,8 @@ import {
   dayOfWeekAsString,
   mapCallSlotsToTimeBlock,
   mapCallBlockToCallSlots,
-} from "src/utils/Call";
-import { cloneObject } from "src/utils/Common";
+} from "src/utils";
+import { cloneObject } from "src/utils";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
 import Header from "src/components/Header/Header";

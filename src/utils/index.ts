@@ -1,5 +1,3 @@
-import * as Call from "./Call";
-import * as Common from "./Common";
+export * from "./Call";
+export * from "./Common";
 export * from "./UI";
-
-export { Call, Common };

@@ -20,13 +20,9 @@ import {
   Timeline,
   Typography,
 } from "antd";
-import {
-  WHITE_BACKGROUND_LAYOUT,
-  WRAPPER_STYLE,
-  FULL_WIDTH,
-} from "src/styles/styles";
+import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName } from "src/utils/Common";
+import { genFullName } from "src/utils";
 import { push } from "connected-react-router";
 import { Call } from "src/typings/Call";
 import { ClockCircleOutlined } from "@ant-design/icons";

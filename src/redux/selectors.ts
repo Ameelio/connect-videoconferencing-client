@@ -9,7 +9,7 @@ import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Call } from "src/typings/Call";
 import { nodesAdapter } from "./modules/node";
 import { kiosksAdapter } from "./modules/kiosk";
-import { notEmpty } from "src/utils/Common";
+import { notEmpty } from "src/utils";
 
 // get selectors from entity adapter
 export const {

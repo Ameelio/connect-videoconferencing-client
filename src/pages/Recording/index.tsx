@@ -8,7 +8,7 @@ import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName } from "src/utils/Common";
+import { genFullName } from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { CallMessage, RecordedCall } from "src/typings/Call";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";

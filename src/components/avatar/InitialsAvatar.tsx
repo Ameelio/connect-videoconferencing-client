@@ -1,6 +1,6 @@
 import { Avatar } from "antd";
 import React from "react";
-import { generateBgColor, getInitials } from "src/utils/Common";
+import { generateBgColor, getInitials } from "src/utils";
 
 interface Props {
   name: string;
