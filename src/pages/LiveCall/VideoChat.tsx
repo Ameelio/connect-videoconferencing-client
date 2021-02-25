@@ -172,9 +172,11 @@ const VideoChat: React.FC<Props> = React.memo(
                   //  TODO move this logic to refs
                   if (kind === "video") {
                     const id = `${user.type}-${callId}-${user.id}-video`;
-                    const video = document.getElementById(id);
+                    const video = document.getElementById(
+                      id
+                    ) as HTMLVideoElement;
                     if (video) {
-                      (video as HTMLVideoElement).srcObject = stream;
+                      video.srcObject = stream;
                     } else {
                       const newVideo = document.createElement("video");
                       newVideo.style.width = "50%";
@@ -186,9 +188,11 @@ const VideoChat: React.FC<Props> = React.memo(
                     }
                   } else if (kind === "audio") {
                     const id = `${user.type}-${callId}-${user.id}-audio`;
-                    const audio = document.getElementById(id);
+                    const audio = document.getElementById(
+                      id
+                    ) as HTMLAudioElement;
                     if (audio) {
-                      (audio as HTMLAudioElement).srcObject = stream;
+                      audio.srcObject = stream;
                     } else {
                       const newAudio = document.createElement("audio");
                       newAudio.srcObject = stream;
