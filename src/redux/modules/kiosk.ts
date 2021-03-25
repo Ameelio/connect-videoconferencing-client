@@ -12,14 +12,14 @@ import { SelectedFacility } from "src/typings/Facility";
 export const kiosksAdapter = createEntityAdapter<Kiosk>();
 
 export const fetchKiosks = createAsyncThunk("kiosk/fetchKiosks", async () => {
-  const body = await fetchAuthenticated(`/kiosks`);
+  const body = await fetchAuthenticated(`kiosks`);
 
   if (!body.data) {
     throw new Error("Could not load list of facilities");
   }
 
   const kiosks = camelcaseKeys(
-    (body.data as Record<string, unknown>).kiosks as Object
+    (body.data as Record<string, unknown>) as Object
   ) as Kiosk[];
 
   return kiosks;

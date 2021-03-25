@@ -66,7 +66,7 @@ export const setRedirectUrl = (url: string): UserActionTypes => {
   };
 };
 
-export const setSessiooStatus = (status: SessionStatus): UserActionTypes => {
+export const setSessionStatus = (status: SessionStatus): UserActionTypes => {
   return {
     type: SET_SESSION_STATUS,
     payload: status,
@@ -79,8 +79,9 @@ const initialState: SessionState = {
     firstName: "",
     lastName: "",
     email: "",
-    token: "",
-    remember: "",
+    staffPositions: [],
+    // token: "",
+    // remember: "",
   },
   status: "inactive",
   redirectUrl: "/",
@@ -103,8 +104,9 @@ export function sessionReducer(
           firstName: "",
           lastName: "",
           email: "",
-          token: "",
-          remember: "",
+          staffPositions: [],
+          // token: "",
+          // remember: "",
         },
         status: "inactive",
         redirectUrl: "/",

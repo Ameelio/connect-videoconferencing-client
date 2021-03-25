@@ -1,7 +1,8 @@
+import { Staff } from "./Staff";
+
 export interface User extends BasePersona {
   email: string;
-  token: string;
-  remember: string;
+  staffPositions: Staff[];
 }
 
 export interface UserCredentials {

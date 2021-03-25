@@ -52,7 +52,7 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
             <>
               {
                 <Avatar
-                  src={inmate.profileImgPath}
+                  src={inmate.profileImagePath}
                   shape="circle"
                   size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                 />
@@ -82,7 +82,7 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
           render={(contact: Contact) => (
             <>
               <Avatar
-                src={contact.profileImgPath}
+                src={contact.profileImagePath}
                 shape="circle"
                 size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
               />

@@ -1,6 +1,6 @@
 import { Store } from "src/redux";
 
-export const API_URL = `${process.env.REACT_APP_BASE_URL}api/`;
+export const API_URL = process.env.REACT_APP_BASE_URL || "";
 
 export interface ApiResponse {
   date: number;
@@ -40,12 +40,13 @@ export async function fetchAuthenticated(
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${state.session.user.token}`,
+      // Authorization: `Bearer ${state.session.user.token}`,
     },
+    credentials: "include",
   };
 
   const url = `${API_URL}${
-    nodeResource ? `node/${state.facilities.selected?.nodeId}` : ""
+    nodeResource ? `facilities/${state.facilities.selected?.id}` : ""
   }${fetchUrl}`;
   const response = await fetchTimeout(url, requestOptions, timeout);
   const body = await response.json();

@@ -3,24 +3,29 @@ export interface AmeelioNode {
   name: string;
 }
 
-export interface NodeCallSlot {
-  start: {
-    day: number;
-    hour: number;
-    minute: number;
-  };
+export interface CallSlot {
+  day: number;
+  hour: number;
+  minute: number;
   duration: number;
 }
 
 export interface Facility {
-  nodeId: number;
+  id: number;
   name: string;
   fullName: string;
   city: string;
   state: string;
+  email: string;
+  phone: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postal: string;
+  timezone: string;
+  link: string;
 }
 
 export interface SelectedFacility extends Facility {
-  callTimes: NodeCallSlot[];
+  callTimes: CallSlot[];
   // zone: string;
 }

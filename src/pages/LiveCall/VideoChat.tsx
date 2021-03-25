@@ -10,6 +10,7 @@ import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils";
 import { Connection } from "src/typings/Connection";
+import Cookies from "js-cookie";
 
 interface Props {
   isVisible: boolean;
@@ -61,7 +62,7 @@ const VideoChat: React.FC<Props> = React.memo(
     chatCollapsed,
     addMessage,
   }) => {
-    const token = useSelector((state: RootState) => state.session.user.token);
+    const [token] = useState(Cookies.get("connect.sid"));
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);

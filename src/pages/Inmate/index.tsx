@@ -178,7 +178,7 @@ function InmateUnconnectedContainer({
                   <Col span={8}>
                     <Space direction="vertical" align="center">
                       <Avatar
-                        src={connection.contact.profileImgPath}
+                        src={connection.contact.profileImagePath}
                         size={80}
                       />
                       <Typography.Text>

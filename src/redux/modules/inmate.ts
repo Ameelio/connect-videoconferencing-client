@@ -11,7 +11,7 @@ export const fetchInmates = createAsyncThunk(
   async () => {
     const body = await fetchAuthenticated(`/inmates`, {}, false);
 
-    if (body.status !== 200 || !body.data) {
+    if (body.status !== 200) {
       throw body;
     }
 

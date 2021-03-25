@@ -30,7 +30,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   const columns: TableColumn[] = [
     {
       title: "",
-      dataIndex: "profileImgPath",
+      dataIndex: "profileImagePath",
       editable: false,
       render: (img: any) => (
         <>

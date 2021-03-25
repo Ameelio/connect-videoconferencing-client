@@ -12,7 +12,7 @@ import {
   Tree,
   Card,
 } from "antd";
-import { NodeCallSlot } from "src/typings/Facility";
+import { CallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
@@ -53,7 +53,7 @@ function SettingsContainer({
 }: PropsFromRedux): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
   const [activeTab, setActiveTab] = useState<Tab>("setting");
-  const [callSlots, setCallSlots] = useState<NodeCallSlot[]>([]);
+  const [callSlots, setCallSlots] = useState<CallSlot[]>([]);
 
   useEffect(() => {
     if (facility) {

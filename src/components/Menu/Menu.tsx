@@ -57,7 +57,7 @@ export default function Menu({
     <AntdMenu>
       <SubMenu key="sub2" title="Switch Organization">
         {facilities.map((facility) => (
-          <AntdMenu.Item key={facility.nodeId} onClick={() => select(facility)}>
+          <AntdMenu.Item key={facility.id} onClick={() => select(facility)}>
             <Space>
               <FacilityAvatar facility={facility} />
               <span>{facility.name}</span>

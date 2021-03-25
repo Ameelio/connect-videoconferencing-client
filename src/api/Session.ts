@@ -1,18 +1,19 @@
 import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
-import { setSessiooStatus, setSession } from "src/redux/modules/session";
+import { setSessionStatus, setSession } from "src/redux/modules/session";
 import { Store } from "src/redux";
 import { REMEMBER_TOKEN_KEY, TOKEN_KEY } from "src/utils/constants";
 import camelcaseKeys from "camelcase-keys";
 import { User, UserCredentials } from "src/typings/Session";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 async function initializeSession(body: any) {
   const user = camelcaseKeys(body.data) as User;
+  console.log(user);
   Store.dispatch(setSession(user));
 
-  localStorage.setItem(TOKEN_KEY, user.token);
-  localStorage.setItem(REMEMBER_TOKEN_KEY, user.remember);
-  // loadData();
+  // localStorage.setItem(TOKEN_KEY, user.token);
+  // localStorage.setItem(REMEMBER_TOKEN_KEY, user.remember);
 }
 
 export async function loginWithToken(): Promise<void> {
@@ -21,7 +22,7 @@ export async function loginWithToken(): Promise<void> {
     if (!remember) {
       throw Error("Cannot load token");
     }
-    Store.dispatch(setSessiooStatus("loading"));
+    Store.dispatch(setSessionStatus("loading"));
     const response = await fetchTimeout(
       url.resolve(API_URL, "auth/login/remember"),
       {
@@ -37,7 +38,7 @@ export async function loginWithToken(): Promise<void> {
     );
     const body = await response.json();
     if (body.status !== 200) {
-      Store.dispatch(setSessiooStatus("inactive"));
+      Store.dispatch(setSessionStatus("inactive"));
       throw body;
     }
     await initializeSession(body);
@@ -49,7 +50,7 @@ export async function loginWithToken(): Promise<void> {
 export async function loginWithCredentials(
   cred: UserCredentials
 ): Promise<void> {
-  Store.dispatch(setSessiooStatus("loading"));
+  Store.dispatch(setSessionStatus("loading"));
   const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
     method: "POST",
     headers: {
@@ -62,8 +63,9 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
-  if (body.status !== 200) {
-    Store.dispatch(setSessiooStatus("inactive"));
+  console.log(body);
+  if (response.status !== 201) {
+    Store.dispatch(setSessionStatus("inactive"));
     throw body;
   }
   await initializeSession(body);

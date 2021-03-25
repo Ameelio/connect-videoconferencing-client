@@ -10,14 +10,15 @@ import camelcaseKeys from "camelcase-keys";
 export const staffAdapter = createEntityAdapter<Staff>();
 
 export const fetchStaff = createAsyncThunk("staff/fetchStaff", async () => {
-  const body = await fetchAuthenticated(`/admins`);
+  const body = await fetchAuthenticated(`staffMembers`);
 
   if (body.status !== 200 || !body.data) {
     throw body;
   }
 
-  const staff = ((body.data as Record<string, unknown>)
-    .admins as Object[]).map((admin) => camelcaseKeys(admin)) as Staff[];
+  const staff = camelcaseKeys(
+    (body.data as Record<string, unknown>) as Object
+  ) as Staff[];
 
   return staff;
 });

@@ -97,8 +97,8 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
         <Table dataSource={staff}>
           <Column
             title=""
-            dataIndex="profileImgPath"
-            key="profileImgPath"
+            dataIndex="profileImagePath"
+            key="profileImagePath"
             render={(img) => (
               <>
                 <Avatar src={img} size="large" />
