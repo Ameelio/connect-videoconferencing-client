@@ -33,11 +33,11 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   requests,
 }) => {
   const handleAccept = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "approved" });
+    updateConnection({ connectionId: request.id, status: "active" });
   };
 
   const handleDecline = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "denied" });
+    updateConnection({ connectionId: request.id, status: "rejected" });
   };
 
   return (

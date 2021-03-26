@@ -5,13 +5,6 @@ interface BasePersona {
   profileImagePath?: string;
 }
 
-// interface Contact extends BasePersona {
-//   relationship: string;
-//   details: string;
-//   email: string;
-//   dob: string;
-// }
-
 type StaffRole = "admin" | "operator" | "investigator";
 
 type Permission =

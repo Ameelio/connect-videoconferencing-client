@@ -8,28 +8,23 @@ import { openNotificationWithIcon } from "src/utils";
 import { BaseConnection, ConnectionStatus } from "src/typings/Connection";
 
 export const updateConnection = createAsyncThunk(
-  "connection/updateConnection",
+  "connections/updateConnection",
   async (args: { connectionId: number; status: ConnectionStatus }) => {
-    const body = await fetchAuthenticated("/connection", {
+    await fetchAuthenticated(`connections/${args.connectionId}`, {
       method: "PUT",
       body: JSON.stringify({
-        connection_id: args.connectionId,
         status: args.status,
       }),
     });
-
-    if (body.status !== 200) {
-      throw body;
-    }
 
     return args;
   }
 );
 
 export const fetchConnections = createAsyncThunk(
-  "connection/fetchConnections",
+  "connections/fetchConnections",
   async () => {
-    const body = await fetchAuthenticated(`/connections`);
+    const body = await fetchAuthenticated(`connections`);
 
     const connections = (body.data as Record<string, unknown>)
       .results as BaseConnection[];
@@ -58,10 +53,10 @@ export const connectionsSlice = createSlice({
     builder.addCase(updateConnection.fulfilled, (state, action) => {
       const { status, connectionId } = action.payload;
       switch (status) {
-        case "approved":
+        case "active":
           openNotificationWithIcon("Connection created!", "Hooray!", "success");
           break;
-        case "denied":
+        case "rejected":
           openNotificationWithIcon("Connection rejected", "Very sad", "info");
           break;
       }

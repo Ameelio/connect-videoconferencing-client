@@ -94,8 +94,6 @@ export const facilitiesSlice = createSlice({
         state,
         action.payload.facilities
       );
-      // console.log( action.payload.selected);
-      // newState.selected = action.payload.selected;
       return newState;
     });
     builder.addCase(fetchFacilities.rejected, (state, action) => ({

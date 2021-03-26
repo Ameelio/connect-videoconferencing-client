@@ -1,7 +1,7 @@
 import { Contact } from "./Contact";
 import { Inmate } from "./Inmate";
 
-export type ConnectionStatus = "approved" | "denied" | "pending";
+export type ConnectionStatus = "active" | "pending" | "inactive" | "rejected";
 
 export interface BaseConnection {
   id: number;

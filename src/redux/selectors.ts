@@ -74,7 +74,7 @@ export const selectConnectionRequests = (state: RootState) => {
 
 export const selectApprovedConnections = (state: RootState) => {
   return selectAllConnections(state).map(
-    (connection) => connection.status === "approved"
+    (connection) => connection.status === "active"
   );
 };
 
