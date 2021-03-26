@@ -4,52 +4,46 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import camelcaseKeys from "camelcase-keys";
+import { Inmate } from "src/typings/Inmate";
 
 export const fetchInmates = createAsyncThunk(
-  "inmate/fetchInmates",
+  "inmates/fetchInmates",
   async () => {
-    const body = await fetchAuthenticated(`/inmates`, {}, false);
+    const body = await fetchAuthenticated(`inmates`);
 
-    if (body.status !== 200) {
-      throw body;
-    }
-
-    const inmates = ((body.data as Record<string, unknown>)
-      .inmates as Object[]).map((inmate) => camelcaseKeys(inmate)) as Inmate[];
+    const inmates = (body.data as Record<string, unknown>).results as Inmate[];
 
     return inmates;
   }
 );
 
-export const updateInmate = createAsyncThunk(
-  "inmate/updateInmate",
-  async (inmate: Inmate) => {
-    await fetchAuthenticated(
-      `/inmate/${inmate.id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          inmate_number: inmate.inmateNumber,
-          first_name: inmate.firstName,
-          last_name: inmate.lastName,
-          location: inmate.location,
-        }),
-      },
-      false
-    );
+// export const updateInmate = createAsyncThunk(
+//   "inmate/updateInmate",
+//   async (inmate: Inmate) => {
+//     await fetchAuthenticated(
+//       `inmates/${inmate.id}`,
+//       {
+//         method: "PUT",
+//         body: JSON.stringify({
+//           first_name: inmate.firstName,
+//           last_name: inmate.lastName,
+//           location: inmate.location,
+//         }),
+//       },
+//       false
+//     );
 
-    return {
-      inmateId: inmate.id,
-      changes: {
-        inmateNumber: inmate.inmateNumber,
-        firstName: inmate.firstName,
-        lastName: inmate.lastName,
-        location: inmate.location,
-      },
-    };
-  }
-);
+//     return {
+//       inmateId: inmate.id,
+//       changes: {
+//         inmateIdentification: inmate.inmateIdentification,
+//         firstName: inmate.firstName,
+//         lastName: inmate.lastName,
+//         location: inmate.location,
+//       },
+//     };
+//   }
+// );
 
 export const inmatesAdapter = createEntityAdapter<Inmate>();
 
@@ -67,16 +61,16 @@ export const inmatesSlice = createSlice({
     builder.addCase(fetchInmates.rejected, (state, action) =>
       console.log("error")
     );
-    builder.addCase(updateInmate.fulfilled, (state, action) =>
-      inmatesAdapter.updateOne(state, {
-        id: action.payload.inmateId,
-        changes: action.payload.changes,
-      })
-    );
-    builder.addCase(updateInmate.rejected, (state, action) => ({
-      ...state,
-      error: action.error.message,
-    }));
+    // builder.addCase(updateInmate.fulfilled, (state, action) =>
+    //   inmatesAdapter.updateOne(state, {
+    //     id: action.payload.inmateId,
+    //     changes: action.payload.changes,
+    //   })
+    // );
+    // builder.addCase(updateInmate.rejected, (state, action) => ({
+    //   ...state,
+    //   error: action.error.message,
+    // }));
   },
 });
 

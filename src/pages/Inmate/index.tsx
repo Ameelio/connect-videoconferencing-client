@@ -52,35 +52,39 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const renderItem = (call: Call) => {
+  const contactNames = call.contacts.reduce(
+    (prev, cur) => `${prev}, ${genFullName(cur)}`,
+    ""
+  );
   // TODO timestamp should probably be different her
-  const timestamp = format(call.scheduledStartTime, "MM/dd HH:mm");
+  const timestamp = format(call.scheduledStart, "MM/dd HH:mm");
   switch (call.status) {
     case "scheduled":
       return (
         <Timeline.Item label={timestamp} color="yellow">
-          Call scheduled with {genFullName(call.connection.contact)}
+          Call scheduled with {contactNames}
         </Timeline.Item>
       );
     case "cancelled":
       return (
         <Timeline.Item label={timestamp} color="red">
-          Call with {genFullName(call.connection.contact)} was cancelled
+          Call with {contactNames} was cancelled
         </Timeline.Item>
       );
-    case "missing-monitor":
+    case "missing_monitor":
     case "live":
       return (
         <Timeline.Item label={timestamp} color="green">
-          Call happening with {genFullName(call.connection.contact)}
+          Call happening with {contactNames}
         </Timeline.Item>
       );
     case "terminated":
     case "ended":
-      return call.videoReady ? (
-        <Timeline.Item label={format(call.scheduledStartTime, "MM/dd HH:mm")}>
+      return call.recordingStatus === "done" ? (
+        <Timeline.Item label={format(call.scheduledStart, "MM/dd HH:mm")}>
           {/* expand this to include other cases */}
           <Typography.Link onClick={() => push(`/call/${call.id}`)}>
-            Called {genFullName(call.connection.contact)}
+            Called {contactNames}
           </Typography.Link>
         </Timeline.Item>
       ) : (
@@ -90,7 +94,7 @@ const renderItem = (call: Call) => {
         >
           {/* expand this to include other cases */}
           <Typography.Link onClick={() => push(`/call/${call.id}`)}>
-            Processsing call with {genFullName(call.connection.contact)}
+            Processsing call with {contactNames}
           </Typography.Link>
         </Timeline.Item>
       );
@@ -143,18 +147,10 @@ function InmateUnconnectedContainer({
               {inmate.lastName}
             </Descriptions.Item>
             <Descriptions.Item label="Unique ID">
-              {inmate.inmateNumber}
+              {inmate.inmateIdentification}
             </Descriptions.Item>
-            <Descriptions.Item label="Location">
-              {inmate.location}
-            </Descriptions.Item>
-            <Descriptions.Item label="DOB">{inmate.dob}</Descriptions.Item>
-            <Descriptions.Item label="Race">{inmate.race}</Descriptions.Item>
-            <Descriptions.Item label="Sentence">
-              {inmate.sentence}
-            </Descriptions.Item>
-            <Descriptions.Item label="Sentence Length">
-              {inmate.sentnceLength}
+            <Descriptions.Item label="DOB">
+              {inmate.dateOfBirth}
             </Descriptions.Item>
             <Descriptions.Item label="Call Quota">
               {inmate.quota}

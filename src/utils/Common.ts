@@ -10,13 +10,19 @@ export const genImageUri = (user?: BasePersona): string => {
   return user?.profileImagePath || "default.jpg";
 };
 
-export const VisitationToEventInput = (visitation: Call): EventInput => {
+export const VisitationToEventInput = (call: Call): EventInput => {
+  const contactNames = call.contacts.reduce(
+    (prev, cur) => `${prev}, ${genFullName(cur)}`,
+    ""
+  );
+  const inmateNames = call.inmates.reduce(
+    (prev, cur) => `${prev}, ${genFullName(cur)}`,
+    ""
+  );
   return {
-    title: `${genFullName(visitation.connection.inmate)} <> ${genFullName(
-      visitation.connection.contact
-    )}`,
-    start: visitation.scheduledStartTime,
-    end: visitation.scheduledEndTime,
+    title: `${inmateNames} <> ${contactNames}`,
+    start: call.scheduledStart,
+    end: call.scheduledEnd,
   };
 };
 

@@ -1,5 +1,7 @@
 import { WeekdayMap } from "src/utils/constants";
 import { Connection } from "./Connection";
+import { Contact } from "./Contact";
+import { Inmate } from "./Inmate";
 import { Kiosk } from "./Kiosk";
 
 export type Weekday =
@@ -45,45 +47,37 @@ export interface CallFilters {
 }
 
 export type CallStatus =
+  | "pending_approval"
   | "scheduled"
-  | "missing-monitor"
+  | "cancelled"
+  | "missing_monitor"
   | "live"
   | "ended"
   | "terminated"
-  | "cancelled";
+  | "no_show";
 
 export interface BaseCall {
   id: number;
-  scheduledStartTime: number;
-  scheduledEndTime: number;
-  connectionId: number;
-  inmateId: number;
-  requesterId: number;
+  facilityId: number;
   kioskId: number;
-  approved: boolean;
-  videoReady: boolean;
-  endTime?: number;
-  startTime?: number;
-  liveStatus?: string;
-  recordingUrl?: string;
+  status: CallStatus;
+  statusDetails?: string;
+  scheduledStart: Date;
+  scheduledEnd: Date;
+  inmateIds: number[];
+  userIds: number[];
   messages: CallMessage[];
   rating: number;
-  status: CallStatus;
+  schedulerId: number;
+  schedulerType: "user" | "inmate";
+  recordingPath?: string;
+  recordingStatus?: "pending" | "processing" | "done";
 }
 
 export interface Call extends BaseCall {
-  connection: Connection;
   kiosk: Kiosk;
-}
-
-export interface LiveCall extends Call {
-  startTime: number;
-  liveStatus: string;
-  isUnmuted?: boolean;
-}
-
-export interface RecordedCall extends LiveCall {
-  endTime: number;
+  inmates: Inmate[];
+  contacts: Contact[];
 }
 
 export interface CallParticipant {
@@ -92,7 +86,10 @@ export interface CallParticipant {
 }
 
 export interface CallMessage {
-  content: string;
-  from: string;
-  timestamp: string;
+  callId: number;
+  inmateId: number;
+  userId: number;
+  senderType: "inmate" | "user" | "doc";
+  contents: string;
+  createdAt: Date;
 }

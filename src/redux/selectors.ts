@@ -7,7 +7,7 @@ import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Call } from "src/typings/Call";
-import { nodesAdapter } from "./modules/node";
+import { groupsAdapter } from "./modules/group";
 import { kiosksAdapter } from "./modules/kiosk";
 import { notEmpty } from "src/utils";
 
@@ -44,9 +44,9 @@ export const {
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
 
 export const {
-  selectById: selectNodeById,
-  selectAll: selectAllNodes,
-} = nodesAdapter.getSelectors<RootState>((state) => state.nodes);
+  selectById: selectGroupById,
+  selectAll: selectAllGroups,
+} = groupsAdapter.getSelectors<RootState>((state) => state.groups);
 
 export const {
   selectById: selectKioskById,
@@ -92,16 +92,17 @@ const getCallEntities = (
   state: RootState,
   call: BaseCall
 ): Call | undefined => {
-  const connection = selectConnectionById(state, call.connectionId);
-  if (!connection) return;
+  const inmates = call.inmateIds
+    .map((id) => selectInmateById(state, id))
+    .filter(notEmpty);
+  const contacts = call.userIds
+    .map((id) => selectContactById(state, id))
+    .filter(notEmpty);
 
   const kiosk = selectKioskById(state, call.kioskId);
   if (!kiosk) return;
 
-  // TODO add error handling
-  const detailedConnection = getConnectionEntities(state, connection);
-  if (!detailedConnection) return;
-  return { ...call, connection: detailedConnection, kiosk };
+  return { ...call, inmates, contacts, kiosk };
 };
 
 export const getCallsInfo = (
@@ -124,7 +125,7 @@ export const selectLiveCalls = (state: RootState): Call[] => {
   return getCallsInfo(
     state,
     calls.filter(
-      (call) => call.status === "missing-monitor" || call.status === "live"
+      (call) => call.status === "missing_monitor" || call.status === "live"
     )
   );
 };
@@ -148,5 +149,5 @@ export const selectInmateCallsById = (state: RootState, inmateId: number) => {
   const inmate = selectInmateById(state, inmateId);
   if (!inmate) return;
   const calls = selectAllCalls(state);
-  return calls.filter((call) => call.inmateId === inmateId);
+  return calls.filter((call) => inmateId in call.inmateIds);
 };

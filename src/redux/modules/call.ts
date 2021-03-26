@@ -6,14 +6,9 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import { cleanCall, RawCall } from "../helpers";
+import { cleanCall, CallRO } from "../helpers";
 import { createCallOptionsParam } from "src/utils";
-import {
-  BaseCall,
-  CallFilters,
-  CallMessage,
-  RecordedCall,
-} from "src/typings/Call";
+import { BaseCall, CallFilters, CallMessage } from "src/typings/Call";
 
 export const callsAdapter = createEntityAdapter<BaseCall>();
 
@@ -21,31 +16,13 @@ export const fetchCalls = createAsyncThunk(
   "calls/fetchAll",
   async (filters: CallFilters) => {
     const body = await fetchAuthenticated(
-      `/calls?${createCallOptionsParam(filters)}`
+      `calls?${createCallOptionsParam(filters)}`
     );
-    if (body.status !== 200) {
-      throw body;
-    }
 
     const calls = ((body.data as Record<string, unknown>)
-      .calls as RawCall[]).map(cleanCall) as RecordedCall[];
+      .results as CallRO[]).map(cleanCall) as BaseCall[];
 
     return calls;
-  }
-);
-
-export const fetchRecording = createAsyncThunk(
-  "/call/fetchRecording",
-  async (callId: number) => {
-    const body = await fetchAuthenticated(`/call/${callId}`);
-    if (body.status !== 200) {
-      throw body;
-    }
-    const recordingUrl = (body.data as Record<string, unknown>).url as string;
-    const messages = (body.data as Record<string, unknown>)
-      .messages as CallMessage[];
-
-    return { callId, recordingUrl, messages };
   }
 );
 
@@ -81,19 +58,6 @@ export const callsSlice = createSlice({
       callsAdapter.upsertMany(state, action.payload);
     });
     builder.addCase(fetchCalls.rejected, (state, action) => ({
-      ...state,
-      error: action.error.message,
-    }));
-    builder.addCase(fetchRecording.fulfilled, (state, action) =>
-      callsAdapter.updateOne(state, {
-        id: action.payload.callId,
-        changes: {
-          recordingUrl: action.payload.recordingUrl,
-          messages: action.payload.messages,
-        },
-      })
-    );
-    builder.addCase(fetchRecording.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
     }));

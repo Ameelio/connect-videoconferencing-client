@@ -25,7 +25,7 @@ import { fetchContacts } from "./redux/modules/contact";
 import { fetchStaff } from "./redux/modules/staff";
 import { fetchInmates } from "./redux/modules/inmate";
 import { fetchConnections } from "./redux/modules/connections";
-import { fetchNodes } from "./redux/modules/node";
+import { fetchGroups } from "./redux/modules/group";
 import { fetchKiosks } from "./redux/modules/kiosk";
 import { fetchCalls } from "./redux/modules/call";
 import { startOfMonth } from "date-fns/esm";
@@ -47,7 +47,7 @@ const mapDispatchToProps = {
   fetchStaff,
   fetchInmates,
   fetchConnections,
-  fetchNodes,
+  fetchGroups,
   fetchKiosks,
   fetchCalls,
   setRedirectUrl,
@@ -78,7 +78,7 @@ function App({
   fetchInmates,
   fetchStaff,
   fetchConnections,
-  fetchNodes,
+  fetchGroups,
   fetchKiosks,
   fetchCalls,
   setRedirectUrl,
@@ -129,7 +129,7 @@ function App({
           fetchInmates(),
           fetchConnections(),
           fetchKiosks(),
-          fetchNodes(),
+          fetchGroups(),
         ]);
         fetchCalls({
           startDate: startOfMonth(new Date()).getTime(),
@@ -143,7 +143,7 @@ function App({
     fetchStaff,
     fetchConnections,
     fetchInmates,
-    fetchNodes,
+    fetchGroups,
     fetchCalls,
     fetchKiosks,
   ]);

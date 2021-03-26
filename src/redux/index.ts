@@ -10,7 +10,7 @@ import { facilitiesSlice } from "./modules/facility";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory, History } from "history";
 import { socketsSlice } from "./modules/socket";
-import { nodesSlice } from "./modules/node";
+import { groupsSlice } from "./modules/group";
 import { kiosksSlice } from "./modules/kiosk";
 
 export const history = createBrowserHistory();
@@ -26,7 +26,7 @@ export const createRootReducer = (history: History) =>
     facilities: facilitiesSlice.reducer,
     router: connectRouter(history),
     sockets: socketsSlice.reducer,
-    nodes: nodesSlice.reducer,
+    groups: groupsSlice.reducer,
     kiosks: kiosksSlice.reducer,
   });
 

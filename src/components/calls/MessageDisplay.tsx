@@ -8,12 +8,12 @@ export function MessageDisplay({
 }: {
   message: CallMessage;
 }): ReactElement {
-  const type = message.from;
+  const type = message.senderType;
   const getDisplayName = () => {
     switch (type) {
       case "inmate":
         return "Incarcerated Person";
-      case "monitor":
+      case "doc":
         return "DOC";
       case "user":
         return "Loved One";
@@ -28,10 +28,10 @@ export function MessageDisplay({
       <Space>
         <Typography.Text strong>{getDisplayName()}</Typography.Text>
         <Typography.Text type="secondary">
-          {format(new Date(message.timestamp), "HH:mm")}
+          {format(message.createdAt, "HH:mm")}
         </Typography.Text>
       </Space>
-      <Typography.Text>{message.content}</Typography.Text>
+      <Typography.Text>{message.contents}</Typography.Text>
     </Space>
   );
 }

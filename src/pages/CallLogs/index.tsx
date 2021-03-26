@@ -11,10 +11,12 @@ import CallFiltersHeader from "./CallFilters";
 import { Table, Space, Layout, Button, Tag, Input, Select } from "antd";
 import { push } from "connected-react-router";
 import { Connection } from "src/typings/Connection";
-import { CallStatus, RecordedCall } from "src/typings/Call";
+import { CallStatus, Call } from "src/typings/Call";
 import Header from "src/components/Header/Header";
 import { EyeOutlined } from "@ant-design/icons";
 import _ from "lodash";
+import { Inmate } from "src/typings/Inmate";
+import { Contact } from "src/typings/Contact";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -22,7 +24,7 @@ const { Content } = Layout;
 const mapStateToProps = (state: RootState) => ({
   logs: getCallsInfo(state, selectAllCalls(state)).filter(
     (call) => call.status === "ended" || call.status === "terminated"
-  ) as RecordedCall[],
+  ) as Call[],
   history: state.router,
 });
 
@@ -55,7 +57,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
 }) => {
   // TODO refactor filter to filter based on store instead of displaying redux data
   // Always call API while waiting
-  const [filteredLogs, setFilteredLogs] = useState<RecordedCall[]>([]);
+  const [filteredLogs, setFilteredLogs] = useState<Call[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
@@ -101,29 +103,37 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
 
     if (startDate && endDate)
       tempLogs = tempLogs.filter(
-        (log) => log.startTime >= startDate && log.startTime <= endDate
+        (log) =>
+          log.scheduledStart >= new Date(startDate) &&
+          log.scheduledStart <= new Date(endDate)
       );
 
     if (searchQuery)
       switch (activeSearchFilter) {
         case "inmateId":
           tempLogs = tempLogs.filter((log) =>
-            `${log.connection.inmate.inmateNumber}`.includes(searchQuery)
+            log.inmates.some((inmate) =>
+              inmate.inmateIdentification.includes(searchQuery)
+            )
           );
           break;
         case "inmateName":
           tempLogs = tempLogs.filter((log) =>
-            genFullName(log.connection.inmate).includes(searchQuery)
+            log.inmates.some((inmate) =>
+              genFullName(inmate).includes(searchQuery)
+            )
           );
           break;
         case "contactName":
           tempLogs = tempLogs.filter((log) =>
-            genFullName(log.connection.contact).includes(searchQuery)
+            log.contacts.some((contact) =>
+              genFullName(contact).includes(searchQuery)
+            )
           );
           break;
         case "contactId":
           tempLogs = tempLogs.filter((log) =>
-            `${log.connection.contact.id}`.includes(searchQuery)
+            log.contacts.some((contact) => contact.id === parseInt(searchQuery))
           );
           break;
         default:
@@ -178,7 +188,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         <Table dataSource={filteredLogs} loading={loading}>
           <Column
             title="Date"
-            dataIndex="scheduledStartTime"
+            dataIndex="scheduledStart"
             key="date"
             render={(time) => (
               <>
@@ -188,7 +198,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
           <Column
             title="Start Time"
-            dataIndex="scheduledStartTime"
+            dataIndex="scheduledStart"
             key="startTime"
             render={(time) => (
               <>
@@ -198,7 +208,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           />
           <Column
             title="End Time"
-            dataIndex="scheduledEndTime"
+            dataIndex="scheduledEnd"
             key="endTime"
             render={(time) => (
               <>
@@ -207,45 +217,40 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             )}
           />
           <Column
-            title="Inmate Name"
-            dataIndex="connection"
-            key="connection"
-            render={(connection: Connection) => (
-              <>
-                <span>{genFullName(connection.inmate)}</span>
-              </>
-            )}
+            title="Incarcerated Persons"
+            dataIndex="inmates"
+            key="inmateName"
+            render={(inmates: Inmate[]) =>
+              inmates.map((inmate) => (
+                <>
+                  <span>{genFullName(inmate)}</span>
+                </>
+              ))
+            }
           />
           <Column
-            title="Inmate ID"
-            dataIndex="connection"
-            key="inmateId"
-            render={(connection: Connection) => (
-              <>
-                <span>{connection.inmate.inmateNumber}</span>
-              </>
-            )}
+            title="Unique Identifiers"
+            dataIndex="inmates"
+            key="inmateIds"
+            render={(inmates: Inmate[]) =>
+              inmates.map((inmate) => (
+                <>
+                  <span>{inmate.inmateIdentification}</span>
+                </>
+              ))
+            }
           />
           <Column
             title="Contact Name"
-            dataIndex="connection"
+            dataIndex="contacts"
             key="contactName"
-            render={(connection: Connection) => (
-              <>
-                <span>{genFullName(connection.contact)}</span>
-              </>
-            )}
-          />
-          {/* Change this */}
-          <Column
-            title="Location"
-            dataIndex="connection"
-            key="location"
-            render={(connection: Connection) => (
-              <>
-                <span>{connection.inmate.location}</span>
-              </>
-            )}
+            render={(contact: Contact[]) =>
+              contact.map((contact) => (
+                <>
+                  <span>{genFullName(contact)}</span>
+                </>
+              ))
+            }
           />
           <Column
             title="Status"
@@ -261,7 +266,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Recording"
             key="action"
-            render={(_text, visitation: RecordedCall) => (
+            render={(_text, visitation: Call) => (
               <Space size="middle">
                 <Button
                   onClick={() => push(`/call/${visitation.id}`)}

@@ -3,12 +3,13 @@ import { connect, ConnectedProps } from "react-redux";
 import { selectAllInmates } from "src/redux/selectors";
 import { Layout, Avatar } from "antd";
 import EditableTable from "src/components/editable-table/EditableTable";
-import { updateInmate } from "src/redux/modules/inmate";
+// import { updateInmate } from "src/redux/modules/inmate";
 import { RootState } from "src/redux";
 import { TableColumn } from "src/typings/Common";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { push } from "connected-react-router";
 import Header from "src/components/Header/Header";
+import { Inmate } from "src/typings/Inmate";
 
 const { Content } = Layout;
 
@@ -16,14 +17,14 @@ const mapStateToProps = (state: RootState) => ({
   inmates: selectAllInmates(state),
 });
 
-const mapDispatchToProps = { updateInmate, push };
+const mapDispatchToProps = { push };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
-  updateInmate,
+  // updateInmate,
   inmates,
   push,
 }) => {
@@ -40,7 +41,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
     },
     {
       title: "Inmate Number",
-      dataIndex: "inmateNumber",
+      dataIndex: "inmateIdentification",
       editable: true,
     },
     {
@@ -70,7 +71,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
         <EditableTable
           originalData={inmates}
           columns={columns}
-          onSave={(inmate: Inmate) => updateInmate(inmate)}
+          onSave={(inmate: Inmate) => console.log("revisit later")}
           onViewItem={(id: number) => push(`/members/${id}`)}
         />
       </div>

@@ -46,9 +46,13 @@ export async function fetchAuthenticated(
   };
 
   const url = `${API_URL}${
-    nodeResource ? `facilities/${state.facilities.selected?.id}` : ""
+    nodeResource ? `facilities/${state.facilities.selected?.id}/` : ""
   }${fetchUrl}`;
   const response = await fetchTimeout(url, requestOptions, timeout);
+
+  if (response.status !== 200 && response.status !== 201) {
+    throw new Error(`Failed to access resource ${fetchUrl}`);
+  }
   const body = await response.json();
   return body;
 }

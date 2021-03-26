@@ -165,8 +165,7 @@ function mondayMorning(date: Date): Date {
 const callsWithinPeriod = (calls: Call[], start: Date, end: Date): Call[] => {
   return calls.filter(
     (call) =>
-      new Date(call.scheduledEndTime) >= start &&
-      new Date(call.scheduledEndTime) <= end
+      new Date(call.scheduledEnd) >= start && new Date(call.scheduledEnd) <= end
   );
 };
 

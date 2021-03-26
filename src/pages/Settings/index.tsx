@@ -27,7 +27,7 @@ import { cloneObject } from "src/utils";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
 import Header from "src/components/Header/Header";
-import { selectAllNodes } from "src/redux/selectors";
+import { selectAllGroups } from "src/redux/selectors";
 import { DataNode } from "antd/lib/tree";
 
 const { TabPane } = Tabs;
@@ -36,7 +36,7 @@ const { Content } = Layout;
 
 const mapStateToProps = (state: RootState) => ({
   facility: state.facilities.selected,
-  nodes: selectAllNodes(state),
+  nodes: selectAllGroups(state),
 });
 const mapDispatchToProps = { updateCallTimes };
 
@@ -164,14 +164,13 @@ function SettingsContainer({
                 </Space>
               </Card>
             </TabPane>
-            <TabPane tab="Facility" key="facility">
+            {/* <TabPane tab="Facility" key="facility">
               <Tree
                 treeData={nodes as DataNode[]}
                 defaultExpandAll={true}
                 draggable={true}
               />
-            </TabPane>
-            {/* <TabPane tab="Call Hours" key="facility"></TabPane> */}
+            </TabPane> */}
           </Tabs>
         </Content>
       </div>

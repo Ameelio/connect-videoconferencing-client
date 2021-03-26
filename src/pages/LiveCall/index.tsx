@@ -13,7 +13,7 @@ import { Layout, Row, Col, Space, Pagination, PageHeader, Select } from "antd";
 import { fetchCalls, callsActions } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { CallMessage, GridOption, LiveCall } from "src/typings/Call";
+import { CallMessage, GridOption, Call } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
@@ -23,7 +23,7 @@ const { Content, Sider } = Layout;
 const { addMessage } = callsActions;
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: selectLiveCalls(state) as LiveCall[],
+  visitations: selectLiveCalls(state) as Call[],
 });
 
 const mapDispatchToProps = {
@@ -145,7 +145,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
                       height={`${frameVhHeight}vh`}
                       socket={socket}
                       callId={visitation.id}
-                      participants={visitation.connection}
+                      inmates={visitation.inmates}
+                      contacts={visitation.contacts}
                       isVisible={
                         idx >= (page - 1) * grid &&
                         idx < (page - 1) * grid + grid

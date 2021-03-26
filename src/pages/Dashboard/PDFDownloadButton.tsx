@@ -35,7 +35,7 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
       <PDFDownloadLink
         document={
           <DailyReport
-            callBlocks={_.groupBy(calls, (call) => call.scheduledStartTime)}
+            callBlocks={_.groupBy(calls, (call) => call.scheduledStart)}
             facility={facility}
             canViewDetails={true}
           />

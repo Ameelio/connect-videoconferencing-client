@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { RootState } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { fetchRecording } from "src/redux/modules/call";
 import { getCallInfo } from "src/redux/selectors";
 import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
@@ -10,7 +9,7 @@ import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { CallMessage, RecordedCall } from "src/typings/Call";
+import { CallMessage, Call } from "src/typings/Call";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
 
 const { Content, Sider } = Layout;
@@ -19,12 +18,10 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as RecordedCall,
+  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as Call,
 });
 
-const mapDispatchToProps = { fetchRecording };
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -33,33 +30,26 @@ type TParams = { id: string };
 function RecordingBase({
   call,
   match,
-  fetchRecording,
 }: PropsFromRedux & RouteComponentProps<TParams>): ReactElement {
   const [callId] = useState(match.params.id);
   const [chatCollapsed, setChatCollapsed] = useState(false);
-  const [recordingUrl, setRecordingUrl] = useState<string>();
+  const [recordingPath, setrecordingPath] = useState<string>();
   const [messages, setMessages] = useState<CallMessage[]>([]);
 
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
-  useEffect(() => {
-    // TODO what if data is not loaded
-    if (call && !call.recordingUrl) {
-      // TODO this can lead to infinite loops, add loaded flag to model
-      fetchRecording(call.id);
-    }
-  }, [call, fetchRecording]);
+  // TODO: fetch GET call endpoint to retrieve messages
 
   useEffect(() => {
-    if (call?.recordingUrl) {
-      setRecordingUrl(call.recordingUrl);
+    if (call?.recordingPath) {
+      setrecordingPath(call.recordingPath);
     }
     if (call?.messages) {
       setMessages(call.messages);
     }
-  }, [call, setRecordingUrl]);
+  }, [call, setrecordingPath]);
 
   const routes = [
     {
@@ -82,7 +72,7 @@ function RecordingBase({
           muted={true}
           controls={true}
           width="100%"
-          url={"/recording_demo.mp4" || call.recordingUrl}
+          url={"/recording_demo.mp4" || call.recordingPath}
         />
         <PageHeader
           ghost={false}
@@ -96,7 +86,7 @@ function RecordingBase({
               download
               target={"_blank"}
               icon={<DownloadOutlined />}
-              href={recordingUrl}
+              href={recordingPath}
             >
               Download
             </Button>,
@@ -111,29 +101,26 @@ function RecordingBase({
         >
           <Descriptions size="small" column={3}>
             <Descriptions.Item label="Incarcerated Person">
-              {genFullName(call.connection.inmate)}
+              {call.inmates.map((inmate) => genFullName(inmate))}
             </Descriptions.Item>
             <Descriptions.Item label="Inmate ID">
-              {call.connection.inmate.id}
+              {call.inmates.map((inmate) => inmate.id)}
             </Descriptions.Item>
             <Descriptions.Item label="Visitor">
-              {genFullName(call.connection.contact)}
+              {call.contacts.map((contact) => genFullName(contact))}
             </Descriptions.Item>
-            <Descriptions.Item label="Relationship">
-              {call.connection.relationship}
-            </Descriptions.Item>
+
             <Descriptions.Item label="Date">
-              {format(call.scheduledStartTime, "HH:mm")}
+              {format(call.scheduledStart, "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="Start Time">
-              {format(call.scheduledStartTime, "HH:mm")}
+              {format(call.scheduledStart, "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="End Time">
-              {format(call.scheduledEndTime, "HH:mm")}
+              {format(call.scheduledEnd, "HH:mm")}
             </Descriptions.Item>
-            {/* TODO add kiosk name once we incoporate the nodes endpoint */}
             <Descriptions.Item label="Location">
-              Under the stairs
+              {call.kiosk.name}
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>

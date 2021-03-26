@@ -22,11 +22,8 @@ export const selectActiveFacility = createAsyncThunk(
       false
     );
 
-    if (!bodyCt.data) throw new Error("Could not load facility data");
-
-    const callTimes = camelcaseKeys(
-      (bodyCt.data as Record<string, unknown>) as Object
-    ) as CallSlot[];
+    const callTimes = (bodyCt.data as Record<string, unknown>)
+      .results as CallSlot[];
 
     return { ...facility, callTimes };
   }
@@ -42,19 +39,11 @@ export const fetchFacilities = createAsyncThunk(
       false
     );
 
-    if (!fBody.data) {
-      throw new Error("Could not load list of facilities");
-    }
-
-    const facilities = camelcaseKeys(
-      (fBody.data as Record<string, unknown>) as Object
-    ) as Facility[];
+    const facilities = fBody.data as Facility[];
 
     if (!facilities.length) {
       throw new Error("Must have access to at least one facility");
     }
-
-    console.log(facilities);
 
     // fetch information for first facility
     Store.dispatch(selectActiveFacility(facilities[0]));

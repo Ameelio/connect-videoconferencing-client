@@ -5,20 +5,13 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import camelcaseKeys from "camelcase-keys";
 
 export const staffAdapter = createEntityAdapter<Staff>();
 
 export const fetchStaff = createAsyncThunk("staff/fetchStaff", async () => {
   const body = await fetchAuthenticated(`staffMembers`);
 
-  if (body.status !== 200 || !body.data) {
-    throw body;
-  }
-
-  const staff = camelcaseKeys(
-    (body.data as Record<string, unknown>) as Object
-  ) as Staff[];
+  const staff = (body.data as Record<string, unknown>).results as Staff[];
 
   return staff;
 });
@@ -58,9 +51,7 @@ export const createStaff = createAsyncThunk(
     });
 
     //TODO update this with API return when it's actually supported
-    const staff = camelcaseKeys(
-      (body.data as Record<string, unknown>).staff as Object
-    ) as Staff;
+    const staff = body.data as Staff;
 
     return staff;
   }

@@ -5,23 +5,12 @@ interface BasePersona {
   profileImagePath?: string;
 }
 
-interface Inmate extends BasePersona {
-  inmateNumber: string;
-  dob: string;
-  quota: number;
-  sentence: string;
-  sentnceLength: string;
-  location: string;
-  race: string;
-  nodes: AmeelioNode[];
-}
-
-interface Contact extends BasePersona {
-  relationship: string;
-  details: string;
-  email: string;
-  dob: string;
-}
+// interface Contact extends BasePersona {
+//   relationship: string;
+//   details: string;
+//   email: string;
+//   dob: string;
+// }
 
 type StaffRole = "admin" | "operator" | "investigator";
 

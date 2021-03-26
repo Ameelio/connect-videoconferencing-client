@@ -12,27 +12,6 @@ import RecordingPage from "src/pages/Recording";
 import { CallAlert, GridOption } from "src/typings/Call";
 import { Route } from "src/typings/Common";
 
-export enum CardType {
-  LiveCall = "live",
-  Contact = "contact",
-  ConnectionRequest = "request",
-  ApprovedConnectioo = "connection",
-  Inmate = "inmate",
-  Staff = "staff",
-  PastVisitation = "record",
-}
-
-export enum CardSize {
-  Small = "small",
-  Medium = "medium",
-  Large = "large",
-}
-
-export enum LoadingTypes {
-  AcceptConnection = "accept",
-  FetchRecording = "video",
-}
-
 export const UNAUTHENTICATED_USER_ID = -999;
 
 export const TOKEN_KEY = "token";

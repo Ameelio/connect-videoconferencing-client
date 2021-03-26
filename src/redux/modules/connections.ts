@@ -4,7 +4,6 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import camelcaseKeys from "camelcase-keys";
 import { openNotificationWithIcon } from "src/utils";
 import { BaseConnection, ConnectionStatus } from "src/typings/Connection";
 
@@ -32,16 +31,9 @@ export const fetchConnections = createAsyncThunk(
   async () => {
     const body = await fetchAuthenticated(`/connections`);
 
-    if (body.status !== 200 || !body.data) {
-      throw body;
-    }
+    const connections = (body.data as Record<string, unknown>)
+      .results as BaseConnection[];
 
-    const connections = ((body.data as Record<string, unknown>)
-      .connections as Object[]).map((connection) =>
-      camelcaseKeys(connection)
-    ) as BaseConnection[];
-
-    console.log(connections);
     return connections;
   }
 );
