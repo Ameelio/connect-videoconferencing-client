@@ -7,7 +7,6 @@ import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Call } from "src/typings/Call";
-import { groupsAdapter } from "./modules/group";
 import { kiosksAdapter } from "./modules/kiosk";
 import { notEmpty } from "src/utils";
 
@@ -42,11 +41,6 @@ export const {
   selectById: selectFacilityById,
   selectAll: selectAllFacilities,
 } = facilitiesAdapter.getSelectors<RootState>((state) => state.facilities);
-
-export const {
-  selectById: selectGroupById,
-  selectAll: selectAllGroups,
-} = groupsAdapter.getSelectors<RootState>((state) => state.groups);
 
 export const {
   selectById: selectKioskById,

@@ -53,9 +53,8 @@ export const callsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCalls.fulfilled, (state, action) => {
-      // TODO make this a set all and filter
-      // callsAdapter.addMany(state, action.payload);
       callsAdapter.upsertMany(state, action.payload);
+      state.error = undefined;
     });
     builder.addCase(fetchCalls.rejected, (state, action) => ({
       ...state,

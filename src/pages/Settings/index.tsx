@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import {
   TimePicker,
@@ -27,33 +27,21 @@ import { cloneObject } from "src/utils";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
 import Header from "src/components/Header/Header";
-import { selectAllGroups } from "src/redux/selectors";
-import { DataNode } from "antd/lib/tree";
 
 const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
 const { Content } = Layout;
 
-const mapStateToProps = (state: RootState) => ({
-  facility: state.facilities.selected,
-  nodes: selectAllGroups(state),
-});
-const mapDispatchToProps = { updateCallTimes };
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
 type Tab = "setting" | "facility";
 
-function SettingsContainer({
-  facility,
-  nodes,
-  updateCallTimes,
-}: PropsFromRedux): ReactElement {
+function SettingsContainer(): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
   const [activeTab, setActiveTab] = useState<Tab>("setting");
   const [callSlots, setCallSlots] = useState<CallSlot[]>([]);
+
+  const groups = useAppSelector((state) => state.groups.nodes);
+  const facility = useAppSelector((state) => state.facilities.selected);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (facility) {
@@ -85,7 +73,7 @@ function SettingsContainer({
   };
 
   const handleSubmission = (e: React.MouseEvent) => {
-    updateCallTimes({ callSlots, zone: "America_LosAngeles" });
+    dispatch(updateCallTimes({ callSlots, zone: facility.timezone }));
   };
 
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
@@ -164,13 +152,11 @@ function SettingsContainer({
                 </Space>
               </Card>
             </TabPane>
-            {/* <TabPane tab="Facility" key="facility">
-              <Tree
-                treeData={nodes as DataNode[]}
-                defaultExpandAll={true}
-                draggable={true}
-              />
-            </TabPane> */}
+            <TabPane tab="Facility" key="facility">
+              <Card title="Facility Tree">
+                <Tree treeData={groups} defaultExpandAll={true} />
+              </Card>
+            </TabPane>
           </Tabs>
         </Content>
       </div>
@@ -178,4 +164,4 @@ function SettingsContainer({
   );
 }
 
-export default connector(SettingsContainer);
+export default SettingsContainer;

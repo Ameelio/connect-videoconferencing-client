@@ -56,11 +56,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date().getTime();
       fetchCalls({
-        approved: true,
-        firstLive: [0, now].join(","),
-        end: [now, now + 1e8].join(","),
+        status: "live",
       });
     }, 30000);
     return () => clearInterval(interval);

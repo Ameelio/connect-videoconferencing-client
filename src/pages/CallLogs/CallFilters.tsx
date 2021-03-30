@@ -39,11 +39,11 @@ export default function CallFiltersHeader({
           if (date[1]) setEndDate(date[1].unix() * 1000);
         }}
       />
-      <Dropdown overlay={DurationFilters} trigger={["click"]}>
+      {/* <Dropdown overlay={DurationFilters} trigger={["click"]}>
         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
           Call Duration <DownOutlined />
         </a>
-      </Dropdown>
+      </Dropdown> */}
     </Space>
   );
 }

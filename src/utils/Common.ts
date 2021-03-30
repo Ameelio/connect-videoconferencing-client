@@ -1,7 +1,7 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { CallFilters, Call } from "src/typings/Call";
+import { CallFilters, Call, SearchFilter } from "src/typings/Call";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";
@@ -34,18 +34,6 @@ export const calculateDurationMS = (start: Date, end: Date): string => {
   return formatSecondsToMS(secs);
 };
 
-export const mapPermissionMap = (
-  permissions: Permission[]
-): Record<Permission, boolean> => {
-  return {
-    allowRead: permissions.includes("allowRead"),
-    allowApproval: permissions.includes("allowApproval"),
-    allowMonitor: permissions.includes("allowMonitor"),
-    allowCalltimes: permissions.includes("allowCalltimes"),
-    allowRestructure: permissions.includes("allowRestructure"),
-  };
-};
-
 export const cloneObject = (obj: Object): Object =>
   JSON.parse(JSON.stringify(obj));
 
@@ -58,21 +46,24 @@ export function onlyUnique(
 }
 
 export const createCallOptionsParam = (filters: CallFilters): string => {
-  const options = [
-    ["approved", filters.approved?.toString() || "true"],
-    ["limit", filters.limit?.toString() || "100"],
-    ["offset", filters.offset?.toString() || "0"],
-  ];
-  if (filters.firstLive) options.push(["first_live", filters.firstLive]);
-  if (filters.end) options.push(["end", filters.end]);
-  if (filters.startDate && filters.endDate)
-    options.push(["start", `${filters.startDate},${filters.endDate}`]);
-  if (filters.minDuration && filters.maxDuration)
-    options.push([
-      "duration",
-      `${filters.minDuration}, ${filters.maxDuration}`,
-    ]);
-  if (filters.query?.length) options.push(["global", filters.query]);
+  const options: string[][] = [];
+  for (const k of Object.keys(filters)) {
+    const key = k as keyof CallFilters;
+    if (key === "scheduledStart") {
+      if (
+        filters.scheduledStart?.rangeStart &&
+        filters.scheduledStart.rangeEnd
+      ) {
+        options.push([
+          key,
+          `${filters.scheduledStart.rangeStart},${filters.scheduledStart.rangeEnd}`,
+        ]);
+      }
+    } else if (filters[key]) {
+      options.push([key, `${filters[key]}`]);
+    }
+  }
+
   return toQueryString(options);
 };
 export const getInitials = (str: string) => {

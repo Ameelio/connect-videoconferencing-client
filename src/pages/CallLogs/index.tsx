@@ -10,8 +10,7 @@ import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import { Table, Space, Layout, Button, Tag, Input, Select } from "antd";
 import { push } from "connected-react-router";
-import { Connection } from "src/typings/Connection";
-import { CallStatus, Call } from "src/typings/Call";
+import { CallStatus, Call, SearchFilter, CallFilters } from "src/typings/Call";
 import Header from "src/components/Header/Header";
 import { EyeOutlined } from "@ant-design/icons";
 import _ from "lodash";
@@ -35,19 +34,12 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type SearchFilter =
-  | "inmateId"
-  | "contactName"
-  | "contactId"
-  | "inmateName"
-  | "kioskName";
-
 const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
-  inmateId: "Member ID",
-  inmateName: "Member Name",
+  inmateId: "Person ID",
+  inmateLastName: "Person Last Name",
+  contactLastName: "Contact Name",
   contactId: "Contact ID",
-  contactName: "Contact Name",
-  kioskName: "Kiosk Name",
+  kioskName: "Kiosk",
 };
 
 const LogsContainer: React.FC<PropsFromRedux> = ({
@@ -55,8 +47,6 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   fetchCalls,
   push,
 }) => {
-  // TODO refactor filter to filter based on store instead of displaying redux data
-  // Always call API while waiting
   const [filteredLogs, setFilteredLogs] = useState<Call[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
@@ -88,15 +78,25 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
     setLoading(true);
     (async () =>
       fetchCalls({
-        query: global,
-        startDate,
-        endDate,
-        minDuration: 0,
+        [`${activeSearchFilter}` as keyof CallFilters]: global,
+        scheduledStart:
+          startDate && endDate
+            ? { rangeStart: startDate, rangeEnd: endDate }
+            : undefined,
         maxDuration,
         limit,
         offset,
       }))().then(() => setLoading(false));
-  }, [fetchCalls, limit, offset, startDate, endDate, maxDuration, global]);
+  }, [
+    fetchCalls,
+    limit,
+    offset,
+    startDate,
+    endDate,
+    maxDuration,
+    global,
+    activeSearchFilter,
+  ]);
 
   useEffect(() => {
     let tempLogs = logs;
@@ -117,14 +117,14 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             )
           );
           break;
-        case "inmateName":
+        case "inmateLastName":
           tempLogs = tempLogs.filter((log) =>
             log.inmates.some((inmate) =>
               genFullName(inmate).includes(searchQuery)
             )
           );
           break;
-        case "contactName":
+        case "contactLastName":
           tempLogs = tempLogs.filter((log) =>
             log.contacts.some((contact) =>
               genFullName(contact).includes(searchQuery)
@@ -192,7 +192,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             key="date"
             render={(time) => (
               <>
-                <span>{format(time, "MM/dd/yy")}</span>
+                <span>{format(new Date(time), "MM/dd/yy")}</span>
               </>
             )}
           />
@@ -202,7 +202,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             key="startTime"
             render={(time) => (
               <>
-                <span>{format(time, "HH:mm")}</span>
+                <span>{format(new Date(time), "HH:mm")}</span>
               </>
             )}
           />
@@ -212,7 +212,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
             key="endTime"
             render={(time) => (
               <>
-                <span>{format(time, "HH:mm")}</span>
+                <span>{format(new Date(time), "HH:mm")}</span>
               </>
             )}
           />

@@ -132,8 +132,10 @@ function App({
           fetchGroups(),
         ]);
         fetchCalls({
-          startDate: startOfMonth(new Date()).getTime(),
-          endDate: endOfMonth(new Date()).getTime(),
+          scheduledStart: {
+            rangeStart: startOfMonth(new Date()).getTime(),
+            rangeEnd: endOfMonth(new Date()).getTime(),
+          },
         });
       })().then(() => setIsInitingData(false));
     }

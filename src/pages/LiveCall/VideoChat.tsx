@@ -9,7 +9,6 @@ import VideoOverlay from "./VideoOverlay";
 import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils";
-import { Connection } from "src/typings/Connection";
 import Cookies from "js-cookie";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";

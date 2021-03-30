@@ -1,5 +1,5 @@
-export interface Group {
+export interface GroupRO {
+  id: number;
   name: string;
-  description: string;
-  facilityId: number;
+  children: GroupRO[];
 }
