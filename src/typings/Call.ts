@@ -35,11 +35,11 @@ export interface CallAlert {
 }
 
 export type SearchFilter =
-  | "inmateId"
-  | "contactId"
-  | "inmateLastName"
-  | "contactLastName"
-  | "kioskName";
+  | "inmateParticipants.inmateIdentification"
+  | "inmateParticipants.lastName"
+  | "userParticipants.lastName"
+  | "userParticipants.id"
+  | "kiosk.name";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };
@@ -47,7 +47,7 @@ export interface CallFilters {
   limit?: number;
   offset?: number;
   page?: number;
-  status?: CallStatus;
+  status?: CallStatus[];
   inmateIdentification?: string;
   contactId?: string;
   inmateLastName?: string;

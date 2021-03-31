@@ -35,11 +35,11 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
-  inmateId: "Person ID",
-  inmateLastName: "Person Last Name",
-  contactLastName: "Contact Name",
-  contactId: "Contact ID",
-  kioskName: "Kiosk",
+  "inmateParticipants.inmateIdentification": "Person ID",
+  "inmateParticipants.lastName": "Person Last Name",
+  "userParticipants.lastName": "Contact Name",
+  "userParticipants.id": "Contact ID",
+  "kiosk.name": "Kiosk",
 };
 
 const LogsContainer: React.FC<PropsFromRedux> = ({
@@ -57,7 +57,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [maxDuration, setMaxDuration] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [activeSearchFilter, setActiveSearchFilter] = useState<SearchFilter>(
-    "inmateId"
+    "inmateParticipants.inmateIdentification"
   );
 
   const delayedQuery = useCallback(
@@ -99,10 +99,10 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   ]);
 
   useEffect(() => {
-    let tempLogs = logs;
+    let filteredCalls = logs;
 
     if (startDate && endDate)
-      tempLogs = tempLogs.filter(
+      filteredCalls = filteredCalls.filter(
         (log) =>
           log.scheduledStart >= new Date(startDate) &&
           log.scheduledStart <= new Date(endDate)
@@ -110,36 +110,41 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
 
     if (searchQuery)
       switch (activeSearchFilter) {
-        case "inmateId":
-          tempLogs = tempLogs.filter((log) =>
+        case "inmateParticipants.inmateIdentification":
+          filteredCalls = filteredCalls.filter((log) =>
             log.inmates.some((inmate) =>
               inmate.inmateIdentification.includes(searchQuery)
             )
           );
           break;
-        case "inmateLastName":
-          tempLogs = tempLogs.filter((log) =>
+        case "inmateParticipants.lastName":
+          filteredCalls = filteredCalls.filter((log) =>
             log.inmates.some((inmate) =>
               genFullName(inmate).includes(searchQuery)
             )
           );
           break;
-        case "contactLastName":
-          tempLogs = tempLogs.filter((log) =>
+        case "userParticipants.lastName":
+          filteredCalls = filteredCalls.filter((log) =>
             log.contacts.some((contact) =>
-              genFullName(contact).includes(searchQuery)
+              contact.lastName.includes(searchQuery)
             )
           );
           break;
-        case "contactId":
-          tempLogs = tempLogs.filter((log) =>
+        case "userParticipants.id":
+          filteredCalls = filteredCalls.filter((log) =>
             log.contacts.some((contact) => contact.id === parseInt(searchQuery))
+          );
+          break;
+        case "kiosk.name":
+          filteredCalls = filteredCalls.filter(
+            (call) => call.kiosk.name === searchQuery
           );
           break;
         default:
           break;
       }
-    setFilteredLogs(tempLogs);
+    setFilteredLogs(filteredCalls);
   }, [
     logs,
     setFilteredLogs,
@@ -157,7 +162,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         extra={[
           <Input.Group compact>
             <Select
-              defaultValue="inmateId"
+              defaultValue={Object.keys(LABEL_TO_FILTER_MAP)[0] as SearchFilter}
               onSelect={(value) => setActiveSearchFilter(value)}
             >
               {Object.keys(LABEL_TO_FILTER_MAP).map((key) => (

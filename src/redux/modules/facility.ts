@@ -70,7 +70,7 @@ export const updateCallTimes = createAsyncThunk(
     // delete previous call slots, if any
     if (oldCallSlots.length) {
       await fetchAuthenticated(
-        `callSlots?id=${oldCallSlots.map((slot) => slot.id).join(",")}`,
+        `callSlots/bulk?id=${oldCallSlots.map((slot) => slot.id).join(",")}`,
         {
           method: "DELETE",
         }

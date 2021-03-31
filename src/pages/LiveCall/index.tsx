@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch } from "src/redux";
 import {
   CALL_ALERTS,
   GRID_TO_SPAN_WIDTH,
@@ -13,35 +12,28 @@ import { Layout, Row, Col, Space, Pagination, PageHeader, Select } from "antd";
 import { fetchCalls, callsActions } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { CallMessage, GridOption, Call } from "src/typings/Call";
+import { CallMessage, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
+import { connect, ConnectedProps } from "react-redux";
 
 const { Content, Sider } = Layout;
 
 const { addMessage } = callsActions;
 
 const mapStateToProps = (state: RootState) => ({
-  visitations: selectLiveCalls(state) as Call[],
+  visitations: selectLiveCalls(state),
 });
 
-const mapDispatchToProps = {
-  fetchCalls,
-  addMessage,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
-const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
-  visitations,
-  fetchCalls,
-}) => {
+const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [activeCallChatId, setActiveCallChatId] = useState<number>();
   const [messages, setMessages] = useState<CallMessage[]>([]);
@@ -54,14 +46,18 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
     Record<number, boolean>
   >({});
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchCalls({
-        status: "live",
-      });
+      dispatch(
+        fetchCalls({
+          status: ["live", "missing_monitor"],
+        })
+      );
     }, 30000);
     return () => clearInterval(interval);
-  }, [fetchCalls]);
+  }, []);
 
   useEffect(() => {
     if (!socket) {
@@ -75,13 +71,14 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({
   }, [setSocket, socket]);
 
   useEffect(() => {
-    // setVisibleCalls(visitations.slice(0, grid));
+    console.log("running");
     if (!activeCallChatId && visitations.length > 0) {
       setActiveCallChatId(visitations[0].id);
     }
   }, [grid, visitations, activeCallChatId]);
 
   useEffect(() => {
+    console.log("rernrender");
     const call = visitations.find((call) => call.id === activeCallChatId);
     setMessages(call?.messages || []);
   }, [activeCallChatId, visitations]);

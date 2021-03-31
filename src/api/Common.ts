@@ -40,7 +40,6 @@ export async function fetchAuthenticated(
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${state.session.user.token}`,
     },
     credentials: "include",
   };
