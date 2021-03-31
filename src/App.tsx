@@ -7,7 +7,6 @@ import { connect, ConnectedProps, useSelector } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
-import { loginWithToken } from "./api/Session";
 import Menu from "./components/Menu/Menu";
 import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
@@ -105,7 +104,6 @@ function App({
     localStorage.removeItem("debug");
     (async () => {
       try {
-        await loginWithToken();
         await fetchFacilities();
       } catch (err) {}
     })();

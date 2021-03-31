@@ -10,37 +10,6 @@ async function initializeSession(body: any) {
   Store.dispatch(setSession(user));
 }
 
-export async function loginWithToken(): Promise<void> {
-  // try {
-  //   const remember = localStorage.getItem(REMEMBER_TOKEN_KEY);
-  //   if (!remember) {
-  //     throw Error("Cannot load token");
-  //   }
-  //   Store.dispatch(setSessionStatus("loading"));
-  //   const response = await fetchTimeout(
-  //     url.resolve(API_URL, "auth/login/remember"),
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         remember: remember,
-  //       }),
-  //     }
-  //   );
-  //   const body = await response.json();
-  //   if (body.status !== 200) {
-  //     Store.dispatch(setSessionStatus("inactive"));
-  //     throw body;
-  //   }
-  //   await initializeSession(body);
-  // } catch (err) {
-  //   throw Error(err);
-  // }
-}
-
 export async function loginWithCredentials(
   cred: UserCredentials
 ): Promise<void> {
