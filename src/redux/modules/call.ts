@@ -26,6 +26,15 @@ export const fetchCalls = createAsyncThunk(
   }
 );
 
+export const fetchCallMessages = createAsyncThunk(
+  "calls/fetchOne",
+  async (id: number) => {
+    const body = await fetchAuthenticated(`calls/${id}/callMessages`);
+    const messages = body.data as CallMessage[];
+    return { id, changes: { messages } };
+  }
+);
+
 interface VisitationState extends EntityState<BaseCall> {
   error?: string;
 }
@@ -60,6 +69,9 @@ export const callsSlice = createSlice({
       ...state,
       error: action.error.message,
     }));
+    builder.addCase(fetchCallMessages.fulfilled, (state, action) =>
+      callsAdapter.updateOne(state, action.payload)
+    );
   },
 });
 

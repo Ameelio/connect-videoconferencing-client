@@ -1,7 +1,7 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
-import { BaseCall, CallStatus } from "src/typings/Call";
+import { BaseCall, CallMessage, CallStatus } from "src/typings/Call";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -24,13 +24,7 @@ export interface CallRO {
   rating: number;
   schedulerId: number;
   schedulerType: "user" | "inmate";
-}
-
-export interface CallMessageRO {
-  callId: number;
-  contents: string;
-  fromType: string;
-  createdAt: string;
+  messages: CallMessage[];
 }
 
 export function cleanCall(call: CallRO): BaseCall {
@@ -47,5 +41,6 @@ export function cleanCall(call: CallRO): BaseCall {
     rating: call.rating,
     schedulerId: call.schedulerId,
     schedulerType: call.schedulerType,
-  } as BaseCall;
+    messages: call.messages || [],
+  };
 }

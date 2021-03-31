@@ -98,8 +98,7 @@ export interface CallParticipant {
 
 export interface CallMessage {
   callId: number;
-  inmateId: number;
-  userId: number;
+  senderId: number;
   senderType: "inmate" | "user" | "doc";
   contents: string;
   createdAt: Date;

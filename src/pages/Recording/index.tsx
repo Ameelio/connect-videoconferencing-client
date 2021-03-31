@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { getCallInfo } from "src/redux/selectors";
@@ -11,6 +11,7 @@ import { genFullName } from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { CallMessage, Call } from "src/typings/Call";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
+import { fetchCallMessages } from "src/redux/modules/call";
 
 const { Content, Sider } = Layout;
 
@@ -33,23 +34,17 @@ function RecordingBase({
 }: PropsFromRedux & RouteComponentProps<TParams>): ReactElement {
   const [callId] = useState(match.params.id);
   const [chatCollapsed, setChatCollapsed] = useState(false);
-  const [recordingPath, setrecordingPath] = useState<string>();
-  const [messages, setMessages] = useState<CallMessage[]>([]);
 
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
+  const dispatch = useAppDispatch();
   // TODO: fetch GET call endpoint to retrieve messages
 
   useEffect(() => {
-    if (call?.recordingPath) {
-      setrecordingPath(call.recordingPath);
-    }
-    if (call?.messages) {
-      setMessages(call.messages);
-    }
-  }, [call, setrecordingPath]);
+    if (callId) dispatch(fetchCallMessages(parseInt(callId)));
+  }, [callId]);
 
   const routes = [
     {
@@ -72,7 +67,7 @@ function RecordingBase({
           muted={true}
           controls={true}
           width="100%"
-          url={"/recording_demo.mp4" || call.recordingPath}
+          url={call.recordingPath || "/recording_demo.mp4"}
         />
         <PageHeader
           ghost={false}
@@ -86,7 +81,7 @@ function RecordingBase({
               download
               target={"_blank"}
               icon={<DownloadOutlined />}
-              href={recordingPath}
+              href={call.recordingPath}
             >
               Download
             </Button>,
@@ -146,7 +141,7 @@ function RecordingBase({
                   height: "100%",
                 }}
               >
-                {messages.map((message) => (
+                {call.messages.map((message) => (
                   <MessageDisplay message={message} />
                 ))}
               </Space>
