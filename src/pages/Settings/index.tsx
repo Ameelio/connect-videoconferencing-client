@@ -12,7 +12,7 @@ import {
   Tree,
   Card,
 } from "antd";
-import { CallSlot } from "src/typings/Facility";
+import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
@@ -37,7 +37,7 @@ type Tab = "setting" | "facility";
 function SettingsContainer(): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
   const [activeTab, setActiveTab] = useState<Tab>("setting");
-  const [callSlots, setCallSlots] = useState<CallSlot[]>([]);
+  const [callSlots, setCallSlots] = useState<TentativeCallSlot[]>([]);
 
   const groups = useAppSelector((state) => state.groups.nodes);
   const facility = useAppSelector((state) => state.facilities.selected);
@@ -73,7 +73,12 @@ function SettingsContainer(): ReactElement {
   };
 
   const handleSubmission = (e: React.MouseEvent) => {
-    dispatch(updateCallTimes({ callSlots, zone: facility.timezone }));
+    dispatch(
+      updateCallTimes({
+        newCallSlots: callSlots,
+        oldCallSlots: facility.callTimes,
+      })
+    );
   };
 
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {

@@ -6,7 +6,12 @@ import {
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";
-import { SelectedFacility, Facility, CallSlot } from "src/typings/Facility";
+import {
+  SelectedFacility,
+  Facility,
+  CallSlot,
+  TentativeCallSlot,
+} from "src/typings/Facility";
 import { showToast } from "src/utils";
 import { Store } from "..";
 
@@ -55,22 +60,30 @@ export const fetchFacilities = createAsyncThunk(
 const UPDATE_CALL_HOURS = "facility/updateCallTimes";
 export const updateCallTimes = createAsyncThunk(
   UPDATE_CALL_HOURS,
-  async (args: { callSlots: CallSlot[]; zone: string }) => {
-    const body = await fetchAuthenticated(`/times`, {
-      method: "PUT",
-      body: JSON.stringify({
-        call_times: args.callSlots,
-        zone: "America_LosAngeles",
-      }),
-    });
-
-    // update
-    if (!body.data) {
-      throw new Error("Could not update call time");
+  async ({
+    oldCallSlots,
+    newCallSlots,
+  }: {
+    oldCallSlots: CallSlot[];
+    newCallSlots: TentativeCallSlot[];
+  }) => {
+    // delete previous call slots, if any
+    if (oldCallSlots.length) {
+      await fetchAuthenticated(
+        `callSlots?id=${oldCallSlots.map((slot) => slot.id).join(",")}`,
+        {
+          method: "DELETE",
+        }
+      );
     }
 
-    // update stsore
-    return args.callSlots;
+    // create new call slots
+    const response = await fetchAuthenticated(`callSlots`, {
+      method: "POST",
+      body: JSON.stringify(newCallSlots),
+    });
+
+    return response.data as CallSlot[];
   }
 );
 

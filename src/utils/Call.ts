@@ -6,7 +6,7 @@ import {
   startOfMonth,
 } from "date-fns";
 import { CallBlock, Call, WeeklySchedule } from "src/typings/Call";
-import { CallSlot } from "src/typings/Facility";
+import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
 import { addWeeks } from "@fullcalendar/react";
@@ -33,11 +33,8 @@ const calcEndCallSlot = (time: CallSlot): string => {
 export const mapCallSlotsToTimeBlock = (
   callTimes: CallSlot[]
 ): WeeklySchedule => {
-  console.log("calltimes");
-  console.log(callTimes);
   const groups = _.groupBy(callTimes, (time) => time.day);
 
-  console.log(groups);
   const sorted: [WeekdayMap, CallSlot[]][] = WEEKDAYS.map(
     (weekday: WeekdayMap) => {
       if (!(weekday in groups)) {
@@ -62,8 +59,6 @@ export const mapCallSlotsToTimeBlock = (
   const ranges: {
     [key: number]: CallBlock[];
   }[] = sorted.map(([weekday, times]) => {
-    // console.log(weekday);
-    // console.log(times);
     if (!times.length) {
       return { [weekday]: [] };
     }
@@ -108,13 +103,14 @@ export const mapCallSlotsToTimeBlock = (
   return Object.assign({}, ...ranges);
 };
 
-export const mapCallBlockToCallSlots = (ranges: WeeklySchedule): CallSlot[] => {
+export const mapCallBlockToCallSlots = (
+  ranges: WeeklySchedule
+): TentativeCallSlot[] => {
   const rangeList = WEEKDAYS.map((weekday) => ranges[weekday] || []).reduce(
     (prev, curr) => prev.concat(curr),
     []
   );
 
-  console.log(rangeList);
   const res = rangeList
     .map((range) => {
       let iterator = new Date(range.start);
@@ -122,7 +118,7 @@ export const mapCallBlockToCallSlots = (ranges: WeeklySchedule): CallSlot[] => {
 
       if (iterator > endTime) throw new Error("Invalid time range");
 
-      const callTimes: CallSlot[] = [];
+      const callTimes: TentativeCallSlot[] = [];
 
       while (iterator < endTime) {
         callTimes.push({
@@ -132,7 +128,6 @@ export const mapCallBlockToCallSlots = (ranges: WeeklySchedule): CallSlot[] => {
           duration: range.duration,
         });
         iterator = addMilliseconds(iterator, range.duration);
-        console.log(iterator);
       }
 
       return callTimes;
