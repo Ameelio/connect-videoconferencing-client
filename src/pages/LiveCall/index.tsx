@@ -71,14 +71,12 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   }, [setSocket, socket]);
 
   useEffect(() => {
-    console.log("running");
     if (!activeCallChatId && visitations.length > 0) {
       setActiveCallChatId(visitations[0].id);
     }
   }, [grid, visitations, activeCallChatId]);
 
   useEffect(() => {
-    console.log("rernrender");
     const call = visitations.find((call) => call.id === activeCallChatId);
     setMessages(call?.messages || []);
   }, [activeCallChatId, visitations]);
