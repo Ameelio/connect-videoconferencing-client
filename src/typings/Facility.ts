@@ -1,26 +1,28 @@
-export interface AmeelioNode {
+export interface CallSlot {
   id: number;
-  name: string;
-}
-
-export interface NodeCallSlot {
-  start: {
-    day: number;
-    hour: number;
-    minute: number;
-  };
+  day: number;
+  hour: number;
+  minute: number;
   duration: number;
 }
 
+export type TentativeCallSlot = Omit<CallSlot, "id">;
+
 export interface Facility {
-  nodeId: number;
+  id: number;
   name: string;
   fullName: string;
   city: string;
   state: string;
+  email: string;
+  phone: string;
+  addressLineOne: string;
+  addressLineTwo: string;
+  postal: string;
+  timezone: string;
+  link: string;
 }
 
 export interface SelectedFacility extends Facility {
-  callTimes: NodeCallSlot[];
-  // zone: string;
+  callTimes: CallSlot[];
 }

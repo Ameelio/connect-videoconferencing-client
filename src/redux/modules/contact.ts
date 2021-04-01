@@ -4,19 +4,15 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
-import camelcaseKeys from "camelcase-keys";
+import { Contact } from "src/typings/Contact";
 
 export const fetchContacts = createAsyncThunk(
   "contact/fetchContacts",
   async () => {
-    const body = await fetchAuthenticated(`/users`);
+    const body = await fetchAuthenticated(`contacts`);
 
-    if (body.status !== 200 || !body.data) {
-      throw body;
-    }
-
-    const contacts = ((body.data as Record<string, unknown>)
-      .users as Object[]).map((contact) => camelcaseKeys(contact)) as Contact[];
+    const contacts = (body.data as Record<string, unknown>)
+      .results as Contact[];
 
     return contacts;
   }

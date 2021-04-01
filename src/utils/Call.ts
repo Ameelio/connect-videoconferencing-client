@@ -6,39 +6,36 @@ import {
   startOfMonth,
 } from "date-fns";
 import { CallBlock, Call, WeeklySchedule } from "src/typings/Call";
-import { NodeCallSlot } from "src/typings/Facility";
+import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
 import { addWeeks } from "@fullcalendar/react";
 
-const callSlotToDateString = (time: NodeCallSlot): string => {
+const callSlotToDateString = (time: CallSlot): string => {
   const date = new Date();
-  date.setHours(time.start.hour);
-  date.setMinutes(time.start.minute);
+  date.setHours(time.hour);
+  date.setMinutes(time.minute);
   return date.toString();
 };
 
-const calcEndCallSlot = (time: NodeCallSlot): string => {
+const calcEndCallSlot = (time: CallSlot): string => {
   const date = new Date();
   // TODO fix this
-  // const offset = date.getDay() - time.start.day;
+  // const offset = date.getDay() - time.day;
   //     date.setDate(date.getDate() + offset);
-  //   date.setDate(time.start.day);
-  date.setHours(time.start.hour);
-  date.setMinutes(time.start.minute);
+  //   date.setDate(time.day);
+  date.setHours(time.hour);
+  date.setMinutes(time.minute);
   // const hi = addMilliseconds(date, duration);
   return addMilliseconds(date, time.duration).toString();
 };
 
 export const mapCallSlotsToTimeBlock = (
-  callTimes: NodeCallSlot[]
+  callTimes: CallSlot[]
 ): WeeklySchedule => {
-  console.log("calltimes");
-  console.log(callTimes);
-  const groups = _.groupBy(callTimes, (time) => time.start.day);
+  const groups = _.groupBy(callTimes, (time) => time.day);
 
-  console.log(groups);
-  const sorted: [WeekdayMap, NodeCallSlot[]][] = WEEKDAYS.map(
+  const sorted: [WeekdayMap, CallSlot[]][] = WEEKDAYS.map(
     (weekday: WeekdayMap) => {
       if (!(weekday in groups)) {
         return [weekday, []];
@@ -46,11 +43,11 @@ export const mapCallSlotsToTimeBlock = (
       return [
         weekday,
         groups[weekday].sort((ct1, ct2) => {
-          if (ct1.start.hour > ct2.start.hour) return 1;
-          if (ct1.start.hour < ct2.start.hour) return -1;
+          if (ct1.hour > ct2.hour) return 1;
+          if (ct1.hour < ct2.hour) return -1;
 
-          if (ct1.start.minute > ct2.start.minute) return 1;
-          if (ct1.start.minute < ct2.start.minute) return -1;
+          if (ct1.minute > ct2.minute) return 1;
+          if (ct1.minute < ct2.minute) return -1;
           return 1;
         }),
       ];
@@ -62,23 +59,18 @@ export const mapCallSlotsToTimeBlock = (
   const ranges: {
     [key: number]: CallBlock[];
   }[] = sorted.map(([weekday, times]) => {
-    // console.log(weekday);
-    // console.log(times);
     if (!times.length) {
       return { [weekday]: [] };
     }
     const timeRanges: CallBlock[] = [];
-    let curr: NodeCallSlot = times[0];
-    let first: NodeCallSlot = times[0];
+    let curr: CallSlot = times[0];
+    let first: CallSlot = times[0];
 
     // create intervals
     for (const time of times.slice(1, times.length)) {
       // if same time, just keep moving through the list e.g 11.00 --> 11.30
-      if (curr.start.hour === time.start.hour) curr = time;
-      else if (
-        time.start.hour === curr.start.hour + 1 &&
-        time.start.minute === 0
-      )
+      if (curr.hour === time.hour) curr = time;
+      else if (time.hour === curr.hour + 1 && time.minute === 0)
         // e.g 11.30 --> 12.00
         curr = time;
       else {
@@ -89,7 +81,7 @@ export const mapCallSlotsToTimeBlock = (
           start: callSlotToDateString(first),
           end: calcEndCallSlot(curr),
           idx,
-          day: first.start.day,
+          day: first.day,
         });
         // reset
         first = time;
@@ -103,7 +95,7 @@ export const mapCallSlotsToTimeBlock = (
       start: callSlotToDateString(first),
       end: calcEndCallSlot(curr),
       idx,
-      day: first.start.day,
+      day: first.day,
     });
 
     return { [weekday]: timeRanges };
@@ -113,13 +105,12 @@ export const mapCallSlotsToTimeBlock = (
 
 export const mapCallBlockToCallSlots = (
   ranges: WeeklySchedule
-): NodeCallSlot[] => {
+): TentativeCallSlot[] => {
   const rangeList = WEEKDAYS.map((weekday) => ranges[weekday] || []).reduce(
     (prev, curr) => prev.concat(curr),
     []
   );
 
-  console.log(rangeList);
   const res = rangeList
     .map((range) => {
       let iterator = new Date(range.start);
@@ -127,19 +118,16 @@ export const mapCallBlockToCallSlots = (
 
       if (iterator > endTime) throw new Error("Invalid time range");
 
-      const callTimes: NodeCallSlot[] = [];
+      const callTimes: TentativeCallSlot[] = [];
 
       while (iterator < endTime) {
         callTimes.push({
-          start: {
-            hour: getHours(iterator),
-            minute: getMinutes(iterator),
-            day: range.day,
-          },
+          hour: getHours(iterator),
+          minute: getMinutes(iterator),
+          day: range.day,
           duration: range.duration,
         });
         iterator = addMilliseconds(iterator, range.duration);
-        console.log(iterator);
       }
 
       return callTimes;
@@ -172,8 +160,7 @@ function mondayMorning(date: Date): Date {
 const callsWithinPeriod = (calls: Call[], start: Date, end: Date): Call[] => {
   return calls.filter(
     (call) =>
-      new Date(call.scheduledEndTime) >= start &&
-      new Date(call.scheduledEndTime) <= end
+      new Date(call.scheduledEnd) >= start && new Date(call.scheduledEnd) <= end
   );
 };
 

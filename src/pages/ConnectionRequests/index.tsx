@@ -11,6 +11,9 @@ import { genFullName } from "src/utils";
 import { updateConnection } from "src/redux/modules/connections";
 import { BaseConnection, Connection } from "src/typings/Connection";
 import Header from "src/components/Header/Header";
+import { Inmate } from "src/typings/Inmate";
+import { format } from "date-fns";
+import { Contact } from "src/typings/Contact";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -30,11 +33,11 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
   requests,
 }) => {
   const handleAccept = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "approved" });
+    updateConnection({ connectionId: request.id, status: "active" });
   };
 
   const handleDecline = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "denied" });
+    updateConnection({ connectionId: request.id, status: "rejected" });
   };
 
   return (
@@ -52,9 +55,9 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
             <>
               {
                 <Avatar
-                  src={inmate.profileImgPath}
+                  src={inmate.profileImagePath}
                   shape="circle"
-                  size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                  size={64}
                 />
               }
             </>
@@ -68,9 +71,8 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
             <>
               <Space direction="vertical">
                 <span>{genFullName(inmate)}</span>
-                <span>{inmate.inmateNumber}</span>
-                {/* <span>{format(new Date(inmate.dob), "DD/mm/yy")}</span> */}
-                <span>{inmate.location}</span>
+                <span>{inmate.inmateIdentification}</span>
+                <span>{format(new Date(inmate.dateOfBirth), "dd/mm/yy")}</span>
               </Space>
             </>
           )}
@@ -81,11 +83,7 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
           key="contactProfilePic"
           render={(contact: Contact) => (
             <>
-              <Avatar
-                src={contact.profileImgPath}
-                shape="circle"
-                size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-              />
+              <Avatar src={contact.profileImagePath} shape="circle" size={64} />
             </>
           )}
         />
@@ -98,10 +96,14 @@ const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
               <Space direction="vertical">
                 <span>{genFullName(contact)}</span>
                 <span>Visitor ID: {contact.id}</span>
-                <span>{contact.relationship}</span>
               </Space>
             </>
           )}
+        />
+        <Column
+          title="Relationship"
+          dataIndex="relationship"
+          key="relationship"
         />
         <Column
           title=""

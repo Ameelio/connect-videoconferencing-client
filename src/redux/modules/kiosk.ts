@@ -4,7 +4,6 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";
 import { Kiosk } from "src/typings/Kiosk";
 import { SelectedFacility } from "src/typings/Facility";
@@ -12,15 +11,9 @@ import { SelectedFacility } from "src/typings/Facility";
 export const kiosksAdapter = createEntityAdapter<Kiosk>();
 
 export const fetchKiosks = createAsyncThunk("kiosk/fetchKiosks", async () => {
-  const body = await fetchAuthenticated(`/kiosks`);
+  const body = await fetchAuthenticated(`kiosks`);
 
-  if (!body.data) {
-    throw new Error("Could not load list of facilities");
-  }
-
-  const kiosks = camelcaseKeys(
-    (body.data as Record<string, unknown>).kiosks as Object
-  ) as Kiosk[];
+  const kiosks = (body.data as Record<string, unknown>).results as Kiosk[];
 
   return kiosks;
 });

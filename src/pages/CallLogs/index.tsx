@@ -10,11 +10,12 @@ import { fetchCalls } from "src/redux/modules/call";
 import CallFiltersHeader from "./CallFilters";
 import { Table, Space, Layout, Button, Tag, Input, Select } from "antd";
 import { push } from "connected-react-router";
-import { Connection } from "src/typings/Connection";
-import { CallStatus, RecordedCall } from "src/typings/Call";
+import { CallStatus, Call, SearchFilter, CallFilters } from "src/typings/Call";
 import Header from "src/components/Header/Header";
 import { EyeOutlined } from "@ant-design/icons";
 import _ from "lodash";
+import { Inmate } from "src/typings/Inmate";
+import { Contact } from "src/typings/Contact";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -22,7 +23,7 @@ const { Content } = Layout;
 const mapStateToProps = (state: RootState) => ({
   logs: getCallsInfo(state, selectAllCalls(state)).filter(
     (call) => call.status === "ended" || call.status === "terminated"
-  ) as RecordedCall[],
+  ) as Call[],
   history: state.router,
 });
 
@@ -33,19 +34,12 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type SearchFilter =
-  | "inmateId"
-  | "contactName"
-  | "contactId"
-  | "inmateName"
-  | "kioskName";
-
 const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
-  inmateId: "Member ID",
-  inmateName: "Member Name",
-  contactId: "Contact ID",
-  contactName: "Contact Name",
-  kioskName: "Kiosk Name",
+  "inmateParticipants.inmateIdentification": "Person ID",
+  "inmateParticipants.lastName": "Person Last Name",
+  "userParticipants.lastName": "Contact Name",
+  "userParticipants.id": "Contact ID",
+  "kiosk.name": "Kiosk",
 };
 
 const LogsContainer: React.FC<PropsFromRedux> = ({
@@ -53,9 +47,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   fetchCalls,
   push,
 }) => {
-  // TODO refactor filter to filter based on store instead of displaying redux data
-  // Always call API while waiting
-  const [filteredLogs, setFilteredLogs] = useState<RecordedCall[]>([]);
+  const [filteredLogs, setFilteredLogs] = useState<Call[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
   const [limit] = useState(100);
@@ -65,7 +57,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
   const [maxDuration, setMaxDuration] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [activeSearchFilter, setActiveSearchFilter] = useState<SearchFilter>(
-    "inmateId"
+    "inmateParticipants.inmateIdentification"
   );
 
   const delayedQuery = useCallback(
@@ -86,50 +78,73 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
     setLoading(true);
     (async () =>
       fetchCalls({
-        query: global,
-        startDate,
-        endDate,
-        minDuration: 0,
+        [`${activeSearchFilter}` as keyof CallFilters]: global,
+        scheduledStart:
+          startDate && endDate
+            ? { rangeStart: startDate, rangeEnd: endDate }
+            : undefined,
         maxDuration,
         limit,
         offset,
       }))().then(() => setLoading(false));
-  }, [fetchCalls, limit, offset, startDate, endDate, maxDuration, global]);
+  }, [
+    fetchCalls,
+    limit,
+    offset,
+    startDate,
+    endDate,
+    maxDuration,
+    global,
+    activeSearchFilter,
+  ]);
 
   useEffect(() => {
-    let tempLogs = logs;
+    let filteredCalls = logs;
 
     if (startDate && endDate)
-      tempLogs = tempLogs.filter(
-        (log) => log.startTime >= startDate && log.startTime <= endDate
+      filteredCalls = filteredCalls.filter(
+        (log) =>
+          log.scheduledStart >= new Date(startDate) &&
+          log.scheduledStart <= new Date(endDate)
       );
 
     if (searchQuery)
       switch (activeSearchFilter) {
-        case "inmateId":
-          tempLogs = tempLogs.filter((log) =>
-            `${log.connection.inmate.inmateNumber}`.includes(searchQuery)
+        case "inmateParticipants.inmateIdentification":
+          filteredCalls = filteredCalls.filter((log) =>
+            log.inmates.some((inmate) =>
+              inmate.inmateIdentification.includes(searchQuery)
+            )
           );
           break;
-        case "inmateName":
-          tempLogs = tempLogs.filter((log) =>
-            genFullName(log.connection.inmate).includes(searchQuery)
+        case "inmateParticipants.lastName":
+          filteredCalls = filteredCalls.filter((log) =>
+            log.inmates.some((inmate) =>
+              genFullName(inmate).includes(searchQuery)
+            )
           );
           break;
-        case "contactName":
-          tempLogs = tempLogs.filter((log) =>
-            genFullName(log.connection.contact).includes(searchQuery)
+        case "userParticipants.lastName":
+          filteredCalls = filteredCalls.filter((log) =>
+            log.contacts.some((contact) =>
+              contact.lastName.includes(searchQuery)
+            )
           );
           break;
-        case "contactId":
-          tempLogs = tempLogs.filter((log) =>
-            `${log.connection.contact.id}`.includes(searchQuery)
+        case "userParticipants.id":
+          filteredCalls = filteredCalls.filter((log) =>
+            log.contacts.some((contact) => contact.id === parseInt(searchQuery))
+          );
+          break;
+        case "kiosk.name":
+          filteredCalls = filteredCalls.filter(
+            (call) => call.kiosk.name === searchQuery
           );
           break;
         default:
           break;
       }
-    setFilteredLogs(tempLogs);
+    setFilteredLogs(filteredCalls);
   }, [
     logs,
     setFilteredLogs,
@@ -147,7 +162,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         extra={[
           <Input.Group compact>
             <Select
-              defaultValue="inmateId"
+              defaultValue={Object.keys(LABEL_TO_FILTER_MAP)[0] as SearchFilter}
               onSelect={(value) => setActiveSearchFilter(value)}
             >
               {Object.keys(LABEL_TO_FILTER_MAP).map((key) => (
@@ -178,74 +193,69 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         <Table dataSource={filteredLogs} loading={loading}>
           <Column
             title="Date"
-            dataIndex="scheduledStartTime"
+            dataIndex="scheduledStart"
             key="date"
             render={(time) => (
               <>
-                <span>{format(time, "MM/dd/yy")}</span>
+                <span>{format(new Date(time), "MM/dd/yy")}</span>
               </>
             )}
           />
           <Column
             title="Start Time"
-            dataIndex="scheduledStartTime"
+            dataIndex="scheduledStart"
             key="startTime"
             render={(time) => (
               <>
-                <span>{format(time, "HH:mm")}</span>
+                <span>{format(new Date(time), "HH:mm")}</span>
               </>
             )}
           />
           <Column
             title="End Time"
-            dataIndex="scheduledEndTime"
+            dataIndex="scheduledEnd"
             key="endTime"
             render={(time) => (
               <>
-                <span>{format(time, "HH:mm")}</span>
+                <span>{format(new Date(time), "HH:mm")}</span>
               </>
             )}
           />
           <Column
-            title="Inmate Name"
-            dataIndex="connection"
-            key="connection"
-            render={(connection: Connection) => (
-              <>
-                <span>{genFullName(connection.inmate)}</span>
-              </>
-            )}
+            title="Incarcerated Persons"
+            dataIndex="inmates"
+            key="inmateName"
+            render={(inmates: Inmate[]) =>
+              inmates.map((inmate) => (
+                <>
+                  <span>{genFullName(inmate)}</span>
+                </>
+              ))
+            }
           />
           <Column
-            title="Inmate ID"
-            dataIndex="connection"
-            key="inmateId"
-            render={(connection: Connection) => (
-              <>
-                <span>{connection.inmate.inmateNumber}</span>
-              </>
-            )}
+            title="Unique Identifiers"
+            dataIndex="inmates"
+            key="inmateIds"
+            render={(inmates: Inmate[]) =>
+              inmates.map((inmate) => (
+                <>
+                  <span>{inmate.inmateIdentification}</span>
+                </>
+              ))
+            }
           />
           <Column
             title="Contact Name"
-            dataIndex="connection"
+            dataIndex="contacts"
             key="contactName"
-            render={(connection: Connection) => (
-              <>
-                <span>{genFullName(connection.contact)}</span>
-              </>
-            )}
-          />
-          {/* Change this */}
-          <Column
-            title="Location"
-            dataIndex="connection"
-            key="location"
-            render={(connection: Connection) => (
-              <>
-                <span>{connection.inmate.location}</span>
-              </>
-            )}
+            render={(contact: Contact[]) =>
+              contact.map((contact) => (
+                <>
+                  <span>{genFullName(contact)}</span>
+                </>
+              ))
+            }
           />
           <Column
             title="Status"
@@ -261,7 +271,7 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           <Column
             title="Recording"
             key="action"
-            render={(_text, visitation: RecordedCall) => (
+            render={(_text, visitation: Call) => (
               <Space size="middle">
                 <Button
                   onClick={() => push(`/call/${visitation.id}`)}

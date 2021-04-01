@@ -7,7 +7,6 @@ import { connect, ConnectedProps, useSelector } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
-import { loginWithToken } from "./api/Session";
 import Menu from "./components/Menu/Menu";
 import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
@@ -25,7 +24,7 @@ import { fetchContacts } from "./redux/modules/contact";
 import { fetchStaff } from "./redux/modules/staff";
 import { fetchInmates } from "./redux/modules/inmate";
 import { fetchConnections } from "./redux/modules/connections";
-import { fetchNodes } from "./redux/modules/node";
+import { fetchGroups } from "./redux/modules/group";
 import { fetchKiosks } from "./redux/modules/kiosk";
 import { fetchCalls } from "./redux/modules/call";
 import { startOfMonth } from "date-fns/esm";
@@ -47,7 +46,7 @@ const mapDispatchToProps = {
   fetchStaff,
   fetchInmates,
   fetchConnections,
-  fetchNodes,
+  fetchGroups,
   fetchKiosks,
   fetchCalls,
   setRedirectUrl,
@@ -78,7 +77,7 @@ function App({
   fetchInmates,
   fetchStaff,
   fetchConnections,
-  fetchNodes,
+  fetchGroups,
   fetchKiosks,
   fetchCalls,
   setRedirectUrl,
@@ -105,7 +104,6 @@ function App({
     localStorage.removeItem("debug");
     (async () => {
       try {
-        await loginWithToken();
         await fetchFacilities();
       } catch (err) {}
     })();
@@ -129,11 +127,13 @@ function App({
           fetchInmates(),
           fetchConnections(),
           fetchKiosks(),
-          fetchNodes(),
+          fetchGroups(),
         ]);
         fetchCalls({
-          startDate: startOfMonth(new Date()).getTime(),
-          endDate: endOfMonth(new Date()).getTime(),
+          scheduledStart: {
+            rangeStart: startOfMonth(new Date()).getTime(),
+            rangeEnd: endOfMonth(new Date()).getTime(),
+          },
         });
       })().then(() => setIsInitingData(false));
     }
@@ -143,7 +143,7 @@ function App({
     fetchStaff,
     fetchConnections,
     fetchInmates,
-    fetchNodes,
+    fetchGroups,
     fetchCalls,
     fetchKiosks,
   ]);

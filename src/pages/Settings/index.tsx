@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import {
   TimePicker,
@@ -12,7 +12,7 @@ import {
   Tree,
   Card,
 } from "antd";
-import { NodeCallSlot } from "src/typings/Facility";
+import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";
@@ -27,33 +27,21 @@ import { cloneObject } from "src/utils";
 import { updateCallTimes } from "src/redux/modules/facility";
 import { format } from "date-fns";
 import Header from "src/components/Header/Header";
-import { selectAllNodes } from "src/redux/selectors";
-import { DataNode } from "antd/lib/tree";
 
 const { TabPane } = Tabs;
 const { RangePicker } = TimePicker;
 const { Content } = Layout;
 
-const mapStateToProps = (state: RootState) => ({
-  facility: state.facilities.selected,
-  nodes: selectAllNodes(state),
-});
-const mapDispatchToProps = { updateCallTimes };
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
 type Tab = "setting" | "facility";
 
-function SettingsContainer({
-  facility,
-  nodes,
-  updateCallTimes,
-}: PropsFromRedux): ReactElement {
+function SettingsContainer(): ReactElement {
   const [ranges, setRanges] = useState<WeeklySchedule>();
   const [activeTab, setActiveTab] = useState<Tab>("setting");
-  const [callSlots, setCallSlots] = useState<NodeCallSlot[]>([]);
+  const [callSlots, setCallSlots] = useState<TentativeCallSlot[]>([]);
+
+  const groups = useAppSelector((state) => state.groups.nodes);
+  const facility = useAppSelector((state) => state.facilities.selected);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (facility) {
@@ -85,7 +73,12 @@ function SettingsContainer({
   };
 
   const handleSubmission = (e: React.MouseEvent) => {
-    updateCallTimes({ callSlots, zone: "America_LosAngeles" });
+    dispatch(
+      updateCallTimes({
+        newCallSlots: callSlots,
+        oldCallSlots: facility.callTimes,
+      })
+    );
   };
 
   const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
@@ -165,13 +158,10 @@ function SettingsContainer({
               </Card>
             </TabPane>
             <TabPane tab="Facility" key="facility">
-              <Tree
-                treeData={nodes as DataNode[]}
-                defaultExpandAll={true}
-                draggable={true}
-              />
+              <Card title="Facility Tree">
+                <Tree treeData={groups} defaultExpandAll={true} />
+              </Card>
             </TabPane>
-            {/* <TabPane tab="Call Hours" key="facility"></TabPane> */}
           </Tabs>
         </Content>
       </div>
@@ -179,4 +169,4 @@ function SettingsContainer({
   );
 }
 
-export default connector(SettingsContainer);
+export default SettingsContainer;

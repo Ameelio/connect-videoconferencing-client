@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { updateStaff } from "src/redux/modules/staff";
-import { STAFF_PERMISSION_OPTIONS } from "src/utils/constants";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import {
   Table,
@@ -14,10 +13,9 @@ import {
   Divider,
   Modal,
   Button,
-  Switch,
 } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
-import { cloneObject, genFullName, mapPermissionMap } from "src/utils";
+import { genFullName } from "src/utils";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 import Header from "src/components/Header/Header";
 import { UserAddOutlined } from "@ant-design/icons";
@@ -42,16 +40,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
   const [formData, setFormData] = useState<StaffFormFields>({
     email: "",
     role: "",
-    permissions: [],
-  });
-  const [selectedPermissions, setSelectedPermissions] = useState<
-    Record<Permission, boolean>
-  >({
-    allowRead: false,
-    allowCalltimes: false,
-    allowApproval: false,
-    allowRestructure: false,
-    allowMonitor: false,
   });
 
   const handleOk = () => {
@@ -59,13 +47,10 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
     switch (modalType) {
       case "edit":
         if (selected)
-          updateStaff({
-            userId: selected.id,
-            permissions: Object.keys(selectedPermissions).filter(
-              (key) => selectedPermissions[key as Permission]
-            ) as Permission[],
-          });
-        break;
+          // updateStaff({
+          //   userId: selected.id,
+          // });
+          break;
       case "create":
         // do somethin
         break;
@@ -73,11 +58,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
 
     setConfirmLoading(false);
   };
-
-  useEffect(() => {
-    if (selected)
-      setSelectedPermissions(mapPermissionMap(selected.permissions));
-  }, [selected]);
 
   return (
     <Content>
@@ -97,8 +77,8 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
         <Table dataSource={staff}>
           <Column
             title=""
-            dataIndex="profileImgPath"
-            key="profileImgPath"
+            dataIndex="profileImagePath"
+            key="profileImagePath"
             render={(img) => (
               <>
                 <Avatar src={img} size="large" />
@@ -158,25 +138,6 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
             <span>Role: {selected.role}</span>
             <span>Email: {selected.email}</span>
             <Divider />
-            {Object.keys(STAFF_PERMISSION_OPTIONS).map((key) => (
-              <Space>
-                <span>{STAFF_PERMISSION_OPTIONS[key as Permission]}</span>
-                <Switch
-                  defaultChecked={selected.permissions.includes(
-                    key as Permission
-                  )}
-                  checked={selectedPermissions[key as Permission]}
-                  onChange={(checked) => {
-                    const update = cloneObject(selectedPermissions) as Record<
-                      Permission,
-                      boolean
-                    >;
-                    update[key as Permission] = checked;
-                    setSelectedPermissions(update);
-                  }}
-                />
-              </Space>
-            ))}
           </Space>
         )}
       </Modal>

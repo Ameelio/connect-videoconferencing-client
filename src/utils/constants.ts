@@ -12,40 +12,7 @@ import RecordingPage from "src/pages/Recording";
 import { CallAlert, GridOption } from "src/typings/Call";
 import { Route } from "src/typings/Common";
 
-export enum CardType {
-  LiveCall = "live",
-  Contact = "contact",
-  ConnectionRequest = "request",
-  ApprovedConnectioo = "connection",
-  Inmate = "inmate",
-  Staff = "staff",
-  PastVisitation = "record",
-}
-
-export enum CardSize {
-  Small = "small",
-  Medium = "medium",
-  Large = "large",
-}
-
-export enum LoadingTypes {
-  AcceptConnection = "accept",
-  FetchRecording = "video",
-}
-
 export const UNAUTHENTICATED_USER_ID = -999;
-
-export const TOKEN_KEY = "token";
-export const REMEMBER_TOKEN_KEY = "remember";
-
-export const STAFF_PERMISSION_OPTIONS: Record<Permission, string> = {
-  allowRead: "Can view",
-  allowCalltimes: "Manage calltimes",
-  allowApproval: "Approve connections",
-  allowRestructure: "Reorganize facility",
-  allowMonitor: "Monitor live calls",
-};
-
 export enum WeekdayMap {
   Sunday = 0,
   Monday = 1,
@@ -86,7 +53,7 @@ export const WEEKDAYS = [
 // 30 min
 export const DEFAULT_DURATION_MS = 1800000;
 
-export const SIDEBAR_WIDTH = 216;
+export const SIDEBAR_WIDTH = 300;
 
 export const GRID_TO_SPAN_WIDTH: { [key in GridOption]: number } = {
   1: 24,

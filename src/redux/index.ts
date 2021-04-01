@@ -10,8 +10,9 @@ import { facilitiesSlice } from "./modules/facility";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory, History } from "history";
 import { socketsSlice } from "./modules/socket";
-import { nodesSlice } from "./modules/node";
+import { groupsSlice } from "./modules/group";
 import { kiosksSlice } from "./modules/kiosk";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const history = createBrowserHistory();
 
@@ -26,7 +27,7 @@ export const createRootReducer = (history: History) =>
     facilities: facilitiesSlice.reducer,
     router: connectRouter(history),
     sockets: socketsSlice.reducer,
-    nodes: nodesSlice.reducer,
+    groups: groupsSlice.reducer,
     kiosks: kiosksSlice.reducer,
   });
 
@@ -39,3 +40,6 @@ export const Store = configureStore({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof Store.dispatch;
+export const useAppDispatch = () => useDispatch<AppDispatch>(); // Export a hook that can be reused to resolve types
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

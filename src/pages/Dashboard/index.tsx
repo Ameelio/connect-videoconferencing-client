@@ -21,7 +21,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { fetchCalls } from "src/redux/modules/call";
 import PDFDownloadButton from "./PDFDownloadButton";
-import { LiveCall } from "src/typings/Call";
+import { Call } from "src/typings/Call";
 import { onlyUnique } from "src/utils";
 import MetricCard from "./MetricCard";
 import { format } from "date-fns";
@@ -34,7 +34,7 @@ const { Content } = Layout;
 const mapStateToProps = (state: RootState) => ({
   // TODO update this once we have status selecotr
   facility: state.facilities.selected,
-  calls: getCallsInfo(state, selectAllCalls(state)) as LiveCall[],
+  calls: getCallsInfo(state, selectAllCalls(state)) as Call[],
   numInmates: selectTotalInmates(state),
 });
 
@@ -108,7 +108,7 @@ function Dashboard({
                   calls.filter(
                     (call) =>
                       call.status === "live" ||
-                      call.status === "missing-monitor"
+                      call.status === "missing_monitor"
                   ).length
                 }
                 prefix={<VideoCameraOutlined />}
@@ -120,7 +120,8 @@ function Dashboard({
                 title="Facility Video Usage"
                 value={(
                   (calls
-                    .map((call) => call.connection.inmateId)
+                    .map((call) => call.inmateIds)
+                    .reduce((prev, curr) => [...prev, ...curr], [])
                     .filter(onlyUnique).length *
                     100) /
                   numInmates

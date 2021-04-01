@@ -9,14 +9,17 @@ import VideoOverlay from "./VideoOverlay";
 import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils";
-import { Connection } from "src/typings/Connection";
+import Cookies from "js-cookie";
+import { Inmate } from "src/typings/Inmate";
+import { Contact } from "src/typings/Contact";
 
 interface Props {
   isVisible: boolean;
   width: number | string;
   height: number | string;
   callId: number;
-  participants: Connection;
+  inmates: Inmate[];
+  contacts: Contact[];
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
   muteCall: (id: number) => void;
@@ -46,7 +49,6 @@ function Loader(): ReactElement {
 const VideoChat: React.FC<Props> = React.memo(
   ({
     callId,
-    participants,
     isVisible,
     width,
     height,
@@ -61,7 +63,7 @@ const VideoChat: React.FC<Props> = React.memo(
     chatCollapsed,
     addMessage,
   }) => {
-    const token = useSelector((state: RootState) => state.session.user.token);
+    const [token] = useState(Cookies.get("connect.sid"));
     const id = useSelector((state: RootState) => state.session.user.id);
 
     const [loading, setLoading] = useState(false);
@@ -135,11 +137,12 @@ const VideoChat: React.FC<Props> = React.memo(
             meta: string;
           }) => {
             const message = {
-              content: contents,
-              from: from.type,
-              timestamp: new Date().toLocaleDateString(),
+              contents,
+              senderId: from.id,
+              senderType: from.type,
             };
-            addMessage(callId, message);
+            // TODO: add back when Tony refactors and we sync with jESSE
+            // addMessage(callId, message);
           }
         );
       }
@@ -160,18 +163,19 @@ const VideoChat: React.FC<Props> = React.memo(
                   // TODO for some reason room client is consuming streams from all calls (not just the one identified by callId)
                   // This is very likely to be an API bug that relays the stream to all active rooms regardless of whether or not it's the room client w/ that given person
                   // To replicate the bug you can just uncomment this scrappy check and join 2 calls at once
-                  if (
-                    user.id !== participants.userId &&
-                    user.id !== participants.inmateId
-                  )
-                    return;
+                  // if (
+                  //   user.id !== participants.userId &&
+                  //   user.id !== participants.inmateId
+                  // )
+                  //   return;
 
                   // TODO there's a weird in which we receive the streams and instantiate the calls, but only the first call stream has actual footaage
                   // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
 
                   //  TODO move this logic to refs
                   if (kind === "video") {
-                    const id = `${user.type}-${callId}-${user.id}-video`;
+                    // TODO make sure jesse is passing the right user.type
+                    const id = `${user.type}-${callId}-video`;
                     const video = document.getElementById(
                       id
                     ) as HTMLVideoElement;
@@ -187,7 +191,7 @@ const VideoChat: React.FC<Props> = React.memo(
                       node.appendChild(newVideo);
                     }
                   } else if (kind === "audio") {
-                    const id = `${user.type}-${callId}-${user.id}-audio`;
+                    const id = `${user.type}-${callId}-audio`;
                     const audio = document.getElementById(
                       id
                     ) as HTMLAudioElement;
@@ -210,19 +214,15 @@ const VideoChat: React.FC<Props> = React.memo(
           })();
         }
       },
-      [rc, isAuthed, isAudioOn, callId, participants]
+      [rc, isAuthed, isAudioOn, callId]
     );
 
     useEffect(() => {
-      const inmate = document.getElementById(
-        `inmate-${callId}-${participants.inmateId}-audio`
-      );
-      const user = document.getElementById(
-        `user-${callId}-${participants.userId}-audio`
-      );
+      const inmate = document.getElementById(`inmate-${callId}-audio`);
+      const user = document.getElementById(`user-${callId}-audio`);
       if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
       if (user) (user as HTMLAudioElement).muted = isAudioOn;
-    }, [isAudioOn, participants, callId]);
+    }, [isAudioOn, callId]);
 
     useEffect(() => {
       if (rc) {

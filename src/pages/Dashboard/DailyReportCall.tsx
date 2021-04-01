@@ -43,36 +43,35 @@ const DailyReportCall = ({ block, calls, canViewDetails }: Props) => (
             <Text>{call.kiosk.name}</Text>
           </View>
         </View>
-        <View style={styles.row}>
-          <View>
-            <Text style={styles.header}>Incarcerated Person</Text>
-            <Text>{genFullName(call.connection.inmate)}</Text>
-          </View>
-          <View>
-            <Text style={styles.header}>Unique ID</Text>
-            <Text>{call.connection.inmate.inmateNumber}</Text>
-          </View>
-          <View>
-            <Text style={styles.header}>Housing</Text>
-            <Text>{call.connection.inmate.location}</Text>
-          </View>
-        </View>
-        {canViewDetails && (
+        {call.inmates.map((inmate) => (
           <View style={styles.row}>
             <View>
-              <Text style={styles.header}>Contact ID</Text>
-              <Text>{call.connection.contact.id}</Text>
+              <Text style={styles.header}>Incarcerated Person</Text>
+              <Text>{genFullName(inmate)}</Text>
             </View>
             <View>
-              <Text style={styles.header}>Contact Name</Text>
-              <Text>{genFullName(call.connection.contact)}</Text>
-            </View>
-            <View>
-              <Text style={styles.header}>Relationship</Text>
-              <Text>{call.connection.contact.relationship}</Text>
+              <Text style={styles.header}>Unique ID</Text>
+              <Text>{inmate.inmateIdentification}</Text>
             </View>
           </View>
-        )}
+        ))}
+        {canViewDetails &&
+          call.contacts.map((contact) => (
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.header}>Contact ID</Text>
+                <Text>{contact.id}</Text>
+              </View>
+              <View>
+                <Text style={styles.header}>Contact Name</Text>
+                <Text>{genFullName(contact)}</Text>
+              </View>
+              <View>
+                <Text style={styles.header}>Relationship</Text>
+                <Text>{contact}</Text>
+              </View>
+            </View>
+          ))}
       </View>
     ))}
   </View>

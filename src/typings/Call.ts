@@ -1,5 +1,8 @@
+import Recording from "src/pages/Recording";
 import { WeekdayMap } from "src/utils/constants";
 import { Connection } from "./Connection";
+import { Contact } from "./Contact";
+import { Inmate } from "./Inmate";
 import { Kiosk } from "./Kiosk";
 
 export type Weekday =
@@ -31,60 +34,62 @@ export interface CallAlert {
   body: string;
 }
 
+export type SearchFilter =
+  | "inmateParticipants.inmateIdentification"
+  | "inmateParticipants.lastName"
+  | "userParticipants.lastName"
+  | "userParticipants.id"
+  | "kiosk.name";
+
 export interface CallFilters {
-  query?: string;
-  startDate?: number;
-  endDate?: number;
-  minDuration?: number;
+  scheduledStart?: { rangeStart: number; rangeEnd: number };
   maxDuration?: number;
   limit?: number;
   offset?: number;
-  approved?: boolean;
-  firstLive?: string;
-  end?: string;
+  page?: number;
+  status?: CallStatus[];
+  inmateIdentification?: string;
+  contactId?: string;
+  inmateLastName?: string;
+  contactLastName?: string;
+  kioskName?: string;
 }
 
 export type CallStatus =
+  | "pending_approval"
   | "scheduled"
-  | "missing-monitor"
+  | "cancelled"
+  | "missing_monitor"
   | "live"
   | "ended"
   | "terminated"
-  | "cancelled";
+  | "no_show";
 
 export interface BaseCall {
   id: number;
-  scheduledStartTime: number;
-  scheduledEndTime: number;
-  connectionId: number;
-  inmateId: number;
-  requesterId: number;
+  facilityId: number;
   kioskId: number;
-  approved: boolean;
-  videoReady: boolean;
-  endTime?: number;
-  startTime?: number;
-  liveStatus?: string;
-  recordingUrl?: string;
+  status: CallStatus;
+  statusDetails?: string;
+  scheduledStart: Date;
+  scheduledEnd: Date;
+  inmateIds: number[];
+  userIds: number[];
   messages: CallMessage[];
   rating: number;
-  status: CallStatus;
+  schedulerId: number;
+  schedulerType: "user" | "inmate";
+  recordingPath?: string;
+  recordingStatus?: "pending" | "processing" | "done";
 }
 
 export interface Call extends BaseCall {
-  connection: Connection;
   kiosk: Kiosk;
+  inmates: Inmate[];
+  contacts: Contact[];
 }
 
-export interface LiveCall extends Call {
-  startTime: number;
-  liveStatus: string;
-  isUnmuted?: boolean;
-}
-
-export interface RecordedCall extends LiveCall {
-  endTime: number;
-}
+export interface DetailedCall extends Call {}
 
 export interface CallParticipant {
   type: "monitor" | "inmate" | "user";
@@ -92,7 +97,9 @@ export interface CallParticipant {
 }
 
 export interface CallMessage {
-  content: string;
-  from: string;
-  timestamp: string;
+  callId: number;
+  senderId: number;
+  senderType: "inmate" | "user" | "doc";
+  contents: string;
+  createdAt: Date;
 }

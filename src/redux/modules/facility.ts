@@ -6,7 +6,12 @@ import {
 } from "@reduxjs/toolkit";
 import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";
-import { SelectedFacility, Facility, NodeCallSlot } from "src/typings/Facility";
+import {
+  SelectedFacility,
+  Facility,
+  CallSlot,
+  TentativeCallSlot,
+} from "src/typings/Facility";
 import { showToast } from "src/utils";
 import { Store } from "..";
 
@@ -17,16 +22,13 @@ export const selectActiveFacility = createAsyncThunk(
   async (facility: Facility) => {
     // need to harcode the nodeId for initialization,
     const bodyCt = await fetchAuthenticated(
-      `/node/${facility.nodeId}/times`,
+      `facilities/${facility.id}/callSlots`,
       {},
       false
     );
 
-    if (!bodyCt.data) throw new Error("Could not load facility data");
-
-    const callTimes = camelcaseKeys(
-      (bodyCt.data as Record<string, unknown>).call_times as Object
-    ) as NodeCallSlot[];
+    const callTimes = (bodyCt.data as Record<string, unknown>)
+      .results as CallSlot[];
 
     return { ...facility, callTimes };
   }
@@ -37,18 +39,12 @@ export const fetchFacilities = createAsyncThunk(
   async () => {
     // TODO refactor this to use some APIServiceManager
     const fBody = await fetchAuthenticated(
-      `/user/${Store.getState().session.user.id}/facilities`,
+      `users/${Store.getState().session.user.id}/facilities`,
       {},
       false
     );
 
-    if (!fBody.data) {
-      throw new Error("Could not load list of facilities");
-    }
-
-    const facilities = camelcaseKeys(
-      (fBody.data as Record<string, unknown>) as Object
-    ) as Facility[];
+    const facilities = fBody.data as Facility[];
 
     if (!facilities.length) {
       throw new Error("Must have access to at least one facility");
@@ -64,22 +60,30 @@ export const fetchFacilities = createAsyncThunk(
 const UPDATE_CALL_HOURS = "facility/updateCallTimes";
 export const updateCallTimes = createAsyncThunk(
   UPDATE_CALL_HOURS,
-  async (args: { callSlots: NodeCallSlot[]; zone: string }) => {
-    const body = await fetchAuthenticated(`/times`, {
-      method: "PUT",
-      body: JSON.stringify({
-        call_times: args.callSlots,
-        zone: "America_LosAngeles",
-      }),
-    });
-
-    // update
-    if (!body.data) {
-      throw new Error("Could not update call time");
+  async ({
+    oldCallSlots,
+    newCallSlots,
+  }: {
+    oldCallSlots: CallSlot[];
+    newCallSlots: TentativeCallSlot[];
+  }) => {
+    // delete previous call slots, if any
+    if (oldCallSlots.length) {
+      await fetchAuthenticated(
+        `callSlots/bulk?id=${oldCallSlots.map((slot) => slot.id).join(",")}`,
+        {
+          method: "DELETE",
+        }
+      );
     }
 
-    // update stsore
-    return args.callSlots;
+    // create new call slots
+    const response = await fetchAuthenticated(`callSlots`, {
+      method: "POST",
+      body: JSON.stringify(newCallSlots),
+    });
+
+    return response.data as CallSlot[];
   }
 );
 
@@ -103,8 +107,6 @@ export const facilitiesSlice = createSlice({
         state,
         action.payload.facilities
       );
-      // console.log( action.payload.selected);
-      // newState.selected = action.payload.selected;
       return newState;
     });
     builder.addCase(fetchFacilities.rejected, (state, action) => ({

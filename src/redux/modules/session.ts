@@ -1,9 +1,5 @@
 import { User } from "src/typings/Session";
-import {
-  REMEMBER_TOKEN_KEY,
-  TOKEN_KEY,
-  UNAUTHENTICATED_USER_ID,
-} from "src/utils/constants";
+import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
 
 // TODO migrate this to redux slice
 // @gabe: I attempted the migraton, but it's creating some wild circular dependeies
@@ -66,7 +62,7 @@ export const setRedirectUrl = (url: string): UserActionTypes => {
   };
 };
 
-export const setSessiooStatus = (status: SessionStatus): UserActionTypes => {
+export const setSessionStatus = (status: SessionStatus): UserActionTypes => {
   return {
     type: SET_SESSION_STATUS,
     payload: status,
@@ -79,8 +75,7 @@ const initialState: SessionState = {
     firstName: "",
     lastName: "",
     email: "",
-    token: "",
-    remember: "",
+    staffPositions: [],
   },
   status: "inactive",
   redirectUrl: "/",
@@ -94,8 +89,6 @@ export function sessionReducer(
     case SET_SESSION:
       return { ...state, user: action.payload, status: "active" };
     case LOGOUT:
-      sessionStorage.removeItem(TOKEN_KEY);
-      sessionStorage.removeItem(REMEMBER_TOKEN_KEY);
       return {
         ...state,
         user: {
@@ -103,8 +96,7 @@ export function sessionReducer(
           firstName: "",
           lastName: "",
           email: "",
-          token: "",
-          remember: "",
+          staffPositions: [],
         },
         status: "inactive",
         redirectUrl: "/",
