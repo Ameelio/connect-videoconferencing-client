@@ -39,10 +39,10 @@ const DailyReport: React.FC<Props> = React.memo(
         {Object.keys(callBlocks).map((block) => (
           <View key={block}>
             <SectionHeader
-              title={format(new Date(parseInt(block)), "HH:mm")}
+              title={format(new Date(block), "HH:mm")}
             ></SectionHeader>
             <DailyReportCall
-              block={parseInt(block)}
+              // block={parseInt(block)}
               calls={callBlocks[block]}
               canViewDetails={canViewDetails}
             />

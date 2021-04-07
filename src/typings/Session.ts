@@ -10,3 +10,9 @@ export interface UserCredentials {
   password: string;
   remember?: boolean;
 }
+
+export interface AuthInfo {
+  type: "monitor";
+  id: number;
+  token: string;
+}

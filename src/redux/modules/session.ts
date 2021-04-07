@@ -1,4 +1,4 @@
-import { User } from "src/typings/Session";
+import { AuthInfo, User } from "src/typings/Session";
 import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
 
 // TODO migrate this to redux slice
@@ -10,6 +10,7 @@ interface SessionState {
   status: SessionStatus;
   user: User;
   redirectUrl: string;
+  authInfo: AuthInfo;
 }
 
 // Constants & Shapes
@@ -20,7 +21,7 @@ const SET_SESSION_STATUS = "user/SET_SESSION_STATUS";
 
 interface SetSessionAction {
   type: typeof SET_SESSION;
-  payload: User;
+  payload: { user: User; token: string };
 }
 interface LogoutAction {
   type: typeof LOGOUT;
@@ -48,10 +49,13 @@ export const logout = (): UserActionTypes => {
   };
 };
 
-export const setSession = (user: User): UserActionTypes => {
+export const setSession = (payload: {
+  user: User;
+  token: string;
+}): UserActionTypes => {
   return {
     type: SET_SESSION,
-    payload: user,
+    payload,
   };
 };
 
@@ -77,6 +81,11 @@ const initialState: SessionState = {
     email: "",
     staffPositions: [],
   },
+  authInfo: {
+    id: UNAUTHENTICATED_USER_ID,
+    type: "monitor",
+    token: "",
+  },
   status: "inactive",
   redirectUrl: "/",
 };
@@ -87,7 +96,13 @@ export function sessionReducer(
 ): SessionState {
   switch (action.type) {
     case SET_SESSION:
-      return { ...state, user: action.payload, status: "active" };
+      const { user, token } = action.payload;
+      return {
+        ...state,
+        user,
+        authInfo: { token, type: "monitor", id: user.id },
+        status: "active",
+      };
     case LOGOUT:
       return {
         ...state,

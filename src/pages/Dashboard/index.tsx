@@ -69,18 +69,21 @@ function Dashboard({
       <Header
         title="Dashboard"
         subtitle="Analyze your facility data and print the daily call schedule."
-        extra={[
-          <PDFDownloadButton
-            calls={callsToday(calls)}
-            facility={facility}
-            canViewDetails={true}
-          />,
-          <PDFDownloadButton
-            calls={callsToday(calls)}
-            facility={facility}
-            canViewDetails={false}
-          />,
-        ]}
+        extra={
+          [
+            // TODO: add this back, complete info is not being populated
+            // <PDFDownloadButton
+            //   calls={callsToday(calls)}
+            //   facility={facility}
+            //   canViewDetails={true}
+            // />,
+            // <PDFDownloadButton
+            //   calls={callsToday(calls)}
+            //   facility={facility}
+            //   canViewDetails={false}
+            // />,
+          ]
+        }
       />
       <Content>
         <Space

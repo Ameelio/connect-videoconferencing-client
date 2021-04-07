@@ -4,7 +4,7 @@ import { genFullName } from "src/utils";
 import { Call } from "src/typings/Call";
 
 interface Props {
-  block: number;
+  // block: number;
   calls: Call[];
   canViewDetails: boolean;
 }
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const DailyReportCall = ({ block, calls, canViewDetails }: Props) => (
+const DailyReportCall = ({ calls, canViewDetails }: Props) => (
   <View style={styles.container}>
     {calls.map((call) => (
       <View key={call.id}>

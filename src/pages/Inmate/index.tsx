@@ -57,7 +57,7 @@ const renderItem = (call: Call) => {
     ""
   );
   // TODO timestamp should probably be different her
-  const timestamp = format(call.scheduledStart, "MM/dd HH:mm");
+  const timestamp = format(new Date(call.scheduledStart), "MM/dd HH:mm");
   switch (call.status) {
     case "scheduled":
       return (
@@ -81,7 +81,9 @@ const renderItem = (call: Call) => {
     case "terminated":
     case "ended":
       return call.recordingStatus === "done" ? (
-        <Timeline.Item label={format(call.scheduledStart, "MM/dd HH:mm")}>
+        <Timeline.Item
+          label={format(new Date(call.scheduledStart), "MM/dd HH:mm")}
+        >
           {/* expand this to include other cases */}
           <Typography.Link onClick={() => push(`/call/${call.id}`)}>
             Called {contactNames}
