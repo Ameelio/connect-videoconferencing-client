@@ -72,6 +72,7 @@ function Dashboard({
         extra={
           [
             // TODO: add this back, complete info is not being populated
+            // https://github.com/Ameelio/connect-doc-client/issues/57
             // <PDFDownloadButton
             //   calls={callsToday(calls)}
             //   facility={facility}

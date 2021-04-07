@@ -42,6 +42,8 @@ const DailyReport: React.FC<Props> = React.memo(
               title={format(new Date(block), "HH:mm")}
             ></SectionHeader>
             <DailyReportCall
+              // TODO: add this bug once we finalize integration work
+              // https://github.com/Ameelio/connect-doc-client/issues/57
               // block={parseInt(block)}
               calls={callBlocks[block]}
               canViewDetails={canViewDetails}

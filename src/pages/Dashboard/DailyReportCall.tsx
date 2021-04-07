@@ -4,7 +4,6 @@ import { genFullName } from "src/utils";
 import { Call } from "src/typings/Call";
 
 interface Props {
-  // block: number;
   calls: Call[];
   canViewDetails: boolean;
 }
