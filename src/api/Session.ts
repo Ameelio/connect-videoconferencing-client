@@ -31,6 +31,7 @@ export async function loginWithCredentials(
     throw response;
   }
   // TODO: we should improve this
+  // https://github.com/Ameelio/connect-api-nest/issues/74
   const cookies = response.headers.get("cookie") || "";
   const re = /(?<=connect.sid=)([^\s;]+)/gm;
   const found = cookies.match(re);
