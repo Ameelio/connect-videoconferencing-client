@@ -55,10 +55,13 @@ const Dashboard: React.FC<Props> = ({
   useEffect(() => {
     const groups = groupBy(
       calls.filter((call) => !!call.rating),
-      (call) => call.rating
+      (call) => call.rating,
+      [1, 2, 3, 4, 5]
     );
     // grooup calls by rating, sort them in ascending order, and count the number of instancces
     const sortedKeys = Object.keys(groups).sort();
+    console.log(groups);
+    console.log(sortedKeys);
     setRatingsCount(sortedKeys.map((key) => groups[parseInt(key)].length));
 
     // groups calls by week,
@@ -86,12 +89,12 @@ const Dashboard: React.FC<Props> = ({
             canViewDetails={false}
           />,
           <div>
-            {lastUpdatedAtMin > 0 && !isRefreshing && (
+            {lastUpdatedAtMin > 5 && !isRefreshing && (
               <div>
-                <Typography.Text type="secondary">
+                <Typography.Text type="secondary" className="italic">
                   Computed {lastUpdatedAtMin} minutes ago
                 </Typography.Text>
-                <Button type="link" onClick={refresh} icon={SyncOutlined}>
+                <Button type="link" onClick={refresh}>
                   Refresh
                 </Button>
               </div>

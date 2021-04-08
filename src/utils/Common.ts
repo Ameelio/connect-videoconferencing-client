@@ -103,7 +103,8 @@ export function notEmpty<TParam>(
 
 export const groupBy = <T, K extends keyof any>(
   list: T[],
-  getKey: (item: T) => K
+  getKey: (item: T) => K,
+  mustHave?: K[] // makes it so that if there are no items of key X, it will still be initialized as X: [] instead of X: undefined
 ) => {
   const result = list.reduce((previous, currentItem) => {
     const group = getKey(currentItem);
@@ -111,5 +112,12 @@ export const groupBy = <T, K extends keyof any>(
     previous[group].push(currentItem);
     return previous;
   }, {} as Record<K, T[]>);
+  if (mustHave) {
+    mustHave.forEach((key) => {
+      if (!result[key]) {
+        result[key] = [];
+      }
+    });
+  }
   return result;
 };
