@@ -2,12 +2,11 @@ import { API_URL, fetchTimeout } from "./Common";
 import url from "url";
 import { setSessionStatus, setSession } from "src/redux/modules/session";
 import { Store } from "src/redux";
-import camelcaseKeys from "camelcase-keys";
 import { User, UserCredentials } from "src/typings/Session";
 
-async function initializeSession(body: any) {
-  const user = camelcaseKeys(body.data) as User;
-  Store.dispatch(setSession(user));
+async function initializeSession(token: string, body: any) {
+  const user = body.data as User;
+  Store.dispatch(setSession({ user, token }));
 }
 
 export async function loginWithCredentials(
@@ -26,9 +25,16 @@ export async function loginWithCredentials(
     }),
   });
   const body = await response.json();
+
   if (response.status !== 201) {
     Store.dispatch(setSessionStatus("inactive"));
-    throw body;
+    throw response;
   }
-  await initializeSession(body);
+  // TODO: we should improve this
+  // https://github.com/Ameelio/connect-api-nest/issues/74
+  const cookies = response.headers.get("cookie") || "";
+  const re = /(?<=connect.sid=)([^\s;]+)/gm;
+  const found = cookies.match(re);
+  if (!found || found.length !== 1) throw new Error("Cannot find header token");
+  await initializeSession(found[0], body);
 }

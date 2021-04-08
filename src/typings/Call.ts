@@ -47,7 +47,7 @@ export interface CallFilters {
   limit?: number;
   offset?: number;
   page?: number;
-  status?: CallStatus[];
+  "call.status"?: CallStatus[];
   inmateIdentification?: string;
   contactId?: string;
   inmateLastName?: string;
@@ -65,14 +65,15 @@ export type CallStatus =
   | "terminated"
   | "no_show";
 
+type ISOString = string;
 export interface BaseCall {
   id: number;
   facilityId: number;
   kioskId: number;
   status: CallStatus;
   statusDetails?: string;
-  scheduledStart: Date;
-  scheduledEnd: Date;
+  scheduledStart: ISOString;
+  scheduledEnd: ISOString;
   inmateIds: number[];
   userIds: number[];
   messages: CallMessage[];
@@ -81,6 +82,10 @@ export interface BaseCall {
   schedulerType: "user" | "inmate";
   recordingPath?: string;
   recordingStatus?: "pending" | "processing" | "done";
+  videoHandler?: {
+    port: string;
+    host: string;
+  };
 }
 
 export interface Call extends BaseCall {

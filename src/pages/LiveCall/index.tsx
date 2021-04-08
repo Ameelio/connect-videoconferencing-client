@@ -52,7 +52,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
     const interval = setInterval(() => {
       dispatch(
         fetchCalls({
-          status: ["live", "missing_monitor"],
+          "call.status": ["live", "missing_monitor"],
         })
       );
     }, 30000);
@@ -60,15 +60,19 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   }, []);
 
   useEffect(() => {
-    if (!socket) {
+    // TODO: this assumes all calls will have the same host. Gotta turn this into a Record<callId, handler>
+    // https://github.com/Ameelio/connect-doc-client/issues/59
+    if (!socket && visitations[0] && visitations[0].videoHandler) {
+      // TODO: ${visitations[0].videoHandler?.host} direct connection 127.0.0.13002
       setSocket(
         io.connect(
-          process.env.REACT_APP_MEDIASOUP_HOSTNAME || "localhost:8000"
+          `https://localhost:${visitations[0].videoHandler?.port}` ||
+            "localhost:8000"
           // { transports: ["websocket"] }
         )
       );
     }
-  }, [setSocket, socket]);
+  }, [setSocket, socket, visitations]);
 
   useEffect(() => {
     if (!activeCallChatId && visitations.length > 0) {

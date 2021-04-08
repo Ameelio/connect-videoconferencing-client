@@ -9,7 +9,6 @@ import VideoOverlay from "./VideoOverlay";
 import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils";
-import Cookies from "js-cookie";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
 
@@ -63,8 +62,7 @@ const VideoChat: React.FC<Props> = React.memo(
     chatCollapsed,
     addMessage,
   }) => {
-    const [token] = useState(Cookies.get("connect.sid"));
-    const id = useSelector((state: RootState) => state.session.user.id);
+    const authInfo = useSelector((state: RootState) => state.session.authInfo);
 
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
@@ -107,22 +105,14 @@ const VideoChat: React.FC<Props> = React.memo(
 
           await new Promise((resolve) => {
             // TODO fetch actual credentials from redux
-            socket.emit(
-              "authenticate",
-              {
-                type: "monitor",
-                id,
-                token,
-              },
-              resolve
-            );
+            socket.emit("authenticate", authInfo, resolve);
           });
           await joinRoom();
           console.log("authenticated");
           setIsAuthed(true);
         })();
       }
-    }, [callId, id, token, socket, joinRoom, isAuthed]);
+    }, [authInfo, socket, joinRoom, isAuthed]);
 
     useEffect(() => {
       if (rc && isAuthed) {
@@ -172,6 +162,7 @@ const VideoChat: React.FC<Props> = React.memo(
                   // TODO there's a weird in which we receive the streams and instantiate the calls, but only the first call stream has actual footaage
                   // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
 
+                  console.log("received consume");
                   //  TODO move this logic to refs
                   if (kind === "video") {
                     // TODO make sure jesse is passing the right user.type

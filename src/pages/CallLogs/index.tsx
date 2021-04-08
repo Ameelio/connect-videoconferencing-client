@@ -104,8 +104,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
     if (startDate && endDate)
       filteredCalls = filteredCalls.filter(
         (log) =>
-          log.scheduledStart >= new Date(startDate) &&
-          log.scheduledStart <= new Date(endDate)
+          new Date(log.scheduledStart) >= new Date(startDate) &&
+          new Date(log.scheduledStart) <= new Date(endDate)
       );
 
     if (searchQuery)

@@ -106,13 +106,13 @@ function RecordingBase({
             </Descriptions.Item>
 
             <Descriptions.Item label="Date">
-              {format(call.scheduledStart, "HH:mm")}
+              {format(new Date(call.scheduledStart), "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="Start Time">
-              {format(call.scheduledStart, "HH:mm")}
+              {format(new Date(call.scheduledStart), "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="End Time">
-              {format(call.scheduledEnd, "HH:mm")}
+              {format(new Date(call.scheduledEnd), "HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="Location">
               {call.kiosk.name}
