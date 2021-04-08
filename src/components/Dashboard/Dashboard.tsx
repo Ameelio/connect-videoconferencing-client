@@ -2,10 +2,11 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
-import { Layout, Space, Row, Col } from "antd";
+import { Layout, Space, Row, Col, Button, Typography, Spin } from "antd";
 import { Content } from "antd/lib/layout/layout";
-import { format } from "date-fns";
+import { differenceInMinutes, format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import MetricCard from "src/components/Dashboard/MetricCard";
 import {
@@ -14,20 +15,42 @@ import {
   BASE_CHART_COLORS,
 } from "src/styles/styles";
 import { Call } from "src/typings/Call";
-import { onlyUnique } from "src/utils";
+import { callsToday, onlyUnique } from "src/utils";
 import DonutChart from "../charts/DonutChart";
 import LineChart from "../charts/LineChart";
 import Header from "../Header/Header";
 import { groupBy, callsToWeeklyData } from "src/utils";
+import PDFDownloadButton from "./PDFDownloadButton";
+import { SelectedFacility } from "src/typings/Facility";
 
 interface Props {
   calls: Call[];
-  numIncPeople: number;
+  totalInmates: number;
+  facility: SelectedFacility;
+  lastUpdatedAt: Date;
+  isRefreshing: boolean;
+  refresh: () => void;
 }
 
-const Dashboard: React.FC<Props> = ({ calls, numIncPeople }) => {
+const Dashboard: React.FC<Props> = ({
+  calls,
+  totalInmates,
+  facility,
+  lastUpdatedAt,
+  isRefreshing,
+  refresh,
+}) => {
   const [ratingsCount, setRatingsCount] = useState<number[]>();
   const [callVolume, setCallVolume] = useState<Record<string, number>>();
+  const [lastUpdatedAtMin, setLastUpdatedAtMin] = useState(0);
+
+  useEffect(() => {
+    const timeout = setInterval(() => {
+      setLastUpdatedAtMin(differenceInMinutes(new Date(), lastUpdatedAt));
+    }, 1000);
+
+    return () => clearInterval(timeout);
+  }, [lastUpdatedAt]);
 
   useEffect(() => {
     const groups = groupBy(
@@ -49,22 +72,42 @@ const Dashboard: React.FC<Props> = ({ calls, numIncPeople }) => {
       <Header
         title="Dashboard"
         subtitle="Analyze your facility data and print the daily call schedule."
-        extra={
-          [
-            // TODO: add this back, complete info is not being populated
-            // https://github.com/Ameelio/connect-doc-client/issues/57
-            // <PDFDownloadButton
-            //   calls={callsToday(calls)}
-            //   facility={facility}
-            //   canViewDetails={true}
-            // />,
-            // <PDFDownloadButton
-            //   calls={callsToday(calls)}
-            //   facility={facility}
-            //   canViewDetails={false}
-            // />,
-          ]
-        }
+        extra={[
+          // TODO: add this back, complete info is not being populated
+          // https://github.com/Ameelio/connect-doc-client/issues/57
+          <PDFDownloadButton
+            calls={callsToday(calls)}
+            facility={facility}
+            canViewDetails={true}
+          />,
+          <PDFDownloadButton
+            calls={callsToday(calls)}
+            facility={facility}
+            canViewDetails={false}
+          />,
+          <div>
+            {lastUpdatedAtMin > 0 && !isRefreshing && (
+              <div>
+                <Typography.Text type="secondary">
+                  Computed {lastUpdatedAtMin} minutes ago
+                </Typography.Text>
+                <Button type="link" onClick={refresh} icon={SyncOutlined}>
+                  Refresh
+                </Button>
+              </div>
+            )}
+          </div>,
+          <div>
+            {isRefreshing && (
+              <div>
+                <Spin />
+                <Typography.Text type="secondary">
+                  Updating with live data
+                </Typography.Text>
+              </div>
+            )}
+          </div>,
+        ]}
       />
       <Content>
         <Space
@@ -108,7 +151,7 @@ const Dashboard: React.FC<Props> = ({ calls, numIncPeople }) => {
                     .reduce((prev, curr) => [...prev, ...curr], [])
                     .filter(onlyUnique).length *
                     100) /
-                  numIncPeople
+                  totalInmates
                 ).toFixed(2)}
                 suffix="%"
                 prefix={<GlobalOutlined />}

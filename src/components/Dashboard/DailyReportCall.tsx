@@ -67,7 +67,6 @@ const DailyReportCall = ({ calls, canViewDetails }: Props) => (
               </View>
               <View>
                 <Text style={styles.header}>Relationship</Text>
-                <Text>{contact}</Text>
               </View>
             </View>
           ))}

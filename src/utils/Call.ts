@@ -162,18 +162,18 @@ function mondayMorning(date: Date): Date {
   return date;
 }
 
-const callsWithinPeriod = (
-  calls: BaseCall[],
+const callsWithinPeriod = <TCall extends BaseCall>(
+  calls: TCall[],
   start: Date,
   end: Date
-): BaseCall[] => {
+): TCall[] => {
   return calls.filter(
     (call) =>
       new Date(call.scheduledEnd) >= start && new Date(call.scheduledEnd) <= end
   );
 };
 
-export const callsToday = (calls: BaseCall[]): BaseCall[] => {
+export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   const morning = new Date();
   morning.setHours(0, 0, 0, 0);
   const evening = new Date();
@@ -181,8 +181,8 @@ export const callsToday = (calls: BaseCall[]): BaseCall[] => {
   return callsWithinPeriod(calls, morning, evening);
 };
 
-export const callsToWeeklyData = (
-  calls: BaseCall[]
+export const callsToWeeklyData = <TCall extends BaseCall>(
+  calls: TCall[]
 ): Record<string, number> => {
   const now = new Date();
   const thisMonday = mondayMorning(now);
