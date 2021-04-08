@@ -1,163 +1,17 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import LineChart from "src/components/charts/LineChart";
-import DonutChart from "src/components/charts/DonutChart";
-import { Row, Col, Layout, Space } from "antd";
-import {
-  StarOutlined,
-  VideoCameraOutlined,
-  GlobalOutlined,
-} from "@ant-design/icons";
-import {
-  BASE_CHART_COLORS,
-  FULL_WIDTH,
-  WRAPPER_STYLE,
-} from "src/styles/styles";
-import {
-  getCallsInfo,
-  selectAllCalls,
-  selectTotalInmates,
-} from "src/redux/selectors";
-import { RootState } from "src/redux";
-import { connect, ConnectedProps } from "react-redux";
-import { fetchCalls } from "src/redux/modules/call";
-import PDFDownloadButton from "./PDFDownloadButton";
-import { Call } from "src/typings/Call";
-import { onlyUnique } from "src/utils";
-import MetricCard from "./MetricCard";
-import { format } from "date-fns";
-import _ from "lodash";
-import { callsToday, callsToWeeklyData } from "src/utils";
-import Header from "src/components/Header/Header";
+import React from "react";
+import { selectTotalInmates } from "src/redux/selectors";
+import { useAppSelector } from "src/redux";
+import Dashboard from "src/components/Dashboard";
+import { useCalls } from "src/hooks/useCalls";
 
-const { Content } = Layout;
+const DashboardPage: React.FC = () => {
+  const calls = useCalls();
+  const numIncPeople = useAppSelector(selectTotalInmates);
+  const facility = useAppSelector((state) => state.facilities.selected);
 
-const mapStateToProps = (state: RootState) => ({
-  // TODO update this once we have status selecotr
-  facility: state.facilities.selected,
-  calls: getCallsInfo(state, selectAllCalls(state)) as Call[],
-  numInmates: selectTotalInmates(state),
-});
+  if (!facility) return <div />;
 
-const mapDispatchToProps = { fetchCalls };
+  return <Dashboard calls={calls} numIncPeople={numIncPeople} />;
+};
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Dashboard({
-  facility,
-  calls,
-  numInmates,
-}: PropsFromRedux): ReactElement {
-  const [ratingsCount, setRatingsCount] = useState<number[]>();
-  const [callVolume, setCallVolume] = useState<Record<string, number>>();
-
-  useEffect(() => {
-    const groups = _.groupBy(
-      calls.filter((call) => !!call.rating),
-      (call) => call.rating
-    );
-    const sortedKeys = _.keys(groups).sort();
-    setRatingsCount(sortedKeys.map((key) => groups[key].length));
-    setCallVolume(callsToWeeklyData(calls));
-  }, [calls]);
-
-  if (!ratingsCount || !callVolume || !facility) return <div />;
-
-  return (
-    <Layout>
-      <Header
-        title="Dashboard"
-        subtitle="Analyze your facility data and print the daily call schedule."
-        extra={
-          [
-            // TODO: add this back, complete info is not being populated
-            // https://github.com/Ameelio/connect-doc-client/issues/57
-            // <PDFDownloadButton
-            //   calls={callsToday(calls)}
-            //   facility={facility}
-            //   canViewDetails={true}
-            // />,
-            // <PDFDownloadButton
-            //   calls={callsToday(calls)}
-            //   facility={facility}
-            //   canViewDetails={false}
-            // />,
-          ]
-        }
-      />
-      <Content>
-        <Space
-          direction="vertical"
-          style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
-          size="large"
-        >
-          <Row gutter={16}>
-            <Col span={8} className="bg-white">
-              <MetricCard
-                title="Calls This Week"
-                value={
-                  Object.values(callVolume)[
-                    Object.values(callVolume).length - 1
-                  ]
-                }
-                prefix={<StarOutlined />}
-                suffix={`calls`}
-              />
-            </Col>
-            <Col span={8} className="bg-white">
-              <MetricCard
-                title="Live Video Calls"
-                value={
-                  calls.filter(
-                    (call) =>
-                      call.status === "live" ||
-                      call.status === "missing_monitor"
-                  ).length
-                }
-                prefix={<VideoCameraOutlined />}
-                suffix="calls"
-              />
-            </Col>
-            <Col span={8} className="bg-white">
-              <MetricCard
-                title="Facility Video Usage"
-                value={(
-                  (calls
-                    .map((call) => call.inmateIds)
-                    .reduce((prev, curr) => [...prev, ...curr], [])
-                    .filter(onlyUnique).length *
-                    100) /
-                  numInmates
-                ).toFixed(2)}
-                suffix="%"
-                prefix={<GlobalOutlined />}
-              />
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <LineChart
-                title="Calls"
-                label="# calls"
-                labels={Object.keys(callVolume)}
-                data={Object.values(callVolume)}
-              />
-            </Col>
-            <Col span={12}>
-              <DonutChart
-                title={`Ratings Breakdown ${format(new Date(), "MMMM")}`}
-                data={ratingsCount}
-                backgroundColor={BASE_CHART_COLORS}
-                hoverBackgroundColor={BASE_CHART_COLORS}
-                labels={["Terrible", "Poor", "Okay", "Good", "Amazing"]}
-              />
-            </Col>
-          </Row>
-        </Space>
-      </Content>
-    </Layout>
-  );
-}
-
-export default connector(Dashboard);
+export default DashboardPage;

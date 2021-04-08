@@ -100,3 +100,16 @@ export function notEmpty<TParam>(
 ): value is TParam {
   return value !== null && value !== undefined;
 }
+
+export const groupBy = <T, K extends keyof any>(
+  list: T[],
+  getKey: (item: T) => K
+) => {
+  const result = list.reduce((previous, currentItem) => {
+    const group = getKey(currentItem);
+    if (!previous[group]) previous[group] = [];
+    previous[group].push(currentItem);
+    return previous;
+  }, {} as Record<K, T[]>);
+  return result;
+};
