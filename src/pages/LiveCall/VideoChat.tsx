@@ -2,7 +2,6 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
-import * as mediasoupClient from "mediasoup-client";
 import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
@@ -69,25 +68,29 @@ const VideoChat: React.FC<Props> = React.memo(
     const [rc, setRc] = useState<RoomClient>();
 
     const joinRoom = useCallback(async () => {
-      const rc = new RoomClient(mediasoupClient, socket, callId);
+      const rc = new RoomClient(socket, callId);
       await rc.init();
       setRc(rc);
     }, [socket, callId]);
 
     const emitAlert = async (alert: CallAlert) => {
-      const { participants } = await new Promise((resolve, reject) => {
-        socket.emit("info", { callId }, resolve);
-      });
-      socket.emit("textMessage", {
+      if (!rc) return;
+      rc.request("textMessage", {
         callId,
         contents: alert.body,
-        recipients: participants,
-      });
-
-      openNotificationWithIcon(
-        "Alert succesfully issue.",
-        "Both parties have been notified.",
-        "success"
+      }).then(
+        () =>
+          openNotificationWithIcon(
+            "Alert succesfully issue.",
+            "Both parties have been notified.",
+            "success"
+          ),
+        (rejection: string) =>
+          openNotificationWithIcon(
+            "Alert couldd not be sent.",
+            `Error message: ${rejection}`,
+            "error"
+          )
       );
     };
 

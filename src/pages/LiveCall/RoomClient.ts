@@ -1,3 +1,5 @@
+import * as mediasoupClient from "mediasoup-client";
+import { Transport } from "mediasoup-client/lib/types";
 /*
   Copyright 2020 Ameelio.org.
   Published under the GPL v3.
@@ -18,105 +20,96 @@
   Ameelio's client-side code, and to refactor and restructure the code
   for easier maintainenance, among other changes.
 */
-const MEDIA_TYPE = {
-  audio: "audioType",
-  video: "videoType",
-  screen: "screenType",
-};
+// window.rc = null;
+// window.consumers = [];
+// window.producers = [];
 
-window.rc = null;
-window.consumers = [];
-window.producers = [];
+// function getMediaConstraints(
+//   type: MediaType,
+//   deviceId?: number
+// ): MediaStreamConstraints {
+//   if (type === "audio") {
+//     return { audio: true };
+//   } else {
+//     return {
+//       video: true,
+//     };
+//   }
+// }
 
-const config = {
-  video: {
-    width: { min: 640, ideal: 1920 },
-    height: { min: 400, ideal: 1080 },
-    encodings: [
-      {
-        rid: "r0",
-        maxBitrate: 100000,
-        scalabilityMode: "S1T3",
-      },
-      {
-        rid: "r1",
-        maxBitrate: 300000,
-        scalabilityMode: "S1T3",
-      },
-      {
-        rid: "r2",
-        maxBitrate: 900000,
-        scalabilityMode: "S1T3",
-      },
-    ],
-    codecOptions: {
-      videoGoogleStartBitrate: 1000,
-    },
-  },
-};
+export async function stopStream(stream: MediaStream) {
+  const tracks = stream.getTracks();
+  tracks.forEach((track) => {
+    track.stop();
+  });
+}
 
 class RoomClient {
-  constructor(mediasoupClient, socket, callId) {
-    window.rc = this;
-    this.mediasoupClient = mediasoupClient;
+  private callId: number;
+  private producerTransport: Transport | null;
+  private consumerTransport: Transport | null;
+  private device: mediasoupClient.Device | null;
+  private consumers: Record<string, mediasoupClient.types.Consumer>;
+  private producers: Record<string, mediasoupClient.types.Producer>;
+  private handlers: Record<string, ((...args: unknown[]) => void)[]>;
+
+  public socket: SocketIOClient.Socket;
+
+  constructor(socket: SocketIOClient.Socket, callId: number) {
     this.socket = socket;
     this.callId = callId;
 
-    // We will eventually have...
-    // Two transports (or one, if we are a monitor)
     this.producerTransport = null;
     this.consumerTransport = null;
 
-    // A device
     this.device = null;
 
-    // Consumers and producers
     this.consumers = {};
     this.producers = {};
 
-    // Event handlers
     this.handlers = { consume: [] };
   }
 
-  async request(name, data) {
+  async request(name: string, data: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.socket.emit(name, data, (response) => {
+      if (!this.socket) return reject("No socket connection.");
+
+      this.socket.emit(name, data, (response: any) => {
         if (response.error) reject(response.error);
         else resolve(response);
       });
     });
   }
 
-  async handleTransportConnect(transport) {
-    return new Promise((resolve, reject) => {
+  async handleTransportConnect(transport: Transport) {
+    return new Promise((resolve: (value?: unknown) => void, reject) => {
       // Wait for the producer transport to connect...
-      transport.on("connect", async ({ dtlsParameters }, callback, errback) => {
-        console.log("got connect!");
-        await this.request("establishDtls", {
-          dtlsParameters,
-          callId: this.callId,
-          transportId: transport.id,
-        });
-
-        callback();
-        resolve();
-      });
+      transport.on(
+        "connect",
+        async ({ dtlsParameters }, callback: () => void, errback) => {
+          await this.request("establishDtls", {
+            dtlsParameters,
+            callId: this.callId,
+            transportId: transport.id,
+          });
+          callback();
+          resolve();
+        }
+      );
     });
   }
 
   async init() {
     // Request to join the room.
-    // We will recieve two transports and
-    // and rtpCapabilities object, if we are allowed in.
     const {
       producerTransportInfo,
       consumerTransportInfo,
       routerRtpCapabilities,
     } = await this.request("join", { callId: this.callId });
 
-    // Load up a local media device consistent
-    // with the server's RTP capabilities.
+    // Load up a local media device consistent with server
     this.device = await this.loadDevice(routerRtpCapabilities);
+    if (!this.device) return;
 
     // Set up both transports and promise to send
     // dtls info when they connect (this won't occur until
@@ -143,13 +136,10 @@ class RoomClient {
 
     // When our producer transport is producing a new stream,
     // inform the server.
-
     if (this.producerTransport) {
       this.producerTransport.on(
         "produce",
         async ({ kind, rtpParameters }, callback, errback) => {
-          console.log("Sending produce request");
-
           const { producerId } = await this.request("produce", {
             callId: this.callId,
             kind,
@@ -162,81 +152,37 @@ class RoomClient {
     }
 
     // When we get a consumer, fire an event.
-    this.socket.on("consume", async (info) => {
-      const { consumer, stream } = await this.consume(info);
-
+    this.socket.on("consume", async (info: any) => {
+      const consumeResult = await this.consume(info);
+      if (!consumeResult) return;
+      const { consumer, stream } = consumeResult;
       this.socket.emit("resumeConsumer", {
         callId: this.callId,
         consumerId: consumer.id,
       });
-
-      this.handlers.consume.forEach((f) => f(info.kind, stream, info.user));
+      this.handlers["consume"].forEach((f) => f(info.kind, stream, info.user));
     });
   }
 
-  getMediaConstraints(type, deviceId) {
-    if (type === MEDIA_TYPE.audio) {
-      return { audio: { deviceId } };
-    } else if (type === MEDIA_TYPE.video) {
-      return {
-        video: {
-          width: config.video.width,
-          height: config.video.height,
-          deviceId,
-        },
-      };
-    }
-  }
-
-  async produce(type, deviceId = null) {
-    const mediaConstraints = this.getMediaConstraints(type, deviceId);
-    console.log("Media constraints are", mediaConstraints);
-    const stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-
-    console.log("Got stream");
-
-    const track = (type === MEDIA_TYPE.audio
-      ? stream.getAudioTracks()
-      : stream.getVideoTracks())[0];
-
-    const params = { track };
-
-    console.log("got track");
-
-    if (type === MEDIA_TYPE.video) {
-      params.encodings = config.video.encodings;
-      params.codecOptions = config.video.codecOptions;
-    }
-
-    console.log("producing with params", params);
-
-    const producer = await this.producerTransport.produce(params);
-    console.log("produced with id", producer.id);
-    window.producers.push(producer);
-    this.producers[producer.id] = producer;
-  }
-
-  async loadDevice(routerRtpCapabilities) {
-    const device = new this.mediasoupClient.Device();
+  async loadDevice(
+    routerRtpCapabilities: mediasoupClient.types.RtpCapabilities
+  ) {
+    const device = new mediasoupClient.Device();
 
     await device.load({ routerRtpCapabilities });
 
     return device;
   }
 
-  async consume(info) {
+  async consume(info: mediasoupClient.types.ConsumerOptions) {
+    if (!this.consumerTransport) return;
     const consumer = await this.consumerTransport.consume(info);
-    const stream = new MediaStream();
-
+    const stream = new MediaStream([consumer.track]);
     this.consumers[consumer.id] = consumer;
-
-    stream.addTrack(consumer.track);
-
-    console.log("Successfully created stream.");
     return { consumer, stream };
   }
 
-  async on(event, fn) {
+  async on(event: string, fn: (...args: any) => void) {
     if (!(event in this.handlers)) {
       this.handlers[event] = [];
     }
@@ -244,8 +190,30 @@ class RoomClient {
   }
 
   async terminate() {
-    console.log("sending request to terminate");
     await this.request("terminate", { callId: this.callId });
+  }
+
+  async destroy() {
+    this.socket.off("connect");
+    this.socket.off("consume");
+    this.socket.off("textMessage");
+    this.socket.close();
+
+    if (this.consumerTransport) this.consumerTransport.close();
+    if (this.producerTransport) this.producerTransport.close();
+    this.consumerTransport = null;
+    this.producerTransport = null;
+
+    Object.values(this.producers).forEach((producer) => {
+      producer.close();
+    });
+    Object.values(this.consumers).forEach((consumer) => {
+      consumer.close();
+    });
+    this.consumers = {};
+    this.producers = {};
+
+    this.handlers = {};
   }
 }
 
