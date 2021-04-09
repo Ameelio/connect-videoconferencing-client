@@ -87,7 +87,7 @@ const VideoChat: React.FC<Props> = React.memo(
           ),
         (rejection: string) =>
           openNotificationWithIcon(
-            "Alert couldd not be sent.",
+            "Alert could not be sent.",
             `Error message: ${rejection}`,
             "error"
           )
@@ -118,11 +118,14 @@ const VideoChat: React.FC<Props> = React.memo(
     }, [authInfo, socket, joinRoom, isAuthed]);
 
     useEffect(() => {
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
       if (rc && isAuthed) {
         rc.socket.on(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
-            console.log("received message");
             const message = {
               contents,
               senderId: from.id,
@@ -130,8 +133,6 @@ const VideoChat: React.FC<Props> = React.memo(
               createdAt: new Date().toISOString(),
               callId,
             };
-            console.log(message);
-            // TODO: add back when Tony refactors and we sync with jESSE
             addMessage(callId, message);
           }
         );
