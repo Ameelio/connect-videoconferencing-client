@@ -20,11 +20,13 @@ export const {
   selectById: selectInmateById,
   selectAll: selectAllInmates,
   selectTotal: selectTotalInmates,
+  selectEntities: selectInmateEntities,
 } = inmatesAdapter.getSelectors<RootState>((state) => state.inmates);
 
 export const {
   selectById: selectContactById,
   selectAll: selectAllContacts,
+  selectEntities: selectContactEntities,
 } = contactsAdapter.getSelectors<RootState>((state) => state.contacts);
 
 export const {
@@ -45,6 +47,7 @@ export const {
 export const {
   selectById: selectKioskById,
   selectAll: selectAllKiosks,
+  selectEntities: selectKioskEntities,
 } = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
 // Connections

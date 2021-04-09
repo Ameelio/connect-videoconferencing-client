@@ -5,11 +5,16 @@ import {
   getMinutes,
   startOfMonth,
 } from "date-fns";
-import { CallBlock, Call, WeeklySchedule } from "src/typings/Call";
+import { CallBlock, Call, WeeklySchedule, BaseCall } from "src/typings/Call";
 import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
 import { addWeeks } from "@fullcalendar/react";
+import { Contact } from "src/typings/Contact";
+import { Dictionary } from "@reduxjs/toolkit";
+import { Inmate } from "src/typings/Inmate";
+import { notEmpty } from "./Common";
+import { Kiosk } from "src/typings/Kiosk";
 
 const callSlotToDateString = (time: CallSlot): string => {
   const date = new Date();
@@ -157,14 +162,18 @@ function mondayMorning(date: Date): Date {
   return date;
 }
 
-const callsWithinPeriod = (calls: Call[], start: Date, end: Date): Call[] => {
+const callsWithinPeriod = <TCall extends BaseCall>(
+  calls: TCall[],
+  start: Date,
+  end: Date
+): TCall[] => {
   return calls.filter(
     (call) =>
       new Date(call.scheduledEnd) >= start && new Date(call.scheduledEnd) <= end
   );
 };
 
-export const callsToday = (calls: Call[]): Call[] => {
+export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   const morning = new Date();
   morning.setHours(0, 0, 0, 0);
   const evening = new Date();
@@ -172,7 +181,9 @@ export const callsToday = (calls: Call[]): Call[] => {
   return callsWithinPeriod(calls, morning, evening);
 };
 
-export const callsToWeeklyData = (calls: Call[]): Record<string, number> => {
+export const callsToWeeklyData = <TCall extends BaseCall>(
+  calls: TCall[]
+): Record<string, number> => {
   const now = new Date();
   const thisMonday = mondayMorning(now);
 
@@ -187,3 +198,56 @@ export const callsToWeeklyData = (calls: Call[]): Record<string, number> => {
   }
   return data;
 };
+
+export function loadCallEntities(
+  call: BaseCall,
+  contactEnts: Dictionary<Contact>,
+  incPeopleEnts: Dictionary<Inmate>,
+  kioskEnts: Dictionary<Kiosk>
+): Call {
+  const contacts = call.userIds.map((id) => contactEnts[id]).filter(notEmpty);
+
+  if (contacts.length !== call.userIds.length) {
+    // TODO: sentry error
+    // https://github.com/Ameelio/connect-doc-client/issues/60
+  }
+
+  const inmates = call.inmateIds
+    .map((id) => incPeopleEnts[id])
+    .filter(notEmpty);
+
+  if (inmates.length !== call.inmateIds.length) {
+    // TODO: sentry error
+    // https://github.com/Ameelio/connect-doc-client/issues/60
+  }
+
+  const kiosk = kioskEnts[call.kioskId];
+
+  if (!kiosk) {
+    // TODO: sentry error
+    // https://github.com/Ameelio/connect-doc-client/issues/60
+  }
+
+  return {
+    ...call,
+    contacts,
+    inmates,
+    kiosk: kiosk || {
+      id: -1,
+      name: "Failed to load information",
+      description: "Failed to load information",
+      enabled: true,
+    },
+  };
+}
+
+export function loadAllCallEntities(
+  calls: BaseCall[],
+  contactEnts: Dictionary<Contact>,
+  incPeopleEnts: Dictionary<Inmate>,
+  kioskEnts: Dictionary<Kiosk>
+): Call[] {
+  return calls.map((c) =>
+    loadCallEntities(c, contactEnts, incPeopleEnts, kioskEnts)
+  );
+}

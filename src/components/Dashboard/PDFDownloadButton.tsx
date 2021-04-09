@@ -5,8 +5,8 @@ import { SelectedFacility } from "src/typings/Facility";
 import { format } from "date-fns";
 import { Call } from "src/typings/Call";
 import DailyReport from "./DailyReport";
-import _ from "lodash";
 import { DownloadOutlined } from "@ant-design/icons";
+import { groupBy } from "src/utils";
 
 interface Props {
   facility: SelectedFacility;
@@ -31,23 +31,22 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
         </Button>
       );
 
+    const type = canViewDetails ? "(Admin)" : "(Public)";
     return (
       <PDFDownloadLink
         document={
           <DailyReport
-            callBlocks={_.groupBy(calls, (call) => call.scheduledStart)}
+            callBlocks={groupBy(calls, (call) => call.scheduledStart)}
             facility={facility}
-            canViewDetails={true}
+            canViewDetails={canViewDetails}
           />
         }
-        fileName={`Daily Schedule | ${facility?.name}@${format(
+        fileName={`Daily Schedule (${type}) | ${facility.name}@${format(
           new Date(),
           "MM/dd/yyyy-HH:mm"
         )}`}
       >
-        <Button icon={<DownloadOutlined />}>
-          Download Schedule {canViewDetails ? "(Admin)" : "(Public)"}
-        </Button>
+        <Button icon={<DownloadOutlined />}>Download Schedule {type}</Button>
       </PDFDownloadLink>
     );
   }
