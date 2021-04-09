@@ -28,7 +28,7 @@ export function MessageDisplay({
       <Space>
         <Typography.Text strong>{getDisplayName()}</Typography.Text>
         <Typography.Text type="secondary">
-          {format(message.createdAt, "HH:mm")}
+          {format(new Date(message.createdAt), "HH:mm")}
         </Typography.Text>
       </Space>
       <Typography.Text>{message.contents}</Typography.Text>

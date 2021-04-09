@@ -83,7 +83,7 @@ const initialState: SessionState = {
   },
   authInfo: {
     id: UNAUTHENTICATED_USER_ID,
-    type: "monitor",
+    type: "doc",
     token: "",
   },
   status: "inactive",
@@ -100,7 +100,7 @@ export function sessionReducer(
       return {
         ...state,
         user,
-        authInfo: { token, type: "monitor", id: user.id },
+        authInfo: { token, type: "doc", id: user.id },
         status: "active",
       };
     case LOGOUT:

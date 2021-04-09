@@ -67,8 +67,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
       setSocket(
         io.connect(
           `https://localhost:${visitations[0].videoHandler?.port}` ||
-            "localhost:8000"
-          // { transports: ["websocket"] }
+            "localhost:8000",
+          { transports: ["websocket"] }
         )
       );
     }
@@ -101,7 +101,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
 
   const onMessageReceived = useCallback(
     (callId: number, message: CallMessage) => {
-      addMessage({ id: callId, message });
+      dispatch(addMessage({ id: callId, message }));
     },
     []
   );

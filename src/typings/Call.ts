@@ -97,7 +97,7 @@ export interface Call extends BaseCall {
 export interface DetailedCall extends Call {}
 
 export interface CallParticipant {
-  type: "monitor" | "inmate" | "user";
+  type: "doc" | "inmate" | "user";
   id: number;
 }
 
@@ -106,5 +106,5 @@ export interface CallMessage {
   senderId: number;
   senderType: "inmate" | "user" | "doc";
   contents: string;
-  createdAt: Date;
+  createdAt: string; // ISO string
 }

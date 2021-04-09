@@ -12,7 +12,7 @@ export interface UserCredentials {
 }
 
 export interface AuthInfo {
-  type: "monitor";
+  type: "doc";
   id: number;
   token: string;
 }

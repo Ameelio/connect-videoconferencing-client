@@ -2,7 +2,6 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
-import * as mediasoupClient from "mediasoup-client";
 import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
@@ -69,25 +68,29 @@ const VideoChat: React.FC<Props> = React.memo(
     const [rc, setRc] = useState<RoomClient>();
 
     const joinRoom = useCallback(async () => {
-      const rc = new RoomClient(mediasoupClient, socket, callId);
+      const rc = new RoomClient(socket, callId);
       await rc.init();
       setRc(rc);
     }, [socket, callId]);
 
     const emitAlert = async (alert: CallAlert) => {
-      const { participants } = await new Promise((resolve, reject) => {
-        socket.emit("info", { callId }, resolve);
-      });
-      socket.emit("textMessage", {
+      if (!rc) return;
+      rc.request("textMessage", {
         callId,
         contents: alert.body,
-        recipients: participants,
-      });
-
-      openNotificationWithIcon(
-        "Alert succesfully issue.",
-        "Both parties have been notified.",
-        "success"
+      }).then(
+        () =>
+          openNotificationWithIcon(
+            "Alert succesfully issue.",
+            "Both parties have been notified.",
+            "success"
+          ),
+        (rejection: string) =>
+          openNotificationWithIcon(
+            "Alert could not be sent.",
+            `Error message: ${rejection}`,
+            "error"
+          )
       );
     };
 
@@ -115,24 +118,22 @@ const VideoChat: React.FC<Props> = React.memo(
     }, [authInfo, socket, joinRoom, isAuthed]);
 
     useEffect(() => {
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
       if (rc && isAuthed) {
         rc.socket.on(
           "textMessage",
-          ({
-            from,
-            contents,
-          }: {
-            from: CallParticipant;
-            contents: string;
-            meta: string;
-          }) => {
+          ({ from, contents }: { from: CallParticipant; contents: string }) => {
             const message = {
               contents,
               senderId: from.id,
               senderType: from.type,
+              createdAt: new Date().toISOString(),
+              callId,
             };
-            // TODO: add back when Tony refactors and we sync with jESSE
-            // addMessage(callId, message);
+            addMessage(callId, message);
           }
         );
       }
@@ -162,7 +163,6 @@ const VideoChat: React.FC<Props> = React.memo(
                   // TODO there's a weird in which we receive the streams and instantiate the calls, but only the first call stream has actual footaage
                   // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
 
-                  console.log("received consume");
                   //  TODO move this logic to refs
                   if (kind === "video") {
                     // TODO make sure jesse is passing the right user.type
