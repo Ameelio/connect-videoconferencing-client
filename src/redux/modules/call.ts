@@ -53,6 +53,7 @@ export const callsSlice = createSlice({
     ) => {
       const { id, message } = action.payload;
       const call = state.entities[id];
+      console.log("add message to call ", call);
       if (!call) return;
       callsAdapter.updateOne(state, {
         id,

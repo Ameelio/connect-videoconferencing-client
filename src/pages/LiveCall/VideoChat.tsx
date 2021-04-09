@@ -118,21 +118,18 @@ const VideoChat: React.FC<Props> = React.memo(
       if (rc && isAuthed) {
         rc.socket.on(
           "textMessage",
-          ({
-            from,
-            contents,
-          }: {
-            from: CallParticipant;
-            contents: string;
-            meta: string;
-          }) => {
+          ({ from, contents }: { from: CallParticipant; contents: string }) => {
+            console.log("received message");
             const message = {
               contents,
               senderId: from.id,
               senderType: from.type,
+              createdAt: new Date().toISOString(),
+              callId,
             };
+            console.log(message);
             // TODO: add back when Tony refactors and we sync with jESSE
-            // addMessage(callId, message);
+            addMessage(callId, message);
           }
         );
       }
@@ -162,7 +159,6 @@ const VideoChat: React.FC<Props> = React.memo(
                   // TODO there's a weird in which we receive the streams and instantiate the calls, but only the first call stream has actual footaage
                   // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
 
-                  console.log("received consume");
                   //  TODO move this logic to refs
                   if (kind === "video") {
                     // TODO make sure jesse is passing the right user.type
