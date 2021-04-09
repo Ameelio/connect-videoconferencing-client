@@ -20,29 +20,6 @@ import { Transport } from "mediasoup-client/lib/types";
   Ameelio's client-side code, and to refactor and restructure the code
   for easier maintainenance, among other changes.
 */
-// window.rc = null;
-// window.consumers = [];
-// window.producers = [];
-
-// function getMediaConstraints(
-//   type: MediaType,
-//   deviceId?: number
-// ): MediaStreamConstraints {
-//   if (type === "audio") {
-//     return { audio: true };
-//   } else {
-//     return {
-//       video: true,
-//     };
-//   }
-// }
-
-export async function stopStream(stream: MediaStream) {
-  const tracks = stream.getTracks();
-  tracks.forEach((track) => {
-    track.stop();
-  });
-}
 
 class RoomClient {
   private callId: number;
