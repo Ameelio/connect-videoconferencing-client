@@ -66,8 +66,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
       // TODO: ${visitations[0].videoHandler?.host} direct connection 127.0.0.13002
       setSocket(
         io.connect(
-          `https://localhost:${visitations[0].videoHandler?.port}` ||
-            "localhost:8000",
+          `https://${visitations[0].videoHandler?.host}:${visitations[0].videoHandler?.port}`,
           { transports: ["websocket"] }
         )
       );
