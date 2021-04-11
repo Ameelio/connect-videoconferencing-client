@@ -65,7 +65,7 @@ export type CallStatus =
   | "terminated"
   | "no_show";
 
-type ISOString = string;
+export type ISOString = string;
 export interface BaseCall {
   id: number;
   facilityId: number;

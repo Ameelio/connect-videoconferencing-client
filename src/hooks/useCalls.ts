@@ -24,3 +24,22 @@ export function useCalls() {
 
   return calls;
 }
+
+export function usePendingCalls() {
+  const [calls, setCalls] = useState<Call[]>([]);
+  const baseCalls = useAppSelector(selectAllCalls);
+  const contactEnts = useAppSelector(selectContactEntities);
+  const inmateEnts = useAppSelector(selectInmateEntities);
+  const kioskEnts = useAppSelector(selectKioskEntities);
+
+  useEffect(() => {
+    const pendingCalls = baseCalls.filter(
+      (call) => call.status === "pending_approval"
+    );
+    setCalls(
+      loadAllCallEntities(pendingCalls, contactEnts, inmateEnts, kioskEnts)
+    );
+  }, [baseCalls, inmateEnts, contactEnts, kioskEnts]);
+
+  return calls;
+}

@@ -50,38 +50,10 @@ export const {
   selectEntities: selectKioskEntities,
 } = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
-// Connections
-const getConnectionEntities = (
-  state: RootState,
-  connection: BaseConnection
-) => {
-  const inmate = selectInmateById(state, connection.inmateId);
-  const contact = selectContactById(state, connection.userId);
-  // TODO improve this
-  if (!inmate) return;
-  if (!contact) return;
-  return { inmate, contact, ...connection };
-};
-
-export const selectConnectionRequests = (state: RootState) => {
-  return selectAllConnections(state).filter(
-    (connection) => connection.status === "pending"
-  );
-};
-
 export const selectApprovedConnections = (state: RootState) => {
   return selectAllConnections(state).map(
     (connection) => connection.status === "active"
   );
-};
-
-export const selectAllConnectionInfo = (
-  state: RootState,
-  requests: BaseConnection[]
-): Connection[] => {
-  return requests
-    .map((request) => getConnectionEntities(state, request))
-    .filter(notEmpty);
 };
 
 // Calls
@@ -128,20 +100,6 @@ export const selectLiveCalls = (state: RootState): Call[] => {
 };
 
 // Inmate
-
-export const selectInmateConnectionsById = (
-  state: RootState,
-  inmateId: number
-) => {
-  const inmate = selectInmateById(state, inmateId);
-  if (!inmate) return;
-  const connections = selectAllConnections(state);
-  return selectAllConnectionInfo(
-    state,
-    connections.filter((connection) => connection.inmateId === inmateId)
-  );
-};
-
 export const selectInmateCallsById = (state: RootState, inmateId: number) => {
   const inmate = selectInmateById(state, inmateId);
   if (!inmate) return;

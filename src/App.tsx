@@ -11,11 +11,7 @@ import Menu from "./components/Menu/Menu";
 import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { fetchFacilities } from "./redux/modules/facility";
-import {
-  selectAllFacilities,
-  selectConnectionRequests,
-  selectLiveCalls,
-} from "./redux/selectors";
+import { selectAllFacilities, selectLiveCalls } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { ROUTES } from "./utils/constants";
 import { ConnectedRouter } from "connected-react-router";
@@ -30,13 +26,13 @@ import { fetchCalls } from "./redux/modules/call";
 import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
 import { Facility } from "./typings/Facility";
+import { useConnectionRequestsCount } from "./hooks/useConnections";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
   selected: state.facilities.selected,
   pathname: state.router.location.pathname,
   liveCallsCount: selectLiveCalls(state).length,
-  requestsCount: selectConnectionRequests(state).length,
 });
 const mapDispatchToProps = {
   logout,
@@ -69,7 +65,6 @@ function App({
   selected,
   pathname,
   liveCallsCount,
-  requestsCount,
   selectActiveFacility,
   logout,
   fetchFacilities,
@@ -87,6 +82,8 @@ function App({
     session.status === "active"
   );
   const [isInitingData, setIsInitingData] = useState(true);
+
+  const requestsCount = useConnectionRequestsCount();
 
   useEffect(() => setIsAuthenticated(session.status === "active"), [
     session.status,

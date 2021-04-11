@@ -6,7 +6,6 @@ import {
   getCallsInfo,
   selectInmateById,
   selectInmateCallsById,
-  selectInmateConnectionsById,
 } from "src/redux/selectors";
 import {
   Avatar,
@@ -26,6 +25,7 @@ import { genFullName } from "src/utils";
 import { push } from "connected-react-router";
 import { Call } from "src/typings/Call";
 import { ClockCircleOutlined } from "@ant-design/icons";
+import { useInmateConnections } from "src/hooks/useConnections";
 
 const { Content } = Layout;
 
@@ -36,9 +36,6 @@ const mapStateToProps = (
   ownProps: RouteComponentProps<TParams>
 ) => ({
   inmate: selectInmateById(state, parseInt(ownProps.match.params.id)),
-  connections:
-    selectInmateConnectionsById(state, parseInt(ownProps.match.params.id)) ||
-    [],
   calls: getCallsInfo(
     state,
     selectInmateCallsById(state, parseInt(ownProps.match.params.id)) || []
@@ -105,13 +102,13 @@ const renderItem = (call: Call) => {
 
 function InmateUnconnectedContainer({
   inmate,
-  connections,
   calls,
-  push,
 }: PropsFromRedux & RouteComponentProps<TParams>): ReactElement {
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
+
+  const connections = useInmateConnections(inmate?.id || -1);
 
   if (!inmate || !facility) return <div />;
 

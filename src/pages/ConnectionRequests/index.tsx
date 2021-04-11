@@ -1,127 +1,48 @@
 import React from "react";
-import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "src/redux";
-import { WRAPPER_STYLE } from "src/styles/styles";
-import {
-  selectAllConnectionInfo,
-  selectConnectionRequests,
-} from "src/redux/selectors";
-import { Table, Space, Layout, Avatar, Button } from "antd";
-import { genFullName } from "src/utils";
+import { useAppDispatch } from "src/redux";
 import { updateConnection } from "src/redux/modules/connections";
-import { BaseConnection, Connection } from "src/typings/Connection";
-import Header from "src/components/Header/Header";
-import { Inmate } from "src/typings/Inmate";
-import { format } from "date-fns";
-import { Contact } from "src/typings/Contact";
+import {
+  BaseConnection,
+  Connection,
+  ConnectionStatus,
+} from "src/typings/Connection";
+import Requests from "src/components/Requests";
+import { usePendingCalls } from "src/hooks/useCalls";
+import { Call, CallStatus } from "src/typings/Call";
+import { updateCallStatus } from "src/redux/modules/call";
+import { useConnectionRequests } from "src/hooks/useConnections";
 
-const { Column } = Table;
-const { Content } = Layout;
+const RequestsPage: React.FC = () => {
+  const calls = usePendingCalls();
+  const connections = useConnectionRequests();
 
-const mapStateToProps = (state: RootState) => ({
-  requests: selectAllConnectionInfo(state, selectConnectionRequests(state)),
-});
+  const dispatch = useAppDispatch();
 
-const mapDispatchToProps = { updateConnection };
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-const ConnectionRequestsContainer: React.FC<PropsFromRedux> = ({
-  updateConnection,
-  requests,
-}) => {
-  const handleAccept = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "active" });
+  const handleConnectionUpdate = (
+    request: BaseConnection,
+    status: ConnectionStatus
+  ): void => {
+    dispatch(updateConnection({ connectionId: request.id, status }));
   };
 
-  const handleDecline = (request: BaseConnection): void => {
-    updateConnection({ connectionId: request.id, status: "rejected" });
+  const handleCallUpdate = (call: Call, status: CallStatus): void => {
+    dispatch(updateCallStatus({ id: call.id, status: "scheduled" }));
   };
 
   return (
-    <Content>
-      <Header
-        title="Approval Requests"
-        subtitle="Review all connection requests between incarcerated people in your facility and their loved one on the outside."
-      />
-      <Table dataSource={requests} style={WRAPPER_STYLE}>
-        <Column
-          title=""
-          dataIndex="inmate"
-          key="inmateProfilePic"
-          render={(inmate: Inmate) => (
-            <>
-              {
-                <Avatar
-                  src={inmate.profileImagePath}
-                  shape="circle"
-                  size={64}
-                />
-              }
-            </>
-          )}
-        />
-        <Column
-          title="Inmate"
-          dataIndex="inmate"
-          key="inmateProfilePic"
-          render={(inmate: Inmate) => (
-            <>
-              <Space direction="vertical">
-                <span>{genFullName(inmate)}</span>
-                <span>{inmate.inmateIdentification}</span>
-                <span>{format(new Date(inmate.dateOfBirth), "dd/mm/yy")}</span>
-              </Space>
-            </>
-          )}
-        />
-        <Column
-          title=""
-          dataIndex="contact"
-          key="contactProfilePic"
-          render={(contact: Contact) => (
-            <>
-              <Avatar src={contact.profileImagePath} shape="circle" size={64} />
-            </>
-          )}
-        />
-        <Column
-          title="Contact"
-          dataIndex="contact"
-          key="contactInfo"
-          render={(contact: Contact) => (
-            <>
-              <Space direction="vertical">
-                <span>{genFullName(contact)}</span>
-                <span>Visitor ID: {contact.id}</span>
-              </Space>
-            </>
-          )}
-        />
-        <Column
-          title="Relationship"
-          dataIndex="relationship"
-          key="relationship"
-        />
-        <Column
-          title=""
-          key="actions"
-          render={(_text, request: Connection) => (
-            <Space>
-              <Button type="primary" onClick={() => handleAccept(request)}>
-                Accept
-              </Button>
-              <Button danger onClick={() => handleDecline(request)}>
-                Reject
-              </Button>
-            </Space>
-          )}
-        />
-      </Table>
-    </Content>
+    <Requests
+      calls={calls}
+      acceptCall={(call: Call) => handleCallUpdate(call, "scheduled")}
+      rejectCall={(call: Call) => handleCallUpdate(call, "cancelled")}
+      acceptConnection={(connection: Connection) =>
+        handleConnectionUpdate(connection, "active")
+      }
+      rejectConnection={(connection: Connection) =>
+        handleConnectionUpdate(connection, "rejected")
+      }
+      connections={connections}
+    />
   );
 };
 
-export default connector(ConnectionRequestsContainer);
+export default RequestsPage;

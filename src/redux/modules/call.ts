@@ -8,7 +8,12 @@ import {
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanCall, CallRO } from "../helpers";
 import { createCallOptionsParam } from "src/utils";
-import { BaseCall, CallFilters, CallMessage } from "src/typings/Call";
+import {
+  BaseCall,
+  CallFilters,
+  CallMessage,
+  CallStatus,
+} from "src/typings/Call";
 
 export const callsAdapter = createEntityAdapter<BaseCall>();
 
@@ -23,6 +28,26 @@ export const fetchCalls = createAsyncThunk(
       .results as CallRO[]).map(cleanCall) as BaseCall[];
 
     return calls;
+  }
+);
+
+export const updateCallStatus = createAsyncThunk(
+  "calls/updateCallStatus",
+  async ({
+    id,
+    status,
+    statusDetails,
+  }: {
+    id: number;
+    status: CallStatus;
+    statusDetails?: string;
+  }) => {
+    await fetchAuthenticated(`calls/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status, statusDetails }),
+    });
+
+    return { id, changes: { status, statusDetails } };
   }
 );
 
@@ -70,6 +95,9 @@ export const callsSlice = createSlice({
       error: action.error.message,
     }));
     builder.addCase(fetchCallMessages.fulfilled, (state, action) =>
+      callsAdapter.updateOne(state, action.payload)
+    );
+    builder.addCase(updateCallStatus.fulfilled, (state, action) =>
       callsAdapter.updateOne(state, action.payload)
     );
   },
