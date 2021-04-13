@@ -64,14 +64,14 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
       <Header
         title="Staff"
         subtitle="Manage your staff, edit their access permissions, and add new members."
-        extra={[
-          <Button
-            onClick={() => setModalType("create")}
-            icon={<UserAddOutlined />}
-          >
-            Add Staff Member
-          </Button>,
-        ]}
+        // extra={[
+        //   <Button
+        //     onClick={() => setModalType("create")}
+        //     icon={<UserAddOutlined />}
+        //   >
+        //     Add Staff Member
+        //   </Button>,
+        // ]}
       />
       <div style={WRAPPER_STYLE}>
         <Table dataSource={staff}>

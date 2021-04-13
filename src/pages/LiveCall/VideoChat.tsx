@@ -105,7 +105,6 @@ const VideoChat: React.FC<Props> = React.memo(
             await new Promise((resolve) => socket.on("connect", resolve));
             console.log("OK");
           }
-
           await new Promise((resolve) => {
             // TODO fetch actual credentials from redux
             socket.emit("authenticate", authInfo, resolve);

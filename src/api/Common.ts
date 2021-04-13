@@ -1,6 +1,6 @@
 import { Store } from "src/redux";
 
-export const API_URL = process.env.REACT_APP_BASE_URL || "";
+export const API_URL = "api/v1/";
 
 export interface ApiResponse {
   date: number;

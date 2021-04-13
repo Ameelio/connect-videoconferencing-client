@@ -6,7 +6,6 @@ import {
   Layout,
   Button,
   Form,
-  Checkbox,
   Row,
   Typography,
   Space,
@@ -49,7 +48,6 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
       await loginWithCredentials({
         email: values.email,
         password: values.password,
-        remember: values.remember,
       });
     } catch (err) {
       showToast(TOAST_KEY, "Invalid email or password", "error");
@@ -96,10 +94,6 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 placeholder="Password"
               />
-            </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked">
-              <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
             <Form.Item>
