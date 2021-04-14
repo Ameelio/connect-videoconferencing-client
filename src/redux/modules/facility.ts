@@ -4,7 +4,6 @@ import {
   createSlice,
   EntityState,
 } from "@reduxjs/toolkit";
-import camelcaseKeys from "camelcase-keys";
 import { fetchAuthenticated } from "src/api/Common";
 import {
   SelectedFacility,

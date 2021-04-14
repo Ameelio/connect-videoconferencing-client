@@ -18,7 +18,6 @@ import { selectAllStaff } from "src/redux/selectors";
 import { genFullName } from "src/utils";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 import Header from "src/components/Header/Header";
-import { UserAddOutlined } from "@ant-design/icons";
 
 const { Column } = Table;
 const { Content } = Layout;

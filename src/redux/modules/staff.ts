@@ -30,10 +30,6 @@ export const updateStaff = createAsyncThunk(
     if (body.status !== 200)
       throw new Error("Failed to update staff member information");
 
-    //TODO update this with API return when it's actually supported
-    // const staff = camelcaseKeys((body.data as Record<string, unknown>)
-    // .admin as Object) as Staff;;
-
     return { userId: args.userId, changes: { permissions: args.permissions } };
   }
 );

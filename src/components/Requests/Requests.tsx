@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { Table, Space, Layout, Avatar, Button, Tabs } from "antd";
+import { Layout, Tabs } from "antd";
 import Header from "src/components/Header/Header";
 import { Connection } from "src/typings/Connection";
 import { Call } from "src/typings/Call";
-import { Inmate } from "src/typings/Inmate";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import ConnectionRequests from "./ConnectionRequests";
 import { CallRequests } from "./CallRequests";
 
-const { Column } = Table;
 const { Content } = Layout;
 
 interface Props {

@@ -9,7 +9,7 @@ import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { CallMessage, Call } from "src/typings/Call";
+import { Call } from "src/typings/Call";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
 import { fetchCallMessages } from "src/redux/modules/call";
 
@@ -40,11 +40,10 @@ function RecordingBase({
   );
 
   const dispatch = useAppDispatch();
-  // TODO: fetch GET call endpoint to retrieve messages
 
   useEffect(() => {
     if (callId) dispatch(fetchCallMessages(parseInt(callId)));
-  }, [callId]);
+  }, [callId, dispatch]);
 
   const routes = [
     {
