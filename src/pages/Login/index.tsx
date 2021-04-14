@@ -62,7 +62,7 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
 
         <Card className="login-form-container">
           <Row justify="center">
-            <Typography.Title level={3}>Log in to Ameelio</Typography.Title>
+            <Typography.Title level={3}>Welcome!</Typography.Title>
           </Row>
           <Form
             name="basic"

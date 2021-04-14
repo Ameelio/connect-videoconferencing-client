@@ -5,7 +5,6 @@ import { inmatesAdapter } from "./modules/inmate";
 import { callsAdapter } from "./modules/call";
 import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
-import { BaseConnection, Connection } from "src/typings/Connection";
 import { BaseCall, Call } from "src/typings/Call";
 import { kiosksAdapter } from "./modules/kiosk";
 import { notEmpty } from "src/utils";

@@ -2,7 +2,6 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
-  SyncOutlined,
 } from "@ant-design/icons";
 import { Layout, Space, Row, Col, Button, Typography, Spin } from "antd";
 import { Content } from "antd/lib/layout/layout";

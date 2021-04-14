@@ -1,5 +1,5 @@
 import React from "react";
-import { Svg, Path, Polygon, Defs } from "@react-pdf/renderer";
+import { Svg, Path, Polygon } from "@react-pdf/renderer";
 
 interface Props {
   width?: number;
