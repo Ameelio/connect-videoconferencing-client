@@ -6,6 +6,7 @@ import Header from "src/components/pdf/Header";
 import { SelectedFacility } from "src/typings/Facility";
 import SectionHeader from "src/components/pdf/SectionHeader";
 import DailyReportCall from "./DailyReportCall";
+import Footer from "../pdf/Footer";
 
 const styles = StyleSheet.create({
   page: {
@@ -14,6 +15,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
+  },
+  blockContainer: {
+    borderRadius: 8,
+    borderStyle: "solid",
+    borderColor: "#CECECE",
+    borderWidth: 2,
+    marginBottom: 16,
   },
 });
 
@@ -30,17 +38,17 @@ const DailyReport: React.FC<Props> = React.memo(
       keywords="schedule, conneect"
       title="Daily Schedule"
     >
-      <Page style={styles.page}>
+      <Page style={styles.page} wrap>
         <Header
-          title="Daily Activity Report"
+          title={`Daily Activity Report | ${format(
+            new Date(),
+            "MMMM dd, yyyy"
+          )}`}
           subtitle={`${facility.name}`}
-          extra={`Generated on ${format(new Date(), "MMMM/dd/yyyy HH:mm:ss")}`}
         />
         {Object.keys(callBlocks).map((block) => (
-          <View key={block}>
-            <SectionHeader
-              title={format(new Date(block), "HH:mm")}
-            ></SectionHeader>
+          <View key={block} style={styles.blockContainer}>
+            <SectionHeader title={format(new Date(block), "HH:mm aaa")} />
             <DailyReportCall
               // TODO: add this bug once we finalize integration work
               // https://github.com/Ameelio/connect-doc-client/issues/57
@@ -50,6 +58,7 @@ const DailyReport: React.FC<Props> = React.memo(
             />
           </View>
         ))}
+        <Footer />
       </Page>
     </Document>
   )

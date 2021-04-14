@@ -4,15 +4,16 @@ import React from "react";
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    backgroundColor: "#e5f2ff",
-    padding: 4,
+    backgroundColor: "#CECECE",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    paddingVertical: 4,
   },
   title: {
-    // fontFamily: 'Lato Bold',
-    fontWeight: "bold",
-    fontSize: 16,
-    textTransform: "uppercase",
-    width: "100%",
+    fontWeight: "semibold",
+    fontSize: 18,
   },
 });
 

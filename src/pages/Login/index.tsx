@@ -12,11 +12,6 @@ import {
   Card,
 } from "antd";
 
-// import { ReactComponent as Operator } from "src/assets/avatars/bald.svg";
-// import { ReactComponent as Supervisor } from "src/assets/avatars/woman.svg";
-// import { ReactComponent as Admin } from "src/assets/avatars/professor.svg";
-// import { ReactComponent as Investigator } from "src/assets/avatars/investigator.svg";
-// import { OPERATOR, SUPERVISOR, ADMIN, INVESTIGATOR } from "src/data/sample";
 import { ReactComponent as Logo } from "src/assets/logo.svg";
 import "./index.css";
 import { Redirect } from "react-router";

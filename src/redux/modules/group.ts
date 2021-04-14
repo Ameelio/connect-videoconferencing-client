@@ -1,9 +1,4 @@
-import {
-  createSlice,
-  createEntityAdapter,
-  createAsyncThunk,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { DataNode } from "rc-tree/lib/interface";
 import { fetchAuthenticated } from "src/api/Common";
 import { GroupRO } from "src/typings/Group";

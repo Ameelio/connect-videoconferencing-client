@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RootState, useAppDispatch, useAppSelector } from "src/redux";
-import { connect, ConnectedProps } from "react-redux";
+import { useAppDispatch, useAppSelector } from "src/redux";
 import {
   TimePicker,
   Layout,
@@ -12,7 +11,7 @@ import {
   Tree,
   Card,
 } from "antd";
-import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
+import { TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import moment from "moment";

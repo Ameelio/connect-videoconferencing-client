@@ -1,59 +1,51 @@
 import React from "react";
-
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import Logo from "./Logo";
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderBottomWidth: 2,
-    borderBottomColor: "#112131",
-    borderBottomStyle: "solid",
-    padding: 8,
-    alignItems: "stretch",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   extraColumn: {
     flexDirection: "column",
-    flexGrow: 2,
+    // flexGrow: 2,
     alignSelf: "flex-end",
   },
   detailColumn: {
     flexDirection: "column",
-    flexGrow: 9,
-    textTransform: "uppercase",
+    // flexGrow: 9,
   },
   name: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
-    // fontFamily: "Lato Bold",
   },
   subtitle: {
     fontSize: 10,
-    // alignSelf: "flex-end",
-    // fontFamily: "Lato",
-  },
-  extra: {
-    // fontFamily: "Lato",
-    fontSize: 10,
-    color: "black",
-    alignSelf: "flex-end",
-    fontStyle: "italic",
   },
 });
 
 interface Props {
   title: string;
   subtitle: string;
-  extra: string;
 }
 
-const Header = ({ title, subtitle, extra }: Props) => (
-  <View style={styles.container}>
+const Header = ({ title, subtitle }: Props) => (
+  <View style={styles.container} fixed>
     <View style={styles.detailColumn}>
-      <Text style={styles.name}>{title}</Text>
+      <View style={styles.header}>
+        <Text style={styles.name}>{title}</Text>
+      </View>
       <Text style={styles.subtitle}>{subtitle}</Text>
     </View>
     <View style={styles.extraColumn}>
-      <Text style={styles.extra}>{extra}</Text>
+      <Logo width={180} height={45} />
     </View>
   </View>
 );
