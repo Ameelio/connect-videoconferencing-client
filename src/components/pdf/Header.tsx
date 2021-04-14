@@ -15,12 +15,10 @@ const styles = StyleSheet.create({
   },
   extraColumn: {
     flexDirection: "column",
-    // flexGrow: 2,
     alignSelf: "flex-end",
   },
   detailColumn: {
     flexDirection: "column",
-    // flexGrow: 9,
   },
   name: {
     fontSize: 18,
