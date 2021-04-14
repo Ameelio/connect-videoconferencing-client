@@ -1,49 +1,52 @@
 import React from "react";
 import { Svg, Path, Polygon } from "@react-pdf/renderer";
 
+type HexCode = string;
 interface Props {
   width?: number;
   height?: number;
+  color?: string;
 }
-const Logo = ({ width, height }: Props) => {
+const Logo = ({ width, height, color }: Props) => {
+  const hex = color || "#424242";
   return (
     <Svg
       viewBox="0 0 666.85 257.93"
       style={{ width: width || 100, height: height || 30 }}
     >
       <Path
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         d="M111.83,48.88h0l-8.38,20.22L98.27,81.58l0,0v.08L91.48,98h0L90,101.55h0l-2.9,7-.6-2.23-.64-2.43-4-15.27L71,47.66l-1.6-6.1L63.79,20.1Z"
       />
       <Polygon
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         opacity={0.7}
         points="87.09 108.56 85.99 107.12 84.4 105.05 77.65 96.2 71.96 88.74 50.31 60.32 41.21 48.39 71.04 47.66 81.83 88.63 85.85 103.9 86.49 106.33 87.09 108.56"
       />
       <Polygon
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         points="67.95 154.72 59.71 174.61 29.58 171.5 58.55 149.76 64.48 145.32 75.17 137.31 67.96 154.69 67.95 154.72"
       />
       <Path
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         d="M134.41,137.69h0L81.75,151.16l-2.83.73-11,2.8,7.21-17.38h0l2.27-5.48h0l9.54-23,.1-.23h0l2.9-7h0L91.47,98h0l6.75-16.29h0l0-.09,5.17-12.47,8.38-20.22h0l4,15.53,4.51,17.78,4.95,19.43,3,11.89h0Z"
       />
       <Polygon
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         points="161.52 72.3 156.34 84.79 151.4 96.73 147.81 105.36 146.74 107.93 146.74 107.94 134.41 137.69 128.27 113.52 128.26 113.52 125.24 101.63 120.29 82.2 120.3 82.19 121.87 81.82 141.5 77.1 160.2 72.62 161.52 72.3"
       />
       <Polygon
-        fill="#0073eb"
+        fill={hex}
         stroke="#fff"
         strokeWidth={3}
         opacity={0.7}
