@@ -11,6 +11,7 @@ interface BaseProps {
   persona: Inmate | Contact;
 }
 
+// TODO: figure out why this is noot working
 // interface InmateProps extends BaseProps {
 //   type: "inmate";
 //   persona: Inmate;
@@ -43,7 +44,7 @@ const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
     switch (type) {
       case "inmate":
         return (
-          <Descriptions size="small" column={3}>
+          <Descriptions size="small" column={3} bordered>
             <Descriptions.Item label="First Name">
               {persona.firstName}
             </Descriptions.Item>
@@ -63,7 +64,7 @@ const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
         );
       case "contact":
         return (
-          <Descriptions size="small" column={3} layout="vertical" bordered>
+          <Descriptions size="small" column={3} bordered>
             <Descriptions.Item label="First Name">
               {persona.firstName}
             </Descriptions.Item>

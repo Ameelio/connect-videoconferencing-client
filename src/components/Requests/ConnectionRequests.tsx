@@ -1,11 +1,12 @@
 import React from "react";
-import { Table, Space, Button, Typography } from "antd";
+import { Table, Space, Button } from "antd";
 import { Connection } from "src/typings/Connection";
-import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
 import Avatar from "../Avatar";
+import ContactCell from "./ContactCell";
+import InmateCell from "./InmateCell";
 
 interface Props {
   connections: Connection[];
@@ -44,11 +45,7 @@ const ConnectionRequests = ({
         key="inmateProfilePic"
         render={(inmate: Inmate) => (
           <>
-            <Space direction="vertical">
-              <span>{genFullName(inmate)}</span>
-              <span>{inmate.inmateIdentification}</span>
-              <span>{format(new Date(inmate.dateOfBirth), "dd/mm/yy")}</span>
-            </Space>
+            <InmateCell inmate={inmate} navigate={navigate} />
           </>
         )}
       />
@@ -72,15 +69,7 @@ const ConnectionRequests = ({
         key="contactInfo"
         render={(contact: Contact) => (
           <>
-            <Space direction="vertical">
-              <Typography.Text>{genFullName(contact)}</Typography.Text>
-              <Typography.Text>Visitor ID: {contact.id}</Typography.Text>
-              <Typography.Link
-                onClick={() => navigate(`/contacts/${contact.id}`)}
-              >
-                View Full Profile
-              </Typography.Link>
-            </Space>
+            <ContactCell contact={contact} navigate={navigate} />
           </>
         )}
       />

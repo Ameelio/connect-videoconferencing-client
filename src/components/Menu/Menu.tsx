@@ -86,7 +86,7 @@ export default function Menu({
         </Space>
       </Dropdown>
 
-      <AntdMenu theme="dark" defaultValue={"dash"} mode="inline">
+      <AntdMenu theme="dark" defaultSelectedKeys={["dash"]}>
         <AntdMenu.Item
           key="dash"
           icon={<PieChartOutlined />}

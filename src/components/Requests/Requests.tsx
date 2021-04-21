@@ -52,7 +52,12 @@ const Requests = ({
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Calls" key="calls">
-          <CallRequests calls={calls} accept={acceptCall} reject={rejectCall} />
+          <CallRequests
+            calls={calls}
+            accept={acceptCall}
+            reject={rejectCall}
+            navigate={navigate}
+          />
         </Tabs.TabPane>
       </Tabs>
     </Content>

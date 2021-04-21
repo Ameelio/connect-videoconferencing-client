@@ -6,14 +6,17 @@ import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
 import { Call, ISOString } from "src/typings/Call";
 import Avatar from "../Avatar";
+import ContactCell from "./ContactCell";
+import InmateCell from "./InmateCell";
 
 interface Props {
   calls: Call[];
   accept: (connection: Call) => void;
   reject: (connection: Call) => void;
+  navigate: (path: string) => void;
 }
 
-export const CallRequests = ({ calls, accept, reject }: Props) => {
+export const CallRequests = ({ calls, accept, reject, navigate }: Props) => {
   return (
     <Table dataSource={calls}>
       <Table.Column
@@ -40,13 +43,7 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
           <>
             <Space direction="vertical">
               {inmates.map((inmate) => (
-                <Space direction="vertical">
-                  <span>{genFullName(inmate)}</span>
-                  <span>{inmate.inmateIdentification}</span>
-                  <span>
-                    {format(new Date(inmate.dateOfBirth), "dd/mm/yy")}
-                  </span>
-                </Space>
+                <InmateCell inmate={inmate} navigate={navigate} />
               ))}
             </Space>
           </>
@@ -76,10 +73,7 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
           <>
             <Space direction="vertical">
               {contacts.map((contact) => (
-                <Space direction="vertical">
-                  <span>{genFullName(contact)}</span>
-                  <span>Visitor ID: {contact.id}</span>
-                </Space>
+                <ContactCell contact={contact} navigate={navigate} />
               ))}
             </Space>
           </>

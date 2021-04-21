@@ -12,9 +12,12 @@ interface Props {
 
 const CallTimeline: React.FC<Props> = ({ calls, type, navigate }) => {
   return (
-    <Card title="Call Activity">
+    <Card
+      title="Call Activity"
+      style={{ maxHeight: "60vh", overflowY: "scroll" }}
+    >
       {!calls.length && <Empty description="No Calls" />}
-      <Timeline mode={"left"}>
+      <Timeline mode={"right"}>
         {calls.map((call) => (
           <CallTimelineItem
             key={call.id}

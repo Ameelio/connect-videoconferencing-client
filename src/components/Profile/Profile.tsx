@@ -35,14 +35,14 @@ const Profile: React.FC<Props> = ({
           facilityName={facilityName}
         />
         <Row justify="space-between" gutter={12}>
-          <Col span={12}>
+          <Col span={16}>
             <CallTimeline
               calls={calls}
               type={type}
               navigate={(path: string) => push(path)}
             />
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <ConnectionsList
               connections={connections}
               type={type}

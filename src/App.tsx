@@ -135,6 +135,7 @@ function App({
               rangeStart: startOfMonth(new Date()).getTime(),
               rangeEnd: endOfMonth(new Date()).getTime(),
             },
+            limit: 500,
           }),
         ]);
       })().then(() => setIsInitingData(false));

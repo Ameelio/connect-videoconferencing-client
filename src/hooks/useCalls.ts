@@ -55,3 +55,22 @@ export function useCallCountWithStatus(status: CallStatus) {
 
   return count;
 }
+
+export function useInmateCalls(id: number) {
+  const [calls, setCalls] = useState<Call[]>([]);
+  const baseCalls = useAppSelector(selectAllCalls);
+  const contactEnts = useAppSelector(selectContactEntities);
+  const inmateEnts = useAppSelector(selectInmateEntities);
+  const kioskEnts = useAppSelector(selectKioskEntities);
+
+  useEffect(() => {
+    const baseInmateCalls = baseCalls.filter((call) =>
+      call.inmateIds.includes(id)
+    );
+    setCalls(
+      loadAllCallEntities(baseInmateCalls, contactEnts, inmateEnts, kioskEnts)
+    );
+  }, [baseCalls, inmateEnts, contactEnts, kioskEnts, id]);
+
+  return calls;
+}
