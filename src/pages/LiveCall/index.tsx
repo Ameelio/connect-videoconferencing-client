@@ -8,7 +8,16 @@ import {
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
 import { selectLiveCalls } from "src/redux/selectors";
-import { Layout, Row, Col, Space, Pagination, PageHeader, Select } from "antd";
+import {
+  Layout,
+  Row,
+  Col,
+  Space,
+  Pagination,
+  PageHeader,
+  Select,
+  Empty,
+} from "antd";
 import { fetchCalls, callsActions } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
@@ -118,6 +127,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
             direction="vertical"
             style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
           >
+            {visitations.length === 0 && (
+              <Empty description="There aren't any live calls currently." />
+            )}
             {visitations.length > 0 && (
               <Pagination
                 current={page}
@@ -203,7 +215,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
         >
           {!chatCollapsed && (
-            <div>
+            <div className="vh-100">
               <PageHeader
                 title="Chat"
                 extra={[

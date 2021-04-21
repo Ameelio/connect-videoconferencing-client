@@ -49,6 +49,7 @@ export interface CallFilters {
   page?: number;
   "call.status"?: CallStatus[];
   inmateIdentification?: string;
+  "inmateParticipants.inmateId"?: string;
   contactId?: string;
   inmateLastName?: string;
   contactLastName?: string;

@@ -1,18 +1,13 @@
 import { Avatar } from "antd";
+import { AvatarProps } from "antd/lib/avatar";
 import React from "react";
 import { generateBgColor, getInitials } from "src/utils";
 
-interface Props {
+interface Props extends AvatarProps {
   name: string;
-  size: "large" | "small" | "default";
-  shape: "square" | "circle";
 }
-export const InitialsAvatar = ({ name, size, shape }: Props): JSX.Element => (
-  <Avatar
-    size={size}
-    shape={shape}
-    style={{ backgroundColor: generateBgColor(name) }}
-  >
+export const InitialsAvatar = ({ name, ...props }: Props): JSX.Element => (
+  <Avatar style={{ backgroundColor: generateBgColor(name) }} {...props}>
     {getInitials(name)}
   </Avatar>
 );

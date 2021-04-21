@@ -1,18 +1,22 @@
 import React from "react";
-import { Table, Space, Avatar, Button, Typography } from "antd";
+import { Table, Space, Button, Typography } from "antd";
 import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
 import { Call, ISOString } from "src/typings/Call";
+import Avatar from "../Avatar";
+import ContactCell from "./ContactCell";
+import InmateCell from "./InmateCell";
 
 interface Props {
   calls: Call[];
   accept: (connection: Call) => void;
   reject: (connection: Call) => void;
+  navigate: (path: string) => void;
 }
 
-export const CallRequests = ({ calls, accept, reject }: Props) => {
+export const CallRequests = ({ calls, accept, reject, navigate }: Props) => {
   return (
     <Table dataSource={calls}>
       <Table.Column
@@ -22,26 +26,24 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
         render={(inmates: Inmate[]) => (
           <>
             {inmates.map((inmate) => (
-              <Avatar src={inmate.profileImagePath} shape="circle" size={64} />
+              <Avatar
+                src={inmate.profileImagePath}
+                fallback={genFullName(inmate)}
+                size={64}
+              />
             ))}
           </>
         )}
       />
       <Table.Column
-        title="Inmate"
+        title="Incarcerated Person"
         dataIndex="inmates"
         key="inmateInfo"
         render={(inmates: Inmate[]) => (
           <>
             <Space direction="vertical">
               {inmates.map((inmate) => (
-                <Space direction="vertical">
-                  <span>{genFullName(inmate)}</span>
-                  <span>{inmate.inmateIdentification}</span>
-                  <span>
-                    {format(new Date(inmate.dateOfBirth), "dd/mm/yy")}
-                  </span>
-                </Space>
+                <InmateCell inmate={inmate} navigate={navigate} />
               ))}
             </Space>
           </>
@@ -54,7 +56,11 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
         render={(contacts: Contact[]) => (
           <>
             {contacts.map((contact) => (
-              <Avatar src={contact.profileImagePath} shape="circle" size={64} />
+              <Avatar
+                src={contact.profileImagePath}
+                fallback={genFullName(contact)}
+                size={64}
+              />
             ))}
           </>
         )}
@@ -67,10 +73,7 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
           <>
             <Space direction="vertical">
               {contacts.map((contact) => (
-                <Space direction="vertical">
-                  <span>{genFullName(contact)}</span>
-                  <span>Visitor ID: {contact.id}</span>
-                </Space>
+                <ContactCell contact={contact} navigate={navigate} />
               ))}
             </Space>
           </>

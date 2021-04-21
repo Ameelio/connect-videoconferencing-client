@@ -16,6 +16,7 @@ interface Props {
   calls: Call[];
   acceptCall: (call: Call) => void;
   rejectCall: (call: Call) => void;
+  navigate: (path: string) => void;
 }
 
 type TTab = "connections" | "calls";
@@ -27,6 +28,7 @@ const Requests = ({
   calls,
   acceptCall,
   rejectCall,
+  navigate,
 }: Props) => {
   const [activeTab, setActiveTab] = useState<TTab>("connections");
 
@@ -46,10 +48,16 @@ const Requests = ({
             connections={connections}
             accept={acceptConnection}
             reject={rejectConnection}
+            navigate={navigate}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Calls" key="calls">
-          <CallRequests calls={calls} accept={acceptCall} reject={rejectCall} />
+          <CallRequests
+            calls={calls}
+            accept={acceptCall}
+            reject={rejectCall}
+            navigate={navigate}
+          />
         </Tabs.TabPane>
       </Tabs>
     </Content>

@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown, Badge } from "antd";
+import { Layout, Menu as AntdMenu, Space, Dropdown, Badge } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -11,9 +11,10 @@ import {
 import { useHistory } from "react-router-dom";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
-import { genFullName, getInitials, generateBgColor } from "src/utils";
+import { genFullName } from "src/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
+import Avatar from "../Avatar";
 
 const { Sider } = Layout;
 const { SubMenu } = AntdMenu;
@@ -27,17 +28,8 @@ interface Props {
   select: (facility: Facility) => void;
   requestsCount: number;
   liveCallsCount: number;
+  callRequestsCount: number;
 }
-
-const FacilityAvatar = ({ facility }: { facility: Facility }): JSX.Element => (
-  <Avatar
-    size="large"
-    shape="square"
-    style={{ backgroundColor: generateBgColor(facility.name) }}
-  >
-    {getInitials(facility.name)}
-  </Avatar>
-);
 
 export default function Menu({
   isLoggedIn,
@@ -48,6 +40,7 @@ export default function Menu({
   logout,
   requestsCount,
   liveCallsCount,
+  callRequestsCount,
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
@@ -59,7 +52,7 @@ export default function Menu({
         {facilities.map((facility) => (
           <AntdMenu.Item key={facility.id} onClick={() => select(facility)}>
             <Space>
-              <FacilityAvatar facility={facility} />
+              <Avatar fallback={selected.name} size={48} />
               <span>{facility.name}</span>
             </Space>
           </AntdMenu.Item>
@@ -80,7 +73,7 @@ export default function Menu({
     >
       <Dropdown overlay={headerMenu}>
         <Space align="center" className="menu-header">
-          <FacilityAvatar facility={selected} />
+          <Avatar fallback={selected.name} size={48} />
           {!collapsed && (
             <Space direction="vertical" size={0}>
               <Space align="center">
@@ -93,8 +86,7 @@ export default function Menu({
         </Space>
       </Dropdown>
 
-      {/* </div> */}
-      <AntdMenu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+      <AntdMenu theme="dark" defaultSelectedKeys={["dash"]}>
         <AntdMenu.Item
           key="dash"
           icon={<PieChartOutlined />}
@@ -117,6 +109,7 @@ export default function Menu({
         >
           Approval Requests
           <Badge count={requestsCount} />
+          <Badge count={callRequestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="search"

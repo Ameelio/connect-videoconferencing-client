@@ -59,8 +59,6 @@ const Dashboard: React.FC<Props> = ({
     );
     // grooup calls by rating, sort them in ascending order, and count the number of instancces
     const sortedKeys = Object.keys(groups).sort();
-    console.log(groups);
-    console.log(sortedKeys);
     setRatingsCount(sortedKeys.map((key) => groups[parseInt(key)].length));
 
     // groups calls by week,

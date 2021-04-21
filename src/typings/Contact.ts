@@ -5,4 +5,7 @@ export interface Contact {
   lastName: string;
   profileImagePath: string;
   backgroundImagePath: string;
+  selfiePath: string;
+  frontIdPath: string;
+  backIdPath: string;
 }

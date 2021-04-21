@@ -1,18 +1,26 @@
 import React from "react";
-import { Table, Space, Avatar, Button } from "antd";
+import { Table, Space, Button } from "antd";
 import { Connection } from "src/typings/Connection";
-import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
+import Avatar from "../Avatar";
+import ContactCell from "./ContactCell";
+import InmateCell from "./InmateCell";
 
 interface Props {
   connections: Connection[];
   accept: (connection: Connection) => void;
   reject: (connection: Connection) => void;
+  navigate: (path: string) => void;
 }
 
-const ConnectionRequests = ({ connections, accept, reject }: Props) => {
+const ConnectionRequests = ({
+  connections,
+  accept,
+  reject,
+  navigate,
+}: Props) => {
   return (
     <Table dataSource={connections}>
       <Table.Column
@@ -21,7 +29,13 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="inmateProfilePic"
         render={(inmate: Inmate) => (
           <>
-            {<Avatar src={inmate.profileImagePath} shape="circle" size={64} />}
+            {
+              <Avatar
+                src={inmate.profileImagePath}
+                fallback={genFullName(inmate)}
+                size={64}
+              />
+            }
           </>
         )}
       />
@@ -31,11 +45,7 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="inmateProfilePic"
         render={(inmate: Inmate) => (
           <>
-            <Space direction="vertical">
-              <span>{genFullName(inmate)}</span>
-              <span>{inmate.inmateIdentification}</span>
-              <span>{format(new Date(inmate.dateOfBirth), "dd/mm/yy")}</span>
-            </Space>
+            <InmateCell inmate={inmate} navigate={navigate} />
           </>
         )}
       />
@@ -45,7 +55,11 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="contactProfilePic"
         render={(contact: Contact) => (
           <>
-            <Avatar src={contact.profileImagePath} shape="circle" size={64} />
+            <Avatar
+              src={contact.profileImagePath}
+              fallback={genFullName(contact)}
+              size={64}
+            />
           </>
         )}
       />
@@ -55,10 +69,7 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="contactInfo"
         render={(contact: Contact) => (
           <>
-            <Space direction="vertical">
-              <span>{genFullName(contact)}</span>
-              <span>Visitor ID: {contact.id}</span>
-            </Space>
+            <ContactCell contact={contact} navigate={navigate} />
           </>
         )}
       />

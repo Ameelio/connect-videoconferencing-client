@@ -11,6 +11,7 @@ import { usePendingCalls } from "src/hooks/useCalls";
 import { Call, CallStatus } from "src/typings/Call";
 import { updateCallStatus } from "src/redux/modules/call";
 import { useConnectionRequests } from "src/hooks/useConnections";
+import { push } from "connected-react-router";
 
 const RequestsPage: React.FC = () => {
   const calls = usePendingCalls();
@@ -26,7 +27,7 @@ const RequestsPage: React.FC = () => {
   };
 
   const handleCallUpdate = (call: Call, status: CallStatus): void => {
-    dispatch(updateCallStatus({ id: call.id, status: "scheduled" }));
+    dispatch(updateCallStatus({ id: call.id, status }));
   };
 
   return (
@@ -41,6 +42,7 @@ const RequestsPage: React.FC = () => {
         handleConnectionUpdate(connection, "rejected")
       }
       connections={connections}
+      navigate={(path: string) => dispatch(push(path))}
     />
   );
 };

@@ -13,7 +13,7 @@ import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { fetchFacilities } from "./redux/modules/facility";
 import { selectAllFacilities, selectLiveCalls } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
-import { ROUTES } from "./utils/constants";
+import { ROUTES } from "./constants";
 import { ConnectedRouter } from "connected-react-router";
 import { History } from "history";
 import { fetchContacts } from "./redux/modules/contact";
@@ -27,6 +27,7 @@ import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
 import { Facility } from "./typings/Facility";
 import { useConnectionRequestsCount } from "./hooks/useConnections";
+import { useCallCountWithStatus } from "./hooks/useCalls";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -84,6 +85,7 @@ function App({
   const [isInitingData, setIsInitingData] = useState(true);
 
   const requestsCount = useConnectionRequestsCount();
+  const pendingCallsCount = useCallCountWithStatus("pending_approval");
 
   useEffect(() => setIsAuthenticated(session.status === "active"), [
     session.status,
@@ -117,6 +119,9 @@ function App({
   useEffect(() => {
     if (selected) {
       setIsInitingData(true);
+      console.log("initing");
+      console.log(startOfMonth(new Date()).getTime());
+      console.log(endOfMonth(new Date()).getTime());
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
@@ -125,13 +130,14 @@ function App({
           fetchConnections(),
           fetchKiosks(),
           fetchGroups(),
+          fetchCalls({
+            scheduledStart: {
+              rangeStart: startOfMonth(new Date()).getTime(),
+              rangeEnd: endOfMonth(new Date()).getTime(),
+            },
+            limit: 500,
+          }),
         ]);
-        fetchCalls({
-          scheduledStart: {
-            rangeStart: startOfMonth(new Date()).getTime(),
-            rangeEnd: endOfMonth(new Date()).getTime(),
-          },
-        });
       })().then(() => setIsInitingData(false));
     }
   }, [
@@ -158,6 +164,7 @@ function App({
             select={(facility: Facility) => selectActiveFacility(facility)}
             liveCallsCount={liveCallsCount}
             requestsCount={requestsCount}
+            callRequestsCount={pendingCallsCount}
           />
         )}
         <Layout>
