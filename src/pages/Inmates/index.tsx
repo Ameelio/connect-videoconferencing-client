@@ -1,13 +1,15 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { selectAllInmates } from "src/redux/selectors";
-import { Layout, Avatar, Table, Button } from "antd";
+import { Layout, Table, Button } from "antd";
 import { RootState } from "src/redux";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { push } from "connected-react-router";
 import Header from "src/components/Header/Header";
 import { Inmate } from "src/typings/Inmate";
 import { EyeOutlined } from "@ant-design/icons";
+import { genFullName } from "src/utils";
+import Avatar from "src/components/Avatar";
 
 const { Content } = Layout;
 
@@ -28,11 +30,15 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   const columns = [
     {
       title: "",
-      dataIndex: "profileImagePath",
+      // dataIndex: "profileImagePath",
       editable: false,
-      render: (img: any) => (
+      render: (_text: string, inmate: Inmate) => (
         <>
-          <Avatar src={img} size="large" />
+          <Avatar
+            fallback={genFullName(inmate)}
+            src={inmate.profileImagePath}
+            size={48}
+          />
         </>
       ),
     },
@@ -58,7 +64,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
     },
     {
       title: "",
-      key: "acction",
+      key: "action",
       editable: false,
       render: (_text: string, inmate: Inmate) => (
         <>

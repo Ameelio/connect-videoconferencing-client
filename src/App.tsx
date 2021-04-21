@@ -13,7 +13,7 @@ import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { fetchFacilities } from "./redux/modules/facility";
 import { selectAllFacilities, selectLiveCalls } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
-import { ROUTES } from "./utils/constants";
+import { ROUTES } from "./constants";
 import { ConnectedRouter } from "connected-react-router";
 import { History } from "history";
 import { fetchContacts } from "./redux/modules/contact";

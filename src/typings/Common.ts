@@ -11,3 +11,5 @@ export interface TableColumn {
   editable?: boolean;
   render?: Function;
 }
+
+export type MemberType = "inmate" | "contact";

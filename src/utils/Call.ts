@@ -251,3 +251,15 @@ export function loadAllCallEntities(
     loadCallEntities(c, contactEnts, incPeopleEnts, kioskEnts)
   );
 }
+
+export function getCallInmatesFullNames(call: Call) {
+  return call.inmates
+    .map((user) => `${user.firstName} ${user.lastName}`)
+    .join(", ");
+}
+
+export function getCallContactsFullNames(call: Call) {
+  return call.contacts
+    .map((user) => `${user.firstName} ${user.lastName}`)
+    .join(", ");
+}

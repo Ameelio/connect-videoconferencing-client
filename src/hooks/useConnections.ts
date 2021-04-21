@@ -54,6 +54,20 @@ export function useInmateConnections(id: number) {
   return inmateConnections;
 }
 
+export function useContactConnections(id: number) {
+  const [connection, setConnections] = useState<Connection[]>([]);
+
+  const connections = useConnections();
+
+  useEffect(() => {
+    setConnections(
+      connections.filter((connection) => connection.userId === id)
+    );
+  }, [connections, id]);
+
+  return connection;
+}
+
 export function useConnectionRequestsCount() {
   const baseConnections = useAppSelector(selectAllConnections);
 

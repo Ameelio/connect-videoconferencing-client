@@ -1,16 +1,4 @@
-import LiveVisitationsPage from "src/pages/LiveCall";
-import CalendarPage from "src/pages/Calendar";
-import RequestsPage from "src/pages/ConnectionRequests";
-import LogsPage from "src/pages/CallLogs";
-import StaffPage from "src/pages/Staff";
-import InmatesPage from "src/pages/Inmates";
-import InmateDetailPage from "src/pages/Inmate";
-
-import DashboardPage from "src/pages/Dashboard";
-import SettingsPage from "src//pages/Settings";
-import RecordingPage from "src/pages/Recording";
 import { CallAlert, GridOption } from "src/typings/Call";
-import { Route } from "src/typings/Common";
 
 export const UNAUTHENTICATED_USER_ID = -999;
 export enum WeekdayMap {
@@ -22,23 +10,6 @@ export enum WeekdayMap {
   Friday = 5,
   Saturday = 6,
 }
-
-export const ROUTES: Route[] = [
-  { path: "/calendar", component: CalendarPage, label: "Page" },
-  { path: "/requests", component: RequestsPage, label: "Connection Requests" },
-  { path: "/logs", component: LogsPage, label: "Search for Visits" },
-  { path: "/staff", component: StaffPage, label: "Staff" },
-  { path: "/members", component: InmatesPage, label: "Inmates" },
-  {
-    path: "/members/:id",
-    component: InmateDetailPage,
-    label: "Incarcerated Individual",
-  },
-  { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
-  { path: "/settings", component: SettingsPage, label: "Settings" },
-  { path: "/call/:id", component: RecordingPage, label: "Past Call" },
-  { path: "/", component: DashboardPage, label: "Dashboard" },
-];
 
 export const WEEKDAYS = [
   WeekdayMap.Sunday,

@@ -4,11 +4,11 @@ import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import {
   getCallsInfo,
-  selectInmateById,
+  selectContactById,
   selectInmateCallsById,
 } from "src/redux/selectors";
 import { push } from "connected-react-router";
-import { useInmateConnections } from "src/hooks/useConnections";
+import { useContactConnections } from "src/hooks/useConnections";
 import Profile from "src/components/Profile";
 
 type TParams = { id: string };
@@ -17,7 +17,6 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  inmate: selectInmateById(state, parseInt(ownProps.match.params.id)),
   calls: getCallsInfo(
     state,
     selectInmateCallsById(state, parseInt(ownProps.match.params.id)) || []
@@ -30,27 +29,30 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function InmatePage({
-  inmate,
+function ContactPage({
   calls,
+  match,
 }: PropsFromRedux & RouteComponentProps<TParams>): ReactElement {
   const facilityName = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
-  const connections = useInmateConnections(inmate?.id || -1);
+  const contact = useSelector((state: RootState) =>
+    selectContactById(state, match.params.id)
+  );
+  const connections = useContactConnections(contact?.id || -1);
 
-  if (!inmate || !facilityName) return <div />;
+  if (!contact || !facilityName) return <div />;
 
   return (
     <Profile
       connections={connections}
-      persona={inmate}
+      persona={contact}
       facilityName={facilityName}
       calls={calls}
-      type="inmate"
+      type="contact"
     />
   );
 }
 
-export default connector(InmatePage);
+export default connector(ContactPage);

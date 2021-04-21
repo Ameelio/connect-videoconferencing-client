@@ -1,18 +1,25 @@
 import React from "react";
-import { Table, Space, Avatar, Button } from "antd";
+import { Table, Space, Button, Typography } from "antd";
 import { Connection } from "src/typings/Connection";
 import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
+import Avatar from "../Avatar";
 
 interface Props {
   connections: Connection[];
   accept: (connection: Connection) => void;
   reject: (connection: Connection) => void;
+  navigate: (path: string) => void;
 }
 
-const ConnectionRequests = ({ connections, accept, reject }: Props) => {
+const ConnectionRequests = ({
+  connections,
+  accept,
+  reject,
+  navigate,
+}: Props) => {
   return (
     <Table dataSource={connections}>
       <Table.Column
@@ -21,7 +28,13 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="inmateProfilePic"
         render={(inmate: Inmate) => (
           <>
-            {<Avatar src={inmate.profileImagePath} shape="circle" size={64} />}
+            {
+              <Avatar
+                src={inmate.profileImagePath}
+                fallback={genFullName(inmate)}
+                size={64}
+              />
+            }
           </>
         )}
       />
@@ -45,7 +58,11 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         key="contactProfilePic"
         render={(contact: Contact) => (
           <>
-            <Avatar src={contact.profileImagePath} shape="circle" size={64} />
+            <Avatar
+              src={contact.profileImagePath}
+              fallback={genFullName(contact)}
+              size={64}
+            />
           </>
         )}
       />
@@ -56,8 +73,13 @@ const ConnectionRequests = ({ connections, accept, reject }: Props) => {
         render={(contact: Contact) => (
           <>
             <Space direction="vertical">
-              <span>{genFullName(contact)}</span>
-              <span>Visitor ID: {contact.id}</span>
+              <Typography.Text>{genFullName(contact)}</Typography.Text>
+              <Typography.Text>Visitor ID: {contact.id}</Typography.Text>
+              <Typography.Link
+                onClick={() => navigate(`/contacts/${contact.id}`)}
+              >
+                View Full Profile
+              </Typography.Link>
             </Space>
           </>
         )}

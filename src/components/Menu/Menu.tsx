@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { Layout, Menu as AntdMenu, Avatar, Space, Dropdown, Badge } from "antd";
+import { Layout, Menu as AntdMenu, Space, Dropdown, Badge } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -14,6 +14,7 @@ import "./Menu.css";
 import { genFullName, getInitials, generateBgColor } from "src/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
+import Avatar from "../Avatar";
 
 const { Sider } = Layout;
 const { SubMenu } = AntdMenu;
@@ -28,16 +29,6 @@ interface Props {
   requestsCount: number;
   liveCallsCount: number;
 }
-
-const FacilityAvatar = ({ facility }: { facility: Facility }): JSX.Element => (
-  <Avatar
-    size="large"
-    shape="square"
-    style={{ backgroundColor: generateBgColor(facility.name) }}
-  >
-    {getInitials(facility.name)}
-  </Avatar>
-);
 
 export default function Menu({
   isLoggedIn,
@@ -59,7 +50,7 @@ export default function Menu({
         {facilities.map((facility) => (
           <AntdMenu.Item key={facility.id} onClick={() => select(facility)}>
             <Space>
-              <FacilityAvatar facility={facility} />
+              <Avatar fallback={selected.name} size={48} />
               <span>{facility.name}</span>
             </Space>
           </AntdMenu.Item>
@@ -80,7 +71,7 @@ export default function Menu({
     >
       <Dropdown overlay={headerMenu}>
         <Space align="center" className="menu-header">
-          <FacilityAvatar facility={selected} />
+          <Avatar fallback={selected.name} size={48} />
           {!collapsed && (
             <Space direction="vertical" size={0}>
               <Space align="center">
