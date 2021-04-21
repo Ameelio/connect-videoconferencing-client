@@ -28,6 +28,7 @@ interface Props {
   select: (facility: Facility) => void;
   requestsCount: number;
   liveCallsCount: number;
+  callRequestsCount: number;
 }
 
 export default function Menu({
@@ -39,6 +40,7 @@ export default function Menu({
   logout,
   requestsCount,
   liveCallsCount,
+  callRequestsCount,
 }: Props): ReactElement {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const history = useHistory();
@@ -108,6 +110,7 @@ export default function Menu({
         >
           Approval Requests
           <Badge count={requestsCount} />
+          <Badge count={callRequestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="search"

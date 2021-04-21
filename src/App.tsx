@@ -27,6 +27,7 @@ import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
 import { Facility } from "./typings/Facility";
 import { useConnectionRequestsCount } from "./hooks/useConnections";
+import { useCallCountWithStatus } from "./hooks/useCalls";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -84,6 +85,7 @@ function App({
   const [isInitingData, setIsInitingData] = useState(true);
 
   const requestsCount = useConnectionRequestsCount();
+  const pendingCallsCount = useCallCountWithStatus("pending_approval");
 
   useEffect(() => setIsAuthenticated(session.status === "active"), [
     session.status,
@@ -158,6 +160,7 @@ function App({
             select={(facility: Facility) => selectActiveFacility(facility)}
             liveCallsCount={liveCallsCount}
             requestsCount={requestsCount}
+            callRequestsCount={pendingCallsCount}
           />
         )}
         <Layout>
