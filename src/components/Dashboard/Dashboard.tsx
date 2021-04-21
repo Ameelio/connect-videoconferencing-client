@@ -2,7 +2,6 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
-  SyncOutlined,
 } from "@ant-design/icons";
 import { Layout, Space, Row, Col, Button, Typography, Spin } from "antd";
 import { Content } from "antd/lib/layout/layout";
@@ -60,8 +59,6 @@ const Dashboard: React.FC<Props> = ({
     );
     // grooup calls by rating, sort them in ascending order, and count the number of instancces
     const sortedKeys = Object.keys(groups).sort();
-    console.log(groups);
-    console.log(sortedKeys);
     setRatingsCount(sortedKeys.map((key) => groups[parseInt(key)].length));
 
     // groups calls by week,

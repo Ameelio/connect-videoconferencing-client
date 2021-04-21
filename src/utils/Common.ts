@@ -1,7 +1,7 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
 import { toQueryString } from "src/api/Common";
-import { CallFilters, Call, SearchFilter } from "src/typings/Call";
+import { CallFilters, Call } from "src/typings/Call";
 
 export const genFullName = (entity?: BasePersona): string =>
   entity ? `${entity.firstName} ${entity.lastName}` : "";

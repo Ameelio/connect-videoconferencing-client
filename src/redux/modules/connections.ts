@@ -54,10 +54,18 @@ export const connectionsSlice = createSlice({
       const { status, connectionId } = action.payload;
       switch (status) {
         case "active":
-          openNotificationWithIcon("Connection created!", "Hooray!", "success");
+          openNotificationWithIcon(
+            "Connection was successfully approved.",
+            "Both parties were notified of the decision.",
+            "success"
+          );
           break;
         case "rejected":
-          openNotificationWithIcon("Connection rejected", "Very sad", "info");
+          openNotificationWithIcon(
+            "Connection request was rejected.",
+            "Both parties were notified of the decision.",
+            "info"
+          );
           break;
       }
       connectionsAdapter.updateOne(state, {

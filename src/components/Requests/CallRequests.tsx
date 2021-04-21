@@ -1,10 +1,11 @@
 import React from "react";
-import { Table, Space, Avatar, Button, Typography } from "antd";
+import { Table, Space, Button, Typography } from "antd";
 import { format } from "date-fns";
 import { genFullName } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
 import { Contact } from "src/typings/Contact";
 import { Call, ISOString } from "src/typings/Call";
+import Avatar from "../Avatar";
 
 interface Props {
   calls: Call[];
@@ -22,13 +23,17 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
         render={(inmates: Inmate[]) => (
           <>
             {inmates.map((inmate) => (
-              <Avatar src={inmate.profileImagePath} shape="circle" size={64} />
+              <Avatar
+                src={inmate.profileImagePath}
+                fallback={genFullName(inmate)}
+                size={64}
+              />
             ))}
           </>
         )}
       />
       <Table.Column
-        title="Inmate"
+        title="Incarcerated Person"
         dataIndex="inmates"
         key="inmateInfo"
         render={(inmates: Inmate[]) => (
@@ -54,7 +59,11 @@ export const CallRequests = ({ calls, accept, reject }: Props) => {
         render={(contacts: Contact[]) => (
           <>
             {contacts.map((contact) => (
-              <Avatar src={contact.profileImagePath} shape="circle" size={64} />
+              <Avatar
+                src={contact.profileImagePath}
+                fallback={genFullName(contact)}
+                size={64}
+              />
             ))}
           </>
         )}

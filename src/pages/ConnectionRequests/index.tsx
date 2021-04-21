@@ -27,7 +27,7 @@ const RequestsPage: React.FC = () => {
   };
 
   const handleCallUpdate = (call: Call, status: CallStatus): void => {
-    dispatch(updateCallStatus({ id: call.id, status: "scheduled" }));
+    dispatch(updateCallStatus({ id: call.id, status }));
   };
 
   return (

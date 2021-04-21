@@ -63,12 +63,11 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
     // TODO: this assumes all calls will have the same host. Gotta turn this into a Record<callId, handler>
     // https://github.com/Ameelio/connect-doc-client/issues/59
     if (!socket && visitations[0] && visitations[0].videoHandler) {
-      // TODO: ${visitations[0].videoHandler?.host} direct connection 127.0.0.13002
       setSocket(
         io.connect(
           process.env.NODE_ENV === "production"
             ? `https://${visitations[0].videoHandler?.host}`
-            : `https://${visitations[0].videoHandler?.host}`,
+            : `https://${visitations[0].videoHandler?.host}:${visitations[0].videoHandler?.port}`,
           { transports: ["websocket"] }
         )
       );

@@ -11,7 +11,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { Facility, SelectedFacility } from "src/typings/Facility";
 import "./Menu.css";
-import { genFullName, getInitials, generateBgColor } from "src/utils";
+import { genFullName } from "src/utils";
 import { SIDEBAR_WIDTH } from "src/utils/constants";
 import { User } from "src/typings/Session";
 import Avatar from "../Avatar";
@@ -86,8 +86,7 @@ export default function Menu({
         </Space>
       </Dropdown>
 
-      {/* </div> */}
-      <AntdMenu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+      <AntdMenu theme="dark" defaultValue={"dash"} mode="inline">
         <AntdMenu.Item
           key="dash"
           icon={<PieChartOutlined />}

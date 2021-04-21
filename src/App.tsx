@@ -119,6 +119,9 @@ function App({
   useEffect(() => {
     if (selected) {
       setIsInitingData(true);
+      console.log("initing");
+      console.log(startOfMonth(new Date()).getTime());
+      console.log(endOfMonth(new Date()).getTime());
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
@@ -127,13 +130,13 @@ function App({
           fetchConnections(),
           fetchKiosks(),
           fetchGroups(),
+          fetchCalls({
+            scheduledStart: {
+              rangeStart: startOfMonth(new Date()).getTime(),
+              rangeEnd: endOfMonth(new Date()).getTime(),
+            },
+          }),
         ]);
-        fetchCalls({
-          scheduledStart: {
-            rangeStart: startOfMonth(new Date()).getTime(),
-            rangeEnd: endOfMonth(new Date()).getTime(),
-          },
-        });
       })().then(() => setIsInitingData(false));
     }
   }, [
