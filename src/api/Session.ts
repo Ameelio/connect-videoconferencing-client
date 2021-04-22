@@ -19,6 +19,7 @@ export async function loginWithCredentials(
       Accept: "application/json",
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
       email: cred.email,
       password: cred.password,
