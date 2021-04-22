@@ -137,32 +137,30 @@ function SettingsContainer(): ReactElement {
         title="Settings"
         subtitle="Adjust the call hours, facility information, and facility kiosk directory as needed."
       />
-      <div style={WRAPPER_STYLE}>
-        <Content style={{ ...WRAPPER_STYLE }}>
-          <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
-            <TabPane tab="General Settings" key="setting">
-              <Card
-                title="Call Hours"
-                extra={[
-                  <Button type="primary" onClick={handleSubmission}>
-                    Save Changes
-                  </Button>,
-                ]}
-              >
-                <Space direction="vertical">
-                  {WEEKDAYS.map((weekday) =>
-                    renderItem(weekday, ranges[weekday])
-                  )}
-                </Space>
-              </Card>
-            </TabPane>
-            <TabPane tab="Facility" key="facility">
-              <Card title="Facility Tree">
-                <Tree treeData={groups} defaultExpandAll={true} />
-              </Card>
-            </TabPane>
-          </Tabs>
-        </Content>
+      <div style={{ ...WRAPPER_STYLE }}>
+        <Tabs defaultActiveKey={activeTab} onChange={tabCallback}>
+          <TabPane tab="General Settings" key="setting">
+            <Card
+              title="Call Hours"
+              extra={[
+                <Button type="primary" onClick={handleSubmission}>
+                  Save Changes
+                </Button>,
+              ]}
+            >
+              <Space direction="vertical">
+                {WEEKDAYS.map((weekday) =>
+                  renderItem(weekday, ranges[weekday])
+                )}
+              </Space>
+            </Card>
+          </TabPane>
+          <TabPane tab="Facility" key="facility">
+            <Card title="Facility Tree">
+              <Tree treeData={groups} defaultExpandAll={true} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </div>
     </Content>
   );

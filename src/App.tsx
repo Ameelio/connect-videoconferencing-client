@@ -98,15 +98,14 @@ function App({
 
   const facilities = useSelector(selectAllFacilities);
 
-  useEffect(() => {
-    // localStorage.setItem("debug", "*");
-    localStorage.removeItem("debug");
-    (async () => {
-      try {
-        await fetchFacilities();
-      } catch (err) {}
-    })();
-  }, [fetchFacilities]);
+  // useEffect(() => {
+  //   localStorage.removeItem("debug");
+  //   (async () => {
+  //     try {
+  //       await fetchFacilities();
+  //     } catch (err) {}
+  //   })();
+  // }, [fetchFacilities]);
 
   useEffect(() => {
     if (isAuthenticated) fetchFacilities();

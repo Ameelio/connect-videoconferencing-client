@@ -29,7 +29,7 @@ const ConnectionItem: React.FC<Props> = ({
           )
         }
       >
-        <Space direction="vertical" align="center">
+        <Space direction="vertical">
           <Avatar src={person.profileImagePath} fallback={name} size={48} />
           <Typography.Text>{name}</Typography.Text>
           <Typography.Text type="secondary">{relationship}</Typography.Text>

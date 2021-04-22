@@ -1,4 +1,5 @@
 import { Store } from "src/redux";
+import { openNotificationWithIcon, showToast } from "src/utils";
 
 export const API_URL = process.env.REACT_APP_API_URL || "api/v1/";
 
@@ -50,9 +51,18 @@ export async function fetchAuthenticated(
   }${fetchUrl}`;
   const response = await fetchTimeout(url, requestOptions, timeout);
 
+  if (response.status === 400 || response.status === 403) {
+    showToast(
+      "fetchAuthenticated",
+      "You are not allowed to perform this action. Contact the admin.",
+      "error"
+    );
+  }
+
   if (response.status !== 200 && response.status !== 201) {
     throw new Error(`Failed to access resource ${fetchUrl}`);
   }
+
   const body = await response.json();
   return body;
 }
