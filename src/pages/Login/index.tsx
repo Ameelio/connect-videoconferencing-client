@@ -66,7 +66,6 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
           </Row>
           <Form
             name="basic"
-            initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             className="login-form"

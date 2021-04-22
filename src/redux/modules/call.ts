@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { cleanCall, CallRO } from "../helpers";
-import { createCallOptionsParam } from "src/utils";
+import { createCallOptionsParam, openNotificationWithIcon } from "src/utils";
 import {
   BaseCall,
   CallFilters,
@@ -97,9 +97,26 @@ export const callsSlice = createSlice({
     builder.addCase(fetchCallMessages.fulfilled, (state, action) =>
       callsAdapter.updateOne(state, action.payload)
     );
-    builder.addCase(updateCallStatus.fulfilled, (state, action) =>
-      callsAdapter.updateOne(state, action.payload)
-    );
+    builder.addCase(updateCallStatus.fulfilled, (state, action) => {
+      callsAdapter.updateOne(state, action.payload);
+      const { status } = action.payload.changes;
+      switch (status) {
+        case "cancelled":
+          openNotificationWithIcon(
+            "Call was rejected",
+            "Both parties were notified of the decision.",
+            "success"
+          );
+          break;
+        case "scheduled":
+          openNotificationWithIcon(
+            "Call request was reject",
+            "Both parties were notified of the decision.",
+            "info"
+          );
+          break;
+      }
+    });
   },
 });
 

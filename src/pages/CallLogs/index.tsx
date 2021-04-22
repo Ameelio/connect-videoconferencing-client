@@ -3,7 +3,7 @@ import { RootState } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
-import { genFullName } from "src/utils";
+import { genFullName, isSubstring } from "src/utils";
 import { getCallsInfo, selectAllCalls } from "src/redux/selectors";
 import { format } from "date-fns";
 import { fetchCalls } from "src/redux/modules/call";
@@ -113,21 +113,21 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
         case "inmateParticipants.inmateIdentification":
           filteredCalls = filteredCalls.filter((log) =>
             log.inmates.some((inmate) =>
-              inmate.inmateIdentification.includes(searchQuery)
+              isSubstring(searchQuery, inmate.inmateIdentification)
             )
           );
           break;
         case "inmateParticipants.lastName":
           filteredCalls = filteredCalls.filter((log) =>
             log.inmates.some((inmate) =>
-              genFullName(inmate).includes(searchQuery)
+              isSubstring(searchQuery, inmate.lastName)
             )
           );
           break;
         case "userParticipants.lastName":
           filteredCalls = filteredCalls.filter((log) =>
             log.contacts.some((contact) =>
-              contact.lastName.includes(searchQuery)
+              isSubstring(searchQuery, contact.lastName)
             )
           );
           break;
@@ -137,8 +137,8 @@ const LogsContainer: React.FC<PropsFromRedux> = ({
           );
           break;
         case "kiosk.name":
-          filteredCalls = filteredCalls.filter(
-            (call) => call.kiosk.name === searchQuery
+          filteredCalls = filteredCalls.filter((call) =>
+            isSubstring(searchQuery, call.kiosk.name)
           );
           break;
         default:

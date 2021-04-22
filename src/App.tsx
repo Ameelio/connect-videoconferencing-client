@@ -119,9 +119,6 @@ function App({
   useEffect(() => {
     if (selected) {
       setIsInitingData(true);
-      console.log("initing");
-      console.log(startOfMonth(new Date()).getTime());
-      console.log(endOfMonth(new Date()).getTime());
       (async () => {
         await Promise.allSettled([
           fetchContacts(),
