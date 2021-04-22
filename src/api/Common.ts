@@ -46,7 +46,7 @@ export async function fetchAuthenticated(
     credentials: "include",
   };
 
-  const url = `/${API_URL}${
+  const url = `${API_URL}${
     nodeResource ? `facilities/${state.facilities.selected?.id}/` : ""
   }${fetchUrl}`;
   const response = await fetchTimeout(url, requestOptions, timeout);
