@@ -1,3 +1,2 @@
-import Requests from "./Requests";
-
-export default Requests;
+export * from "./CallRequests";
+export * from "./ConnectionRequests";

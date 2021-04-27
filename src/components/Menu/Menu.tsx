@@ -103,12 +103,19 @@ export default function Menu({
           <Badge count={liveCallsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
-          key="requests"
+          key="connection-requests"
           icon={<UserAddOutlined />}
-          onClick={() => history.push("/requests")}
+          onClick={() => history.push("/connection-requests")}
         >
-          Approval Requests
+          Visitation List Requests
           <Badge count={requestsCount} />
+        </AntdMenu.Item>
+        <AntdMenu.Item
+          key="call-requests"
+          icon={<UserAddOutlined />}
+          onClick={() => history.push("/call-requests")}
+        >
+          Scheduling Requests
           <Badge count={callRequestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item

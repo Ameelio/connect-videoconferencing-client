@@ -6,15 +6,14 @@ import {
   Connection,
   ConnectionStatus,
 } from "src/typings/Connection";
-import Requests from "src/components/Requests";
-import { usePendingCalls } from "src/hooks/useCalls";
-import { Call, CallStatus } from "src/typings/Call";
-import { updateCallStatus } from "src/redux/modules/call";
 import { useConnectionRequests } from "src/hooks/useConnections";
 import { push } from "connected-react-router";
+import ConnectionRequests from "src/components/Requests/ConnectionRequests";
+import { Layout } from "antd";
+import Header from "src/components/Header";
+import { WRAPPER_STYLE } from "src/styles/styles";
 
 const RequestsPage: React.FC = () => {
-  const calls = usePendingCalls();
   const connections = useConnectionRequests();
 
   const dispatch = useAppDispatch();
@@ -26,24 +25,25 @@ const RequestsPage: React.FC = () => {
     dispatch(updateConnection({ connectionId: request.id, status }));
   };
 
-  const handleCallUpdate = (call: Call, status: CallStatus): void => {
-    dispatch(updateCallStatus({ id: call.id, status }));
-  };
-
   return (
-    <Requests
-      calls={calls}
-      acceptCall={(call: Call) => handleCallUpdate(call, "scheduled")}
-      rejectCall={(call: Call) => handleCallUpdate(call, "cancelled")}
-      acceptConnection={(connection: Connection) =>
-        handleConnectionUpdate(connection, "active")
-      }
-      rejectConnection={(connection: Connection) =>
-        handleConnectionUpdate(connection, "rejected")
-      }
-      connections={connections}
-      navigate={(path: string) => dispatch(push(path))}
-    />
+    <Layout.Content>
+      <Header
+        title="Approval Requests"
+        subtitle="Review all connection requests between incarcerated people in your facility and their loved one on the outside."
+      />
+      <div style={WRAPPER_STYLE}>
+        <ConnectionRequests
+          accept={(connection: Connection) =>
+            handleConnectionUpdate(connection, "active")
+          }
+          reject={(connection: Connection) =>
+            handleConnectionUpdate(connection, "rejected")
+          }
+          connections={connections}
+          navigate={(path: string) => dispatch(push(path))}
+        />
+      </div>
+    </Layout.Content>
   );
 };
 

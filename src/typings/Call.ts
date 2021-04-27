@@ -64,6 +64,7 @@ export type CallStatus =
   | "live"
   | "ended"
   | "terminated"
+  | "rejected"
   | "no_show";
 
 export type ISOString = string;
