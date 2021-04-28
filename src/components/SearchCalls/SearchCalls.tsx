@@ -2,27 +2,35 @@ import { Input, Layout, Select } from "antd";
 import React, { useState, useCallback, useEffect } from "react";
 import CallFiltersHeader from "src/pages/CallLogs/CallFilters";
 import { WRAPPER_STYLE } from "src/styles/styles";
-import { Call, CallFilters, SearchFilter } from "src/typings/Call";
+import { Call, CallFilters, CallStatus, SearchFilter } from "src/typings/Call";
 import { isSubstring } from "src/utils";
 import Header from "../Header";
 import SearchCallsTable from "./SearchCallsTable";
 import _ from "lodash";
+import { CALL_STATUS_FILTER_OPTIONS } from "src/constants";
 
 interface Props {
   calls: Call[];
   navigate: (path: string) => void;
   fetchCalls: (filters: CallFilters) => void;
+  openCancelCallModal: (call: Call) => void;
 }
 
 const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
-  "inmateParticipants.inmateIdentification": "Person ID",
-  "inmateParticipants.lastName": "Person Last Name",
+  "inmateParticipants.inmateIdentification": "Inmate ID",
+  "inmateParticipants.lastName": "Inmate Last Name",
   "userParticipants.lastName": "Contact Name",
   "userParticipants.id": "Contact ID",
   "kiosk.name": "Kiosk",
+  status: "Call Status",
 };
 
-const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
+const SearchCalls = ({
+  calls,
+  navigate,
+  fetchCalls,
+  openCancelCallModal,
+}: Props) => {
   const [filteredLogs, setFilteredLogs] = useState<Call[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [global, setGlobal] = useState<string>("");
@@ -35,6 +43,9 @@ const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
   const [activeSearchFilter, setActiveSearchFilter] = useState<SearchFilter>(
     "inmateParticipants.inmateIdentification"
   );
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState<
+    CallStatus[]
+  >([]);
 
   const delayedQuery = useCallback(
     _.debounce(() => setGlobal(searchQuery), 1000),
@@ -117,6 +128,12 @@ const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
             isSubstring(searchQuery, call.kiosk.name)
           );
           break;
+        case "status":
+          if (!selectedStatusFilter.length) break;
+          filteredCalls = filteredCalls.filter((call) =>
+            selectedStatusFilter.includes(call.status)
+          );
+          break;
         default:
           break;
       }
@@ -129,6 +146,10 @@ const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
     activeSearchFilter,
     searchQuery,
   ]);
+
+  const filteredOptions = CALL_STATUS_FILTER_OPTIONS.filter(
+    (c) => !selectedStatusFilter.includes(c.value)
+  );
 
   return (
     <Layout.Content>
@@ -147,16 +168,37 @@ const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
                 </Select.Option>
               ))}
             </Select>
-            <Input.Search
-              style={{ width: "auto" }}
-              placeholder={`Search by ${LABEL_TO_FILTER_MAP[activeSearchFilter]}...`}
-              allowClear
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onSearch={(value) => {
-                setGlobal(value);
-              }}
-            />
+            {activeSearchFilter === "status" ? (
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "auto", minWidth: 150 }}
+                placeholder="Filter by call status"
+                onChange={(value) =>
+                  setSelectedStatusFilter([
+                    ...selectedStatusFilter,
+                    value as CallStatus,
+                  ])
+                }
+              >
+                {filteredOptions.map((o) => (
+                  <Select.Option key={o.key} value={o.value}>
+                    {o.label}
+                  </Select.Option>
+                ))}
+              </Select>
+            ) : (
+              <Input.Search
+                style={{ width: "auto" }}
+                placeholder={`Search by ${LABEL_TO_FILTER_MAP[activeSearchFilter]}...`}
+                allowClear
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onSearch={(value) => {
+                  setGlobal(value);
+                }}
+              />
+            )}
           </Input.Group>,
           <CallFiltersHeader
             setStartDate={setStartDate}
@@ -170,6 +212,7 @@ const SearchCalls = ({ calls, navigate, fetchCalls }: Props) => {
           calls={filteredLogs}
           isLoading={loading}
           navigate={navigate}
+          openCancelCallModal={openCancelCallModal}
         />
       </div>
     </Layout.Content>

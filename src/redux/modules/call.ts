@@ -77,7 +77,7 @@ export const callsSlice = createSlice({
       action: PayloadAction<{ id: number; message: CallMessage }>
     ) => {
       const { id, message } = action.payload;
-      const call = state.entities[id];
+      const call = callsAdapter.getSelectors().selectById(state, id);
       if (!call) return;
       callsAdapter.updateOne(state, {
         id,

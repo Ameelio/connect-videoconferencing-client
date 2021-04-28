@@ -52,9 +52,7 @@ export default function EditableTable({
         setData(newData);
         setEditingId(null);
       }
-    } catch (err) {
-      console.log("Validate Failed:", err);
-    }
+    } catch (err) {}
   };
 
   const columnsWithEdit = columns.concat([

@@ -39,7 +39,8 @@ export type SearchFilter =
   | "inmateParticipants.lastName"
   | "userParticipants.lastName"
   | "userParticipants.id"
-  | "kiosk.name";
+  | "kiosk.name"
+  | "status";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };

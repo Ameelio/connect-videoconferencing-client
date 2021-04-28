@@ -7,6 +7,7 @@ import { fetchCalls } from "src/redux/modules/call";
 import { push } from "connected-react-router";
 import { Call } from "src/typings/Call";
 import SearchCalls from "src/components/SearchCalls";
+import { openModal } from "src/redux/modules/modal";
 
 const mapStateToProps = (state: RootState) => ({
   logs: getCallsInfo(state, selectAllCalls(state)).filter(
@@ -32,6 +33,9 @@ const SearchCallsPage: React.FC<PropsFromRedux> = ({ logs, fetchCalls }) => {
       calls={logs}
       fetchCalls={fetchCalls}
       navigate={(path: string) => dispatch(push(path))}
+      openCancelCallModal={(call: Call) =>
+        dispatch(openModal({ activeType: "CANCEL_CALL_MODAL", entity: call }))
+      }
     />
   );
 };

@@ -28,6 +28,7 @@ import { endOfMonth } from "date-fns";
 import { Facility } from "./typings/Facility";
 import { useConnectionRequestsCount } from "./hooks/useConnections";
 import { useCallCountWithStatus } from "./hooks/useCalls";
+import Modals from "./components/Modals";
 
 const mapStateToProps = (state: RootState) => ({
   session: state.session,
@@ -174,6 +175,7 @@ function App({
           )}
         </Layout>
       </Layout>
+      <Modals />
     </ConnectedRouter>
   );
 }

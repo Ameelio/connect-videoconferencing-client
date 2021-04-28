@@ -11,9 +11,15 @@ interface Props {
   calls: Call[];
   isLoading: boolean;
   navigate: (path: string) => void;
+  openCancelCallModal: (call: Call) => void;
 }
 
-const SearchCallsTable: React.FC<Props> = ({ calls, isLoading, navigate }) => {
+const SearchCallsTable: React.FC<Props> = ({
+  calls,
+  isLoading,
+  navigate,
+  openCancelCallModal,
+}) => {
   return (
     <Table dataSource={calls} loading={isLoading}>
       <Table.Column
@@ -99,7 +105,7 @@ const SearchCallsTable: React.FC<Props> = ({ calls, isLoading, navigate }) => {
         render={(_text, visitation: Call) =>
           visitation.status === "scheduled" ? (
             <Button
-              onClick={() => navigate(`/call/${visitation.id}`)}
+              onClick={() => openCancelCallModal(visitation)}
               icon={<CloseOutlined />}
             >
               Cancel

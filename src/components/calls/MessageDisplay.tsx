@@ -16,7 +16,7 @@ export function MessageDisplay({
       case "doc":
         return "DOC";
       case "user":
-        return "Loved One";
+        return "Visitor";
     }
   };
   return (

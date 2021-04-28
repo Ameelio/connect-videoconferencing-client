@@ -31,13 +31,7 @@ export async function loginWithCredentials(
     Store.dispatch(setSessionStatus("inactive"));
     throw response;
   }
-  // TODO: we should improve this
-  // https://github.com/Ameelio/connect-api-nest/issues/74
   const token = response.headers.get("Authorization") || "";
-  // const re = /(?<=connect.sid=)([^\s;]+)/gm;
-  // const found = cookies.match(re);
-  // console.log('found?')
-  // console.log(found)
   if (!token) throw new Error("Cannot find header token");
   await initializeSession(token, body);
 }

@@ -103,14 +103,14 @@ const VideoChat: React.FC<Props> = React.memo(
             console.log("Not connected, so waiting until connected.");
             window.Debug = socket;
             await new Promise((resolve) => socket.on("connect", resolve));
-            console.log("OK");
+            console.log("[VideoChat] Connected");
           }
           await new Promise((resolve) => {
             // TODO fetch actual credentials from redux
             socket.emit("authenticate", authInfo, resolve);
           });
           await joinRoom();
-          console.log("authenticated");
+          console.log("[VideoChat] Authenticated");
           setIsAuthed(true);
         })();
       }
@@ -122,6 +122,7 @@ const VideoChat: React.FC<Props> = React.memo(
       // of having it polluting the ffile
       // https://github.com/Ameelio/connect-doc-client/issues/62
       if (rc && isAuthed) {
+        console.log("[VideoChat] listening for text messages");
         rc.socket.on(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
