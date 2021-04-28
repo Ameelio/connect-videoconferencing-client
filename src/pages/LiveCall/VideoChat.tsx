@@ -150,6 +150,9 @@ const VideoChat: React.FC<Props> = React.memo(
                 stream: MediaStream,
                 user: { type: string; id: number }
               ) => {
+                console.log(
+                  `[VideoChat] Received consume from ${user.type} ${user.id}`
+                );
                 if (node) {
                   // TODO for some reason room client is consuming streams from all calls (not just the one identified by callId)
                   // This is very likely to be an API bug that relays the stream to all active rooms regardless of whether or not it's the room client w/ that given person

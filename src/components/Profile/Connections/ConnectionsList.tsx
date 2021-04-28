@@ -22,7 +22,7 @@ const ConnectionsList: React.FC<Props> = ({
       <Row justify="space-between">
         {connections.map((connection) => {
           const person =
-            type === "inmate" ? connection.inmate : connection.contact;
+            type === "inmate" ? connection.contact : connection.inmate;
           return (
             <ConnectionItem
               person={person}

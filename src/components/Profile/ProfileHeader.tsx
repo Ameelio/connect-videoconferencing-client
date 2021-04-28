@@ -32,7 +32,7 @@ const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
     },
     {
       path: "/members",
-      breadcrumbName: "Incarcerated People",
+      breadcrumbName: type === "contact" ? "Visitors" : "Incarcerated People",
     },
     {
       path: "/",

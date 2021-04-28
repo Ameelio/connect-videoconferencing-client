@@ -93,7 +93,7 @@ function RecordingBase({
             </Button>,
           ]}
         >
-          <Descriptions size="small" column={3}>
+          <Descriptions size="small" column={3} bordered>
             <Descriptions.Item label="Incarcerated Person">
               {call.inmates.map((inmate) => genFullName(inmate))}
             </Descriptions.Item>
