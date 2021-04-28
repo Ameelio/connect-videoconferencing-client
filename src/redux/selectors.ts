@@ -93,7 +93,9 @@ export const selectLiveCalls = (state: RootState): Call[] => {
   return getCallsInfo(
     state,
     calls.filter(
-      (call) => call.status === "missing_monitor" || call.status === "live"
+      (call) =>
+        (call.status === "missing_monitor" || call.status === "live") &&
+        !!call.videoHandler
     )
   );
 };

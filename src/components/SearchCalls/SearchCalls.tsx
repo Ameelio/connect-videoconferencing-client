@@ -145,6 +145,7 @@ const SearchCalls = ({
     endDate,
     activeSearchFilter,
     searchQuery,
+    selectedStatusFilter,
   ]);
 
   const filteredOptions = CALL_STATUS_FILTER_OPTIONS.filter(
