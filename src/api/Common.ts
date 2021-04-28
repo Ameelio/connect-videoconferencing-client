@@ -1,5 +1,5 @@
 import { Store } from "src/redux";
-import { openNotificationWithIcon, showToast } from "src/utils";
+import { showToast } from "src/utils";
 
 export const API_URL = process.env.REACT_APP_API_URL || "api/v1/";
 

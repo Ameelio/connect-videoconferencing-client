@@ -42,9 +42,8 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
           //   userId: selected.id,
           // });
           break;
-      case "create":
-        // do somethin
-        break;
+      // case "create":
+      //   break;
     }
 
     setConfirmLoading(false);

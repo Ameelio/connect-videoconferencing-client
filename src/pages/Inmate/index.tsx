@@ -22,6 +22,7 @@ function InmatePage({ match }: RouteComponentProps<TParams>): ReactElement {
   );
   const connections = useInmateConnections(inmate?.id || -1);
   const calls = useInmateCalls(inmate?.id || -1);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {

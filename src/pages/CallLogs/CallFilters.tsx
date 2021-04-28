@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { ReactElement } from "react";
-import { Menu, Dropdown } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+// import { Menu, Dropdown } from "antd";
+// import { DownOutlined } from "@ant-design/icons";
 import { DatePicker, Space } from "antd";
 
 const { RangePicker } = DatePicker;
@@ -17,18 +17,18 @@ export default function CallFiltersHeader({
   setStartDate,
   setEndDate,
 }: Props): ReactElement {
-  const DURATION_FILTERS = [Infinity, 3, 5, 10, 15, 20];
+  // const DURATION_FILTERS = [Infinity, 3, 5, 10, 15, 20];
 
-  const DurationFilters = (
-    <Menu>
-      {DURATION_FILTERS.map((duration) => (
-        <Menu.Item key={duration} onClick={() => setDuration(duration)}>
-          {"<"}
-          {duration}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+  // const DurationFilters = (
+  //   <Menu>
+  //     {DURATION_FILTERS.map((duration) => (
+  //       <Menu.Item key={duration} onClick={() => setDuration(duration)}>
+  //         {"<"}
+  //         {duration}
+  //       </Menu.Item>
+  //     ))}
+  //   </Menu>
+  // );
 
   return (
     <Space align="center">

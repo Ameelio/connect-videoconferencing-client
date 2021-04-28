@@ -46,6 +46,10 @@ export function useInmateConnections(id: number) {
   const connections = useConnections();
 
   useEffect(() => {
+    console.log(
+      `filtering for id ${id} `,
+      connections.filter((connection) => connection.inmateId === id)
+    );
     setInmateConnections(
       connections.filter((connection) => connection.inmateId === id)
     );

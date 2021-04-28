@@ -1,8 +1,7 @@
-import { Input, Modal, Typography } from "antd";
+import { Modal, Typography } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import React, { useState } from "react";
 import { Call } from "src/typings/Call";
-import { CancelCallModalData } from "src/typings/Modal";
 import { getCallContactsFullNames, getCallInmatesFullNames } from "src/utils";
 
 interface Props {
