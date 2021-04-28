@@ -61,7 +61,7 @@ export default function VideoOverlay({
       <Menu.Item
         key="terminate"
         icon={<SettingFilled />}
-        onClick={() => terminateCall()}
+        onClick={terminateCall}
       >
         Terminate Call
       </Menu.Item>

@@ -5,7 +5,13 @@ import RoomClient from "src/pages/LiveCall/RoomClient";
 import { Spin } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
+import {
+  CallAlert,
+  CallMessage,
+  CallParticipant,
+  CallStatus,
+  InCallStatus,
+} from "src/typings/Call";
 import { AudioMutedOutlined } from "@ant-design/icons";
 import { openNotificationWithIcon } from "src/utils";
 import { Inmate } from "src/typings/Inmate";
@@ -28,6 +34,7 @@ interface Props {
   chatCollapsed: boolean;
   lockCall: (id: number) => void;
   addMessage: (id: number, message: CallMessage) => void;
+  updateCallStatus: (id: number, status: CallStatus) => void;
 }
 
 declare global {
@@ -60,12 +67,14 @@ const VideoChat: React.FC<Props> = React.memo(
     closeChat,
     chatCollapsed,
     addMessage,
+    updateCallStatus,
   }) => {
     const authInfo = useSelector((state: RootState) => state.session.authInfo);
 
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
     const [rc, setRc] = useState<RoomClient>();
+    const [status, setStatus] = useState<InCallStatus>();
 
     const joinRoom = useCallback(async () => {
       const rc = new RoomClient(socket, callId);
@@ -138,6 +147,25 @@ const VideoChat: React.FC<Props> = React.memo(
         );
       }
     }, [addMessage, callId, isAuthed, rc]);
+
+    useEffect(() => {
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
+      if (rc && isAuthed) {
+        console.log("[VideoChat] listening for call status updates");
+        rc.socket.on("callStatusUpdate", async (status: InCallStatus) => {
+          console.log("[VideoChat] Received status update", status);
+          setStatus(status);
+        });
+      }
+    }, [isAuthed, rc]);
+
+    useEffect(() => {
+      if (!status) return;
+      updateCallStatus(callId, status);
+    }, [status]);
 
     const measuredRef = useCallback(
       (node) => {
@@ -255,6 +283,7 @@ const VideoChat: React.FC<Props> = React.memo(
           terminateCall={() => {
             if (rc) {
               rc.terminate();
+              updateCallStatus(callId, "terminated");
               openNotificationWithIcon(
                 `Call #${callId} terminated`,
                 "We notified both participants of the incident.",

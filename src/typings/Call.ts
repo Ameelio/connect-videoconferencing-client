@@ -57,16 +57,19 @@ export interface CallFilters {
   kioskName?: string;
 }
 
-export type CallStatus =
-  | "pending_approval"
-  | "scheduled"
-  | "cancelled"
-  | "missing_monitor"
-  | "live"
+export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
+
+type GeneralCallStatus =
   | "ended"
+  | "scheduled"
   | "terminated"
+  | "live"
+  | "pending_approval"
+  | "cancelled"
   | "rejected"
   | "no_show";
+
+export type CallStatus = InCallStatus | GeneralCallStatus;
 
 export type ISOString = string;
 export interface BaseCall {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.scss";
 import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
@@ -27,32 +27,10 @@ import { startOfMonth } from "date-fns/esm";
 import { endOfMonth } from "date-fns";
 import { Facility } from "./typings/Facility";
 import { useConnectionRequestsCount } from "./hooks/useConnections";
-import { useCallCountWithStatus } from "./hooks/useCalls";
+import { useCallCountWithStatus, useCallsWithStatus } from "./hooks/useCalls";
 import Modals from "./components/Modals";
-
-const mapStateToProps = (state: RootState) => ({
-  session: state.session,
-  selected: state.facilities.selected,
-  pathname: state.router.location.pathname,
-  liveCallsCount: selectLiveCalls(state).length,
-});
-const mapDispatchToProps = {
-  logout,
-  fetchFacilities,
-  selectActiveFacility,
-  fetchContacts,
-  fetchStaff,
-  fetchInmates,
-  fetchConnections,
-  fetchGroups,
-  fetchKiosks,
-  fetchCalls,
-  setRedirectUrl,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 
 const LOGIN_PATH = "/login";
 
@@ -62,28 +40,24 @@ const Loader = () => (
   </div>
 );
 
-function App({
-  session,
-  selected,
-  pathname,
-  liveCallsCount,
-  selectActiveFacility,
-  logout,
-  fetchFacilities,
-  fetchContacts,
-  fetchInmates,
-  fetchStaff,
-  fetchConnections,
-  fetchGroups,
-  fetchKiosks,
-  fetchCalls,
-  setRedirectUrl,
-  history,
-}: PropsFromRedux & { history: History }) {
+function App({ history }: { history: History }) {
+  const session = useAppSelector((state) => state.session);
+  const selected = useAppSelector((state) => state.facilities.selected);
+  const pathname = useAppSelector((state) => state.router.location.pathname);
+  const liveCallsCount = useCallsWithStatus("live").length;
+  const dispatch = useAppDispatch();
+
   const [isAuthenticated, setIsAuthenticated] = useState(
     session.status === "active"
   );
   const [isInitingData, setIsInitingData] = useState(true);
+
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    integrations: [new Integrations.BrowserTracing()],
+    release: "connect-client@" + process.env.npm_package_version,
+    tracesSampleRate: 1.0,
+  });
 
   const requestsCount = useConnectionRequestsCount();
   const pendingCallsCount = useCallCountWithStatus("pending_approval");
@@ -100,44 +74,38 @@ function App({
   const facilities = useSelector(selectAllFacilities);
 
   useEffect(() => {
-    if (isAuthenticated) fetchFacilities();
-  }, [isAuthenticated, fetchFacilities]);
+    if (isAuthenticated) dispatch(fetchFacilities());
+  }, [isAuthenticated, dispatch]);
 
   useEffect(() => {
-    if (!isAuthenticated && pathname !== LOGIN_PATH) setRedirectUrl(pathname);
-  }, [setRedirectUrl, isAuthenticated, pathname]);
+    if (!isAuthenticated && pathname !== LOGIN_PATH)
+      dispatch(setRedirectUrl(pathname));
+  }, [dispatch, isAuthenticated, pathname]);
 
   useEffect(() => {
     if (selected) {
       setIsInitingData(true);
       (async () => {
         await Promise.allSettled([
-          fetchContacts(),
-          fetchStaff(),
-          fetchInmates(),
-          fetchConnections(),
-          fetchKiosks(),
-          fetchGroups(),
-          fetchCalls({
-            scheduledStart: {
-              rangeStart: startOfMonth(new Date()).getTime(),
-              rangeEnd: endOfMonth(new Date()).getTime(),
-            },
-            limit: 500,
-          }),
+          dispatch(fetchContacts()),
+          dispatch(fetchStaff()),
+          dispatch(fetchInmates()),
+          dispatch(fetchConnections()),
+          dispatch(fetchKiosks()),
+          dispatch(fetchGroups()),
+          dispatch(
+            fetchCalls({
+              scheduledStart: {
+                rangeStart: startOfMonth(new Date()).getTime(),
+                rangeEnd: endOfMonth(new Date()).getTime(),
+              },
+              limit: 500,
+            })
+          ),
         ]);
       })().then(() => setIsInitingData(false));
     }
-  }, [
-    selected,
-    fetchContacts,
-    fetchStaff,
-    fetchConnections,
-    fetchInmates,
-    fetchGroups,
-    fetchCalls,
-    fetchKiosks,
-  ]);
+  }, [selected, dispatch]);
 
   return (
     <ConnectedRouter history={history}>
@@ -180,4 +148,4 @@ function App({
   );
 }
 
-export default connector(App);
+export default App;

@@ -18,10 +18,14 @@ import {
   Select,
   Empty,
 } from "antd";
-import { fetchCalls, callsActions } from "src/redux/modules/call";
+import {
+  fetchCalls,
+  callsActions,
+  updateCallStatus,
+} from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { CallMessage, GridOption } from "src/typings/Call";
+import { CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import { MessageDisplay } from "src/components/calls/MessageDisplay";
@@ -196,6 +200,9 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                           setActiveCallChatId(idx);
                         }
                       }}
+                      updateCallStatus={(id: number, status: CallStatus) =>
+                        dispatch(updateCallStatus({ id, status }))
+                      }
                     />
                   ) : (
                     <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />

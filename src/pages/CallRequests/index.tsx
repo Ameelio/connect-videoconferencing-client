@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppDispatch } from "src/redux";
 import { CallRequests } from "src/components/Requests";
-import { usePendingCalls } from "src/hooks/useCalls";
+import { useCallsWithStatus } from "src/hooks/useCalls";
 import { Call, CallStatus } from "src/typings/Call";
 import { updateCallStatus } from "src/redux/modules/call";
 import { push } from "connected-react-router";
@@ -10,7 +10,7 @@ import { Layout } from "antd";
 import { WRAPPER_STYLE } from "src/styles/styles";
 
 const CallRequestsPage: React.FC = () => {
-  const calls = usePendingCalls();
+  const calls = useCallsWithStatus("pending_approval");
 
   const dispatch = useAppDispatch();
 
