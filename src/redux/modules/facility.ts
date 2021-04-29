@@ -77,7 +77,7 @@ export const updateCallTimes = createAsyncThunk(
     }
 
     // create new call slots
-    const response = await fetchAuthenticated(`callSlots`, {
+    const response = await fetchAuthenticated(`callSlots/bulk`, {
       method: "POST",
       body: JSON.stringify(newCallSlots),
     });
