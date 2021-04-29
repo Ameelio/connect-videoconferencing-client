@@ -31,7 +31,7 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
         </Button>
       );
 
-    const type = canViewDetails ? "(Admin)" : "(Public)";
+    const type = canViewDetails ? "Admin" : "Public";
     return (
       <PDFDownloadLink
         document={
@@ -46,7 +46,7 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
           "MM/dd/yyyy-HH:mm"
         )}`}
       >
-        <Button icon={<DownloadOutlined />}>Download Schedule {type}</Button>
+        {type} Schedule (PDF)
       </PDFDownloadLink>
     );
   }

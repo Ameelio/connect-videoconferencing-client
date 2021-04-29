@@ -2,8 +2,22 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
+  DownOutlined,
+  UserOutlined,
+  FilePdfOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
-import { Layout, Space, Row, Col, Button, Typography, Spin } from "antd";
+import {
+  Layout,
+  Space,
+  Row,
+  Col,
+  Button,
+  Typography,
+  Spin,
+  Dropdown,
+  Menu,
+} from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { differenceInMinutes, format } from "date-fns";
 import React, { useEffect, useState } from "react";
@@ -14,13 +28,14 @@ import {
   BASE_CHART_COLORS,
 } from "src/styles/styles";
 import { Call } from "src/typings/Call";
-import { callsToday, onlyUnique } from "src/utils";
+import { callsToDailyLogs, callsToday, onlyUnique } from "src/utils";
 import DonutChart from "../charts/DonutChart";
 import LineChart from "../charts/LineChart";
 import Header from "../Header/Header";
 import { groupBy, callsToWeeklyData } from "src/utils";
 import PDFDownloadButton from "./PDFDownloadButton";
 import { SelectedFacility } from "src/typings/Facility";
+import { CSVLink, CSVDownload } from "react-csv";
 
 interface Props {
   calls: Call[];
@@ -42,6 +57,10 @@ const Dashboard: React.FC<Props> = ({
   const [ratingsCount, setRatingsCount] = useState<number[]>();
   const [callVolume, setCallVolume] = useState<Record<string, number>>();
   const [lastUpdatedAtMin, setLastUpdatedAtMin] = useState(0);
+
+  const [dailyScheduleCalls, setDailyScheduleCall] = useState<Call[]>([]);
+
+  useEffect(() => setDailyScheduleCall(callsToday(calls)), [calls]);
 
   useEffect(() => {
     const timeout = setInterval(() => {
@@ -67,6 +86,36 @@ const Dashboard: React.FC<Props> = ({
 
   if (!ratingsCount || !callVolume) return <div />;
 
+  const scheduleOptionsMenu = (
+    <Menu>
+      <Menu.Item key="1" icon={<FilePdfOutlined />}>
+        <PDFDownloadButton
+          calls={dailyScheduleCalls}
+          facility={facility}
+          canViewDetails={true}
+        />
+      </Menu.Item>
+      <Menu.Item key="2" icon={<FilePdfOutlined />}>
+        <PDFDownloadButton
+          calls={dailyScheduleCalls}
+          facility={facility}
+          canViewDetails={false}
+        />
+      </Menu.Item>
+      <Menu.Item key="3" icon={<UnorderedListOutlined />}>
+        <CSVLink
+          data={callsToDailyLogs(dailyScheduleCalls)}
+          target="_blank"
+          filename={`Daily Logs ${facility.name}@${format(
+            new Date(),
+            "MM/dd/yyyy-HH:mm"
+          )}`}
+        >
+          Daily Logs (CSV)
+        </CSVLink>
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <Layout>
       <Header
@@ -75,16 +124,25 @@ const Dashboard: React.FC<Props> = ({
         extra={[
           // TODO: add this back, complete info is not being populated
           // https://github.com/Ameelio/connect-doc-client/issues/57
-          <PDFDownloadButton
-            calls={callsToday(calls)}
-            facility={facility}
-            canViewDetails={true}
-          />,
-          <PDFDownloadButton
-            calls={callsToday(calls)}
-            facility={facility}
-            canViewDetails={false}
-          />,
+          <Dropdown overlay={scheduleOptionsMenu}>
+            <Button>
+              Download Schedule <DownOutlined />
+            </Button>
+          </Dropdown>,
+          // <PDFDownloadButton
+          //   calls={callsToday(calls)}
+          //   facility={facility}
+          //   canViewDetails={true}
+          // />,
+          // <PDFDownloadButton
+          //   calls={callsToday(calls)}
+          //   facility={facility}
+          //   canViewDetails={false}
+          // />,
+
+          // <CSVLink data={callsToday(calls)} target="_blank">
+          //   Download
+          // </CSVLink>,
           <div>
             {lastUpdatedAtMin > 5 && !isRefreshing && (
               <div>

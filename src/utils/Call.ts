@@ -181,6 +181,17 @@ export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   return callsWithinPeriod(calls, morning, evening);
 };
 
+export const callsToDailyLogs = (calls: Call[]) => {
+  return calls.map((call) => ({
+    incarceratedPerson: getCallInmatesFullNames(call),
+    visitors: getCallContactsFullNames(call),
+    kiosks: call.kiosk.name,
+    date: format(new Date(call.scheduledStart), "MM/dd/yyyy"),
+    scheduledStart: format(new Date(call.scheduledStart), "HH:mm"),
+    scheduledEnd: format(new Date(call.scheduledEnd), "HH:mm"),
+  }));
+};
+
 export const callsToWeeklyData = <TCall extends BaseCall>(
   calls: TCall[]
 ): Record<string, number> => {
