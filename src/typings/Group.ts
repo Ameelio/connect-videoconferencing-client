@@ -1,5 +1,10 @@
-export interface GroupRO {
+export interface GroupDataNode {
   id: number;
   name: string;
-  children: GroupRO[];
+  children: GroupDataNode[];
+}
+
+export interface Group {
+  id: number;
+  name: string;
 }

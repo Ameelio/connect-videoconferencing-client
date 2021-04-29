@@ -8,4 +8,5 @@ export interface Inmate {
   backgroundImagePath: string;
   facilityId: number;
   quota: number;
+  personId: number;
 }

@@ -3,4 +3,5 @@ export interface Kiosk {
   name: string;
   description: string;
   enabled: boolean;
+  groupId: number;
 }

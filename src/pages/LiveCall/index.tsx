@@ -25,10 +25,10 @@ import {
 } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { CallMessage, CallStatus, GridOption } from "src/typings/Call";
+import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
-import { MessageDisplay } from "src/components/calls/MessageDisplay";
+import MessageDisplay from "src/components/calls/MessageDisplay";
 import { connect, ConnectedProps } from "react-redux";
 
 const { Content, Sider } = Layout;
@@ -48,8 +48,7 @@ const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [activeCallChatId, setActiveCallChatId] = useState<number>();
-  const [messages, setMessages] = useState<CallMessage[]>([]);
+  const [activeCallChat, setActiveCallChat] = useState<Call>();
   const [chatCollapsed, setChatCollapsed] = useState(false);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
@@ -87,16 +86,12 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
     }
   }, [setSocket, socket, visitations]);
 
+  // Initialize call messages
   useEffect(() => {
-    if (!activeCallChatId && visitations.length > 0) {
-      setActiveCallChatId(visitations[0].id);
+    if (!activeCallChat && visitations.length > 0) {
+      setActiveCallChat(visitations[0]);
     }
-  }, [grid, visitations, activeCallChatId]);
-
-  useEffect(() => {
-    const call = visitations.find((call) => call.id === activeCallChatId);
-    setMessages(call?.messages || []);
-  }, [activeCallChatId, visitations]);
+  }, [visitations, activeCallChat]);
 
   // Grid options
   const handleGridChange = (grid: GridOption) => {
@@ -181,8 +176,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                         const call = visitations.find(
                           (call) => call.id === callId
                         );
-                        setActiveCallChatId(callId);
-                        setMessages(call?.messages || []);
+                        setActiveCallChat(call);
+                        // setMessages(call?.messages || []);
                         setChatCollapsed(false);
                       }}
                       closeChat={(callId: number) => {
@@ -197,7 +192,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                         if (idx !== -1) {
                           handleGridChange(1);
                           setPage(idx + 1);
-                          setActiveCallChatId(idx);
+                          setActiveCallChat(visitations[idx]);
                         }
                       }}
                       updateCallStatus={(id: number, status: CallStatus) =>
@@ -227,8 +222,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                 title="Chat"
                 extra={[
                   <Select
-                    value={activeCallChatId}
-                    onSelect={(value) => setActiveCallChatId(value as number)}
+                    value={activeCallChat?.id}
+                    onSelect={(id) => {
+                      setActiveCallChat(visitations.find((v) => v.id === id));
+                    }}
                   >
                     {visitations.map((visitation) => (
                       <Select.Option value={visitation.id} key={visitation.id}>
@@ -248,8 +245,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                     height: "100%",
                   }}
                 >
-                  {messages.map((message) => (
-                    <MessageDisplay message={message} />
+                  {activeCallChat?.messages.map((message) => (
+                    <MessageDisplay message={message} call={activeCallChat} />
                   ))}
                 </Space>
               </div>

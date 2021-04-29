@@ -1,12 +1,15 @@
 import React from "react";
 import { Kiosk } from "src/typings/Kiosk";
 import { Table, Tag, Card, Switch } from "antd";
+import { Dictionary } from "@reduxjs/toolkit";
+import { Group } from "src/typings/Group";
 
 interface Props {
   kiosks: Kiosk[];
+  groupEnts: Dictionary<Group>;
 }
 
-const KioskSettings = ({ kiosks }: Props) => {
+const KioskSettings = ({ kiosks, groupEnts }: Props) => {
   const columns = [
     {
       title: "ID",
@@ -22,6 +25,16 @@ const KioskSettings = ({ kiosks }: Props) => {
       title: "Description",
       dataIndex: "description",
       key: "description",
+    },
+    {
+      title: "Location",
+      dataIndex: "groupId",
+      key: "group",
+      render: (groupId: number) => (
+        <>
+          <Tag>{groupEnts[groupId]?.name}</Tag>
+        </>
+      ),
     },
     {
       title: "Type",

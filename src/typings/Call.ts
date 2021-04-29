@@ -102,15 +102,17 @@ export interface Call extends BaseCall {
 
 export interface DetailedCall extends Call {}
 
+export type ParticipantType = "doc" | "inmate" | "user";
+
 export interface CallParticipant {
-  type: "doc" | "inmate" | "user";
-  id: number;
+  type: ParticipantType;
+  id: number; // person ID
 }
 
 export interface CallMessage {
   callId: number;
   senderId: number;
-  senderType: "inmate" | "user" | "doc";
+  senderType: ParticipantType;
   contents: string;
   createdAt: string; // ISO string
 }

@@ -29,7 +29,7 @@ const Profile: React.FC<Props> = ({
 }) => {
   return (
     <Layout>
-      <Layout.Content style={{ ...WRAPPER_STYLE }}>
+      <Layout.Content style={WRAPPER_STYLE}>
         <ProfileHeader
           type={type}
           persona={persona}

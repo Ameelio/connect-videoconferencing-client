@@ -7,6 +7,7 @@ import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseCall, Call } from "src/typings/Call";
 import { kiosksAdapter } from "./modules/kiosk";
+import { groupsAdapter } from "./modules/group";
 import { notEmpty } from "src/utils";
 
 // get selectors from entity adapter
@@ -49,11 +50,11 @@ export const {
   selectEntities: selectKioskEntities,
 } = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
-export const selectApprovedConnections = (state: RootState) => {
-  return selectAllConnections(state).map(
-    (connection) => connection.status === "active"
-  );
-};
+export const {
+  selectAll: selectAllGroups,
+  selectById: selectGroupById,
+  selectEntities: selectGroupEntities,
+} = groupsAdapter.getSelectors<RootState>((state) => state.groups);
 
 // Calls
 const getCallEntities = (

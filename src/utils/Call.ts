@@ -237,6 +237,7 @@ export function loadCallEntities(
       name: "Failed to load information",
       description: "Failed to load information",
       enabled: true,
+      groupId: -1,
     },
   };
 }

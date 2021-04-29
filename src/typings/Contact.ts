@@ -8,4 +8,5 @@ export interface Contact {
   selfiePath: string;
   frontIdPath: string;
   backIdPath: string;
+  personId: number;
 }

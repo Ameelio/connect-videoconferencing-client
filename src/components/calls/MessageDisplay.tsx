@@ -1,28 +1,44 @@
-import React, { ReactElement } from "react";
+import React, { useEffect, useState } from "react";
 import { Space, Typography } from "antd";
 import { format } from "date-fns";
-import { CallMessage } from "src/typings/Call";
+import { Call, CallMessage, ParticipantType } from "src/typings/Call";
+import { getCallContactsFullNames, getCallInmatesFullNames } from "src/utils";
 
-export function MessageDisplay({
-  message,
-}: {
+interface Props {
   message: CallMessage;
-}): ReactElement {
-  const type = message.senderType;
+  call: Call;
+}
+
+const MessageDisplay: React.FC<Props> = ({ message, call }) => {
+  const [senderType, setSenderType] = useState<ParticipantType>();
+
+  useEffect(() => {
+    const personId = message.senderId;
+
+    if (call.inmates.some((i) => i.personId === personId)) {
+      setSenderType("inmate");
+    } else if (call.contacts.some((c) => c.personId === personId)) {
+      setSenderType("user");
+    } else {
+      setSenderType("doc");
+    }
+  }, [message, call]);
+
   const getDisplayName = () => {
-    switch (type) {
+    switch (senderType) {
       case "inmate":
-        return "Incarcerated Person";
+        return getCallInmatesFullNames(call);
       case "doc":
-        return "DOC";
+        return "DOC Staff";
       case "user":
-        return "Visitor";
+        return getCallContactsFullNames(call);
     }
   };
+
   return (
     <Space
       direction="vertical"
-      align={type === "inmate" ? "end" : "start"}
+      align={senderType === "inmate" ? "end" : "start"}
       style={{ width: "100%" }}
     >
       <Space>
@@ -34,4 +50,6 @@ export function MessageDisplay({
       <Typography.Text>{message.contents}</Typography.Text>
     </Space>
   );
-}
+};
+
+export default MessageDisplay;

@@ -1,10 +1,15 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createEntityAdapter,
+  EntityState,
+} from "@reduxjs/toolkit";
 import { DataNode } from "rc-tree/lib/interface";
 import { fetchAuthenticated } from "src/api/Common";
-import { GroupRO } from "src/typings/Group";
+import { Group, GroupDataNode } from "src/typings/Group";
 import { showToast } from "src/utils";
 
-const cleanTree = (group: GroupRO): DataNode => {
+const cleanTree = (group: GroupDataNode): DataNode => {
   const { id, name, children } = group;
 
   return {
@@ -17,27 +22,30 @@ const cleanTree = (group: GroupRO): DataNode => {
 export const fetchGroups = createAsyncThunk("node/fetchGroups", async () => {
   const body = await fetchAuthenticated(`groups`);
 
-  const groupTrees = (body.data as any) as GroupRO[];
+  const groupTrees = (body.data as any).tree as GroupDataNode[];
+  const groups = (body.data as any).groups as GroupDataNode[];
 
   const nodes = groupTrees.map((tree) => cleanTree(tree));
 
-  return nodes;
+  return { nodes, groups };
 });
 
-interface GroupState {
+export const groupsAdapter = createEntityAdapter<Group>();
+
+interface GroupState extends EntityState<Group> {
   nodes: DataNode[];
 }
 
-const initialState: GroupState = { nodes: [] };
+const initialState: GroupState = groupsAdapter.getInitialState({ nodes: [] });
 export const groupsSlice = createSlice({
   name: "groups",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchGroups.fulfilled, (state, action) => ({
-      ...state,
-      nodes: action.payload,
-    }));
+    builder.addCase(fetchGroups.fulfilled, (state, action) => {
+      groupsAdapter.setAll(state, action.payload.groups);
+      state.nodes = action.payload.nodes;
+    });
     builder.addCase(fetchGroups.rejected, (_state, _action) =>
       showToast("nodes", "Could not load facility information", "error")
     );
