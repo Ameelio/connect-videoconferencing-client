@@ -135,6 +135,7 @@ const VideoChat: React.FC<Props> = React.memo(
         rc.socket.on(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
+            console.log(`received text message from ${from.type}`);
             const message = {
               contents,
               senderId: from.id,

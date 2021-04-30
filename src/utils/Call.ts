@@ -5,7 +5,13 @@ import {
   getMinutes,
   startOfMonth,
 } from "date-fns";
-import { CallBlock, Call, WeeklySchedule, BaseCall } from "src/typings/Call";
+import {
+  CallBlock,
+  Call,
+  WeeklySchedule,
+  BaseCall,
+  CallVideoHandler,
+} from "src/typings/Call";
 import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
@@ -275,3 +281,7 @@ export function getCallContactsFullNames(call: Call) {
     .map((user) => `${user.firstName} ${user.lastName}`)
     .join(", ");
 }
+
+export const getVideoHandlerHostname = (handler: CallVideoHandler) => {
+  return `https://${handler.host}:${handler.port}`;
+};

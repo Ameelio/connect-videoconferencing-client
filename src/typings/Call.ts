@@ -72,6 +72,12 @@ type GeneralCallStatus =
 export type CallStatus = InCallStatus | GeneralCallStatus;
 
 export type ISOString = string;
+
+export interface CallVideoHandler {
+  port: string;
+  host: string;
+}
+
 export interface BaseCall {
   id: number;
   facilityId: number;
@@ -88,10 +94,7 @@ export interface BaseCall {
   schedulerType: "user" | "inmate";
   recordingPath?: string;
   recordingStatus?: "pending" | "processing" | "done";
-  videoHandler?: {
-    port: string;
-    host: string;
-  };
+  videoHandler?: CallVideoHandler;
 }
 
 export interface Call extends BaseCall {
