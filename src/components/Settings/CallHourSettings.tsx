@@ -66,7 +66,6 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
                 ]}
                 onChange={(values) => {
                   if (!values || !values[0] || !values[1]) return;
-                  // TODO with date range picker, convert to right day
                   onChange(
                     values[0].toDate(),
                     values[1].toDate(),

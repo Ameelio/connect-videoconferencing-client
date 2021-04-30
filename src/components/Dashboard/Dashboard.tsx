@@ -122,27 +122,11 @@ const Dashboard: React.FC<Props> = ({
         title="Dashboard"
         subtitle="Analyze your facility data and print the daily call schedule."
         extra={[
-          // TODO: add this back, complete info is not being populated
-          // https://github.com/Ameelio/connect-doc-client/issues/57
           <Dropdown overlay={scheduleOptionsMenu}>
             <Button>
               Download Schedule <DownOutlined />
             </Button>
           </Dropdown>,
-          // <PDFDownloadButton
-          //   calls={callsToday(calls)}
-          //   facility={facility}
-          //   canViewDetails={true}
-          // />,
-          // <PDFDownloadButton
-          //   calls={callsToday(calls)}
-          //   facility={facility}
-          //   canViewDetails={false}
-          // />,
-
-          // <CSVLink data={callsToday(calls)} target="_blank">
-          //   Download
-          // </CSVLink>,
           <div>
             {lastUpdatedAtMin > 5 && !isRefreshing && (
               <div>

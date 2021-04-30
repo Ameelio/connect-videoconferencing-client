@@ -39,6 +39,7 @@ const KioskSettings = ({ kiosks, groupEnts }: Props) => {
     {
       title: "Type",
       //   TODO: add this once we add the kiosk type
+      // https://github.com/Ameelio/connect-api-nest/issues/93
       //   dataIndex: 'tags',
       key: "type",
       render: () => (
@@ -48,6 +49,7 @@ const KioskSettings = ({ kiosks, groupEnts }: Props) => {
       ),
     },
     // TODO: add this once we allow DOCs to enable and disable kiosks
+    // https://github.com/Ameelio/connect-doc-client/issues/72
     // When DOC disables kiosk, give them the option to cancel calls
     // {
     //   title: "Enabled",

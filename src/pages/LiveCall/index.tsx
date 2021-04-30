@@ -87,8 +87,6 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   }, [socketMap, visitations]);
 
   useEffect(() => {
-    // check whether anything changed
-
     if (!freshCalls.length) return;
 
     const temp: Record<string, SocketIOClient.Socket> = {};

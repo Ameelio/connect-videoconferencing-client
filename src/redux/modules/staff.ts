@@ -45,8 +45,6 @@ export const createStaff = createAsyncThunk(
         permissions: args.permissions,
       }),
     });
-
-    //TODO update this with API return when it's actually supported
     const staff = body.data as Staff;
 
     return staff;

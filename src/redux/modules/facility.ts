@@ -36,7 +36,6 @@ export const selectActiveFacility = createAsyncThunk(
 export const fetchFacilities = createAsyncThunk(
   "facility/fetchFacilities",
   async () => {
-    // TODO refactor this to use some APIServiceManager
     const fBody = await fetchAuthenticated(
       `users/${Store.getState().session.user.id}/facilities`,
       {},
