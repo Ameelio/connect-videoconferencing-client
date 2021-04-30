@@ -98,6 +98,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
       if (target in temp) continue;
 
       // TODO: change this quick hack once we integrate @bporter's neat Kubernetes
+      // https://github.com/Ameelio/connect-doc-client/issues/73
       const newSocketClient = io.connect(
         process.env.NODE_ENV === "production"
           ? `https://${call.videoHandler.host}`
