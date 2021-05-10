@@ -4,7 +4,8 @@
 }
 .video-commands-overlay {
   position: absolute;
-  right: 0;
+  top: 0;
+  right: 4;
   z-index: 999;
 }
 

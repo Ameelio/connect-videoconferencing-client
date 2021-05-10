@@ -26,11 +26,15 @@ import {
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
 import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
-import _, { curry } from "lodash";
+import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
 import { connect, ConnectedProps } from "react-redux";
-import { getVideoHandlerHostname } from "src/utils";
+import {
+  getCallContactsFullNames,
+  getCallInmatesFullNames,
+  getVideoHandlerHostname,
+} from "src/utils";
 
 const { Content, Sider } = Layout;
 
@@ -60,9 +64,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
     Record<string, SocketIOClient.Socket>
   >({});
 
-  const [consumeAudioRecord, setConsumeAudioRecord] = useState<
-    Record<number, boolean>
-  >({});
+  // map from call id to muted boolean
+  const [unmutedCallsMap, setUnmutedCalls] = useState<Record<number, boolean>>(
+    {}
+  );
 
   const dispatch = useAppDispatch();
 
@@ -191,26 +196,26 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                       height={`${frameVhHeight}vh`}
                       socket={socket}
                       callId={call.id}
-                      inmates={call.inmates}
-                      contacts={call.contacts}
+                      participantNames={{
+                        inmates: getCallInmatesFullNames(call),
+                        contacts: getCallContactsFullNames(call),
+                      }}
                       isVisible={
                         idx >= (page - 1) * grid &&
                         idx < (page - 1) * grid + grid
                       }
                       width="100%"
                       alerts={CALL_ALERTS}
-                      muteCall={(callId: number) => {
-                        setConsumeAudioRecord(
-                          _.omit(consumeAudioRecord, callId)
-                        );
-                      }}
+                      muteCall={(callId: number) =>
+                        setUnmutedCalls(_.omit(unmutedCallsMap, callId))
+                      }
                       unmuteCall={(callId: number) =>
-                        setConsumeAudioRecord({
-                          ...consumeAudioRecord,
+                        setUnmutedCalls({
+                          ...unmutedCallsMap,
                           [callId]: true,
                         })
                       }
-                      isAudioOn={call.id in consumeAudioRecord}
+                      isAudioOn={call.id in unmutedCallsMap}
                       openChat={(callId: number) => {
                         const call = visitations.find(
                           (call) => call.id === callId
@@ -253,7 +258,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
         >
           {!chatCollapsed && (
-            <div className="vh-100">
+            <div className="h-screen">
               <PageHeader
                 title="Chat"
                 extra={[

@@ -11,6 +11,8 @@ import {
   WeeklySchedule,
   BaseCall,
   CallVideoHandler,
+  CallParticipant,
+  ParticipantType,
 } from "src/typings/Call";
 import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
@@ -284,4 +286,18 @@ export function getCallContactsFullNames(call: Call) {
 
 export const getVideoHandlerHostname = (handler: CallVideoHandler) => {
   return `https://${handler.host}:${handler.port}`;
+};
+
+type StreamId = string;
+
+export const getParticipantStreamId = (
+  participant: CallParticipant
+): StreamId => {
+  return `${participant.type}-${participant.id}`;
+};
+
+export const getStreamParticipantType = (
+  streamId: StreamId
+): ParticipantType => {
+  return streamId.includes("inmate") ? "inmate" : "user";
 };

@@ -100,29 +100,11 @@ export const callsSlice = createSlice({
     builder.addCase(updateCallStatus.fulfilled, (state, action) => {
       callsAdapter.updateOne(state, action.payload);
       const { status } = action.payload.changes;
-      switch (status) {
-        case "rejected":
-          openNotificationWithIcon(
-            "Call request was denied.",
-            "Both parties were notified of the decision.",
-            "info"
-          );
-          break;
-        case "cancelled":
-          openNotificationWithIcon(
-            "The scheduled call was cancelled.",
-            "Both parties were notified of the decision.",
-            "info"
-          );
-          break;
-        case "scheduled":
-          openNotificationWithIcon(
-            "Th call request was accepted.",
-            "Both parties were notified of the decision.",
-            "info"
-          );
-          break;
-      }
+      openNotificationWithIcon(
+        `Call request was ${status}.`,
+        "Both parties were notified of the decision.",
+        "info"
+      );
     });
   },
 });

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "./App.scss";
+import "./App.css";
 import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
-import { RootState, useAppDispatch, useAppSelector } from "src/redux";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "src/redux";
+import { useSelector } from "react-redux";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./components/hocs/ProtectedRoute";
@@ -11,7 +11,7 @@ import Menu from "./components/Menu/Menu";
 import { Layout, Spin } from "antd";
 import { logout, setRedirectUrl } from "src/redux/modules/session";
 import { fetchFacilities } from "./redux/modules/facility";
-import { selectAllFacilities, selectLiveCalls } from "./redux/selectors";
+import { selectAllFacilities } from "./redux/selectors";
 import { selectActiveFacility } from "src/redux/modules/facility";
 import { ROUTES } from "./constants";
 import { ConnectedRouter } from "connected-react-router";
@@ -35,7 +35,7 @@ import { Integrations } from "@sentry/tracing";
 const LOGIN_PATH = "/login";
 
 const Loader = () => (
-  <div className="d-flex vh-100 vw-100">
+  <div className="flex h-screen w-screen">
     <Spin size="large" className="m-auto" tip={"Loading workpace..."} />
   </div>
 );
@@ -85,6 +85,9 @@ function App({ history }: { history: History }) {
   useEffect(() => {
     if (selected) {
       setIsInitingData(true);
+      // TODO: this initialization strategy doesn't actually work - dispatch doesnt await for the API call results
+      // kinda works but for the wrong reasons (wont work for slower API resposes)
+      // https://github.com/Ameelio/connect-doc-client/issues/74
       (async () => {
         await Promise.allSettled([
           dispatch(fetchContacts()),

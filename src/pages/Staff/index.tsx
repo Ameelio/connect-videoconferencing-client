@@ -37,13 +37,7 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
     setConfirmLoading(true);
     switch (modalType) {
       case "edit":
-        if (selected)
-          // updateStaff({
-          //   userId: selected.id,
-          // });
-          break;
-      // case "create":
-      //   break;
+        if (selected) break;
     }
 
     setConfirmLoading(false);

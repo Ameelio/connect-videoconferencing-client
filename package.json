@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
+    "@craco/craco": "^6.1.2",
     "@fullcalendar/daygrid": "^5.2.0",
     "@fullcalendar/interaction": "^5.2.0",
     "@fullcalendar/react": "^5.2.0",
@@ -25,7 +26,6 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/socket.io-client": "^1.4.34",
     "antd": "^4.9.4",
-    "bootstrap": "^4.5.0",
     "camelcase-keys": "^6.2.2",
     "chart.js": "^2.9.3",
     "connected-react-router": "^6.8.0",
@@ -53,9 +53,9 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -88,10 +88,13 @@
   "devDependencies": {
     "@types/lodash": "^4.14.165",
     "@types/react-csv": "^1.1.1",
+    "autoprefixer": "^9.8.6",
     "eslint-config-airbnb": "^18.2.0",
     "gh-pages": "^3.1.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
-    "prettier": "^2.0.5"
+    "postcss": "^7.0.35",
+    "prettier": "^2.0.5",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.2"
   }
 }

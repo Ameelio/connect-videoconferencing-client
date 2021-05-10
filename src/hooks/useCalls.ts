@@ -33,7 +33,12 @@ export function useCallsWithStatus(status: CallStatus) {
   const kioskEnts = useAppSelector(selectKioskEntities);
 
   useEffect(() => {
-    const pendingCalls = baseCalls.filter((call) => call.status === status);
+    let pendingCalls = baseCalls.filter((call) => call.status === status);
+    if (status === "live") {
+      pendingCalls = pendingCalls.filter(
+        (c) => new Date(c.scheduledEnd) >= new Date()
+      );
+    }
     setCalls(
       loadAllCallEntities(pendingCalls, contactEnts, inmateEnts, kioskEnts)
     );

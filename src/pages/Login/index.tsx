@@ -54,7 +54,7 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
   };
 
   return (
-    <Content className="d-flex flex-column">
+    <Content className="flex flex-col">
       <Space direction="vertical" className="m-auto">
         <Row justify="center">
           <Logo className="login-logo" />
