@@ -120,7 +120,9 @@ function App({ history }: { history: History }) {
             logout={logout}
             selected={selected}
             facilities={facilities}
-            select={(facility: Facility) => selectActiveFacility(facility)}
+            select={(facility: Facility) =>
+              dispatch(selectActiveFacility(facility))
+            }
             liveCallsCount={liveCallsCount}
             requestsCount={requestsCount}
             callRequestsCount={pendingCallsCount}
