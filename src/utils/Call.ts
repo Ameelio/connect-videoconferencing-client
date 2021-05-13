@@ -252,11 +252,11 @@ export function loadCallEntities(
     contacts,
     inmates,
     kiosk: kiosk || {
-      id: -1,
+      id: "",
       name: "Failed to load information",
       description: "Failed to load information",
       enabled: true,
-      groupId: -1,
+      groupId: "",
     },
   };
 }
@@ -282,6 +282,10 @@ export function getCallContactsFullNames(call: Call) {
   return call.contacts
     .map((user) => `${user.firstName} ${user.lastName}`)
     .join(", ");
+}
+
+export function getFirstNames(people: (Contact | Inmate)[]) {
+  return people.map((person) => person.firstName).join(", ");
 }
 
 export const getVideoHandlerHostname = (handler: CallVideoHandler) => {

@@ -1,12 +1,12 @@
 export interface Inmate {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   inmateIdentification: string;
   dateOfBirth: Date;
   profileImagePath: string;
   backgroundImagePath: string;
-  facilityId: number;
+  facilityId: string;
   quota: number;
-  personId: number;
+  malanId: string;
 }

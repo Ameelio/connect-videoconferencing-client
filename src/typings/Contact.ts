@@ -1,5 +1,5 @@
 export interface Contact {
-  id: number;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -8,5 +8,5 @@ export interface Contact {
   selfiePath: string;
   frontIdPath: string;
   backIdPath: string;
-  personId: number;
+  malanId: string;
 }

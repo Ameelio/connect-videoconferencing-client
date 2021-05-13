@@ -79,18 +79,18 @@ export interface CallVideoHandler {
 }
 
 export interface BaseCall {
-  id: number;
-  facilityId: number;
-  kioskId: number;
+  id: string;
+  facilityId: string;
+  kioskId: string;
   status: CallStatus;
   statusDetails?: string;
   scheduledStart: ISOString;
   scheduledEnd: ISOString;
-  inmateIds: number[];
-  userIds: number[];
+  inmateIds: string[];
+  userIds: string[];
   messages: CallMessage[];
   rating: number;
-  schedulerId: number;
+  schedulerId: string;
   schedulerType: "user" | "inmate";
   recordingPath?: string;
   recordingStatus?: "pending" | "processing" | "done";
@@ -109,12 +109,12 @@ export type ParticipantType = "doc" | "inmate" | "user";
 
 export interface CallParticipant {
   type: ParticipantType;
-  id: number; // person ID
+  id: string; // person ID
 }
 
 export interface CallMessage {
-  callId: number;
-  senderId: number;
+  callId: string;
+  senderId: string;
   senderType: ParticipantType;
   contents: string;
   createdAt: string; // ISO string

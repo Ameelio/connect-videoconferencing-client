@@ -83,7 +83,7 @@ export const getCallsInfo = (
     .filter(notEmpty);
 };
 
-export const getCallInfo = (state: RootState, callId: number) => {
+export const getCallInfo = (state: RootState, callId: string) => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return;
   return getCallEntities(state, plainCall) as Call;
@@ -103,7 +103,7 @@ export const selectLiveCalls = (state: RootState): Call[] => {
 };
 
 // Inmate
-export const selectInmateCallsById = (state: RootState, inmateId: number) => {
+export const selectInmateCallsById = (state: RootState, inmateId: string) => {
   const inmate = selectInmateById(state, inmateId);
   if (!inmate) return;
   const calls = selectAllCalls(state);

@@ -9,7 +9,7 @@ import { BaseConnection, ConnectionStatus } from "src/typings/Connection";
 
 export const updateConnection = createAsyncThunk(
   "connections/updateConnection",
-  async (args: { connectionId: number; status: ConnectionStatus }) => {
+  async (args: { connectionId: string; status: ConnectionStatus }) => {
     await fetchAuthenticated(`connections/${args.connectionId}`, {
       method: "PUT",
       body: JSON.stringify({

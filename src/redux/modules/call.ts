@@ -38,7 +38,7 @@ export const updateCallStatus = createAsyncThunk(
     status,
     statusDetails,
   }: {
-    id: number;
+    id: string;
     status: CallStatus;
     statusDetails?: string;
   }) => {
@@ -53,7 +53,7 @@ export const updateCallStatus = createAsyncThunk(
 
 export const fetchCallMessages = createAsyncThunk(
   "calls/fetchOne",
-  async (id: number) => {
+  async (id: string) => {
     const body = await fetchAuthenticated(`calls/${id}/callMessages`);
     const messages = body.data as CallMessage[];
     return { id, changes: { messages } };
@@ -74,7 +74,7 @@ export const callsSlice = createSlice({
     callsSetAll: callsAdapter.setAll,
     addMessage: (
       state,
-      action: PayloadAction<{ id: number; message: CallMessage }>
+      action: PayloadAction<{ id: string; message: CallMessage }>
     ) => {
       const { id, message } = action.payload;
       const call = callsAdapter.getSelectors().selectById(state, id);

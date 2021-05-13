@@ -1,5 +1,5 @@
 export interface CallSlot {
-  id: number;
+  id: string;
   day: number;
   hour: number;
   minute: number;
@@ -9,7 +9,7 @@ export interface CallSlot {
 export type TentativeCallSlot = Omit<CallSlot, "id">;
 
 export interface Facility {
-  id: number;
+  id: string;
   name: string;
   fullName: string;
   city: string;

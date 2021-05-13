@@ -1,5 +1,4 @@
 import { AuthInfo, User } from "src/typings/Session";
-import { UNAUTHENTICATED_USER_ID } from "src/utils/constants";
 
 // TODO migrate this to redux slice
 // @gabe: I attempted the migraton, but it's creating some wild circular dependeies
@@ -75,14 +74,14 @@ export const setSessionStatus = (status: SessionStatus): UserActionTypes => {
 // Reducer
 const initialState: SessionState = {
   user: {
-    id: UNAUTHENTICATED_USER_ID,
+    id: "",
     firstName: "",
     lastName: "",
     email: "",
     staffPositions: [],
   },
   authInfo: {
-    id: UNAUTHENTICATED_USER_ID,
+    id: "",
     type: "doc",
     token: "",
   },
@@ -107,7 +106,7 @@ export function sessionReducer(
       return {
         ...state,
         user: {
-          id: UNAUTHENTICATED_USER_ID,
+          id: "",
           firstName: "",
           lastName: "",
           email: "",

@@ -13,11 +13,11 @@ const MessageDisplay: React.FC<Props> = ({ message, call }) => {
   const [senderType, setSenderType] = useState<ParticipantType>();
 
   useEffect(() => {
-    const personId = message.senderId;
+    const malanId = message.senderId;
 
-    if (call.inmates.some((i) => i.personId === personId)) {
+    if (call.inmates.some((i) => i.malanId === malanId)) {
       setSenderType("inmate");
-    } else if (call.contacts.some((c) => c.personId === personId)) {
+    } else if (call.contacts.some((c) => c.malanId === malanId)) {
       setSenderType("user");
     } else {
       setSenderType("doc");

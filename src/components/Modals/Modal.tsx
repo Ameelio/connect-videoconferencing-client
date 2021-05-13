@@ -16,7 +16,7 @@ const Modal = (props: Props) => {
         <CancelCallModal
           call={data.entity}
           closeModal={() => dispatch(closeModal())}
-          cancelCall={(id: number, reason: string) =>
+          cancelCall={(id: string, reason: string) =>
             dispatch(
               updateCallStatus({
                 id,

@@ -1,10 +1,10 @@
 export interface GroupDataNode {
-  id: number;
+  id: string;
   name: string;
   children: GroupDataNode[];
 }
 
 export interface Group {
-  id: number;
+  id: string;
   name: string;
 }

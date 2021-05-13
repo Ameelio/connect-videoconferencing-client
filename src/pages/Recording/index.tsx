@@ -19,7 +19,7 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as Call,
+  call: getCallInfo(state, ownProps.match.params.id) as Call,
 });
 
 const connector = connect(mapStateToProps);
@@ -44,7 +44,7 @@ function RecordingBase({
 
   console.log(pathname);
   useEffect(() => {
-    if (callId) dispatch(fetchCallMessages(parseInt(callId)));
+    if (callId) dispatch(fetchCallMessages(callId));
   }, [callId, dispatch]);
 
   if (!call) return <div />;

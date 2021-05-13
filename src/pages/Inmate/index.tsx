@@ -20,8 +20,8 @@ function InmatePage({ match }: RouteComponentProps<TParams>): ReactElement {
   const inmate = useSelector((state: RootState) =>
     selectInmateById(state, inmateId)
   );
-  const connections = useInmateConnections(inmate?.id || -1);
-  const calls = useInmateCalls(inmate?.id || -1);
+  const connections = useInmateConnections(inmate?.id || "");
+  const calls = useInmateCalls(inmate?.id || "");
 
   const dispatch = useAppDispatch();
 

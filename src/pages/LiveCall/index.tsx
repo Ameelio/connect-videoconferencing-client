@@ -33,6 +33,7 @@ import { connect, ConnectedProps } from "react-redux";
 import {
   getCallContactsFullNames,
   getCallInmatesFullNames,
+  getFirstNames,
   getVideoHandlerHostname,
 } from "src/utils";
 
@@ -138,7 +139,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   };
 
   const onMessageReceived = useCallback(
-    (callId: number, message: CallMessage) => {
+    (callId: string, message: CallMessage) => {
       dispatch(addMessage({ id: callId, message }));
     },
     []
@@ -206,29 +207,29 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                       }
                       width="100%"
                       alerts={CALL_ALERTS}
-                      muteCall={(callId: number) =>
+                      muteCall={(callId: string) =>
                         setUnmutedCalls(_.omit(unmutedCallsMap, callId))
                       }
-                      unmuteCall={(callId: number) =>
+                      unmuteCall={(callId: string) =>
                         setUnmutedCalls({
                           ...unmutedCallsMap,
                           [callId]: true,
                         })
                       }
                       isAudioOn={call.id in unmutedCallsMap}
-                      openChat={(callId: number) => {
+                      openChat={(callId: string) => {
                         const call = visitations.find(
                           (call) => call.id === callId
                         );
                         setActiveCallChat(call);
                         setChatCollapsed(false);
                       }}
-                      closeChat={(callId: number) => {
+                      closeChat={(callId: string) => {
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
                       addMessage={onMessageReceived}
-                      lockCall={(callId: number) => {
+                      lockCall={(callId: string) => {
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
                         );
@@ -238,7 +239,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                           setActiveCallChat(visitations[idx]);
                         }
                       }}
-                      updateCallStatus={(id: number, status: CallStatus) =>
+                      updateCallStatus={(id: string, status: CallStatus) =>
                         dispatch(updateCallStatus({ id, status }))
                       }
                     />
@@ -269,8 +270,13 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                     }}
                   >
                     {visitations.map((visitation) => (
-                      <Select.Option value={visitation.id} key={visitation.id}>
-                        Call #{visitation.id}
+                      <Select.Option
+                        value={visitation.id}
+                        key={visitation.id}
+                        className="truncate mw-1/2"
+                      >
+                        {getFirstNames(visitation.inmates)} &{" "}
+                        {getFirstNames(visitation.contacts)}
                       </Select.Option>
                     ))}
                   </Select>,

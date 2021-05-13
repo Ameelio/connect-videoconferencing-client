@@ -59,7 +59,7 @@ export function useCallCountWithStatus(status: CallStatus) {
   return count;
 }
 
-export function useInmateCalls(id: number) {
+export function useInmateCalls(id: string) {
   const [calls, setCalls] = useState<Call[]>([]);
   const baseCalls = useAppSelector(selectAllCalls);
   const contactEnts = useAppSelector(selectContactEntities);

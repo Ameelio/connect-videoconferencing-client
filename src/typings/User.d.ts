@@ -1,5 +1,5 @@
 interface BasePersona {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   profileImagePath?: string;

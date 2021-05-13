@@ -22,7 +22,7 @@ import { Transport } from "mediasoup-client/lib/types";
 */
 
 class RoomClient {
-  private callId: number;
+  private callId: string;
   private producerTransport: Transport | null;
   private consumerTransport: Transport | null;
   private device: mediasoupClient.Device | null;
@@ -32,7 +32,7 @@ class RoomClient {
 
   public socket: SocketIOClient.Socket;
 
-  constructor(socket: SocketIOClient.Socket, callId: number) {
+  constructor(socket: SocketIOClient.Socket, callId: string) {
     this.socket = socket;
     this.callId = callId;
 

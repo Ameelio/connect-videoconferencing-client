@@ -6,7 +6,7 @@ import { getCallContactsFullNames, getCallInmatesFullNames } from "src/utils";
 
 interface Props {
   call: Call;
-  cancelCall: (callId: number, reason: string) => void;
+  cancelCall: (callId: string, reason: string) => void;
   closeModal: () => void;
 }
 

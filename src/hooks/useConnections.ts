@@ -40,7 +40,7 @@ export function useConnectionRequests() {
   return requests;
 }
 
-export function useInmateConnections(id: number) {
+export function useInmateConnections(id: string) {
   const [inmateConnections, setInmateConnections] = useState<Connection[]>([]);
 
   const connections = useConnections();
@@ -58,7 +58,7 @@ export function useInmateConnections(id: number) {
   return inmateConnections;
 }
 
-export function useContactConnections(id: number) {
+export function useContactConnections(id: string) {
   const [connection, setConnections] = useState<Connection[]>([]);
 
   const connections = useConnections();

@@ -120,7 +120,7 @@ const SearchCalls = ({
           break;
         case "userParticipants.id":
           filteredCalls = filteredCalls.filter((log) =>
-            log.contacts.some((contact) => contact.id === parseInt(searchQuery))
+            log.contacts.some((contact) => contact.id === searchQuery)
           );
           break;
         case "kiosk.name":

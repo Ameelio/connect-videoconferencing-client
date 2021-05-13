@@ -25,19 +25,19 @@ interface Props {
   isVisible: boolean;
   width: number | string;
   height: number | string;
-  callId: number;
+  callId: string;
   participantNames: { inmates: string; contacts: string };
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
-  muteCall: (id: number) => void;
-  unmuteCall: (id: number) => void;
+  muteCall: (id: string) => void;
+  unmuteCall: (id: string) => void;
   isAudioOn: boolean;
-  openChat: (id: number) => void;
-  closeChat: (id: number) => void;
+  openChat: (id: string) => void;
+  closeChat: (id: string) => void;
   chatCollapsed: boolean;
-  lockCall: (id: number) => void;
-  addMessage: (id: number, message: CallMessage) => void;
-  updateCallStatus: (id: number, status: CallStatus) => void;
+  lockCall: (id: string) => void;
+  addMessage: (id: string, message: CallMessage) => void;
+  updateCallStatus: (id: string, status: CallStatus) => void;
 }
 
 declare global {
@@ -149,7 +149,9 @@ const VideoChat: React.FC<Props> = React.memo(
         rc.socket.on(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
-            console.log(`received text message from ${from.type}`);
+            console.log(
+              `received text message from ${from.type} for ${callId}`
+            );
             const message = {
               contents,
               senderId: from.id,
@@ -240,41 +242,11 @@ const VideoChat: React.FC<Props> = React.memo(
                   //  TODO move this logic to refs
 
                   if (kind === "video") {
-                    // const id = `${user.type}-${callId}-video`;
-                    // const video = document.getElementById(
-                    //   id
-                    // ) as HTMLVideoElement;
-                    // if (video) {
-                    //   video.srcObject = stream;
-                    // } else {
-                    //   const newVideo = document.createElement("video");
-                    //   newVideo.style.width = "50%";
-                    //   newVideo.style.height = "100%";
-                    //   newVideo.srcObject = stream;
-                    //   newVideo.id = id;
-                    //   newVideo.autoplay = true;
-                    //   node.appendChild(newVideo);
-                    // }
                     setRemoteVideos((remotes) => ({
                       ...remotes,
                       [getParticipantStreamId(participant)]: stream,
                     }));
                   } else if (kind === "audio") {
-                    // const id = `${user.type}-${callId}-audio`;
-                    // const audio = document.getElementById(
-                    //   id
-                    // ) as HTMLAudioElement;
-                    // if (audio) {
-                    //   audio.srcObject = stream;
-                    // } else {
-                    //   const newAudio = document.createElement("audio");
-                    //   newAudio.srcObject = stream;
-                    //   newAudio.autoplay = true;
-                    //   newAudio.id = id;
-                    //   newAudio.muted = !isAudioOn;
-                    //   node.appendChild(newAudio);
-                    // }
-
                     setRemoteAudios((remotes) => ({
                       ...remotes,
                       [getParticipantStreamId(participant)]: stream,

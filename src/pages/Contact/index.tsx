@@ -19,7 +19,7 @@ const mapStateToProps = (
 ) => ({
   calls: getCallsInfo(
     state,
-    selectInmateCallsById(state, parseInt(ownProps.match.params.id)) || []
+    selectInmateCallsById(state, ownProps.match.params.id) || []
   ),
 });
 
@@ -42,7 +42,7 @@ function ContactPage({
   const contact = useSelector((state: RootState) =>
     selectContactById(state, match.params.id)
   );
-  const connections = useContactConnections(contact?.id || -1);
+  const connections = useContactConnections(contact?.id || "");
 
   if (!contact || !facilityName) return <div />;
 

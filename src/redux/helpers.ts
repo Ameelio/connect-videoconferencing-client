@@ -12,17 +12,17 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 // call helpers
 export interface CallRO {
-  id: number;
-  facilityId: number;
-  kioskId: number;
+  id: string;
+  facilityId: string;
+  kioskId: string;
   status: CallStatus;
   statusDetails?: string;
   scheduledStart: Date;
   scheduledEnd: Date;
-  inmateIds: number[];
-  userIds: number[];
+  inmateIds: string[];
+  userIds: string[];
   rating: number;
-  schedulerId: number;
+  schedulerId: string;
   schedulerType: "user" | "inmate";
   messages: CallMessage[];
   videoHandler?: {

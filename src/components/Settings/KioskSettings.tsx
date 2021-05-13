@@ -30,7 +30,7 @@ const KioskSettings = ({ kiosks, groupEnts }: Props) => {
       title: "Location",
       dataIndex: "groupId",
       key: "group",
-      render: (groupId: number) => (
+      render: (groupId: string) => (
         <>
           <Tag>{groupEnts[groupId]?.name}</Tag>
         </>
