@@ -36,7 +36,6 @@ export const selectActiveFacility = createAsyncThunk(
 export const fetchFacilities = createAsyncThunk(
   "facility/fetchFacilities",
   async () => {
-    // TODO refactor this to use some APIServiceManager
     const fBody = await fetchAuthenticated(
       `users/${Store.getState().session.user.id}/facilities`,
       {},
@@ -77,7 +76,7 @@ export const updateCallTimes = createAsyncThunk(
     }
 
     // create new call slots
-    const response = await fetchAuthenticated(`callSlots`, {
+    const response = await fetchAuthenticated(`callSlots/bulk`, {
       method: "POST",
       body: JSON.stringify(newCallSlots),
     });

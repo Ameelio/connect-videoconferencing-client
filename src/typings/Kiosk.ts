@@ -1,6 +1,7 @@
 export interface Kiosk {
-  id: number;
+  id: string;
   name: string;
   description: string;
   enabled: boolean;
+  groupId: string;
 }

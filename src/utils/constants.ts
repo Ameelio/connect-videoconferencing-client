@@ -1,6 +1,5 @@
 import { CallAlert, GridOption } from "src/typings/Call";
 
-export const UNAUTHENTICATED_USER_ID = -999;
 export enum WeekdayMap {
   Sunday = 0,
   Monday = 1,

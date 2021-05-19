@@ -5,7 +5,15 @@ import {
   getMinutes,
   startOfMonth,
 } from "date-fns";
-import { CallBlock, Call, WeeklySchedule, BaseCall } from "src/typings/Call";
+import {
+  CallBlock,
+  Call,
+  WeeklySchedule,
+  BaseCall,
+  CallVideoHandler,
+  CallParticipant,
+  ParticipantType,
+} from "src/typings/Call";
 import { CallSlot, TentativeCallSlot } from "src/typings/Facility";
 import { WeekdayMap, WEEKDAYS, DEFAULT_DURATION_MS } from "./constants";
 import _ from "lodash";
@@ -181,6 +189,17 @@ export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   return callsWithinPeriod(calls, morning, evening);
 };
 
+export const callsToDailyLogs = (calls: Call[]) => {
+  return calls.map((call) => ({
+    incarceratedPerson: getCallInmatesFullNames(call),
+    visitors: getCallContactsFullNames(call),
+    kiosks: call.kiosk.name,
+    date: format(new Date(call.scheduledStart), "MM/dd/yyyy"),
+    scheduledStart: format(new Date(call.scheduledStart), "HH:mm"),
+    scheduledEnd: format(new Date(call.scheduledEnd), "HH:mm"),
+  }));
+};
+
 export const callsToWeeklyData = <TCall extends BaseCall>(
   calls: TCall[]
 ): Record<string, number> => {
@@ -233,10 +252,11 @@ export function loadCallEntities(
     contacts,
     inmates,
     kiosk: kiosk || {
-      id: -1,
+      id: "",
       name: "Failed to load information",
       description: "Failed to load information",
       enabled: true,
+      groupId: "",
     },
   };
 }
@@ -263,3 +283,25 @@ export function getCallContactsFullNames(call: Call) {
     .map((user) => `${user.firstName} ${user.lastName}`)
     .join(", ");
 }
+
+export function getFirstNames(people: (Contact | Inmate)[]) {
+  return people.map((person) => person.firstName).join(", ");
+}
+
+export const getVideoHandlerHostname = (handler: CallVideoHandler) => {
+  return `https://${handler.host}:${handler.port}`;
+};
+
+type StreamId = string;
+
+export const getParticipantStreamId = (
+  participant: CallParticipant
+): StreamId => {
+  return `${participant.type}-${participant.id}`;
+};
+
+export const getStreamParticipantType = (
+  streamId: StreamId
+): ParticipantType => {
+  return streamId.includes("inmate") ? "inmate" : "user";
+};

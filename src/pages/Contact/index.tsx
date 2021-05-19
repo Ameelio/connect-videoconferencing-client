@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { RootState } from "src/redux";
+import { RootState, useAppDispatch } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import {
@@ -19,7 +19,7 @@ const mapStateToProps = (
 ) => ({
   calls: getCallsInfo(
     state,
-    selectInmateCallsById(state, parseInt(ownProps.match.params.id)) || []
+    selectInmateCallsById(state, ownProps.match.params.id) || []
   ),
 });
 
@@ -37,10 +37,12 @@ function ContactPage({
     (state: RootState) => state.facilities.selected?.name
   );
 
+  const dispatch = useAppDispatch();
+
   const contact = useSelector((state: RootState) =>
     selectContactById(state, match.params.id)
   );
-  const connections = useContactConnections(contact?.id || -1);
+  const connections = useContactConnections(contact?.id || "");
 
   if (!contact || !facilityName) return <div />;
 
@@ -51,6 +53,7 @@ function ContactPage({
       facilityName={facilityName}
       calls={calls}
       type="contact"
+      navigate={(path: string) => dispatch(push(path))}
     />
   );
 }

@@ -1,7 +1,7 @@
 export interface Staff {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   role: StaffRole;
-  facilityId: number;
+  facilityId: string;
   isActive: boolean;
 }

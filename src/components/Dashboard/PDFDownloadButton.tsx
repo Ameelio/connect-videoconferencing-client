@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, Spin, Typography } from "antd";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { SelectedFacility } from "src/typings/Facility";
 import { format } from "date-fns";
 import { Call } from "src/typings/Call";
 import DailyReport from "./DailyReport";
-import { DownloadOutlined } from "@ant-design/icons";
 import { groupBy } from "src/utils";
 
 interface Props {
@@ -26,12 +25,12 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
 
     if (!hasMounted)
       return (
-        <Button disabled loading>
-          Generating daily report...
-        </Button>
+        <Typography.Text type="secondary">
+          Generating daily report... <Spin size="small" />
+        </Typography.Text>
       );
 
-    const type = canViewDetails ? "(Admin)" : "(Public)";
+    const type = canViewDetails ? "Admin" : "Public";
     return (
       <PDFDownloadLink
         document={
@@ -46,7 +45,7 @@ const PDFDownloadButton: React.FC<Props> = React.memo(
           "MM/dd/yyyy-HH:mm"
         )}`}
       >
-        <Button icon={<DownloadOutlined />}>Download Schedule {type}</Button>
+        {type} Schedule (PDF)
       </PDFDownloadLink>
     );
   }

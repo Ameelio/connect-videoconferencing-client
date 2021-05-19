@@ -18,7 +18,7 @@ export const fetchStaff = createAsyncThunk("staff/fetchStaff", async () => {
 
 export const updateStaff = createAsyncThunk(
   "staff/updateStaff",
-  async (args: { userId: number; permissions: Permission[] }) => {
+  async (args: { userId: string; permissions: Permission[] }) => {
     const body = await fetchAuthenticated("/admin", {
       method: "POST",
       body: JSON.stringify({
@@ -45,8 +45,6 @@ export const createStaff = createAsyncThunk(
         permissions: args.permissions,
       }),
     });
-
-    //TODO update this with API return when it's actually supported
     const staff = body.data as Staff;
 
     return staff;

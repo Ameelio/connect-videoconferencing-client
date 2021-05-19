@@ -54,7 +54,7 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
   };
 
   return (
-    <Content className="d-flex flex-column">
+    <Content className="flex flex-col">
       <Space direction="vertical" className="m-auto">
         <Row justify="center">
           <Logo className="login-logo" />
@@ -66,7 +66,6 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
           </Row>
           <Form
             name="basic"
-            initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             className="login-form"

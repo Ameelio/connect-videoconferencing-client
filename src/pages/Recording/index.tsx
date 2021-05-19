@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RootState, useAppDispatch } from "src/redux";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { getCallInfo } from "src/redux/selectors";
@@ -7,10 +7,10 @@ import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName } from "src/utils";
+import { genFullName, getCallContactsFullNames } from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Call } from "src/typings/Call";
-import { MessageDisplay } from "src/components/calls/MessageDisplay";
+import MessageDisplay from "src/components/calls/MessageDisplay";
 import { fetchCallMessages } from "src/redux/modules/call";
 
 const { Content, Sider } = Layout;
@@ -19,7 +19,7 @@ const mapStateToProps = (
   state: RootState,
   ownProps: RouteComponentProps<TParams>
 ) => ({
-  call: getCallInfo(state, parseInt(ownProps.match.params.id)) as Call,
+  call: getCallInfo(state, ownProps.match.params.id) as Call,
 });
 
 const connector = connect(mapStateToProps);
@@ -35,29 +35,21 @@ function RecordingBase({
   const [callId] = useState(match.params.id);
   const [chatCollapsed, setChatCollapsed] = useState(false);
 
+  const pathname = useAppSelector((state: RootState) => state.router.location);
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
   const dispatch = useAppDispatch();
 
+  console.log(pathname);
   useEffect(() => {
-    if (callId) dispatch(fetchCallMessages(parseInt(callId)));
+    if (callId) dispatch(fetchCallMessages(callId));
   }, [callId, dispatch]);
-
-  const routes = [
-    {
-      path: "logs",
-      breadcrumbName: "Logs",
-    },
-    {
-      path: "call",
-      breadcrumbName: `Call #${callId}`,
-    },
-  ];
 
   if (!call) return <div />;
 
+  console.log(call);
   return (
     <Layout>
       <Content style={WRAPPER_STYLE}>
@@ -73,7 +65,6 @@ function RecordingBase({
           onBack={() => window.history.back()}
           title={`Call #${callId}`}
           subTitle={facility}
-          breadcrumb={{ routes }}
           extra={[
             <Button
               key="download"
@@ -93,19 +84,19 @@ function RecordingBase({
             </Button>,
           ]}
         >
-          <Descriptions size="small" column={3}>
+          <Descriptions size="small" column={3} bordered layout="vertical">
             <Descriptions.Item label="Incarcerated Person">
               {call.inmates.map((inmate) => genFullName(inmate))}
             </Descriptions.Item>
             <Descriptions.Item label="Inmate ID">
               {call.inmates.map((inmate) => inmate.id)}
             </Descriptions.Item>
-            <Descriptions.Item label="Visitor">
-              {call.contacts.map((contact) => genFullName(contact))}
+            <Descriptions.Item label="Visitor (s)">
+              {getCallContactsFullNames(call)}
             </Descriptions.Item>
 
             <Descriptions.Item label="Date">
-              {format(new Date(call.scheduledStart), "HH:mm")}
+              {format(new Date(call.scheduledStart), "MM/dd/yyyy")}
             </Descriptions.Item>
             <Descriptions.Item label="Start Time">
               {format(new Date(call.scheduledStart), "HH:mm")}
@@ -113,7 +104,7 @@ function RecordingBase({
             <Descriptions.Item label="End Time">
               {format(new Date(call.scheduledEnd), "HH:mm")}
             </Descriptions.Item>
-            <Descriptions.Item label="Location">
+            <Descriptions.Item label="Kiosk">
               {call.kiosk.name}
             </Descriptions.Item>
           </Descriptions>
@@ -141,7 +132,7 @@ function RecordingBase({
                 }}
               >
                 {call.messages.map((message) => (
-                  <MessageDisplay message={message} />
+                  <MessageDisplay message={message} call={call} />
                 ))}
               </Space>
             </div>

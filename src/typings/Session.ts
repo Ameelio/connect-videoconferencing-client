@@ -13,6 +13,6 @@ export interface UserCredentials {
 
 export interface AuthInfo {
   type: "doc";
-  id: number;
+  id: string;
   token: string;
 }

@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import "./Video.css";
-import { Menu, Dropdown, Button, Modal } from "antd";
+import { Menu, Dropdown, Button, Modal, Space, Typography } from "antd";
 import {
   AudioMutedOutlined,
   AudioOutlined,
@@ -61,7 +61,7 @@ export default function VideoOverlay({
       <Menu.Item
         key="terminate"
         icon={<SettingFilled />}
-        onClick={() => terminateCall()}
+        onClick={terminateCall}
       >
         Terminate Call
       </Menu.Item>
@@ -83,12 +83,13 @@ export default function VideoOverlay({
   );
 
   return (
-    <div className="video-commands-overlay">
+    <Space className="video-commands-overlay">
       <Dropdown overlay={menu}>
         <Button>
           <MoreOutlined />
         </Button>
       </Dropdown>
+      <Typography.Text></Typography.Text>
       <Modal
         title="Are you sure you want to send this alert?"
         visible={!!selectedAlert}
@@ -98,6 +99,6 @@ export default function VideoOverlay({
         <p>Send the following alert to the participants:</p>
         <p>{selectedAlert?.body}</p>
       </Modal>
-    </div>
+    </Space>
   );
 }

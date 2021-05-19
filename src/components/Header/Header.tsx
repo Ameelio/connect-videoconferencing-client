@@ -42,7 +42,7 @@ export default function Header({
             style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
           />
         )}
-        <Row gutter={16}>
+        <Row gutter={16} style={FULL_WIDTH}>
           {extra?.map((item, idx) => (
             <Col key={idx}>{item}</Col>
           ))}

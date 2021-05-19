@@ -13,6 +13,7 @@ import { socketsSlice } from "./modules/socket";
 import { groupsSlice } from "./modules/group";
 import { kiosksSlice } from "./modules/kiosk";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { modalsSlice } from "./modules/modal";
 
 export const history = createBrowserHistory();
 
@@ -29,6 +30,7 @@ export const createRootReducer = (history: History) =>
     sockets: socketsSlice.reducer,
     groups: groupsSlice.reducer,
     kiosks: kiosksSlice.reducer,
+    modals: modalsSlice.reducer,
   });
 
 export const rootReducer = createRootReducer(history);

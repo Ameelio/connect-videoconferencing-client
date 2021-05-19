@@ -1,5 +1,4 @@
 import { Layout, Row, Col } from "antd";
-import { push } from "connected-react-router";
 import React from "react";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { Call } from "src/typings/Call";
@@ -17,6 +16,7 @@ interface Props {
   connections: Connection[];
   facilityName: string;
   persona: Inmate | Contact;
+  navigate: (path: string) => void;
 }
 
 const Profile: React.FC<Props> = ({
@@ -25,10 +25,11 @@ const Profile: React.FC<Props> = ({
   type,
   facilityName,
   persona,
+  navigate,
 }) => {
   return (
     <Layout>
-      <Layout.Content style={{ ...WRAPPER_STYLE }}>
+      <Layout.Content style={WRAPPER_STYLE}>
         <ProfileHeader
           type={type}
           persona={persona}
@@ -36,17 +37,13 @@ const Profile: React.FC<Props> = ({
         />
         <Row justify="space-between" gutter={12}>
           <Col span={16}>
-            <CallTimeline
-              calls={calls}
-              type={type}
-              navigate={(path: string) => push(path)}
-            />
+            <CallTimeline calls={calls} type={type} navigate={navigate} />
           </Col>
           <Col span={8}>
             <ConnectionsList
               connections={connections}
               type={type}
-              navigate={(path: string) => push(path)}
+              navigate={navigate}
             />
           </Col>
         </Row>

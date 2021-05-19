@@ -121,3 +121,7 @@ export const groupBy = <T, K extends keyof any>(
   }
   return result;
 };
+
+export function isSubstring(candidate: string, main: string) {
+  return main.toLowerCase().includes(candidate.toLowerCase());
+}

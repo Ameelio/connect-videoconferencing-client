@@ -39,7 +39,8 @@ export type SearchFilter =
   | "inmateParticipants.lastName"
   | "userParticipants.lastName"
   | "userParticipants.id"
-  | "kiosk.name";
+  | "kiosk.name"
+  | "status";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };
@@ -56,37 +57,44 @@ export interface CallFilters {
   kioskName?: string;
 }
 
-export type CallStatus =
-  | "pending_approval"
-  | "scheduled"
-  | "cancelled"
-  | "missing_monitor"
-  | "live"
+export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
+
+type GeneralCallStatus =
   | "ended"
+  | "scheduled"
   | "terminated"
+  | "live"
+  | "pending_approval"
+  | "cancelled"
+  | "rejected"
   | "no_show";
 
+export type CallStatus = InCallStatus | GeneralCallStatus;
+
 export type ISOString = string;
+
+export interface CallVideoHandler {
+  port: string;
+  host: string;
+}
+
 export interface BaseCall {
-  id: number;
-  facilityId: number;
-  kioskId: number;
+  id: string;
+  facilityId: string;
+  kioskId: string;
   status: CallStatus;
   statusDetails?: string;
   scheduledStart: ISOString;
   scheduledEnd: ISOString;
-  inmateIds: number[];
-  userIds: number[];
+  inmateIds: string[];
+  userIds: string[];
   messages: CallMessage[];
   rating: number;
-  schedulerId: number;
+  schedulerId: string;
   schedulerType: "user" | "inmate";
   recordingPath?: string;
   recordingStatus?: "pending" | "processing" | "done";
-  videoHandler?: {
-    port: string;
-    host: string;
-  };
+  videoHandler?: CallVideoHandler;
 }
 
 export interface Call extends BaseCall {
@@ -97,15 +105,17 @@ export interface Call extends BaseCall {
 
 export interface DetailedCall extends Call {}
 
+export type ParticipantType = "doc" | "inmate" | "user";
+
 export interface CallParticipant {
-  type: "doc" | "inmate" | "user";
-  id: number;
+  type: ParticipantType;
+  id: string; // person ID
 }
 
 export interface CallMessage {
-  callId: number;
-  senderId: number;
-  senderType: "inmate" | "user" | "doc";
+  callId: string;
+  senderId: string;
+  senderType: ParticipantType;
   contents: string;
   createdAt: string; // ISO string
 }

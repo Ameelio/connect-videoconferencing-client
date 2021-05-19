@@ -4,20 +4,12 @@ import { RootState } from "src/redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { updateStaff } from "src/redux/modules/staff";
 import { WRAPPER_STYLE } from "src/styles/styles";
-import {
-  Table,
-  Tag,
-  Space,
-  Layout,
-  Avatar,
-  Divider,
-  Modal,
-  Button,
-} from "antd";
+import { Table, Tag, Space, Layout, Divider, Modal, Button } from "antd";
 import { selectAllStaff } from "src/redux/selectors";
 import { genFullName } from "src/utils";
 import CreateStaffForm, { StaffFormFields } from "./CreateStaffForm";
 import Header from "src/components/Header/Header";
+import Avatar from "src/components/Avatar";
 
 const { Column } = Table;
 const { Content } = Layout;
@@ -45,14 +37,7 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
     setConfirmLoading(true);
     switch (modalType) {
       case "edit":
-        if (selected)
-          // updateStaff({
-          //   userId: selected.id,
-          // });
-          break;
-      case "create":
-        // do somethin
-        break;
+        if (selected) break;
     }
 
     setConfirmLoading(false);
@@ -76,11 +61,14 @@ const StaffContainer: React.FC<PropsFromRedux> = ({ staff, updateStaff }) => {
         <Table dataSource={staff}>
           <Column
             title=""
-            dataIndex="profileImagePath"
             key="profileImagePath"
-            render={(img) => (
+            render={(_text, record: Staff) => (
               <>
-                <Avatar src={img} size="large" />
+                <Avatar
+                  src={record.profileImagePath}
+                  fallback={genFullName(record)}
+                  size={48}
+                />
               </>
             )}
           />

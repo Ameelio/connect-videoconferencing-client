@@ -4,13 +4,13 @@ import { Inmate } from "./Inmate";
 export type ConnectionStatus = "active" | "pending" | "inactive" | "rejected";
 
 export interface BaseConnection {
-  id: number;
+  id: string;
   requestedAt: number;
   approvedAt: number;
   relationship: string;
   requestDetails: string;
-  inmateId: number;
-  userId: number;
+  inmateId: string;
+  userId: string;
   status: ConnectionStatus;
   statusDetails: string;
 }

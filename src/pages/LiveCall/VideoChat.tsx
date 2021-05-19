@@ -2,32 +2,42 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux";
 import RoomClient from "src/pages/LiveCall/RoomClient";
-import { Spin } from "antd";
+import { Spin, Typography } from "antd";
 import "./Video.css";
 import VideoOverlay from "./VideoOverlay";
-import { CallAlert, CallMessage, CallParticipant } from "src/typings/Call";
-import { AudioMutedOutlined } from "@ant-design/icons";
-import { openNotificationWithIcon } from "src/utils";
-import { Inmate } from "src/typings/Inmate";
-import { Contact } from "src/typings/Contact";
+import {
+  CallAlert,
+  CallMessage,
+  CallParticipant,
+  CallStatus,
+  InCallStatus,
+} from "src/typings/Call";
+import { AudioMutedOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import {
+  getParticipantStreamId,
+  getStreamParticipantType,
+  openNotificationWithIcon,
+} from "src/utils";
+import Video from "src/components/LiveCall/Video";
+import Audio from "src/components/LiveCall/Audio";
 
 interface Props {
   isVisible: boolean;
   width: number | string;
   height: number | string;
-  callId: number;
-  inmates: Inmate[];
-  contacts: Contact[];
+  callId: string;
+  participantNames: { inmates: string; contacts: string };
   socket: SocketIOClient.Socket;
   alerts: CallAlert[];
-  muteCall: (id: number) => void;
-  unmuteCall: (id: number) => void;
+  muteCall: (id: string) => void;
+  unmuteCall: (id: string) => void;
   isAudioOn: boolean;
-  openChat: (id: number) => void;
-  closeChat: (id: number) => void;
+  openChat: (id: string) => void;
+  closeChat: (id: string) => void;
   chatCollapsed: boolean;
-  lockCall: (id: number) => void;
-  addMessage: (id: number, message: CallMessage) => void;
+  lockCall: (id: string) => void;
+  addMessage: (id: string, message: CallMessage) => void;
+  updateCallStatus: (id: string, status: CallStatus) => void;
 }
 
 declare global {
@@ -60,12 +70,26 @@ const VideoChat: React.FC<Props> = React.memo(
     closeChat,
     chatCollapsed,
     addMessage,
+    updateCallStatus,
+    participantNames,
   }) => {
     const authInfo = useSelector((state: RootState) => state.session.authInfo);
 
     const [loading, setLoading] = useState(false);
     const [isAuthed, setIsAuthed] = useState(false);
     const [rc, setRc] = useState<RoomClient>();
+    const [status, setStatus] = useState<InCallStatus>();
+    const [inmateAudioPaused, setInmateAudioPaused] = useState(false);
+    const [inmateVideoPaused, setInmateVideoPaused] = useState(false);
+    // If we allow multiple contacts to join from different clients, we'll have to change this
+    const [contactAudioPaused, setContactAudioPaused] = useState(false);
+    const [contactVideoPaused, setContactVideoPaused] = useState(false);
+    const [remoteVideos, setRemoteVideos] = useState<
+      Record<string, MediaStream>
+    >({});
+    const [remoteAudios, setRemoteAudios] = useState<
+      Record<string, MediaStream>
+    >({});
 
     const joinRoom = useCallback(async () => {
       const rc = new RoomClient(socket, callId);
@@ -103,14 +127,13 @@ const VideoChat: React.FC<Props> = React.memo(
             console.log("Not connected, so waiting until connected.");
             window.Debug = socket;
             await new Promise((resolve) => socket.on("connect", resolve));
-            console.log("OK");
+            console.log("[VideoChat] Connected");
           }
           await new Promise((resolve) => {
-            // TODO fetch actual credentials from redux
             socket.emit("authenticate", authInfo, resolve);
           });
           await joinRoom();
-          console.log("authenticated");
+          console.log("[VideoChat] Authenticated");
           setIsAuthed(true);
         })();
       }
@@ -122,9 +145,13 @@ const VideoChat: React.FC<Props> = React.memo(
       // of having it polluting the ffile
       // https://github.com/Ameelio/connect-doc-client/issues/62
       if (rc && isAuthed) {
+        console.log("[VideoChat] listening for text messages");
         rc.socket.on(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
+            console.log(
+              `received text message from ${from.type} for ${callId}`
+            );
             const message = {
               contents,
               senderId: from.id,
@@ -138,6 +165,53 @@ const VideoChat: React.FC<Props> = React.memo(
       }
     }, [addMessage, callId, isAuthed, rc]);
 
+    useEffect(() => {
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
+      if (rc && isAuthed) {
+        console.log("[VideoChat] listening for call status updates");
+        rc.socket.on("callStatusUpdate", async (status: InCallStatus) => {
+          console.log("[VideoChat] Received status update", status);
+          setStatus(status);
+        });
+      }
+    }, [isAuthed, rc]);
+
+    useEffect(() => {
+      if (!rc) return;
+      rc.socket.on(
+        "producerUpdate",
+        async ({
+          from,
+          paused,
+          type,
+        }: {
+          from: CallParticipant;
+          producerId: string;
+          paused: boolean;
+          type: "audio" | "video";
+        }) => {
+          console.log(`[Videochat] producer ${type} update from ${from.type} `);
+          if (from.type === "user") {
+            type === "audio"
+              ? setContactAudioPaused(paused)
+              : setContactVideoPaused(paused);
+          } else if (from.type === "inmate") {
+            type === "audio"
+              ? setInmateAudioPaused(paused)
+              : setInmateVideoPaused(paused);
+          }
+        }
+      );
+    }, [rc]);
+
+    useEffect(() => {
+      if (!status) return;
+      updateCallStatus(callId, status);
+    }, [status, callId]);
+
     const measuredRef = useCallback(
       (node) => {
         if (node !== null && rc && isAuthed) {
@@ -147,8 +221,11 @@ const VideoChat: React.FC<Props> = React.memo(
               async (
                 kind: string,
                 stream: MediaStream,
-                user: { type: string; id: number }
+                participant: CallParticipant
               ) => {
+                console.log(
+                  `[VideoChat] Received ${kind} consume from ${participant.type} ${participant.id}`
+                );
                 if (node) {
                   // TODO for some reason room client is consuming streams from all calls (not just the one identified by callId)
                   // This is very likely to be an API bug that relays the stream to all active rooms regardless of whether or not it's the room client w/ that given person
@@ -163,38 +240,17 @@ const VideoChat: React.FC<Props> = React.memo(
                   // From what I can tell everything is normal client side, which makes me think something is wrong with the API (I am seeing a lot of errors on my Node terminal)
 
                   //  TODO move this logic to refs
+
                   if (kind === "video") {
-                    // TODO make sure jesse is passing the right user.type
-                    const id = `${user.type}-${callId}-video`;
-                    const video = document.getElementById(
-                      id
-                    ) as HTMLVideoElement;
-                    if (video) {
-                      video.srcObject = stream;
-                    } else {
-                      const newVideo = document.createElement("video");
-                      newVideo.style.width = "50%";
-                      newVideo.style.height = "100%";
-                      newVideo.srcObject = stream;
-                      newVideo.id = id;
-                      newVideo.autoplay = true;
-                      node.appendChild(newVideo);
-                    }
+                    setRemoteVideos((remotes) => ({
+                      ...remotes,
+                      [getParticipantStreamId(participant)]: stream,
+                    }));
                   } else if (kind === "audio") {
-                    const id = `${user.type}-${callId}-audio`;
-                    const audio = document.getElementById(
-                      id
-                    ) as HTMLAudioElement;
-                    if (audio) {
-                      audio.srcObject = stream;
-                    } else {
-                      const newAudio = document.createElement("audio");
-                      newAudio.srcObject = stream;
-                      newAudio.autoplay = true;
-                      newAudio.id = id;
-                      newAudio.muted = !isAudioOn;
-                      node.appendChild(newAudio);
-                    }
+                    setRemoteAudios((remotes) => ({
+                      ...remotes,
+                      [getParticipantStreamId(participant)]: stream,
+                    }));
                   }
 
                   setLoading(false);
@@ -204,15 +260,15 @@ const VideoChat: React.FC<Props> = React.memo(
           })();
         }
       },
-      [rc, isAuthed, isAudioOn, callId]
+      [rc, isAuthed]
     );
 
-    useEffect(() => {
-      const inmate = document.getElementById(`inmate-${callId}-audio`);
-      const user = document.getElementById(`user-${callId}-audio`);
-      if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
-      if (user) (user as HTMLAudioElement).muted = isAudioOn;
-    }, [isAudioOn, callId]);
+    // useEffect(() => {
+    //   const inmate = document.getElementById(`inmate-${callId}-audio`);
+    //   const user = document.getElementById(`user-${callId}-audio`);
+    //   if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
+    //   if (user) (user as HTMLAudioElement).muted = isAudioOn;
+    // }, [isAudioOn, callId]);
 
     useEffect(() => {
       if (rc) {
@@ -223,9 +279,12 @@ const VideoChat: React.FC<Props> = React.memo(
       }
     }, [rc, callId]);
 
+    const videoKeys = Object.keys(remoteVideos);
+    const audioKeys = Object.keys(remoteAudios);
+
     return (
       <div
-        className="video-wrapper"
+        className="bg-gray-900 rounded flex items-center"
         id={`call-${callId}`}
         style={{
           width,
@@ -235,6 +294,54 @@ const VideoChat: React.FC<Props> = React.memo(
         }}
         ref={measuredRef}
       >
+        {videoKeys.map((key: string) => {
+          const isInmate = getStreamParticipantType(key) === "inmate";
+
+          const isAudioPaused = isInmate
+            ? inmateAudioPaused
+            : contactAudioPaused;
+
+          const isVideoPaused = isInmate
+            ? inmateVideoPaused
+            : contactVideoPaused;
+
+          const name = isInmate
+            ? participantNames.inmates
+            : participantNames.contacts;
+
+          return (
+            <div
+              className="w-1/2 h-1/3 bg-gray-800 flex align-center"
+              key={key}
+            >
+              <Video
+                srcObject={remoteVideos[key]}
+                className="w-full h-full"
+                autoPlay={true}
+              />
+              {/* Blurb with metadata */}
+              <div className="absolute bottom-20 left-4 bg-black bg-opacity-50 py-1 px-2 rounded flex salign-center">
+                {isAudioPaused && (
+                  <AudioMutedOutlined className="text-red-600 text-base" />
+                )}
+                {isVideoPaused && (
+                  <VideoCameraOutlined className="text-red-600 text-base ml-1" />
+                )}
+                <Typography.Text className="text-white text-base ml-1">
+                  {name}
+                </Typography.Text>
+              </div>
+            </div>
+          );
+        })}
+        {audioKeys.map((key: string) => (
+          <Audio
+            key={key}
+            srcObject={remoteAudios[key]}
+            autoPlay={true}
+            muted={!isAudioOn}
+          />
+        ))}
         {!isAudioOn && (
           <AudioMutedOutlined
             style={{
@@ -251,6 +358,7 @@ const VideoChat: React.FC<Props> = React.memo(
           terminateCall={() => {
             if (rc) {
               rc.terminate();
+              updateCallStatus(callId, "terminated");
               openNotificationWithIcon(
                 `Call #${callId} terminated`,
                 "We notified both participants of the incident.",

@@ -18,14 +18,24 @@ import {
   Select,
   Empty,
 } from "antd";
-import { fetchCalls, callsActions } from "src/redux/modules/call";
+import {
+  fetchCalls,
+  callsActions,
+  updateCallStatus,
+} from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { CallMessage, GridOption } from "src/typings/Call";
+import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
-import { MessageDisplay } from "src/components/calls/MessageDisplay";
+import MessageDisplay from "src/components/calls/MessageDisplay";
 import { connect, ConnectedProps } from "react-redux";
+import {
+  getCallContactsFullNames,
+  getCallInmatesFullNames,
+  getFirstNames,
+  getVideoHandlerHostname,
+} from "src/utils";
 
 const { Content, Sider } = Layout;
 
@@ -43,17 +53,22 @@ const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
-  const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [activeCallChatId, setActiveCallChatId] = useState<number>();
-  const [messages, setMessages] = useState<CallMessage[]>([]);
+  const [activeCallChat, setActiveCallChat] = useState<Call>();
   const [chatCollapsed, setChatCollapsed] = useState(false);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
   const [page, setPage] = useState(1);
+  const [freshCalls, setFreshCalls] = useState<Call[]>([]);
 
-  const [consumeAudioRecord, setConsumeAudioRecord] = useState<
-    Record<number, boolean>
+  // map from video handler hostname to socket
+  const [socketMap, setSocketMap] = useState<
+    Record<string, SocketIOClient.Socket>
   >({});
+
+  // map from call id to muted boolean
+  const [unmutedCallsMap, setUnmutedCalls] = useState<Record<number, boolean>>(
+    {}
+  );
 
   const dispatch = useAppDispatch();
 
@@ -69,30 +84,45 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   }, []);
 
   useEffect(() => {
-    // TODO: this assumes all calls will have the same host. Gotta turn this into a Record<callId, handler>
-    // https://github.com/Ameelio/connect-doc-client/issues/59
-    if (!socket && visitations[0] && visitations[0].videoHandler) {
-      setSocket(
-        io.connect(
-          process.env.NODE_ENV === "production"
-            ? `https://${visitations[0].videoHandler?.host}`
-            : `https://${visitations[0].videoHandler?.host}:${visitations[0].videoHandler?.port}`,
-          { transports: ["websocket"] }
-        )
+    const newCalls = visitations.filter(
+      (call) =>
+        call.videoHandler &&
+        !(getVideoHandlerHostname(call.videoHandler) in socketMap)
+    );
+    setFreshCalls(newCalls);
+  }, [socketMap, visitations]);
+
+  useEffect(() => {
+    if (!freshCalls.length) return;
+
+    const temp: Record<string, SocketIOClient.Socket> = {};
+
+    for (const call of freshCalls) {
+      if (!call.videoHandler) continue;
+      const target = getVideoHandlerHostname(call.videoHandler);
+      // initialize new sockets once
+      if (target in temp) continue;
+
+      // TODO: change this quick hack once we integrate @bporter's neat Kubernetes
+      // https://github.com/Ameelio/connect-doc-client/issues/73
+      const newSocketClient = io.connect(
+        process.env.NODE_ENV === "production"
+          ? `https://${call.videoHandler.host}`
+          : target,
+        { transports: ["websocket"] }
       );
+      temp[target] = newSocketClient;
     }
-  }, [setSocket, socket, visitations]);
+    console.log("[Index] New socket clients", temp);
+    setSocketMap((curr) => ({ ...curr, ...temp }));
+  }, [freshCalls]);
 
+  // Initialize call messages
   useEffect(() => {
-    if (!activeCallChatId && visitations.length > 0) {
-      setActiveCallChatId(visitations[0].id);
+    if (!activeCallChat && visitations.length > 0) {
+      setActiveCallChat(visitations[0]);
     }
-  }, [grid, visitations, activeCallChatId]);
-
-  useEffect(() => {
-    const call = visitations.find((call) => call.id === activeCallChatId);
-    setMessages(call?.messages || []);
-  }, [activeCallChatId, visitations]);
+  }, [visitations, activeCallChat]);
 
   // Grid options
   const handleGridChange = (grid: GridOption) => {
@@ -109,7 +139,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   };
 
   const onMessageReceived = useCallback(
-    (callId: number, message: CallMessage) => {
+    (callId: string, message: CallMessage) => {
       dispatch(addMessage({ id: callId, message }));
     },
     []
@@ -146,62 +176,76 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
               />
             )}
             <Row gutter={16}>
-              {visitations.map((visitation, idx) => (
-                <Col span={GRID_TO_SPAN_WIDTH[grid]} key={visitation.id}>
-                  {socket ? (
+              {visitations.map((call, idx) => {
+                if (!call.videoHandler)
+                  return (
+                    <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
+                      <VideoSkeleton
+                        width="100%"
+                        height={`${frameVhHeight}vh`}
+                      />
+                    </Col>
+                  );
+
+                const socket =
+                  socketMap[getVideoHandlerHostname(call.videoHandler)];
+
+                if (!socket) return <div />;
+                return (
+                  <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
                     <VideoChat
                       height={`${frameVhHeight}vh`}
                       socket={socket}
-                      callId={visitation.id}
-                      inmates={visitation.inmates}
-                      contacts={visitation.contacts}
+                      callId={call.id}
+                      participantNames={{
+                        inmates: getCallInmatesFullNames(call),
+                        contacts: getCallContactsFullNames(call),
+                      }}
                       isVisible={
                         idx >= (page - 1) * grid &&
                         idx < (page - 1) * grid + grid
                       }
                       width="100%"
                       alerts={CALL_ALERTS}
-                      muteCall={(callId: number) => {
-                        setConsumeAudioRecord(
-                          _.omit(consumeAudioRecord, callId)
-                        );
-                      }}
-                      unmuteCall={(callId: number) =>
-                        setConsumeAudioRecord({
-                          ...consumeAudioRecord,
+                      muteCall={(callId: string) =>
+                        setUnmutedCalls(_.omit(unmutedCallsMap, callId))
+                      }
+                      unmuteCall={(callId: string) =>
+                        setUnmutedCalls({
+                          ...unmutedCallsMap,
                           [callId]: true,
                         })
                       }
-                      isAudioOn={visitation.id in consumeAudioRecord}
-                      openChat={(callId: number) => {
+                      isAudioOn={call.id in unmutedCallsMap}
+                      openChat={(callId: string) => {
                         const call = visitations.find(
                           (call) => call.id === callId
                         );
-                        setActiveCallChatId(callId);
-                        setMessages(call?.messages || []);
+                        setActiveCallChat(call);
                         setChatCollapsed(false);
                       }}
-                      closeChat={(callId: number) => {
+                      closeChat={(callId: string) => {
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
                       addMessage={onMessageReceived}
-                      lockCall={(callId: number) => {
+                      lockCall={(callId: string) => {
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
                         );
                         if (idx !== -1) {
                           handleGridChange(1);
                           setPage(idx + 1);
-                          setActiveCallChatId(idx);
+                          setActiveCallChat(visitations[idx]);
                         }
                       }}
+                      updateCallStatus={(id: string, status: CallStatus) =>
+                        dispatch(updateCallStatus({ id, status }))
+                      }
                     />
-                  ) : (
-                    <VideoSkeleton width="100%" height={`${frameVhHeight}vh`} />
-                  )}
-                </Col>
-              ))}
+                  </Col>
+                );
+              })}
             </Row>
           </Space>
         </Content>
@@ -215,17 +259,24 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
         >
           {!chatCollapsed && (
-            <div className="vh-100">
+            <div className="h-screen">
               <PageHeader
                 title="Chat"
                 extra={[
                   <Select
-                    value={activeCallChatId}
-                    onSelect={(value) => setActiveCallChatId(value as number)}
+                    value={activeCallChat?.id}
+                    onSelect={(id) => {
+                      setActiveCallChat(visitations.find((v) => v.id === id));
+                    }}
                   >
                     {visitations.map((visitation) => (
-                      <Select.Option value={visitation.id} key={visitation.id}>
-                        Call #{visitation.id}
+                      <Select.Option
+                        value={visitation.id}
+                        key={visitation.id}
+                        className="truncate mw-1/2"
+                      >
+                        {getFirstNames(visitation.inmates)} &{" "}
+                        {getFirstNames(visitation.contacts)}
                       </Select.Option>
                     ))}
                   </Select>,
@@ -241,8 +292,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                     height: "100%",
                   }}
                 >
-                  {messages.map((message) => (
-                    <MessageDisplay message={message} />
+                  {activeCallChat?.messages.map((message) => (
+                    <MessageDisplay message={message} call={activeCallChat} />
                   ))}
                 </Space>
               </div>

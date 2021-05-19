@@ -9,7 +9,7 @@ interface Props {
   originalData: Record<string, any>[];
   columns: TableColumn[];
   onSave: Function;
-  onViewItem: (id: number) => void;
+  onViewItem: (id: string) => void;
 }
 
 export default function EditableTable({
@@ -35,7 +35,7 @@ export default function EditableTable({
     setEditingId(null);
   };
 
-  const save = async (id: number) => {
+  const save = async (id: string) => {
     try {
       const row = await form.validateFields();
       const newData = [...data];
@@ -52,9 +52,7 @@ export default function EditableTable({
         setData(newData);
         setEditingId(null);
       }
-    } catch (err) {
-      console.log("Validate Failed:", err);
-    }
+    } catch (err) {}
   };
 
   const columnsWithEdit = columns.concat([

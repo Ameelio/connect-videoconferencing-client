@@ -25,7 +25,7 @@ export function useCalls() {
   return calls;
 }
 
-export function usePendingCalls() {
+export function useCallsWithStatus(status: CallStatus) {
   const [calls, setCalls] = useState<Call[]>([]);
   const baseCalls = useAppSelector(selectAllCalls);
   const contactEnts = useAppSelector(selectContactEntities);
@@ -33,13 +33,16 @@ export function usePendingCalls() {
   const kioskEnts = useAppSelector(selectKioskEntities);
 
   useEffect(() => {
-    const pendingCalls = baseCalls.filter(
-      (call) => call.status === "pending_approval"
-    );
+    let pendingCalls = baseCalls.filter((call) => call.status === status);
+    if (status === "live") {
+      pendingCalls = pendingCalls.filter(
+        (c) => new Date(c.scheduledEnd) >= new Date()
+      );
+    }
     setCalls(
       loadAllCallEntities(pendingCalls, contactEnts, inmateEnts, kioskEnts)
     );
-  }, [baseCalls, inmateEnts, contactEnts, kioskEnts]);
+  }, [baseCalls, inmateEnts, contactEnts, kioskEnts, status]);
 
   return calls;
 }
@@ -56,7 +59,7 @@ export function useCallCountWithStatus(status: CallStatus) {
   return count;
 }
 
-export function useInmateCalls(id: number) {
+export function useInmateCalls(id: string) {
   const [calls, setCalls] = useState<Call[]>([]);
   const baseCalls = useAppSelector(selectAllCalls);
   const contactEnts = useAppSelector(selectContactEntities);

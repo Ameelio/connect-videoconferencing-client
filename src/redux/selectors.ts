@@ -7,6 +7,7 @@ import { staffAdapter } from "./modules/staff";
 import { facilitiesAdapter } from "./modules/facility";
 import { BaseCall, Call } from "src/typings/Call";
 import { kiosksAdapter } from "./modules/kiosk";
+import { groupsAdapter } from "./modules/group";
 import { notEmpty } from "src/utils";
 
 // get selectors from entity adapter
@@ -49,11 +50,11 @@ export const {
   selectEntities: selectKioskEntities,
 } = kiosksAdapter.getSelectors<RootState>((state) => state.kiosks);
 
-export const selectApprovedConnections = (state: RootState) => {
-  return selectAllConnections(state).map(
-    (connection) => connection.status === "active"
-  );
-};
+export const {
+  selectAll: selectAllGroups,
+  selectById: selectGroupById,
+  selectEntities: selectGroupEntities,
+} = groupsAdapter.getSelectors<RootState>((state) => state.groups);
 
 // Calls
 const getCallEntities = (
@@ -82,7 +83,7 @@ export const getCallsInfo = (
     .filter(notEmpty);
 };
 
-export const getCallInfo = (state: RootState, callId: number) => {
+export const getCallInfo = (state: RootState, callId: string) => {
   const plainCall = selectCallById(state, callId);
   if (!plainCall) return;
   return getCallEntities(state, plainCall) as Call;
@@ -93,13 +94,16 @@ export const selectLiveCalls = (state: RootState): Call[] => {
   return getCallsInfo(
     state,
     calls.filter(
-      (call) => call.status === "missing_monitor" || call.status === "live"
+      (call) =>
+        (call.status === "missing_monitor" || call.status === "live") &&
+        !!call.videoHandler &&
+        new Date(call.scheduledEnd) > new Date()
     )
   );
 };
 
 // Inmate
-export const selectInmateCallsById = (state: RootState, inmateId: number) => {
+export const selectInmateCallsById = (state: RootState, inmateId: string) => {
   const inmate = selectInmateById(state, inmateId);
   if (!inmate) return;
   const calls = selectAllCalls(state);
