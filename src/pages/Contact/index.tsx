@@ -50,6 +50,7 @@ function ContactPage({
     selectContactById(state, match.params.id)
   );
 
+  // TODO: Implement a way to cache these files: https://github.com/Ameelio/connect-doc-client/issues/76
   useEffect(() => {
     const getContactImages = async () => {
       if (contact) {

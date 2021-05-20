@@ -1,3 +1,9 @@
+enum PrivateFileCategory {
+  SELFIE_ID = "selfie_id",
+  FRONT_ID = "front_id",
+  BACK_ID = "back_id",
+}
+
 interface IdentificationImage {
   id: string;
   createdAt: string;
@@ -5,7 +11,7 @@ interface IdentificationImage {
   name: string;
   ownerMalanId: string;
   key: string;
-  category: string;
+  category: PrivateFileCategory;
   url: string;
 }
 
