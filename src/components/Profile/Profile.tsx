@@ -5,6 +5,7 @@ import { Call } from "src/typings/Call";
 import { MemberType } from "src/typings/Common";
 import { Connection } from "src/typings/Connection";
 import { Contact } from "src/typings/Contact";
+import { IdentificationImages } from "src/typings/IdentificationImage";
 import { Inmate } from "src/typings/Inmate";
 import ConnectionsList from "./Connections/ConnectionsList";
 import ProfileHeader from "./ProfileHeader";
@@ -15,6 +16,7 @@ interface Props {
   type: MemberType;
   connections: Connection[];
   facilityName: string;
+  idImages?: IdentificationImages;
   persona: Inmate | Contact;
   navigate: (path: string) => void;
 }
@@ -24,6 +26,7 @@ const Profile: React.FC<Props> = ({
   connections,
   type,
   facilityName,
+  idImages,
   persona,
   navigate,
 }) => {
@@ -34,6 +37,7 @@ const Profile: React.FC<Props> = ({
           type={type}
           persona={persona}
           facilityName={facilityName}
+          idImages={idImages}
         />
         <Row justify="space-between" gutter={12}>
           <Col span={16}>
