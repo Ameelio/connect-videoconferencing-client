@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchAuthenticated } from "src/api/Common";
 import { Contact } from "src/typings/Contact";
+import { IdentificationImages } from "src/typings/IdentificationImage";
 
 export const fetchContacts = createAsyncThunk(
   "contact/fetchContacts",
@@ -15,6 +16,19 @@ export const fetchContacts = createAsyncThunk(
       .results as Contact[];
 
     return contacts;
+  }
+);
+
+export const fetchContactIdImages = createAsyncThunk(
+  "contacts/fetchContactIdImages",
+  async (userId: string) => {
+    const body = await fetchAuthenticated(
+      `contacts/${userId}/identificationImages`
+    );
+
+    const images = body.data as IdentificationImages;
+
+    return images;
   }
 );
 

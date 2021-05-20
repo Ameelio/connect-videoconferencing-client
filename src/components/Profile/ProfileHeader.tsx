@@ -5,8 +5,10 @@ import { Contact } from "src/typings/Contact";
 import { Inmate } from "src/typings/Inmate";
 import { genFullName } from "src/utils";
 import { format } from "date-fns";
+import { IdentificationImages } from "src/typings/IdentificationImage";
 interface BaseProps {
   facilityName: string;
+  idImages?: IdentificationImages;
   type: MemberType;
   persona: Inmate | Contact;
 }
@@ -24,7 +26,12 @@ interface BaseProps {
 
 type Props = BaseProps;
 
-const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
+const ProfileHeader: React.FC<Props> = ({
+  type,
+  facilityName,
+  persona,
+  idImages,
+}) => {
   const routes = [
     {
       path: "/",
@@ -39,6 +46,12 @@ const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
       breadcrumbName: genFullName(persona),
     },
   ];
+
+  const frontId =
+    idImages && idImages.frontIdFile ? idImages.frontIdFile.url : "";
+  const backId = idImages && idImages.backIdFile ? idImages.backIdFile.url : "";
+  const selfieId =
+    idImages && idImages.selfieIdFile ? idImages.selfieIdFile.url : "";
 
   const renderItems = () => {
     switch (type) {
@@ -75,13 +88,13 @@ const ProfileHeader: React.FC<Props> = ({ type, facilityName, persona }) => {
               {(persona as Contact).email}
             </Descriptions.Item>
             <Descriptions.Item label="Front ID">
-              <Image width={200} src={(persona as Contact).frontIdPath} />
+              <Image width={200} src={frontId} />
             </Descriptions.Item>
             <Descriptions.Item label="Back ID">
-              <Image width={200} src={(persona as Contact).backIdPath} />
+              <Image width={200} src={backId} />
             </Descriptions.Item>
             <Descriptions.Item label="Selfie">
-              <Image width={200} src={(persona as Contact).selfiePath} />
+              <Image width={200} src={selfieId} />
             </Descriptions.Item>
           </Descriptions>
         );
