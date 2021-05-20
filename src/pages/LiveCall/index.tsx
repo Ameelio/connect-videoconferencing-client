@@ -119,8 +119,16 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
 
   // Initialize call messages
   useEffect(() => {
-    if (!activeCallChat && visitations.length > 0) {
+    if (!visitations.length) return;
+    else if (!activeCallChat) {
       setActiveCallChat(visitations[0]);
+    } else {
+      // in case it's already selected
+      const updatedCall = visitations.find((v) => v.id === activeCallChat.id);
+      if (!updatedCall) return;
+      if (updatedCall.messages.length !== activeCallChat.messages.length) {
+        setActiveCallChat(updatedCall);
+      }
     }
   }, [visitations, activeCallChat]);
 

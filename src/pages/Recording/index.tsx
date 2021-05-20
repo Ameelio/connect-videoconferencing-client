@@ -35,21 +35,18 @@ function RecordingBase({
   const [callId] = useState(match.params.id);
   const [chatCollapsed, setChatCollapsed] = useState(false);
 
-  const pathname = useAppSelector((state: RootState) => state.router.location);
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
   );
 
   const dispatch = useAppDispatch();
 
-  console.log(pathname);
   useEffect(() => {
     if (callId) dispatch(fetchCallMessages(callId));
   }, [callId, dispatch]);
 
   if (!call) return <div />;
 
-  console.log(call);
   return (
     <Layout>
       <Content style={WRAPPER_STYLE}>
