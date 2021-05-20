@@ -150,7 +150,7 @@ const VideoChat: React.FC<Props> = React.memo(
           "textMessage",
           ({ from, contents }: { from: CallParticipant; contents: string }) => {
             console.log(
-              `received text message from ${from.type} for ${callId}`
+              `[VideoChat] Received text message from ${from.type} for ${callId}`
             );
             const message = {
               contents,
@@ -294,7 +294,7 @@ const VideoChat: React.FC<Props> = React.memo(
         }}
         ref={measuredRef}
       >
-        {videoKeys.map((key: string) => {
+        {videoKeys.map((key: string, index: number) => {
           const isInmate = getStreamParticipantType(key) === "inmate";
 
           const isAudioPaused = isInmate
@@ -320,7 +320,11 @@ const VideoChat: React.FC<Props> = React.memo(
                 autoPlay={true}
               />
               {/* Blurb with metadata */}
-              <div className="absolute bottom-20 left-4 bg-black bg-opacity-50 py-1 px-2 rounded flex salign-center">
+              <div
+                className={`absolute bottom-20 ${
+                  index === 0 ? "left-4" : "right-4"
+                } bg-black bg-opacity-50 py-1 px-2 rounded flex align-center`}
+              >
                 {isAudioPaused && (
                   <AudioMutedOutlined className="text-red-600 text-base" />
                 )}
