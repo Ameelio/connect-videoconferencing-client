@@ -60,15 +60,17 @@ function UnconnectedLoginContainer({ session }: PropsFromRedux): ReactElement {
           <Logo className="login-logo" />
         </Row>
 
-        <Card className="login-form-container">
-          <Row justify="center">
-            <Typography.Title level={3}>Welcome!</Typography.Title>
+        <Card className="login-form-container shadow rounded">
+          <Row>
+            <Typography.Title level={4}>
+              Sign in to your account
+            </Typography.Title>
           </Row>
           <Form
             name="basic"
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
-            className="login-form"
+            className="login-form "
           >
             <Form.Item
               name="email"

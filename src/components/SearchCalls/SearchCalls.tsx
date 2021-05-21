@@ -129,6 +129,7 @@ const SearchCalls = ({
           );
           break;
         case "status":
+          console.log(selectedStatusFilter);
           if (!selectedStatusFilter.length) break;
           filteredCalls = filteredCalls.filter((call) =>
             selectedStatusFilter.includes(call.status)

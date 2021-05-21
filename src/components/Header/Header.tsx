@@ -40,6 +40,7 @@ export default function Header({
         {extra?.length && (
           <hr
             style={{ border: 0, height: 1, backgroundColor: "rgba(0,0,0,.15)" }}
+            className="mb-2"
           />
         )}
         <Row gutter={16} style={FULL_WIDTH}>

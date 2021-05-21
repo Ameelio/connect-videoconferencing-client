@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { selectAllInmates } from "src/redux/selectors";
-import { Layout, Table, Button } from "antd";
+import { Layout, Table, Button, Input } from "antd";
 import { RootState } from "src/redux";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { push } from "connected-react-router";
 import Header from "src/components/Header/Header";
 import { Inmate } from "src/typings/Inmate";
 import { EyeOutlined } from "@ant-design/icons";
-import { genFullName } from "src/utils";
+import { genFullName, isSubstring } from "src/utils";
 import Avatar from "src/components/Avatar";
 
 const { Content } = Layout;
@@ -27,6 +27,19 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   inmates,
   push,
 }) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredInmates, setFilteredInmates] = useState<Inmate[]>([]);
+
+  useEffect(() => {
+    setFilteredInmates(
+      searchQuery.length
+        ? inmates.filter((i) =>
+            isSubstring(searchQuery, i.inmateIdentification)
+          )
+        : inmates
+    );
+  }, [inmates, searchQuery]);
+
   const columns = [
     {
       title: "",
@@ -84,9 +97,23 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
       <Header
         title="Incarcerated People"
         subtitle="Manage the members of your facility, access detailed information, and edit their info as needed."
+        extra={[
+          <Input.Group compact className="w-screen">
+            <Input.Search
+              className="w-1/4"
+              placeholder={`Search by Incarcerated Person ID...`}
+              allowClear
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onSearch={(value) => {
+                setSearchQuery(value);
+              }}
+            />
+          </Input.Group>,
+        ]}
       />
       <div style={WRAPPER_STYLE}>
-        <Table dataSource={inmates} columns={columns} />
+        <Table dataSource={filteredInmates} columns={columns} />
       </div>
     </Content>
   );
