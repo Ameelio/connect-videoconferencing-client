@@ -101,7 +101,7 @@ export const callsSlice = createSlice({
       callsAdapter.updateOne(state, action.payload);
       const { status } = action.payload.changes;
       openNotificationWithIcon(
-        `Call request was ${status}.`,
+        `Call was ${status}.`,
         "Both parties were notified of the decision.",
         "info"
       );

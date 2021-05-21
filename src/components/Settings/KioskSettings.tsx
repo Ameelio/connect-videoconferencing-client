@@ -21,11 +21,11 @@ const KioskSettings = ({ kiosks, groupEnts }: Props) => {
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
+    // {
+    //   title: "Description",
+    //   dataIndex: "description",
+    //   key: "description",
+    // },
     {
       title: "Location",
       dataIndex: "groupId",
@@ -44,7 +44,11 @@ const KioskSettings = ({ kiosks, groupEnts }: Props) => {
       key: "type",
       render: () => (
         <>
-          <Tag color="orange">Chromebook</Tag>
+          {Math.floor(Math.random() * 6) % 2 === 0 ? (
+            <Tag color="blue">Chromebook</Tag>
+          ) : (
+            <Tag color="green">Table Booth</Tag>
+          )}
         </>
       ),
     },

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   itemBody: {
     fontWeight: "semibold",
-    fontSize: 14,
+    fontSize: 12,
   },
   icon: {
     marginRight: 8,
