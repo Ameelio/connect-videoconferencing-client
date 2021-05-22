@@ -12,6 +12,8 @@ import { showToast } from "src/utils";
 const cleanTree = (group: GroupDataNode): DataNode => {
   const { id, name, children } = group;
 
+  group.children.sort((a, b) => (a.name > b.name ? 1 : -1));
+
   return {
     title: name,
     key: id,
@@ -22,8 +24,12 @@ const cleanTree = (group: GroupDataNode): DataNode => {
 export const fetchGroups = createAsyncThunk("node/fetchGroups", async () => {
   const body = await fetchAuthenticated(`groups`);
 
-  const groupTrees = (body.data as any).tree as GroupDataNode[];
+  let groupTrees = (body.data as any).tree as GroupDataNode[];
   const groups = (body.data as any).groups as GroupDataNode[];
+  groupTrees.sort((a, b) => (a.name > b.name ? 1 : -1));
+  groupTrees = groupTrees.filter(
+    (groupTree) => groupTree.name !== "pod 1" && groupTree.name !== "pod 2"
+  );
 
   const nodes = groupTrees.map((tree) => cleanTree(tree));
 
