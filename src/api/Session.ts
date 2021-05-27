@@ -13,18 +13,21 @@ export async function loginWithCredentials(
   cred: UserCredentials
 ): Promise<void> {
   Store.dispatch(setSessionStatus("loading"));
-  const response = await fetchTimeout(url.resolve(API_URL, "auth/login"), {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      email: cred.email,
-      password: cred.password,
-    }),
-  });
+  const response = await fetchTimeout(
+    url.resolve(API_URL, "auth/staff/login"),
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: cred.email,
+        password: cred.password,
+      }),
+    }
+  );
   const body = await response.json();
 
   if (response.status !== 201) {
