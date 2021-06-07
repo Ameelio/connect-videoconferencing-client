@@ -1,9 +1,12 @@
+import { VisitationType } from "./Common";
+
 export interface CallSlot {
   id: string;
   day: number;
   hour: number;
   minute: number;
   duration: number;
+  type: VisitationType;
 }
 
 export type TentativeCallSlot = Omit<CallSlot, "id">;

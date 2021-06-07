@@ -7,11 +7,16 @@ import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { format } from "date-fns";
-import { genFullName, getCallContactsFullNames } from "src/utils";
+import {
+  genFullName,
+  getCallContactsFullNames,
+  getVisitationLabel,
+} from "src/utils";
 import { DownloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Call } from "src/typings/Call";
 import MessageDisplay from "src/components/calls/MessageDisplay";
 import { fetchCallMessages } from "src/redux/modules/call";
+import { VisitationType } from "src/typings/Common";
 
 const { Content, Sider } = Layout;
 
@@ -50,17 +55,19 @@ function RecordingBase({
   return (
     <Layout>
       <Content style={WRAPPER_STYLE}>
-        <ReactPlayer
-          autoplay={true}
-          muted={true}
-          controls={true}
-          width="100%"
-          url={call.recordingPath || "/recording_demo.mp4"}
-        />
+        {call.type === VisitationType.FAMILY_VIDEO_CALL && (
+          <ReactPlayer
+            autoplay={true}
+            muted={true}
+            controls={true}
+            width="100%"
+            url={call.recordingPath || "/recording_demo.mp4"}
+          />
+        )}
         <PageHeader
           ghost={false}
           onBack={() => window.history.back()}
-          title={`Call #${callId}`}
+          title={`${getVisitationLabel(call.type)} #${callId}`}
           subTitle={facility}
           extra={[
             <Button
@@ -82,11 +89,14 @@ function RecordingBase({
           ]}
         >
           <Descriptions size="small" column={3} bordered layout="vertical">
+            <Descriptions.Item label="Visitation ID">
+              {call.id}
+            </Descriptions.Item>
             <Descriptions.Item label="Incarcerated Person">
               {call.inmates.map((inmate) => genFullName(inmate))}
             </Descriptions.Item>
             <Descriptions.Item label="Inmate ID">
-              {call.inmates.map((inmate) => inmate.id)}
+              {call.inmates.map((inmate) => inmate.inmateIdentification)}
             </Descriptions.Item>
             <Descriptions.Item label="Visitor (s)">
               {getCallContactsFullNames(call)}
@@ -103,6 +113,9 @@ function RecordingBase({
             </Descriptions.Item>
             <Descriptions.Item label="Kiosk">
               {call.kiosk.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Type">
+              {getVisitationLabel(call.type)}
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>

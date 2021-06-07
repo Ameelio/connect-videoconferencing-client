@@ -106,9 +106,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
       // TODO: change this quick hack once we integrate @bporter's neat Kubernetes
       // https://github.com/Ameelio/connect-doc-client/issues/73
       const newSocketClient = io.connect(
-        process.env.NODE_ENV === "production"
-          ? `https://${call.videoHandler.host}`
-          : target,
+        // target,
+        "https://cvh-staging.ameelio.org:31999",
         { transports: ["websocket"] }
       );
       temp[target] = newSocketClient;

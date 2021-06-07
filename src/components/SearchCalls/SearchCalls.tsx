@@ -7,7 +7,13 @@ import { isSubstring } from "src/utils";
 import Header from "../Header";
 import SearchCallsTable from "./SearchCallsTable";
 import _ from "lodash";
-import { CALL_STATUS_FILTER_OPTIONS } from "src/constants";
+import {
+  CALL_STATUS_FILTER_OPTIONS,
+  VISIATION_TYPE_LABEL_MAP,
+  VISITATION_TYPE_FILTER_OPTIONS,
+} from "src/constants";
+import { VisitationType } from "src/typings/Common";
+import { act } from "react-dom/test-utils";
 
 interface Props {
   calls: Call[];
@@ -22,7 +28,8 @@ const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
   "userParticipants.lastName": "Contact Name",
   "userParticipants.id": "Contact ID",
   "kiosk.name": "Kiosk",
-  status: "Call Status",
+  status: "Status",
+  type: "Type",
 };
 
 const SearchCalls = ({
@@ -46,6 +53,10 @@ const SearchCalls = ({
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<
     CallStatus[]
   >([]);
+
+  const [selectedVisitationType, setSelectedVisitationType] = useState<
+    VisitationType
+  >();
 
   const delayedQuery = useCallback(
     _.debounce(() => setGlobal(searchQuery), 1000),
@@ -73,6 +84,7 @@ const SearchCalls = ({
         maxDuration,
         limit,
         offset,
+        type: selectedVisitationType,
       }))().then(() => setLoading(false));
   }, [
     fetchCalls,
@@ -83,6 +95,7 @@ const SearchCalls = ({
     maxDuration,
     global,
     activeSearchFilter,
+    selectedVisitationType,
   ]);
 
   useEffect(() => {
@@ -95,6 +108,7 @@ const SearchCalls = ({
           new Date(log.scheduledStart) <= new Date(endDate)
       );
 
+    // Free Text Filters
     if (searchQuery)
       switch (activeSearchFilter) {
         case "inmateParticipants.inmateIdentification":
@@ -128,16 +142,21 @@ const SearchCalls = ({
             isSubstring(searchQuery, call.kiosk.name)
           );
           break;
-        case "status":
-          console.log(selectedStatusFilter);
-          if (!selectedStatusFilter.length) break;
-          filteredCalls = filteredCalls.filter((call) =>
-            selectedStatusFilter.includes(call.status)
-          );
-          break;
         default:
           break;
       }
+
+    // Multiple Choice Filters
+    if (activeSearchFilter === "type" && selectedVisitationType) {
+      filteredCalls = filteredCalls.filter(
+        (call) => call.type === selectedVisitationType
+      );
+    } else if (activeSearchFilter === "status" && selectedStatusFilter.length) {
+      filteredCalls = filteredCalls.filter((call) =>
+        selectedStatusFilter.includes(call.status)
+      );
+    }
+
     setFilteredLogs(filteredCalls);
   }, [
     calls,
@@ -147,16 +166,65 @@ const SearchCalls = ({
     activeSearchFilter,
     searchQuery,
     selectedStatusFilter,
+    selectedVisitationType,
   ]);
 
   const filteredOptions = CALL_STATUS_FILTER_OPTIONS.filter(
     (c) => !selectedStatusFilter.includes(c.value)
   );
 
+  const filteredVisitationTypeOptions = VISITATION_TYPE_FILTER_OPTIONS.filter(
+    (type) => selectedVisitationType !== type.value
+  );
+
+  const renderSelectFilter = () => {
+    switch (activeSearchFilter) {
+      case "status":
+        return (
+          <Select
+            mode="multiple"
+            allowClear
+            style={{ width: "auto", minWidth: 150 }}
+            placeholder="Filter by call status"
+            onChange={(value) => setSelectedStatusFilter(value as CallStatus[])}
+          >
+            {filteredOptions.map((o) => (
+              <Select.Option key={o.key} value={o.value}>
+                {o.label}
+              </Select.Option>
+            ))}
+          </Select>
+        );
+      case "type":
+        return (
+          <Select
+            allowClear
+            style={{ width: "auto", minWidth: 150 }}
+            placeholder="Filter by visitation type"
+            onChange={(value) => {
+              setSelectedVisitationType(value as VisitationType);
+            }}
+            value={
+              selectedVisitationType &&
+              VISIATION_TYPE_LABEL_MAP[selectedVisitationType]
+            }
+          >
+            {filteredVisitationTypeOptions.map((o) => (
+              <Select.Option key={o.key} value={o.value}>
+                {o.label}
+              </Select.Option>
+            ))}
+          </Select>
+        );
+      default:
+        return <div />;
+    }
+  };
+
   return (
     <Layout.Content>
       <Header
-        title="Search for Call Logs"
+        title="Search for Visitation Logs"
         subtitle="Search by different parameters and retrieve recordings of past calls"
         extra={[
           <Input.Group compact>
@@ -170,25 +238,9 @@ const SearchCalls = ({
                 </Select.Option>
               ))}
             </Select>
-            {activeSearchFilter === "status" ? (
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: "auto", minWidth: 150 }}
-                placeholder="Filter by call status"
-                onChange={(value) =>
-                  setSelectedStatusFilter([
-                    ...selectedStatusFilter,
-                    value as CallStatus,
-                  ])
-                }
-              >
-                {filteredOptions.map((o) => (
-                  <Select.Option key={o.key} value={o.value}>
-                    {o.label}
-                  </Select.Option>
-                ))}
-              </Select>
+            {activeSearchFilter === "status" ||
+            activeSearchFilter === "type" ? (
+              renderSelectFilter()
             ) : (
               <Input.Search
                 style={{ width: "auto" }}

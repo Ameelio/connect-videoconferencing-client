@@ -13,3 +13,9 @@ export interface TableColumn {
 }
 
 export type MemberType = "inmate" | "contact";
+
+export enum VisitationType {
+  FAMILY_IN_PERSON = "family_in_person_with_contact",
+  FAMILY_IN_PERSON_NO_CONTACT = "family_in_person_no_contact",
+  FAMILY_VIDEO_CALL = "family_video_call",
+}

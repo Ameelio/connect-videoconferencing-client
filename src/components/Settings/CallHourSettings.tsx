@@ -12,6 +12,7 @@ import {
 } from "src/utils";
 import { cloneObject } from "src/utils";
 import { format } from "date-fns";
+import { VisitationType } from "src/typings/Common";
 
 interface Props {
   handleSave: (callSlots: TentativeCallSlot[]) => void;
@@ -31,7 +32,13 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
 
   if (!ranges) return <div />;
 
-  const onChange = (start: Date, end: Date, day: WeekdayMap, idx: number) => {
+  const onChange = (
+    start: Date,
+    end: Date,
+    day: WeekdayMap,
+    idx: number,
+    type: VisitationType
+  ) => {
     const r = cloneObject(ranges) as WeeklySchedule;
 
     // update call block
@@ -42,11 +49,15 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
       idx,
       day,
     };
-    setCallSlots(mapCallBlockToCallSlots(r));
+    setCallSlots(mapCallBlockToCallSlots(r, type));
     setRanges(r);
   };
 
-  const renderItem = (day: WeekdayMap, ranges: CallBlock[]) => {
+  const renderItem = (
+    day: WeekdayMap,
+    ranges: CallBlock[],
+    type: VisitationType
+  ) => {
     return (
       <Row style={{ width: "100%", margin: 16 }}>
         <Col span={12}>
@@ -70,7 +81,8 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
                     values[0].toDate(),
                     values[1].toDate(),
                     day,
-                    time.idx
+                    time.idx,
+                    type
                   );
                 }}
                 format={dateFormat}
@@ -86,7 +98,8 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
                   values[0].toDate(),
                   values[1].toDate(),
                   day,
-                  ranges.length
+                  ranges.length,
+                  type
                 );
               }}
             />
@@ -106,7 +119,9 @@ const CallHourSettings = ({ handleSave, callTimes }: Props) => {
       ]}
     >
       <Space direction="vertical">
-        {WEEKDAYS.map((weekday) => renderItem(weekday, ranges[weekday]))}
+        {WEEKDAYS.map((weekday) =>
+          renderItem(weekday, ranges[weekday], VisitationType.FAMILY_VIDEO_CALL)
+        )}
       </Space>
     </Card>
   );
