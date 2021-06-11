@@ -176,6 +176,26 @@ const VideoChat: React.FC<Props> = React.memo(
           console.log("[VideoChat] Received status update", status);
           setStatus(status);
         });
+
+        rc.socket.on(
+          "participantDisconnect",
+          async (participant: CallParticipant) => {
+            setRemoteVideos((remotes) => {
+              const {
+                [getParticipantStreamId(participant)]: _,
+                ...otherRemotes
+              } = remotes;
+              return otherRemotes;
+            });
+            setRemoteAudios((remotes) => {
+              const {
+                [getParticipantStreamId(participant)]: _,
+                ...otherRemotes
+              } = remotes;
+              return otherRemotes;
+            });
+          }
+        );
       }
     }, [isAuthed, rc]);
 
