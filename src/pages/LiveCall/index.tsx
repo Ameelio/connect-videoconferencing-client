@@ -103,14 +103,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
       // initialize new sockets once
       if (target in temp) continue;
 
-      // TODO: change this quick hack once we integrate @bporter's neat Kubernetes
-      // https://github.com/Ameelio/connect-doc-client/issues/73
-      const newSocketClient = io.connect(
-        process.env.NODE_ENV === "production"
-          ? `https://${call.videoHandler.host}`
-          : target,
-        { transports: ["websocket"] }
-      );
+      const newSocketClient = io.connect(target, { transports: ["websocket"] });
       temp[target] = newSocketClient;
     }
     console.log("[Index] New socket clients", temp);

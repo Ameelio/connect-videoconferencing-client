@@ -2,6 +2,7 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "./index";
 import { Action } from "redux";
 import { BaseCall, CallMessage, CallStatus } from "src/typings/Call";
+import { VisitationType } from "src/typings/Common";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -29,10 +30,10 @@ export interface CallRO {
     port: string;
     host: string;
   };
+  type: VisitationType;
 }
 
 export function cleanCall(call: CallRO): BaseCall {
-  const { videoHandler } = call;
   return {
     id: call.id,
     facilityId: call.facilityId,
@@ -47,11 +48,7 @@ export function cleanCall(call: CallRO): BaseCall {
     schedulerId: call.schedulerId,
     schedulerType: call.schedulerType,
     messages: call.messages || [],
-    videoHandler: videoHandler
-      ? {
-          host: videoHandler.host,
-          port: videoHandler.port,
-        }
-      : undefined,
+    videoHandler: call.videoHandler,
+    type: call.type,
   };
 }

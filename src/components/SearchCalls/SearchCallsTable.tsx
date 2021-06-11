@@ -3,9 +3,10 @@ import { Button, Table, Tag } from "antd";
 import { format } from "date-fns";
 import React from "react";
 import { Call, CallStatus } from "src/typings/Call";
+import { VisitationType } from "src/typings/Common";
 import { Contact } from "src/typings/Contact";
 import { Inmate } from "src/typings/Inmate";
-import { genFullName } from "src/utils";
+import { capitalize, genFullName, getVisitationLabel } from "src/utils";
 
 interface Props {
   calls: Call[];
@@ -20,6 +21,32 @@ const SearchCallsTable: React.FC<Props> = ({
   navigate,
   openCancelCallModal,
 }) => {
+  const renderButton = (visitation: Call) => {
+    switch (visitation.status) {
+      case "scheduled":
+        return (
+          <Button
+            onClick={() => openCancelCallModal(visitation)}
+            icon={<CloseOutlined />}
+          >
+            Cancel
+          </Button>
+        );
+      case "ended":
+      case "terminated":
+        return (
+          <Button
+            onClick={() => navigate(`/call/${visitation.id}`)}
+            icon={<EyeOutlined />}
+          >
+            View
+          </Button>
+        );
+      default:
+        return <div />;
+    }
+  };
+
   return (
     <Table dataSource={calls} loading={isLoading}>
       <Table.Column
@@ -94,7 +121,17 @@ const SearchCallsTable: React.FC<Props> = ({
         key="location"
         render={(status: CallStatus) => (
           <>
-            <Tag>{status}</Tag>
+            <Tag>{capitalize(status)}</Tag>
+          </>
+        )}
+      />
+      <Table.Column
+        title="Type of Visitation"
+        dataIndex="type"
+        key="type"
+        render={(type: VisitationType) => (
+          <>
+            <Tag>{getVisitationLabel(type)}</Tag>
           </>
         )}
       />
@@ -102,23 +139,7 @@ const SearchCallsTable: React.FC<Props> = ({
       <Table.Column
         title="Recording"
         key="action"
-        render={(_text, visitation: Call) =>
-          visitation.status === "scheduled" ? (
-            <Button
-              onClick={() => openCancelCallModal(visitation)}
-              icon={<CloseOutlined />}
-            >
-              Cancel
-            </Button>
-          ) : (
-            <Button
-              onClick={() => navigate(`/call/${visitation.id}`)}
-              icon={<EyeOutlined />}
-            >
-              View
-            </Button>
-          )
-        }
+        render={(_text, visitation: Call) => renderButton(visitation)}
       />
     </Table>
   );

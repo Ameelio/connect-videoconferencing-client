@@ -1,5 +1,6 @@
 import Recording from "src/pages/Recording";
 import { WeekdayMap } from "src/utils/constants";
+import { VisitationType } from "./Common";
 import { Connection } from "./Connection";
 import { Contact } from "./Contact";
 import { Inmate } from "./Inmate";
@@ -40,7 +41,8 @@ export type SearchFilter =
   | "userParticipants.lastName"
   | "userParticipants.id"
   | "kiosk.name"
-  | "status";
+  | "status"
+  | "type";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };
@@ -55,6 +57,7 @@ export interface CallFilters {
   inmateLastName?: string;
   contactLastName?: string;
   kioskName?: string;
+  type?: VisitationType;
 }
 
 export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
@@ -95,6 +98,7 @@ export interface BaseCall {
   recordingPath?: string;
   recordingStatus?: "pending" | "processing" | "done";
   videoHandler?: CallVideoHandler;
+  type: VisitationType;
 }
 
 export interface Call extends BaseCall {

@@ -23,6 +23,7 @@ import { Dictionary } from "@reduxjs/toolkit";
 import { Inmate } from "src/typings/Inmate";
 import { notEmpty } from "./Common";
 import { Kiosk } from "src/typings/Kiosk";
+import { VisitationType } from "src/typings/Common";
 
 const callSlotToDateString = (time: CallSlot): string => {
   const date = new Date();
@@ -117,7 +118,8 @@ export const mapCallSlotsToTimeBlock = (
 };
 
 export const mapCallBlockToCallSlots = (
-  ranges: WeeklySchedule
+  ranges: WeeklySchedule,
+  type: VisitationType
 ): TentativeCallSlot[] => {
   const rangeList = WEEKDAYS.map((weekday) => ranges[weekday] || []).reduce(
     (prev, curr) => prev.concat(curr),
@@ -139,6 +141,7 @@ export const mapCallBlockToCallSlots = (
           minute: getMinutes(iterator),
           day: range.day,
           duration: range.duration,
+          type,
         });
         iterator = addMilliseconds(iterator, range.duration);
       }
@@ -304,4 +307,15 @@ export const getStreamParticipantType = (
   streamId: StreamId
 ): ParticipantType => {
   return streamId.includes("inmate") ? "inmate" : "user";
+};
+
+export const getVisitationLabel = (type: VisitationType) => {
+  switch (type) {
+    case VisitationType.FAMILY_IN_PERSON:
+      return "In-Person (Contact)";
+    case VisitationType.FAMILY_IN_PERSON_NO_CONTACT:
+      return "In-Person (No Contact)";
+    case VisitationType.FAMILY_VIDEO_CALL:
+      return "Video Call";
+  }
 };
