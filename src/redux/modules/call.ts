@@ -56,33 +56,29 @@ export const fetchCallMessages = createAsyncThunk(
   async (id: string) => {
     const body = await fetchAuthenticated(`calls/${id}/callMessages`);
     const messages = body.data as CallMessage[];
-    return { id, changes: { messages } };
+    return { id, messages };
   }
 );
 
 interface VisitationState extends EntityState<BaseCall> {
   error?: string;
+  messages: Record<string, CallMessage[]>;
 }
 
-const initialState: VisitationState = callsAdapter.getInitialState({});
+const initialState: VisitationState = callsAdapter.getInitialState({
+  messages: {},
+});
 
 export const callsSlice = createSlice({
   name: "calls",
   initialState,
   reducers: {
-    callsAddMany: callsAdapter.addMany,
-    callsSetAll: callsAdapter.setAll,
     addMessage: (
       state,
       action: PayloadAction<{ id: string; message: CallMessage }>
     ) => {
       const { id, message } = action.payload;
-      const call = callsAdapter.getSelectors().selectById(state, id);
-      if (!call) return;
-      callsAdapter.updateOne(state, {
-        id,
-        changes: { messages: [...call.messages, message] },
-      });
+      state.messages[id] = [...(state.messages[id] || []), message];
     },
   },
   extraReducers: (builder) => {
@@ -94,9 +90,9 @@ export const callsSlice = createSlice({
       ...state,
       error: action.error.message,
     }));
-    builder.addCase(fetchCallMessages.fulfilled, (state, action) =>
-      callsAdapter.updateOne(state, action.payload)
-    );
+    builder.addCase(fetchCallMessages.fulfilled, (state, action) => {
+      state.messages[action.payload.id] = action.payload.messages;
+    });
     builder.addCase(updateCallStatus.fulfilled, (state, action) => {
       callsAdapter.updateOne(state, action.payload);
       const { status } = action.payload.changes;

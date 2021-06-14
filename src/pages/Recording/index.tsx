@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { getCallInfo } from "src/redux/selectors";
+import { getCallInfo, selectMessageByCallId } from "src/redux/selectors";
 import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
@@ -42,6 +42,10 @@ function RecordingBase({
 
   const facility = useSelector(
     (state: RootState) => state.facilities.selected?.name
+  );
+
+  const messages = useSelector((state: RootState) =>
+    selectMessageByCallId(state, callId)
   );
 
   const dispatch = useAppDispatch();
@@ -141,7 +145,7 @@ function RecordingBase({
                   height: "100%",
                 }}
               >
-                {call.messages.map((message) => (
+                {messages.map((message) => (
                   <MessageDisplay message={message} call={call} />
                 ))}
               </Space>
