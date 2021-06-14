@@ -47,7 +47,6 @@ export function cleanCall(call: CallRO): BaseCall {
     rating: call.rating,
     schedulerId: call.schedulerId,
     schedulerType: call.schedulerType,
-    messages: call.messages || [],
     videoHandler: call.videoHandler,
     type: call.type,
   };

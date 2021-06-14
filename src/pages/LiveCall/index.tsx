@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { RootState, useAppDispatch } from "src/redux";
 import {
   CALL_ALERTS,
@@ -29,7 +29,7 @@ import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
-import { connect, ConnectedProps } from "react-redux";
+import { connect, ConnectedProps, useSelector } from "react-redux";
 import {
   getCallContactsFullNames,
   getCallInmatesFullNames,
@@ -54,12 +54,15 @@ const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
 const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   const [activeCallChat, setActiveCallChat] = useState<Call>();
+  const [activeMessages, setActiveMessages] = useState<CallMessage[]>([]);
   const [chatCollapsed, setChatCollapsed] = useState(false);
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
   const [page, setPage] = useState(1);
   const [freshCalls, setFreshCalls] = useState<Call[]>([]);
+  const messagesMap = useSelector((state: RootState) => state.calls.messages);
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   // map from video handler hostname to socket
   const [socketMap, setSocketMap] = useState<
     Record<string, SocketIOClient.Socket>
@@ -71,6 +74,15 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   );
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!messagesContainerRef.current) return;
+    messagesContainerRef.current.scroll({
+      top: messagesContainerRef.current.scrollHeight,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [messagesContainerRef, activeMessages]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -110,20 +122,19 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
     setSocketMap((curr) => ({ ...curr, ...temp }));
   }, [freshCalls]);
 
-  // Initialize call messages
+  // Initialize call messages sider
   useEffect(() => {
+    // if there are no calls at all, just return
     if (!visitations.length) return;
+    //  if there are no active calls, just select the first one
     else if (!activeCallChat) {
-      setActiveCallChat(visitations[0]);
+      const initialActiveChat = visitations[0];
+      setActiveCallChat(initialActiveChat);
+      setActiveMessages(messagesMap[initialActiveChat.id] || []);
     } else {
-      // in case it's already selected
-      const updatedCall = visitations.find((v) => v.id === activeCallChat.id);
-      if (!updatedCall) return;
-      if (updatedCall.messages.length !== activeCallChat.messages.length) {
-        setActiveCallChat(updatedCall);
-      }
+      setActiveMessages(messagesMap[activeCallChat.id] || []);
     }
-  }, [visitations, activeCallChat]);
+  }, [visitations, activeCallChat, messagesMap]);
 
   // Grid options
   const handleGridChange = (grid: GridOption) => {
@@ -258,9 +269,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           reverseArrow
           collapsed={chatCollapsed}
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+          className="max-h-screen shadow overflow-y-auto"
         >
           {!chatCollapsed && (
-            <div className="h-screen">
+            <div ref={messagesContainerRef}>
               <PageHeader
                 title="Chat"
                 extra={[
@@ -283,20 +295,21 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                   </Select>,
                 ]}
               />{" "}
-              <div style={WRAPPER_STYLE}>
-                <Space
-                  direction="vertical"
-                  style={{
-                    overflowY: "scroll",
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                  }}
-                >
-                  {activeCallChat?.messages.map((message) => (
-                    <MessageDisplay message={message} call={activeCallChat} />
+              <div
+                className="flex flex-col"
+                style={{
+                  ...WRAPPER_STYLE,
+                }}
+                ref={messagesContainerRef}
+              >
+                {activeCallChat &&
+                  activeMessages.map((message) => (
+                    <MessageDisplay
+                      message={message}
+                      call={activeCallChat}
+                      className="mt-4"
+                    />
                   ))}
-                </Space>
               </div>
             </div>
           )}

@@ -7,39 +7,28 @@ import { getCallContactsFullNames, getCallInmatesFullNames } from "src/utils";
 interface Props {
   message: CallMessage;
   call: Call;
+  className?: string;
 }
 
-const MessageDisplay: React.FC<Props> = ({ message, call }) => {
-  const [senderType, setSenderType] = useState<ParticipantType>();
-
-  useEffect(() => {
-    const malanId = message.senderId;
-
-    if (call.inmates.some((i) => i.malanId === malanId)) {
-      setSenderType("inmate");
-    } else if (call.contacts.some((c) => c.malanId === malanId)) {
-      setSenderType("user");
-    } else {
-      setSenderType("doc");
-    }
-  }, [message, call]);
-
+const MessageDisplay: React.FC<Props> = ({ message, call, className }) => {
   const getDisplayName = () => {
-    switch (senderType) {
+    switch (message.senderType) {
       case "inmate":
         return getCallInmatesFullNames(call);
-      case "doc":
-        return "DOC Staff";
+
       case "user":
         return getCallContactsFullNames(call);
+      case "doc":
+        return "DOC Staff";
     }
   };
 
   return (
     <Space
       direction="vertical"
-      align={senderType === "inmate" ? "end" : "start"}
+      align={message.senderType === "inmate" ? "end" : "start"}
       style={{ width: "100%" }}
+      className={className}
     >
       <Space>
         <Typography.Text strong>{getDisplayName()}</Typography.Text>

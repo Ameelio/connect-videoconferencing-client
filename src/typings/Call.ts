@@ -91,7 +91,6 @@ export interface BaseCall {
   scheduledEnd: ISOString;
   inmateIds: string[];
   userIds: string[];
-  messages: CallMessage[];
   rating: number;
   schedulerId: string;
   schedulerType: "user" | "inmate";
@@ -107,7 +106,9 @@ export interface Call extends BaseCall {
   contacts: Contact[];
 }
 
-export interface DetailedCall extends Call {}
+export interface DetailedCall extends Call {
+  messages: CallMessage[];
+}
 
 export type ParticipantType = "doc" | "inmate" | "user";
 
