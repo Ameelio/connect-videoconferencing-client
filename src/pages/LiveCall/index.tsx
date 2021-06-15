@@ -272,7 +272,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           className="max-h-screen shadow overflow-y-auto"
         >
           {!chatCollapsed && (
-            <div ref={messagesContainerRef}>
+            <div ref={messagesContainerRef} className="pb-16">
               <PageHeader
                 title="Chat"
                 extra={[
