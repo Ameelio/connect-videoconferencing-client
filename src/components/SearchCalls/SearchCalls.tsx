@@ -13,7 +13,6 @@ import {
   VISITATION_TYPE_FILTER_OPTIONS,
 } from "src/constants";
 import { VisitationType } from "src/typings/Common";
-import { act } from "react-dom/test-utils";
 
 interface Props {
   calls: Call[];
@@ -29,7 +28,7 @@ const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
   "userParticipants.id": "Contact ID",
   "kiosk.name": "Kiosk",
   status: "Status",
-  type: "Type",
+  // type: "Type",
 };
 
 const SearchCalls = ({
@@ -84,7 +83,7 @@ const SearchCalls = ({
         maxDuration,
         limit,
         offset,
-        type: selectedVisitationType,
+        // type: selectedVisitationType,
       }))().then(() => setLoading(false));
   }, [
     fetchCalls,
@@ -147,11 +146,12 @@ const SearchCalls = ({
       }
 
     // Multiple Choice Filters
-    if (activeSearchFilter === "type" && selectedVisitationType) {
-      filteredCalls = filteredCalls.filter(
-        (call) => call.type === selectedVisitationType
-      );
-    } else if (activeSearchFilter === "status" && selectedStatusFilter.length) {
+    // if (activeSearchFilter === "type" && selectedVisitationType) {
+    //   filteredCalls = filteredCalls.filter(
+    //     (call) => call.type === selectedVisitationType
+    //   );
+    // }
+    if (activeSearchFilter === "status" && selectedStatusFilter.length) {
       filteredCalls = filteredCalls.filter((call) =>
         selectedStatusFilter.includes(call.status)
       );
@@ -195,27 +195,27 @@ const SearchCalls = ({
             ))}
           </Select>
         );
-      case "type":
-        return (
-          <Select
-            allowClear
-            style={{ width: "auto", minWidth: 150 }}
-            placeholder="Filter by visitation type"
-            onChange={(value) => {
-              setSelectedVisitationType(value as VisitationType);
-            }}
-            value={
-              selectedVisitationType &&
-              VISIATION_TYPE_LABEL_MAP[selectedVisitationType]
-            }
-          >
-            {filteredVisitationTypeOptions.map((o) => (
-              <Select.Option key={o.key} value={o.value}>
-                {o.label}
-              </Select.Option>
-            ))}
-          </Select>
-        );
+      // case "type":
+      //   return (
+      //     <Select
+      //       allowClear
+      //       style={{ width: "auto", minWidth: 150 }}
+      //       placeholder="Filter by visitation type"
+      //       onChange={(value) => {
+      //         setSelectedVisitationType(value as VisitationType);
+      //       }}
+      //       value={
+      //         selectedVisitationType &&
+      //         VISIATION_TYPE_LABEL_MAP[selectedVisitationType]
+      //       }
+      //     >
+      //       {filteredVisitationTypeOptions.map((o) => (
+      //         <Select.Option key={o.key} value={o.value}>
+      //           {o.label}
+      //         </Select.Option>
+      //       ))}
+      //     </Select>
+      //   );
       default:
         return <div />;
     }
@@ -238,8 +238,7 @@ const SearchCalls = ({
                 </Select.Option>
               ))}
             </Select>
-            {activeSearchFilter === "status" ||
-            activeSearchFilter === "type" ? (
+            {activeSearchFilter === "status" ? (
               renderSelectFilter()
             ) : (
               <Input.Search

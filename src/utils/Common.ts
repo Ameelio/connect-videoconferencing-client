@@ -1,5 +1,6 @@
 import { EventInput } from "@fullcalendar/react";
 import { addSeconds, format, differenceInSeconds } from "date-fns";
+import { snakeCase } from "snake-case";
 import { toQueryString } from "src/api/Common";
 import { CallFilters, Call } from "src/typings/Call";
 
@@ -55,12 +56,12 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
         filters.scheduledStart.rangeEnd
       ) {
         options.push([
-          key,
+          snakeCase(key),
           `${filters.scheduledStart.rangeStart},${filters.scheduledStart.rangeEnd}`,
         ]);
       }
     } else if (filters[key]) {
-      options.push([key, `${filters[key]}`]);
+      options.push([snakeCase(key), `${filters[key]}`]);
     }
   }
 

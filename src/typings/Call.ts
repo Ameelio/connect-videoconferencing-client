@@ -41,8 +41,8 @@ export type SearchFilter =
   | "userParticipants.lastName"
   | "userParticipants.id"
   | "kiosk.name"
-  | "status"
-  | "type";
+  | "status";
+// | "type";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };
@@ -57,7 +57,7 @@ export interface CallFilters {
   inmateLastName?: string;
   contactLastName?: string;
   kioskName?: string;
-  type?: VisitationType;
+  // type?: VisitationType;
 }
 
 export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
