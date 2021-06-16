@@ -8,14 +8,14 @@ import { contactsSlice } from "./modules/contact";
 import { callsSlice } from "./modules/call";
 import { facilitiesSlice } from "./modules/facility";
 import { connectRouter, routerMiddleware } from "connected-react-router";
-import { createBrowserHistory, History } from "history";
+import { createHashHistory, History } from "history";
 import { socketsSlice } from "./modules/socket";
 import { groupsSlice } from "./modules/group";
 import { kiosksSlice } from "./modules/kiosk";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { modalsSlice } from "./modules/modal";
 
-export const history = createBrowserHistory();
+export const history = createHashHistory();
 
 export const createRootReducer = (history: History) =>
   combineReducers({

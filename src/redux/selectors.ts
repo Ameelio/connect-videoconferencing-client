@@ -34,6 +34,10 @@ export const {
   selectAll: selectAllCalls,
 } = callsAdapter.getSelectors<RootState>((state) => state.calls);
 
+export const selectMessageByCallId = (state: RootState, callId: string) => {
+  return state.calls.messages[callId] || [];
+};
+
 export const {
   selectById: selectStaffByIdd,
   selectAll: selectAllStaff,

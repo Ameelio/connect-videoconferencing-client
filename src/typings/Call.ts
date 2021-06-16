@@ -41,8 +41,8 @@ export type SearchFilter =
   | "userParticipants.lastName"
   | "userParticipants.id"
   | "kiosk.name"
-  | "status"
-  | "type";
+  | "status";
+// | "type";
 
 export interface CallFilters {
   scheduledStart?: { rangeStart: number; rangeEnd: number };
@@ -57,7 +57,7 @@ export interface CallFilters {
   inmateLastName?: string;
   contactLastName?: string;
   kioskName?: string;
-  type?: VisitationType;
+  // type?: VisitationType;
 }
 
 export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
@@ -91,7 +91,6 @@ export interface BaseCall {
   scheduledEnd: ISOString;
   inmateIds: string[];
   userIds: string[];
-  messages: CallMessage[];
   rating: number;
   schedulerId: string;
   schedulerType: "user" | "inmate";
@@ -107,7 +106,9 @@ export interface Call extends BaseCall {
   contacts: Contact[];
 }
 
-export interface DetailedCall extends Call {}
+export interface DetailedCall extends Call {
+  messages: CallMessage[];
+}
 
 export type ParticipantType = "doc" | "inmate" | "user";
 

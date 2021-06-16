@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { getCallInfo } from "src/redux/selectors";
+import { getCallInfo, selectMessageByCallId } from "src/redux/selectors";
 import { Button, Descriptions, Layout, PageHeader, Space } from "antd";
 import ReactPlayer from "react-player";
 import { WRAPPER_STYLE } from "src/styles/styles";
@@ -44,6 +44,10 @@ function RecordingBase({
     (state: RootState) => state.facilities.selected?.name
   );
 
+  const messages = useSelector((state: RootState) =>
+    selectMessageByCallId(state, callId)
+  );
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -55,38 +59,20 @@ function RecordingBase({
   return (
     <Layout>
       <Content style={WRAPPER_STYLE}>
-        {call.type === VisitationType.FAMILY_VIDEO_CALL && (
+        {call.recordingPath && (
           <ReactPlayer
             autoplay={true}
             muted={true}
             controls={true}
             width="100%"
-            url={call.recordingPath || "/recording_demo.mp4"}
+            url={call.recordingPath}
           />
         )}
         <PageHeader
           ghost={false}
           onBack={() => window.history.back()}
-          title={`${getVisitationLabel(call.type)} #${callId}`}
+          title={`Call ${callId}`}
           subTitle={facility}
-          extra={[
-            <Button
-              key="download"
-              download
-              target={"_blank"}
-              icon={<DownloadOutlined />}
-              href={call.recordingPath}
-            >
-              Download
-            </Button>,
-            <Button
-              key="info"
-              onClick={() => console.log("add connection page")}
-              icon={<InfoCircleOutlined />}
-            >
-              Connection
-            </Button>,
-          ]}
         >
           <Descriptions size="small" column={3} bordered layout="vertical">
             <Descriptions.Item label="Visitation ID">
@@ -114,8 +100,10 @@ function RecordingBase({
             <Descriptions.Item label="Kiosk">
               {call.kiosk.name}
             </Descriptions.Item>
+            {/* TODO: add this back once we have visitation types */}
             <Descriptions.Item label="Type">
-              {getVisitationLabel(call.type)}
+              {/* {getVisitationLabel(call.type)} */}
+              Call
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>
@@ -141,7 +129,7 @@ function RecordingBase({
                   height: "100%",
                 }}
               >
-                {call.messages.map((message) => (
+                {messages.map((message) => (
                   <MessageDisplay message={message} call={call} />
                 ))}
               </Space>
