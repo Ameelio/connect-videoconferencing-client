@@ -22,7 +22,7 @@ export interface CallRO {
   scheduledEnd: Date;
   inmateIds: string[];
   userIds: string[];
-  rating: number;
+  averageRating: number;
   schedulerId: string;
   schedulerType: "user" | "inmate";
   messages: CallMessage[];
@@ -44,7 +44,7 @@ export function cleanCall(call: CallRO): BaseCall {
     scheduledEnd: new Date(call.scheduledEnd).toISOString(),
     inmateIds: call.inmateIds,
     userIds: call.userIds,
-    rating: call.rating,
+    rating: call.averageRating,
     schedulerId: call.schedulerId,
     schedulerType: call.schedulerType,
     videoHandler: call.videoHandler,
