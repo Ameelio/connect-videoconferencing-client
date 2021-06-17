@@ -57,6 +57,7 @@ export interface CallFilters {
   inmateLastName?: string;
   contactLastName?: string;
   kioskName?: string;
+  status?: CallStatus;
   // type?: VisitationType;
 }
 

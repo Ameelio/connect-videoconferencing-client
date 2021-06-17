@@ -13,6 +13,7 @@ interface Props {
   accept: (connection: Connection) => void;
   reject: (connection: Connection) => void;
   navigate: (path: string) => void;
+  loading?: boolean;
 }
 
 const ConnectionRequests = ({
@@ -20,9 +21,10 @@ const ConnectionRequests = ({
   accept,
   reject,
   navigate,
+  loading,
 }: Props) => {
   return (
-    <Table dataSource={connections}>
+    <Table dataSource={connections} loading={loading}>
       <Table.Column
         title=""
         dataIndex="inmate"

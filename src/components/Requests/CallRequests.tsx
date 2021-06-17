@@ -14,11 +14,18 @@ interface Props {
   accept: (connection: Call) => void;
   reject: (connection: Call) => void;
   navigate: (path: string) => void;
+  loading?: boolean;
 }
 
-export const CallRequests = ({ calls, accept, reject, navigate }: Props) => {
+export const CallRequests = ({
+  calls,
+  accept,
+  reject,
+  navigate,
+  loading,
+}: Props) => {
   return (
-    <Table dataSource={calls}>
+    <Table dataSource={calls} loading={loading}>
       <Table.Column
         title=""
         dataIndex="inmates"

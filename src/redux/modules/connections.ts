@@ -37,19 +37,22 @@ export const connectionsAdapter = createEntityAdapter<BaseConnection>();
 
 export const connectionsSlice = createSlice({
   name: "connections",
-  initialState: connectionsAdapter.getInitialState(),
-  reducers: {
-    connectionsAddOne: connectionsAdapter.addOne,
-    connectionsAddMany: connectionsAdapter.addMany,
-    connectionsUpdate: connectionsAdapter.updateOne,
-  },
+  initialState: connectionsAdapter.getInitialState({
+    loading: false,
+    error: null,
+  }),
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchConnections.fulfilled, (state, action) =>
-      connectionsAdapter.addMany(state, action.payload)
-    );
-    builder.addCase(fetchConnections.rejected, (state, action) =>
-      console.log(action.error)
-    );
+    builder.addCase(fetchConnections.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchConnections.fulfilled, (state, action) => {
+      state.loading = false;
+      connectionsAdapter.upsertMany(state, action.payload);
+    });
+    builder.addCase(fetchConnections.rejected, (state, action) => {
+      console.log(action.error.message);
+    });
     builder.addCase(updateConnection.fulfilled, (state, action) => {
       const { status, connectionId } = action.payload;
       switch (status) {

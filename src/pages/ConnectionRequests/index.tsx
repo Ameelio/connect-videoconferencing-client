@@ -1,6 +1,9 @@
-import React from "react";
-import { useAppDispatch } from "src/redux";
-import { updateConnection } from "src/redux/modules/connections";
+import React, { useEffect } from "react";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
+import {
+  fetchConnections,
+  updateConnection,
+} from "src/redux/modules/connections";
 import {
   BaseConnection,
   Connection,
@@ -17,6 +20,9 @@ const RequestsPage: React.FC = () => {
   const connections = useConnectionRequests();
 
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(
+    (state: RootState) => state.connections.loading
+  );
 
   const handleConnectionUpdate = (
     request: BaseConnection,
@@ -24,6 +30,11 @@ const RequestsPage: React.FC = () => {
   ): void => {
     dispatch(updateConnection({ connectionId: request.id, status }));
   };
+
+  useEffect(() => {
+    // TODO: improve to only re-fetch connection requests here
+    dispatch(fetchConnections());
+  }, [dispatch]);
 
   return (
     <Layout.Content>
@@ -41,6 +52,7 @@ const RequestsPage: React.FC = () => {
           }
           connections={connections}
           navigate={(path: string) => dispatch(push(path))}
+          loading={loading}
         />
       </div>
     </Layout.Content>

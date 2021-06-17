@@ -1,9 +1,9 @@
-import React from "react";
-import { useAppDispatch } from "src/redux";
+import React, { useEffect } from "react";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { CallRequests } from "src/components/Requests";
 import { useCallsWithStatus } from "src/hooks/useCalls";
 import { Call, CallStatus } from "src/typings/Call";
-import { updateCallStatus } from "src/redux/modules/call";
+import { fetchCalls, updateCallStatus } from "src/redux/modules/call";
 import { push } from "connected-react-router";
 import Header from "src/components/Header";
 import { Layout } from "antd";
@@ -14,9 +14,15 @@ const CallRequestsPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
+  const loading = useAppSelector((state: RootState) => state.calls.loading);
+
   const handleCallUpdate = (call: Call, status: CallStatus): void => {
     dispatch(updateCallStatus({ id: call.id, status }));
   };
+
+  useEffect(() => {
+    dispatch(fetchCalls({ status: "pending_approval" }));
+  }, [dispatch]);
 
   return (
     <Layout.Content>
@@ -30,6 +36,7 @@ const CallRequestsPage: React.FC = () => {
           accept={(call: Call) => handleCallUpdate(call, "scheduled")}
           reject={(call: Call) => handleCallUpdate(call, "rejected")}
           navigate={(path: string) => dispatch(push(path))}
+          loading={loading}
         />
       </div>
     </Layout.Content>

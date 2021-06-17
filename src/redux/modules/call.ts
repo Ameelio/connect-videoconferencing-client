@@ -63,10 +63,12 @@ export const fetchCallMessages = createAsyncThunk(
 interface VisitationState extends EntityState<BaseCall> {
   error?: string;
   messages: Record<string, CallMessage[]>;
+  loading: boolean;
 }
 
 const initialState: VisitationState = callsAdapter.getInitialState({
   messages: {},
+  loading: false,
 });
 
 export const callsSlice = createSlice({
@@ -85,11 +87,16 @@ export const callsSlice = createSlice({
     builder.addCase(fetchCalls.fulfilled, (state, action) => {
       callsAdapter.upsertMany(state, action.payload);
       state.error = undefined;
+      state.loading = false;
     });
     builder.addCase(fetchCalls.rejected, (state, action) => ({
       ...state,
       error: action.error.message,
+      loading: false,
     }));
+    builder.addCase(fetchCalls.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(fetchCallMessages.fulfilled, (state, action) => {
       state.messages[action.payload.id] = action.payload.messages;
     });
