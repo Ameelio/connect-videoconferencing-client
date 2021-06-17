@@ -85,15 +85,20 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   }, [messagesContainerRef, activeMessages]);
 
   useEffect(() => {
+    dispatch(
+      fetchCalls({
+        "call.status": ["live"],
+      })
+    );
     const interval = setInterval(() => {
       dispatch(
         fetchCalls({
-          "call.status": ["live", "missing_monitor"],
+          "call.status": ["live"],
         })
       );
     }, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const newCalls = visitations.filter(
