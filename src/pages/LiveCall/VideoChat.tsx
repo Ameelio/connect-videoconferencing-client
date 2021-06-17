@@ -49,7 +49,7 @@ declare global {
 function Loader(): ReactElement {
   return (
     <div className="video-loading-spinner">
-      <Spin tip="Loading video call..." />
+      <Spin tip="Waiting for participants to join..." />
     </div>
   );
 }
@@ -228,7 +228,7 @@ const VideoChat: React.FC<Props> = React.memo(
     }, [rc]);
 
     useEffect(() => {
-      if (!status) return;
+      if (!status || status === "missing_monitor") return;
       updateCallStatus(callId, status);
     }, [status, callId]);
 
