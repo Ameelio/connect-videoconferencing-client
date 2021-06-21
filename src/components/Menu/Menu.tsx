@@ -7,6 +7,10 @@ import {
   SettingOutlined,
   UserAddOutlined,
   DownOutlined,
+  SolutionOutlined,
+  SafetyOutlined,
+  SearchOutlined,
+  VideoCameraAddOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { Facility, SelectedFacility } from "src/typings/Facility";
@@ -107,27 +111,27 @@ export default function Menu({
           icon={<UserAddOutlined />}
           onClick={() => history.push("/connection-requests")}
         >
-          Visitation List Requests
+          Visitor Requests
           <Badge count={requestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="call-requests"
-          icon={<UserAddOutlined />}
+          icon={<VideoCameraAddOutlined />}
           onClick={() => history.push("/call-requests")}
         >
-          Scheduling Requests
+          Visitation Requests
           <Badge count={callRequestsCount} />
         </AntdMenu.Item>
         <AntdMenu.Item
           key="search"
-          icon={<UserAddOutlined />}
+          icon={<SearchOutlined />}
           onClick={() => history.push("/logs")}
         >
           Search for Visits
         </AntdMenu.Item>
         <AntdMenu.Item
           key="staff"
-          icon={<TeamOutlined />}
+          icon={<SafetyOutlined />}
           onClick={() => history.push("/staff")}
         >
           Staff
@@ -138,6 +142,13 @@ export default function Menu({
           onClick={() => history.push("/members")}
         >
           Incarcerated People
+        </AntdMenu.Item>
+        <AntdMenu.Item
+          key="visitors"
+          icon={<SolutionOutlined />}
+          onClick={() => history.push("/visitors")}
+        >
+          Visitors
         </AntdMenu.Item>
         <AntdMenu.Item
           key="settings"

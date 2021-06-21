@@ -50,18 +50,23 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
   const options: string[][] = [];
   for (const k of Object.keys(filters)) {
     const key = k as keyof CallFilters;
+    const snakeCaseKey = key
+      .split(".")
+      .map((k) => snakeCase(key))
+      .join(".");
+    console.log(snakeCaseKey);
     if (key === "scheduledStart") {
       if (
         filters.scheduledStart?.rangeStart &&
         filters.scheduledStart.rangeEnd
       ) {
         options.push([
-          snakeCase(key),
+          snakeCaseKey,
           `${filters.scheduledStart.rangeStart},${filters.scheduledStart.rangeEnd}`,
         ]);
       }
     } else if (filters[key]) {
-      options.push([snakeCase(key), `${filters[key]}`]);
+      options.push([snakeCaseKey, `${filters[key]}`]);
     }
   }
 

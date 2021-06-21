@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { selectAllInmates } from "src/redux/selectors";
-import { Layout, Table, Button, Input } from "antd";
+import { Layout, Table, Button, Input, Select } from "antd";
 import { RootState } from "src/redux";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { push } from "connected-react-router";
-import Header from "src/components/Header/Header";
+import Header from "src/components/Header";
 import { Inmate } from "src/typings/Inmate";
 import { EyeOutlined } from "@ant-design/icons";
 import { genFullName, isSubstring } from "src/utils";
@@ -23,22 +23,48 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+type TFilter = "firstName" | "lastName" | "inmateIdentification";
+
+const LABEL_TO_FILTER_MAP: Record<TFilter, string> = {
+  firstName: "First Name",
+  lastName: "Last Name",
+  inmateIdentification: "Inmate ID",
+};
+
 const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   inmates,
   push,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredInmates, setFilteredInmates] = useState<Inmate[]>([]);
+  const [activeSearchFilter, setActiveSearchFilter] = useState<TFilter>(
+    "firstName"
+  );
 
   useEffect(() => {
-    setFilteredInmates(
-      searchQuery.length
-        ? inmates.filter((i) =>
-            isSubstring(searchQuery, i.inmateIdentification)
+    switch (activeSearchFilter) {
+      case "firstName":
+        setFilteredInmates(
+          inmates.filter((v) => isSubstring(searchQuery, v.firstName))
+        );
+        break;
+      case "lastName":
+        setFilteredInmates(
+          inmates.filter((v) => isSubstring(searchQuery, v.lastName))
+        );
+        break;
+      case "inmateIdentification":
+        setFilteredInmates(
+          inmates.filter((v) =>
+            isSubstring(searchQuery, v.inmateIdentification)
           )
-        : inmates
-    );
-  }, [inmates, searchQuery]);
+        );
+        break;
+      default:
+        setFilteredInmates(inmates);
+        break;
+    }
+  }, [activeSearchFilter, searchQuery, inmates]);
 
   const columns = [
     {
@@ -47,11 +73,7 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
       editable: false,
       render: (_text: string, inmate: Inmate) => (
         <>
-          <Avatar
-            fallback={genFullName(inmate)}
-            src={inmate.profileImagePath}
-            size={48}
-          />
+          <Avatar fallback={genFullName(inmate)} size={48} />
         </>
       ),
     },
@@ -98,16 +120,23 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
         title="Incarcerated People"
         subtitle="Manage the members of your facility, access detailed information, and edit their info as needed."
         extra={[
-          <Input.Group compact className="w-screen">
+          <Input.Group compact>
+            <Select
+              defaultValue={Object.keys(LABEL_TO_FILTER_MAP)[0] as TFilter}
+              onSelect={(value) => setActiveSearchFilter(value as TFilter)}
+            >
+              {Object.keys(LABEL_TO_FILTER_MAP).map((key) => (
+                <Select.Option key={key} value={key as TFilter}>
+                  {LABEL_TO_FILTER_MAP[key as TFilter]}
+                </Select.Option>
+              ))}
+            </Select>
             <Input.Search
-              className="w-1/4"
-              placeholder={`Search by Incarcerated Person ID...`}
+              style={{ width: "auto" }}
+              placeholder={`Search by ${LABEL_TO_FILTER_MAP[activeSearchFilter]}...`}
               allowClear
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onSearch={(value) => {
-                setSearchQuery(value);
-              }}
+              onChange={(event) => setSearchQuery(event.target.value)}
             />
           </Input.Group>,
         ]}
