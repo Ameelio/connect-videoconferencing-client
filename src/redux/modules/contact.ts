@@ -6,18 +6,16 @@ import {
 import { fetchAuthenticated } from "src/api/Common";
 import { Contact } from "src/typings/Contact";
 import { IdentificationImages } from "src/typings/IdentificationImage";
+import { showToast } from "src/utils";
 
-export const fetchContacts = createAsyncThunk(
-  "contact/fetchContacts",
-  async () => {
-    const body = await fetchAuthenticated(`contacts`);
+const FETCH_CONTACTS = "contact/fetchContact";
+export const fetchContacts = createAsyncThunk(FETCH_CONTACTS, async () => {
+  const body = await fetchAuthenticated(`contacts`);
 
-    const contacts = (body.data as Record<string, unknown>)
-      .results as Contact[];
+  const contacts = (body.data as Record<string, unknown>).results as Contact[];
 
-    return contacts;
-  }
-);
+  return contacts;
+});
 
 export const fetchContactIdImages = createAsyncThunk(
   "contacts/fetchContactIdImages",
@@ -36,17 +34,22 @@ export const contactsAdapter = createEntityAdapter<Contact>();
 
 export const contactsSlice = createSlice({
   name: "inmates",
-  initialState: contactsAdapter.getInitialState(),
+  initialState: contactsAdapter.getInitialState({ loading: false }),
   reducers: {
     contactsAddMany: contactsAdapter.addMany,
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchContacts.fulfilled, (state, action) =>
-      contactsAdapter.setAll(state, action.payload)
-    );
-    builder.addCase(fetchContacts.rejected, (state, action) =>
-      console.log("error")
-    );
+    builder.addCase(fetchContacts.fulfilled, (state, action) => {
+      contactsAdapter.setAll(state, action.payload);
+      state.loading = false;
+    });
+    builder.addCase(fetchContacts.rejected, (state, action) => {
+      showToast(FETCH_CONTACTS, "Failed to load list of visitors", "error");
+      state.loading = false;
+    });
+    builder.addCase(fetchContacts.pending, (state) => {
+      state.loading = true;
+    });
   },
 });
 

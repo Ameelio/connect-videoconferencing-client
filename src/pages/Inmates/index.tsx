@@ -5,7 +5,7 @@ import { Layout, Table, Button, Input } from "antd";
 import { RootState } from "src/redux";
 import { WRAPPER_STYLE } from "src/styles/styles";
 import { push } from "connected-react-router";
-import Header from "src/components/Header/Header";
+import Header from "src/components/Header";
 import { Inmate } from "src/typings/Inmate";
 import { EyeOutlined } from "@ant-design/icons";
 import { genFullName, isSubstring } from "src/utils";

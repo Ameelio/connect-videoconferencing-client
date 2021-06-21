@@ -13,6 +13,7 @@ import RecordingPage from "src/pages/Recording";
 import CallRequestsPage from "src/pages/CallRequests";
 
 import { Route } from "src/typings/Common";
+import VisitorsPage from "src/pages/Visitors";
 
 export const ROUTES: Route[] = [
   { path: "/calendar", component: CalendarPage, label: "Page" },
@@ -42,5 +43,6 @@ export const ROUTES: Route[] = [
   { path: "/visitations", component: LiveVisitationsPage, label: "Live Calls" },
   { path: "/settings", component: SettingsPage, label: "Settings" },
   { path: "/call/:id", component: RecordingPage, label: "Past Call" },
+  { path: "/visitors", component: VisitorsPage, label: "Visitors" },
   { path: "/", component: DashboardPage, label: "Dashboard" },
 ];

@@ -15,11 +15,8 @@ export function useConnections() {
   const inmateEnts = useAppSelector(selectInmateEntities);
 
   useEffect(() => {
-    const requests = baseConnections.filter(
-      (connection) => connection.status === "pending"
-    );
     setConnections(
-      loadAllConnectionEntities(requests, contactEnts, inmateEnts)
+      loadAllConnectionEntities(baseConnections, contactEnts, inmateEnts)
     );
   }, [baseConnections, contactEnts, inmateEnts]);
 
