@@ -137,7 +137,7 @@ const SearchCallsTable: React.FC<Props> = ({
       />
 
       <Table.Column
-        title="Recording"
+        title=""
         key="action"
         render={(_text, visitation: Call) => renderButton(visitation)}
       />
