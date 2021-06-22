@@ -157,7 +157,7 @@ const Dashboard: React.FC<Props> = ({
           style={{ ...FULL_WIDTH, ...WRAPPER_STYLE }}
           size="large"
         >
-          <Row gutter={16}>
+          <Row>
             <Col span={8} className="bg-white">
               <MetricCard
                 title="Calls This Week"
@@ -173,13 +173,7 @@ const Dashboard: React.FC<Props> = ({
             <Col span={8} className="bg-white">
               <MetricCard
                 title="Live Video Calls"
-                value={
-                  calls.filter(
-                    (call) =>
-                      call.status === "live" ||
-                      call.status === "missing_monitor"
-                  ).length
-                }
+                value={calls.filter((call) => call.status === "live").length}
                 prefix={<VideoCameraOutlined />}
                 suffix="calls"
               />
