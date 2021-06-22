@@ -10,12 +10,7 @@ import SearchCalls from "src/components/SearchCalls";
 import { openModal } from "src/redux/modules/modal";
 
 const mapStateToProps = (state: RootState) => ({
-  logs: getCallsInfo(state, selectAllCalls(state)).filter(
-    (call) =>
-      call.status === "ended" ||
-      call.status === "terminated" ||
-      call.status === "scheduled"
-  ) as Call[],
+  logs: getCallsInfo(state, selectAllCalls(state)) as Call[],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
