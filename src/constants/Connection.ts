@@ -2,20 +2,20 @@ import { RejectionReason } from "src/typings/Common";
 
 export const DEFAULT_CONNECTION_REJECTION_REASONS: RejectionReason[] = [
   {
-    title: "Bad ID",
+    title: "Unclear Photo ID",
     description:
-      "Please re-take the photos of your governments ID and re-submit the connection request.",
+      "The pictures you originally submitted are unclear. Please re-take the pictures of your governments ID and re-submit the connection request.",
     key: "bad_id",
   },
   {
-    title: "Not Allowed",
+    title: "Not an Approved Visitor",
     description:
-      "You're unfortunately not allowed to be added to the visitation list of this incarcerated person.",
+      "You must be an approved visitor to request a connection. Please refer to ",
     key: "not_allowed",
   },
   {
-    title: "Invalid Information",
-    description: "You submitted incorrect or incomplete information.",
+    title: "Inaccurate/Incomplete Information",
+    description: "You submitted inaccurate or incomplete information.",
     key: "invalid_info",
   },
 ];
