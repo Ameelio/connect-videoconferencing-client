@@ -99,7 +99,7 @@ export const selectLiveCalls = (state: RootState): Call[] => {
     state,
     calls.filter(
       (call) =>
-        (call.status === "missing_monitor" || call.status === "live") &&
+        call.status === "live" &&
         !!call.videoHandler &&
         new Date(call.scheduledEnd) > new Date()
     )

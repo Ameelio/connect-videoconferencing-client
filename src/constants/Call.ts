@@ -1,5 +1,5 @@
 import { CallStatus } from "src/typings/Call";
-import { VisitationType } from "src/typings/Common";
+import { RejectionReason, VisitationType } from "src/typings/Common";
 
 export const CALL_STATUS_FILTER_OPTIONS: {
   label: string;
@@ -50,3 +50,30 @@ export const VISIATION_TYPE_LABEL_MAP = {
   [VisitationType.FAMILY_IN_PERSON_NO_CONTACT]: "Family In Person (No Contact)",
   [VisitationType.FAMILY_VIDEO_CALL]: "Family Video Call",
 };
+
+export const DEFAULT_CALL_REJECTION_REASONS: RejectionReason[] = [
+  {
+    title: "Storm/Severe Weather",
+    description:
+      "Due to the risk of severe weather, we'll have to cancel all visitation appointments for today.",
+    key: "storm",
+  },
+  {
+    title: "Lockdown",
+    description:
+      "ICIW is on lockdown. We're very sorry to inform all visitations have been cancelled.",
+    key: "lockdown",
+  },
+  {
+    title: "Device is under maintenance",
+    description:
+      "The kiosk you the call is not working anymore. Please try re-schedule the call",
+    key: "broken",
+  },
+  {
+    title: "Sickness",
+    description:
+      "Your incarcerated loved one is feeling sick and won't be able to join the call today.",
+    key: "sick",
+  },
+];

@@ -62,18 +62,14 @@ export interface CallFilters {
 }
 
 export type InCallStatus = "live" | "missing_monitor" | "ended" | "terminated";
+export type CancelledCallStatus = "rejected" | "cancelled";
+type PreCallStatus = "scheduled" | "pending_approval";
 
-type GeneralCallStatus =
-  | "ended"
-  | "scheduled"
-  | "terminated"
-  | "live"
-  | "pending_approval"
-  | "cancelled"
-  | "rejected"
+export type CallStatus =
+  | PreCallStatus
+  | InCallStatus
+  | CancelledCallStatus
   | "no_show";
-
-export type CallStatus = InCallStatus | GeneralCallStatus;
 
 export type ISOString = string;
 
