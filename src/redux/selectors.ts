@@ -93,19 +93,6 @@ export const getCallInfo = (state: RootState, callId: string) => {
   return getCallEntities(state, plainCall) as Call;
 };
 
-export const selectLiveCalls = (state: RootState): Call[] => {
-  const calls = selectAllCalls(state);
-  return getCallsInfo(
-    state,
-    calls.filter(
-      (call) =>
-        call.status === "live" &&
-        !!call.videoHandler &&
-        new Date(call.scheduledEnd) > new Date()
-    )
-  );
-};
-
 // Inmate
 export const selectInmateCallsById = (state: RootState, inmateId: string) => {
   const inmate = selectInmateById(state, inmateId);

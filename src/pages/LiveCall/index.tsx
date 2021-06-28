@@ -7,7 +7,6 @@ import {
 } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
-import { selectLiveCalls } from "src/redux/selectors";
 import {
   Layout,
   Row,
@@ -29,30 +28,23 @@ import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   getCallContactsFullNames,
   getCallInmatesFullNames,
   getFirstNames,
   getVideoHandlerHostname,
 } from "src/utils";
+import { useCallsWithStatus } from "src/hooks/useCalls";
 
 const { Content, Sider } = Layout;
 
 const { addMessage } = callsActions;
 
-const mapStateToProps = (state: RootState) => ({
-  visitations: selectLiveCalls(state),
-});
-
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
 const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
-const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
+const LiveVisitationContainer: React.FC = () => {
   const [activeCallChat, setActiveCallChat] = useState<Call>();
   const [activeMessages, setActiveMessages] = useState<CallMessage[]>([]);
   const [chatCollapsed, setChatCollapsed] = useState(false);
@@ -61,6 +53,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   const [page, setPage] = useState(1);
   const [freshCalls, setFreshCalls] = useState<Call[]>([]);
   const messagesMap = useSelector((state: RootState) => state.calls.messages);
+
+  const visitations = useCallsWithStatus("live");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   // map from video handler hostname to socket
@@ -324,4 +318,4 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   );
 };
 
-export default connector(LiveVisitationContainer);
+export default LiveVisitationContainer;
