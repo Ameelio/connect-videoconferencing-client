@@ -54,7 +54,6 @@ export const createCallOptionsParam = (filters: CallFilters): string => {
       .split(".")
       .map((k) => snakeCase(key))
       .join(".");
-    console.log(snakeCaseKey);
     if (key === "scheduledStart") {
       if (
         filters.scheduledStart?.rangeStart &&

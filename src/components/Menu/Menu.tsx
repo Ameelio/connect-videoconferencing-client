@@ -62,8 +62,8 @@ export default function Menu({
           </AntdMenu.Item>
         ))}
       </SubMenu>
-      <AntdMenu.Item>
-        <span onClick={logout}>Log out</span>
+      <AntdMenu.Item onClick={logout}>
+        <span>Log out</span>
       </AntdMenu.Item>
     </AntdMenu>
   );
