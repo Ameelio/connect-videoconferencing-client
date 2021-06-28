@@ -110,11 +110,11 @@ function RecordingBase({
       </Content>
       <Sider
         theme="light"
-        style={{ height: "100vh", maxHeight: "100vh" }}
         width={300}
         collapsible
         collapsed={chatCollapsed}
         onCollapse={(collapsed) => setChatCollapsed(collapsed)}
+        className="h-screen max-h-screen shadow overflow-y-auto"
       >
         {!chatCollapsed && (
           <div>

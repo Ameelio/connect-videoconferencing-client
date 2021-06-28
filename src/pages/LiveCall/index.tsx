@@ -274,7 +274,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           reverseArrow
           collapsed={chatCollapsed}
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
-          className="max-h-screen shadow overflow-y-auto"
+          className="h-screen max-h-screen shadow overflow-y-auto"
         >
           {!chatCollapsed && (
             <div ref={messagesContainerRef} className="pb-16">
