@@ -84,7 +84,7 @@ const ProfileHeader: React.FC<Props> = ({
             <Descriptions.Item label="Last Name">
               {persona.lastName}
             </Descriptions.Item>
-            <Descriptions.Item label="Last Name">
+            <Descriptions.Item label="Email">
               {(persona as Contact).email}
             </Descriptions.Item>
             <Descriptions.Item label="Front ID">

@@ -57,11 +57,7 @@ const ConnectionRequests = ({
         key="contactProfilePic"
         render={(contact: Contact) => (
           <>
-            <Avatar
-              src={contact.profileImagePath}
-              fallback={genFullName(contact)}
-              size={64}
-            />
+            <Avatar fallback={genFullName(contact)} size={64} />
           </>
         )}
       />

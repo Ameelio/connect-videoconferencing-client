@@ -63,11 +63,7 @@ export const CallRequests = ({
         render={(contacts: Contact[]) => (
           <>
             {contacts.map((contact) => (
-              <Avatar
-                src={contact.profileImagePath}
-                fallback={genFullName(contact)}
-                size={64}
-              />
+              <Avatar fallback={genFullName(contact)} size={64} />
             ))}
           </>
         )}

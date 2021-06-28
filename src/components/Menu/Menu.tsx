@@ -63,7 +63,7 @@ export default function Menu({
         ))}
       </SubMenu>
       <AntdMenu.Item>
-        <span onClick={() => logout()}>Log out</span>
+        <span onClick={logout}>Log out</span>
       </AntdMenu.Item>
     </AntdMenu>
   );
