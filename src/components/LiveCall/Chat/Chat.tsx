@@ -13,6 +13,8 @@ interface Props {
   setChatCollapsed: () => void;
 }
 
+// TODO: finish refactoring this component
+// https://github.com/Ameelio/connect-doc-client/issues/86
 function Chat({
   calls,
   setActiveCallChat,
