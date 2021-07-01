@@ -7,7 +7,6 @@ import {
 } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
 import io from "socket.io-client";
-import { selectLiveCalls } from "src/redux/selectors";
 import {
   Layout,
   Row,
@@ -29,30 +28,24 @@ import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   getCallContactsFullNames,
   getCallInmatesFullNames,
   getFirstNames,
   getVideoHandlerHostname,
 } from "src/utils";
+import { useCallsWithStatus } from "src/hooks/useCalls";
+import Timer from "src/components/LiveCall/Timer";
 
 const { Content, Sider } = Layout;
 
 const { addMessage } = callsActions;
 
-const mapStateToProps = (state: RootState) => ({
-  visitations: selectLiveCalls(state),
-});
-
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
 const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
 
-const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
+const LiveVisitationContainer: React.FC = () => {
   const [activeCallChat, setActiveCallChat] = useState<Call>();
   const [activeMessages, setActiveMessages] = useState<CallMessage[]>([]);
   const [chatCollapsed, setChatCollapsed] = useState(false);
@@ -61,6 +54,8 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   const [page, setPage] = useState(1);
   const [freshCalls, setFreshCalls] = useState<Call[]>([]);
   const messagesMap = useSelector((state: RootState) => state.calls.messages);
+
+  const visitations = useCallsWithStatus("live");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   // map from video handler hostname to socket
@@ -185,7 +180,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                 onChange={onPageChange}
                 pageSize={grid}
                 pageSizeOptions={OPTIONS.filter(
-                  (option) => option <= visitations.length
+                  (option) => option <= visitations.length + 1
                 ).map((e) => `${e}`)}
                 total={visitations.length}
                 showSizeChanger={true}
@@ -210,6 +205,10 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
                 if (!socket) return <div />;
                 return (
                   <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
+                    <Timer
+                      endTime={call.scheduledEnd}
+                      className="absolute right-4 top-4 bg-opacity-80"
+                    />
                     <VideoChat
                       height={`${frameVhHeight}vh`}
                       socket={socket}
@@ -274,7 +273,7 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
           reverseArrow
           collapsed={chatCollapsed}
           onCollapse={(collapsed) => setChatCollapsed(collapsed)}
-          className="max-h-screen shadow overflow-y-auto"
+          className="h-screen max-h-screen shadow overflow-y-auto"
         >
           {!chatCollapsed && (
             <div ref={messagesContainerRef} className="pb-16">
@@ -324,4 +323,4 @@ const LiveVisitationContainer: React.FC<PropsFromRedux> = ({ visitations }) => {
   );
 };
 
-export default connector(LiveVisitationContainer);
+export default LiveVisitationContainer;

@@ -189,7 +189,14 @@ export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   morning.setHours(0, 0, 0, 0);
   const evening = new Date();
   evening.setHours(23, 59, 59, 59);
-  return callsWithinPeriod(calls, morning, evening);
+  const allCalls = callsWithinPeriod(calls, morning, evening);
+  const activeCalls = allCalls.filter(
+    (call) =>
+      call.status !== "rejected" &&
+      call.status !== "cancelled" &&
+      call.status !== "pending_approval"
+  );
+  return activeCalls;
 };
 
 export const callsToDailyLogs = (calls: Call[]) => {

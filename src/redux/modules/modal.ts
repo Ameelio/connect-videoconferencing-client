@@ -3,9 +3,14 @@ import {
   CancelCallModalData,
   SendAlertModalData,
   InactiveModalData,
+  CancelConnectionModalData,
 } from "src/typings/Modal";
 
-type ModalEntity = InactiveModalData | CancelCallModalData | SendAlertModalData;
+type ModalEntity =
+  | InactiveModalData
+  | CancelCallModalData
+  | CancelConnectionModalData
+  | SendAlertModalData;
 
 type ModalsSliceState = { data: ModalEntity };
 

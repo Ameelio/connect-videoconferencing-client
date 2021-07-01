@@ -15,6 +15,8 @@ import ConnectionRequests from "src/components/Requests/ConnectionRequests";
 import { Layout } from "antd";
 import Header from "src/components/Header";
 import { WRAPPER_STYLE } from "src/styles/styles";
+import { openModal } from "src/redux/modules/modal";
+import { DEFAULT_CONNECTION_REJECTION_REASONS } from "src/constants";
 
 const RequestsPage: React.FC = () => {
   const connections = useConnectionRequests();
@@ -48,7 +50,14 @@ const RequestsPage: React.FC = () => {
             handleConnectionUpdate(connection, "active")
           }
           reject={(connection: Connection) =>
-            handleConnectionUpdate(connection, "rejected")
+            dispatch(
+              openModal({
+                activeType: "CANCEL_CONNECTION_MODAL",
+                entity: connection,
+                reasons: DEFAULT_CONNECTION_REJECTION_REASONS,
+                cancellationType: "rejected",
+              })
+            )
           }
           connections={connections}
           navigate={(path: string) => dispatch(push(path))}

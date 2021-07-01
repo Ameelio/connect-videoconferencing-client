@@ -8,6 +8,7 @@ import { push } from "connected-react-router";
 import { Call } from "src/typings/Call";
 import SearchCalls from "src/components/SearchCalls";
 import { openModal } from "src/redux/modules/modal";
+import { DEFAULT_CALL_REJECTION_REASONS } from "src/constants";
 
 const mapStateToProps = (state: RootState) => ({
   logs: getCallsInfo(state, selectAllCalls(state)) as Call[],
@@ -29,7 +30,14 @@ const SearchCallsPage: React.FC<PropsFromRedux> = ({ logs, fetchCalls }) => {
       fetchCalls={fetchCalls}
       navigate={(path: string) => dispatch(push(path))}
       openCancelCallModal={(call: Call) =>
-        dispatch(openModal({ activeType: "CANCEL_CALL_MODAL", entity: call }))
+        dispatch(
+          openModal({
+            activeType: "CANCEL_CALL_MODAL",
+            entity: call,
+            reasons: DEFAULT_CALL_REJECTION_REASONS,
+            cancellationType: "cancelled",
+          })
+        )
       }
     />
   );

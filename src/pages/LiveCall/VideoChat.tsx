@@ -97,6 +97,13 @@ const VideoChat: React.FC<Props> = React.memo(
       setRc(rc);
     }, [socket, callId]);
 
+    useEffect(() => {
+      return () => {
+        console.log("[VideoChat] Destroying room client");
+        rc?.destroy();
+      };
+    }, [rc]);
+
     const emitAlert = async (alert: CallAlert) => {
       if (!rc) return;
       rc.request("textMessage", {

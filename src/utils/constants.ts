@@ -69,7 +69,7 @@ export const CALL_ALERTS: CallAlert[] = [
     id: 4,
     title: "No sheer clothing",
     body:
-      "Clothing which is sheer or transparent will not be permitted. Clothing that contains holes and/or rips will not be permitted.",
+      "Clothing which is see through or transparent will not be permitted. Clothing that contains holes and/or rips will not be permitted.",
   },
   {
     id: 5,
@@ -79,8 +79,19 @@ export const CALL_ALERTS: CallAlert[] = [
   },
   {
     id: 6,
-    title: "Leggings no shorter than knee",
+    title: "No gang affiliation symbols",
+    body: "Gang affilitation symbols are not allowed.",
+  },
+  {
+    id: 7,
+    title: "Alcohol/drugs",
     body:
-      "Leggings and jeggings may only be worn under outer garments that must be no shorter than the knee while standing.",
+      "Any use or display of drugs, alcohold, related paraphernalia, or intoxication is strictly prohibited.",
+  },
+  {
+    id: 8,
+    title: "Profanity/hostile language",
+    body:
+      "Any ongoing use of profanity, looud or hostile communication is prohibited.",
   },
 ];

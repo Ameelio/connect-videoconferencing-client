@@ -69,7 +69,6 @@ const UnconnectedInmateContainer: React.FC<PropsFromRedux> = ({
   const columns = [
     {
       title: "",
-      // dataIndex: "profileImagePath",
       editable: false,
       render: (_text: string, inmate: Inmate) => (
         <>

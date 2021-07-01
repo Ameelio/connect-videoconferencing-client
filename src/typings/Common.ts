@@ -19,3 +19,9 @@ export enum VisitationType {
   FAMILY_IN_PERSON_NO_CONTACT = "family_in_person_no_contact",
   FAMILY_VIDEO_CALL = "family_video_call",
 }
+
+export interface RejectionReason {
+  title: string;
+  description: string;
+  key: string;
+}

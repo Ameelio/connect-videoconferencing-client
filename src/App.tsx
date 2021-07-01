@@ -117,7 +117,7 @@ function App({ history }: { history: History }) {
           <Menu
             user={session.user}
             isLoggedIn={isAuthenticated}
-            logout={logout}
+            logout={() => dispatch(logout())}
             selected={selected}
             facilities={facilities}
             select={(facility: Facility) =>

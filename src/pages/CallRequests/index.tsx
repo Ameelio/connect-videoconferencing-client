@@ -8,6 +8,8 @@ import { push } from "connected-react-router";
 import Header from "src/components/Header";
 import { Layout } from "antd";
 import { WRAPPER_STYLE } from "src/styles/styles";
+import { openModal } from "src/redux/modules/modal";
+import { DEFAULT_CALL_REJECTION_REASONS } from "src/constants";
 
 const CallRequestsPage: React.FC = () => {
   const calls = useCallsWithStatus("pending_approval");
@@ -34,7 +36,16 @@ const CallRequestsPage: React.FC = () => {
         <CallRequests
           calls={calls}
           accept={(call: Call) => handleCallUpdate(call, "scheduled")}
-          reject={(call: Call) => handleCallUpdate(call, "rejected")}
+          reject={(call: Call) =>
+            dispatch(
+              openModal({
+                activeType: "CANCEL_CALL_MODAL",
+                entity: call,
+                reasons: DEFAULT_CALL_REJECTION_REASONS,
+                cancellationType: "rejected",
+              })
+            )
+          }
           navigate={(path: string) => dispatch(push(path))}
           loading={loading}
         />
