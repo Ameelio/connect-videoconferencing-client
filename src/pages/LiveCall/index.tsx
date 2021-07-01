@@ -36,6 +36,7 @@ import {
   getVideoHandlerHostname,
 } from "src/utils";
 import { useCallsWithStatus } from "src/hooks/useCalls";
+import Timer from "src/components/LiveCall/Timer";
 
 const { Content, Sider } = Layout;
 
@@ -179,7 +180,7 @@ const LiveVisitationContainer: React.FC = () => {
                 onChange={onPageChange}
                 pageSize={grid}
                 pageSizeOptions={OPTIONS.filter(
-                  (option) => option <= visitations.length
+                  (option) => option <= visitations.length + 1
                 ).map((e) => `${e}`)}
                 total={visitations.length}
                 showSizeChanger={true}
@@ -204,6 +205,10 @@ const LiveVisitationContainer: React.FC = () => {
                 if (!socket) return <div />;
                 return (
                   <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
+                    <Timer
+                      endTime={call.scheduledEnd}
+                      className="absolute right-4 top-4 bg-opacity-80"
+                    />
                     <VideoChat
                       height={`${frameVhHeight}vh`}
                       socket={socket}
