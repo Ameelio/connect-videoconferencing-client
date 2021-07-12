@@ -13,7 +13,8 @@ import { callsActions } from "src/redux/modules/call";
 type CallId = string;
 
 export function useLiveCalls(): LiveCallsContextData {
-  // TODO: this was helpful when there were
+  // TODO: this was helpful when there were multiple calls in a roomm
+  // might want to remove this now that it's not the case
   const [socketMap, setSocketMap] = useState<
     Record<string, SocketIOClient.Socket>
   >({});
@@ -87,7 +88,6 @@ export function useLiveCalls(): LiveCallsContextData {
       // disconnect event
       rc.socket.on(
         "participantDisconnect",
-        // TODO unpack this appropriately
         async (participant: CallParticipant) => {
           console.log("[Disconnect] Participant disconnect", participant);
           setRemoteVideos((remotes) => {

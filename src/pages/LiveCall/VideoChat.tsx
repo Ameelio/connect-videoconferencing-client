@@ -35,7 +35,6 @@ interface Props {
   closeChat: (id: string) => void;
   chatCollapsed: boolean;
   lockCall: (id: string) => void;
-  // addMessage: (id: string, message: CallMessage) => void;
   rc: RoomClient;
   remoteVideos: Record<string, MediaStream>;
   remoteAudios: Record<string, MediaStream>;
@@ -70,7 +69,6 @@ const VideoChat: React.FC<Props> = React.memo(
     openChat,
     closeChat,
     chatCollapsed,
-    // addMessage,
     participantNames,
     rc,
     remoteVideos,
