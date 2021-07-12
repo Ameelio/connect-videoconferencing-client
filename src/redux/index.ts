@@ -38,7 +38,7 @@ export const rootReducer = createRootReducer(history);
 export const Store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(routerMiddleware(history)),
+    getDefaultMiddleware().concat([routerMiddleware(history)]),
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -31,6 +31,8 @@ import { useCallCountWithStatus, useCallsWithStatus } from "./hooks/useCalls";
 import Modals from "./components/Modals";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { LiveCallsContext } from "./context/LiveCallsContext";
+import { useLiveCalls } from "./hooks/useLiveCalls";
 
 const LOGIN_PATH = "/login";
 
@@ -110,6 +112,8 @@ function App({ history }: { history: History }) {
     }
   }, [selected, dispatch]);
 
+  const liveCallsContextValue = useLiveCalls();
+
   return (
     <ConnectedRouter history={history}>
       <Layout style={{ minHeight: "100vh" }}>
@@ -133,18 +137,20 @@ function App({ history }: { history: History }) {
           session.status === "loading" ? (
             <Loader />
           ) : (
-            <Switch>
-              <Route exact path={LOGIN_PATH} component={Login}></Route>
-              {ROUTES.map((route) => (
-                <ProtectedRoute
-                  exact
-                  {...defaultProtectedRouteProps}
-                  path={route.path}
-                  component={route.component}
-                  key={route.label}
-                ></ProtectedRoute>
-              ))}
-            </Switch>
+            <LiveCallsContext.Provider value={liveCallsContextValue}>
+              <Switch>
+                <Route exact path={LOGIN_PATH} component={Login}></Route>
+                {ROUTES.map((route) => (
+                  <ProtectedRoute
+                    exact
+                    {...defaultProtectedRouteProps}
+                    path={route.path}
+                    component={route.component}
+                    key={route.label}
+                  ></ProtectedRoute>
+                ))}
+              </Switch>
+            </LiveCallsContext.Provider>
           )}
         </Layout>
       </Layout>

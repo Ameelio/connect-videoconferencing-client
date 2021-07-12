@@ -27,7 +27,7 @@ interface Props {
   height: number | string;
   callId: string;
   participantNames: { inmates: string; contacts: string };
-  socket: SocketIOClient.Socket;
+  // socket: SocketIOClient.Socket;
   alerts: CallAlert[];
   muteCall: (id: string) => void;
   unmuteCall: (id: string) => void;
@@ -38,6 +38,7 @@ interface Props {
   lockCall: (id: string) => void;
   addMessage: (id: string, message: CallMessage) => void;
   updateCallStatus: (id: string, status: CallStatus) => void;
+  rc: RoomClient;
 }
 
 declare global {
@@ -60,7 +61,7 @@ const VideoChat: React.FC<Props> = React.memo(
     isVisible,
     width,
     height,
-    socket,
+    // socket,
     alerts,
     lockCall,
     muteCall,
@@ -72,12 +73,9 @@ const VideoChat: React.FC<Props> = React.memo(
     addMessage,
     updateCallStatus,
     participantNames,
+    rc,
   }) => {
-    const authInfo = useSelector((state: RootState) => state.session.authInfo);
-
     const [loading, setLoading] = useState(false);
-    const [isAuthed, setIsAuthed] = useState(false);
-    const [rc, setRc] = useState<RoomClient>();
     const [status, setStatus] = useState<InCallStatus>();
     const [inmateAudioPaused, setInmateAudioPaused] = useState(false);
     const [inmateVideoPaused, setInmateVideoPaused] = useState(false);
@@ -91,18 +89,13 @@ const VideoChat: React.FC<Props> = React.memo(
       Record<string, MediaStream>
     >({});
 
-    const joinRoom = useCallback(async () => {
-      const rc = new RoomClient(socket, callId);
-      await rc.init();
-      setRc(rc);
-    }, [socket, callId]);
-
-    useEffect(() => {
-      return () => {
-        console.log("[VideoChat] Destroying room client");
-        rc?.destroy();
-      };
-    }, [rc]);
+    // TODO: destroy room client
+    // useEffect(() => {
+    //   return () => {
+    //     console.log("[VideoChat] Destroying room client");
+    //     rc?.destroy();
+    //   };
+    // }, [rc]);
 
     const emitAlert = async (alert: CallAlert) => {
       if (!rc) return;
@@ -125,86 +118,61 @@ const VideoChat: React.FC<Props> = React.memo(
       );
     };
 
-    // Asynchronously load the room
     useEffect(() => {
-      setLoading(true);
-      if (!isAuthed) {
-        (async () => {
-          if (!socket.connected) {
-            console.log("Not connected, so waiting until connected.");
-            window.Debug = socket;
-            await new Promise((resolve) => socket.on("connect", resolve));
-            console.log("[VideoChat] Connected");
-          }
-          await new Promise((resolve) => {
-            socket.emit("authenticate", authInfo, resolve);
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
+      console.log("[VideoChat] listening for text messages");
+      rc.socket.on(
+        "textMessage",
+        ({ from, contents }: { from: CallParticipant; contents: string }) => {
+          console.log(
+            `[VideoChat] Received text message from ${from.type} for ${callId}`
+          );
+          const message = {
+            contents,
+            senderId: from.id,
+            senderType: from.type,
+            createdAt: new Date().toISOString(),
+            callId,
+          };
+          addMessage(callId, message);
+        }
+      );
+    }, [addMessage, callId, rc]);
+
+    useEffect(() => {
+      // TODO: move all this socket stuff to a useRoomClient hook
+      // that sets up all of this in one centralized place instead
+      // of having it polluting the ffile
+      // https://github.com/Ameelio/connect-doc-client/issues/62
+      console.log("[VideoChat] listening for call status updates");
+      rc.socket.on("callStatus", async (status: InCallStatus) => {
+        console.log("[VideoChat] Received status update", status);
+        setStatus(status);
+      });
+
+      rc.socket.on(
+        "participantDisconnect",
+        async (participant: CallParticipant) => {
+          setRemoteVideos((remotes) => {
+            const {
+              [getParticipantStreamId(participant)]: _,
+              ...otherRemotes
+            } = remotes;
+            return otherRemotes;
           });
-          await joinRoom();
-          console.log("[VideoChat] Authenticated");
-          setIsAuthed(true);
-        })();
-      }
-    }, [authInfo, socket, joinRoom, isAuthed]);
-
-    useEffect(() => {
-      // TODO: move all this socket stuff to a useRoomClient hook
-      // that sets up all of this in one centralized place instead
-      // of having it polluting the ffile
-      // https://github.com/Ameelio/connect-doc-client/issues/62
-      if (rc && isAuthed) {
-        console.log("[VideoChat] listening for text messages");
-        rc.socket.on(
-          "textMessage",
-          ({ from, contents }: { from: CallParticipant; contents: string }) => {
-            console.log(
-              `[VideoChat] Received text message from ${from.type} for ${callId}`
-            );
-            const message = {
-              contents,
-              senderId: from.id,
-              senderType: from.type,
-              createdAt: new Date().toISOString(),
-              callId,
-            };
-            addMessage(callId, message);
-          }
-        );
-      }
-    }, [addMessage, callId, isAuthed, rc]);
-
-    useEffect(() => {
-      // TODO: move all this socket stuff to a useRoomClient hook
-      // that sets up all of this in one centralized place instead
-      // of having it polluting the ffile
-      // https://github.com/Ameelio/connect-doc-client/issues/62
-      if (rc && isAuthed) {
-        console.log("[VideoChat] listening for call status updates");
-        rc.socket.on("callStatus", async (status: InCallStatus) => {
-          console.log("[VideoChat] Received status update", status);
-          setStatus(status);
-        });
-
-        rc.socket.on(
-          "participantDisconnect",
-          async (participant: CallParticipant) => {
-            setRemoteVideos((remotes) => {
-              const {
-                [getParticipantStreamId(participant)]: _,
-                ...otherRemotes
-              } = remotes;
-              return otherRemotes;
-            });
-            setRemoteAudios((remotes) => {
-              const {
-                [getParticipantStreamId(participant)]: _,
-                ...otherRemotes
-              } = remotes;
-              return otherRemotes;
-            });
-          }
-        );
-      }
-    }, [isAuthed, rc]);
+          setRemoteAudios((remotes) => {
+            const {
+              [getParticipantStreamId(participant)]: _,
+              ...otherRemotes
+            } = remotes;
+            return otherRemotes;
+          });
+        }
+      );
+    }, [rc]);
 
     useEffect(() => {
       if (!rc) return;
@@ -239,58 +207,39 @@ const VideoChat: React.FC<Props> = React.memo(
       updateCallStatus(callId, status);
     }, [status, callId]);
 
-    const measuredRef = useCallback(
-      (node) => {
-        if (node !== null && rc && isAuthed) {
-          (async () => {
-            rc.on(
-              "consume",
-              async (
-                kind: string,
-                stream: MediaStream,
-                participant: CallParticipant
-              ) => {
-                console.log(
-                  `[VideoChat] Received ${kind} consume from ${participant.type} ${participant.id}`
-                );
-                if (node) {
-                  if (kind === "video") {
-                    setRemoteVideos((remotes) => ({
-                      ...remotes,
-                      [getParticipantStreamId(participant)]: stream,
-                    }));
-                  } else if (kind === "audio") {
-                    setRemoteAudios((remotes) => ({
-                      ...remotes,
-                      [getParticipantStreamId(participant)]: stream,
-                    }));
-                  }
-
-                  setLoading(false);
+    const measuredRef = useCallback((node) => {
+      if (node !== null) {
+        (async () => {
+          rc.on(
+            "consume",
+            async (
+              kind: string,
+              stream: MediaStream,
+              participant: CallParticipant
+            ) => {
+              console.log(
+                `[VideoChat] Received ${kind} consume from ${participant.type} ${participant.id}`
+              );
+              if (node) {
+                if (kind === "video") {
+                  setRemoteVideos((remotes) => ({
+                    ...remotes,
+                    [getParticipantStreamId(participant)]: stream,
+                  }));
+                } else if (kind === "audio") {
+                  setRemoteAudios((remotes) => ({
+                    ...remotes,
+                    [getParticipantStreamId(participant)]: stream,
+                  }));
                 }
+
+                setLoading(false);
               }
-            );
-          })();
-        }
-      },
-      [rc, isAuthed]
-    );
-
-    // useEffect(() => {
-    //   const inmate = document.getElementById(`inmate-${callId}-audio`);
-    //   const user = document.getElementById(`user-${callId}-audio`);
-    //   if (inmate) (inmate as HTMLAudioElement).muted = isAudioOn;
-    //   if (user) (user as HTMLAudioElement).muted = isAudioOn;
-    // }, [isAudioOn, callId]);
-
-    useEffect(() => {
-      if (rc) {
-        const interval = setInterval(() => {
-          rc.socket.emit("heartbeat", { callId });
-        }, 1000);
-        return () => clearInterval(interval);
+            }
+          );
+        })();
       }
-    }, [rc, callId]);
+    }, []);
 
     const videoKeys = Object.keys(remoteVideos);
     const audioKeys = Object.keys(remoteAudios);
