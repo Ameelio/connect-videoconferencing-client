@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { RootState, useAppDispatch } from "src/redux";
 import {
   CALL_ALERTS,
@@ -16,14 +16,10 @@ import {
   Select,
   Empty,
 } from "antd";
-import {
-  fetchCalls,
-  callsActions,
-  updateCallStatus,
-} from "src/redux/modules/call";
+import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
+import { Call, CallMessage, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
@@ -34,13 +30,10 @@ import {
   getFirstNames,
 } from "src/utils";
 import { useCallsWithStatus } from "src/hooks/useCalls";
-import Timer from "src/components/LiveCall/Timer";
 import { useContext } from "react";
 import { LiveCallsContext } from "src/context/LiveCallsContext";
 
 const { Content, Sider } = Layout;
-
-const { addMessage } = callsActions;
 
 const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
@@ -58,7 +51,9 @@ const LiveVisitationContainer: React.FC = () => {
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  const { roomClients } = useContext(LiveCallsContext);
+  const { roomClients, remoteAudios, remoteVideos } = useContext(
+    LiveCallsContext
+  );
 
   // map from call id to muted boolean
   const [unmutedCallsMap, setUnmutedCalls] = useState<Record<number, boolean>>(
@@ -120,13 +115,6 @@ const LiveVisitationContainer: React.FC = () => {
     handleGridChange(pageSize as GridOption);
   };
 
-  const onMessageReceived = useCallback(
-    (callId: string, message: CallMessage) => {
-      dispatch(addMessage({ id: callId, message }));
-    },
-    []
-  );
-
   return (
     <Content>
       <Header
@@ -172,12 +160,11 @@ const LiveVisitationContainer: React.FC = () => {
                 const rc = roomClients[call.id];
                 if (!rc) return <div />;
 
+                const videoStreams = remoteVideos[call.id] || {};
+                const audioStreams = remoteAudios[call.id] || {};
+
                 return (
                   <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
-                    <Timer
-                      endTime={call.scheduledEnd}
-                      className="absolute right-4 top-4 bg-opacity-80"
-                    />
                     <VideoChat
                       height={`${frameVhHeight}vh`}
                       callId={call.id}
@@ -212,7 +199,7 @@ const LiveVisitationContainer: React.FC = () => {
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
-                      addMessage={onMessageReceived}
+                      // addMessage={onMessageReceived}
                       lockCall={(callId: string) => {
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
@@ -223,10 +210,10 @@ const LiveVisitationContainer: React.FC = () => {
                           setActiveCallChat(visitations[idx]);
                         }
                       }}
-                      updateCallStatus={(id: string, status: CallStatus) =>
-                        dispatch(updateCallStatus({ id, status }))
-                      }
-                      rc={roomClients[call.id]}
+                      rc={rc}
+                      remoteVideos={videoStreams}
+                      remoteAudios={audioStreams}
+                      scheduledEnd={call.scheduledEnd}
                     />
                   </Col>
                 );

@@ -25,3 +25,5 @@ export interface RejectionReason {
   description: string;
   key: string;
 }
+
+export type StreamId = string;
