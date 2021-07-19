@@ -168,6 +168,7 @@ class RoomClient {
 
   async terminate() {
     await this.request("terminate", { callId: this.callId });
+    await this.destroy();
   }
 
   async destroy() {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { RootState, useAppDispatch } from "src/redux";
 import {
   CALL_ALERTS,
@@ -6,7 +6,6 @@ import {
   GRID_TO_VH_HEIGHT,
 } from "src/utils/constants";
 import { FULL_WIDTH, WRAPPER_STYLE } from "src/styles/styles";
-import io from "socket.io-client";
 import {
   Layout,
   Row,
@@ -17,14 +16,10 @@ import {
   Select,
   Empty,
 } from "antd";
-import {
-  fetchCalls,
-  callsActions,
-  updateCallStatus,
-} from "src/redux/modules/call";
+import { fetchCalls } from "src/redux/modules/call";
 import VideoChat from "src/pages/LiveCall/VideoChat";
 import VideoSkeleton from "./VideoSkeleton";
-import { Call, CallMessage, CallStatus, GridOption } from "src/typings/Call";
+import { Call, CallMessage, GridOption } from "src/typings/Call";
 import _ from "lodash";
 import Header from "src/components/Header/Header";
 import MessageDisplay from "src/components/calls/MessageDisplay";
@@ -33,14 +28,12 @@ import {
   getCallContactsFullNames,
   getCallInmatesFullNames,
   getFirstNames,
-  getVideoHandlerHostname,
 } from "src/utils";
 import { useCallsWithStatus } from "src/hooks/useCalls";
-import Timer from "src/components/LiveCall/Timer";
+import { useContext } from "react";
+import { LiveCallsContext } from "src/context/LiveCallsContext";
 
 const { Content, Sider } = Layout;
-
-const { addMessage } = callsActions;
 
 const MAX_VH_HEIGHT_FRAMES = 80;
 const OPTIONS: GridOption[] = [1, 2, 4, 6, 8];
@@ -52,16 +45,15 @@ const LiveVisitationContainer: React.FC = () => {
   const [grid, setGrid] = useState<GridOption>(1);
   const [frameVhHeight, setFrameVhHeight] = useState(MAX_VH_HEIGHT_FRAMES);
   const [page, setPage] = useState(1);
-  const [freshCalls, setFreshCalls] = useState<Call[]>([]);
   const messagesMap = useSelector((state: RootState) => state.calls.messages);
 
   const visitations = useCallsWithStatus("live");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  // map from video handler hostname to socket
-  const [socketMap, setSocketMap] = useState<
-    Record<string, SocketIOClient.Socket>
-  >({});
+
+  const { roomClients, remoteAudios, remoteVideos } = useContext(
+    LiveCallsContext
+  );
 
   // map from call id to muted boolean
   const [unmutedCallsMap, setUnmutedCalls] = useState<Record<number, boolean>>(
@@ -95,33 +87,6 @@ const LiveVisitationContainer: React.FC = () => {
     return () => clearInterval(interval);
   }, [dispatch]);
 
-  useEffect(() => {
-    const newCalls = visitations.filter(
-      (call) =>
-        call.videoHandler &&
-        !(getVideoHandlerHostname(call.videoHandler) in socketMap)
-    );
-    setFreshCalls(newCalls);
-  }, [socketMap, visitations]);
-
-  useEffect(() => {
-    if (!freshCalls.length) return;
-
-    const temp: Record<string, SocketIOClient.Socket> = {};
-
-    for (const call of freshCalls) {
-      if (!call.videoHandler) continue;
-      const target = getVideoHandlerHostname(call.videoHandler);
-      // initialize new sockets once
-      if (target in temp) continue;
-
-      const newSocketClient = io.connect(target, { transports: ["websocket"] });
-      temp[target] = newSocketClient;
-    }
-    console.log("[Index] New socket clients", temp);
-    setSocketMap((curr) => ({ ...curr, ...temp }));
-  }, [freshCalls]);
-
   // Initialize call messages sider
   useEffect(() => {
     // if there are no calls at all, just return
@@ -149,13 +114,6 @@ const LiveVisitationContainer: React.FC = () => {
   const onShowSizeChange = (_: number, pageSize: number) => {
     handleGridChange(pageSize as GridOption);
   };
-
-  const onMessageReceived = useCallback(
-    (callId: string, message: CallMessage) => {
-      dispatch(addMessage({ id: callId, message }));
-    },
-    []
-  );
 
   return (
     <Content>
@@ -199,19 +157,16 @@ const LiveVisitationContainer: React.FC = () => {
                     </Col>
                   );
 
-                const socket =
-                  socketMap[getVideoHandlerHostname(call.videoHandler)];
+                const rc = roomClients[call.id];
+                if (!rc) return <div />;
 
-                if (!socket) return <div />;
+                const videoStreams = remoteVideos[call.id] || {};
+                const audioStreams = remoteAudios[call.id] || {};
+
                 return (
                   <Col span={GRID_TO_SPAN_WIDTH[grid]} key={call.id}>
-                    <Timer
-                      endTime={call.scheduledEnd}
-                      className="absolute right-4 top-4 bg-opacity-80"
-                    />
                     <VideoChat
                       height={`${frameVhHeight}vh`}
-                      socket={socket}
                       callId={call.id}
                       participantNames={{
                         inmates: getCallInmatesFullNames(call),
@@ -244,7 +199,7 @@ const LiveVisitationContainer: React.FC = () => {
                         setChatCollapsed(true);
                       }}
                       chatCollapsed={chatCollapsed}
-                      addMessage={onMessageReceived}
+                      // addMessage={onMessageReceived}
                       lockCall={(callId: string) => {
                         const idx = visitations.findIndex(
                           (call) => call.id === callId
@@ -255,9 +210,10 @@ const LiveVisitationContainer: React.FC = () => {
                           setActiveCallChat(visitations[idx]);
                         }
                       }}
-                      updateCallStatus={(id: string, status: CallStatus) =>
-                        dispatch(updateCallStatus({ id, status }))
-                      }
+                      rc={rc}
+                      remoteVideos={videoStreams}
+                      remoteAudios={audioStreams}
+                      scheduledEnd={call.scheduledEnd}
                     />
                   </Col>
                 );

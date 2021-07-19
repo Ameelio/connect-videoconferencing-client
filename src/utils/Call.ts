@@ -23,7 +23,7 @@ import { Dictionary } from "@reduxjs/toolkit";
 import { Inmate } from "src/typings/Inmate";
 import { notEmpty } from "./Common";
 import { Kiosk } from "src/typings/Kiosk";
-import { VisitationType } from "src/typings/Common";
+import { StreamId, VisitationType } from "src/typings/Common";
 
 const callSlotToDateString = (time: CallSlot): string => {
   const date = new Date();
@@ -302,12 +302,11 @@ export const getVideoHandlerHostname = (handler: CallVideoHandler) => {
   return `https://${handler.host}:${handler.port}`;
 };
 
-type StreamId = string;
-
 export const getParticipantStreamId = (
-  participant: CallParticipant
+  participant: CallParticipant,
+  callId: string
 ): StreamId => {
-  return `${participant.type}-${participant.id}`;
+  return `${callId}-${participant.type}-${participant.id}`;
 };
 
 export const getStreamParticipantType = (
