@@ -21,7 +21,7 @@ export const selectActiveFacility = createAsyncThunk(
   async (facility: Facility) => {
     // need to harcode the nodeId for initialization,
     const bodyCt = await fetchAuthenticated(
-      `facilities/${facility.id}/callSlots`,
+      `facilities/${facility.id}/visitSlots`,
       {},
       false
     );
