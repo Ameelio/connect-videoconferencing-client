@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Call } from "src/typings/Call";
 import { Document, Page, View, StyleSheet } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import Header from "src/components/pdf/Header";
-import { SelectedFacility } from "src/typings/Facility";
 import SectionHeader from "src/components/pdf/SectionHeader";
 import DailyReportCall from "./DailyReportCall";
 import Footer from "../pdf/Footer";
+import { groupBy } from "src/utils";
 
 const styles = StyleSheet.create({
   page: {
@@ -26,29 +26,41 @@ const styles = StyleSheet.create({
 });
 
 interface Props {
-  callBlocks: Record<string, Call[]>;
-  facility: SelectedFacility;
+  calls: Call[];
+  facilityName: string;
   canViewDetails: boolean;
+  filename: string;
 }
 
-const DailyReport: React.FC<Props> = React.memo(
-  ({ callBlocks, facility, canViewDetails }) => (
+const DailyReport: React.FC<Props> = ({
+  calls,
+  facilityName,
+  canViewDetails,
+  filename,
+}) => {
+  const [callBlocks, setCallBlocks] = useState<Record<string, Call[]>>({});
+
+  useEffect(() => {
+    const blocks: Record<string, Call[]> = groupBy(
+      calls,
+      (call) => call.scheduledStart
+    );
+    setCallBlocks(blocks);
+  }, [calls]);
+
+  return (
     <Document
       author="Ameelio.org"
       keywords="schedule, conneect"
       title="Daily Schedule"
     >
       <Page style={styles.page} wrap>
-        <Header
-          title={`Daily Activity Report | ${format(
-            new Date(),
-            "MMMM dd, yyyy"
-          )}`}
-          subtitle={`${facility.name}`}
-        />
+        <Header title={filename} subtitle={facilityName} />
         {Object.keys(callBlocks).map((block) => (
           <View key={block} style={styles.blockContainer}>
-            <SectionHeader title={format(new Date(block), "HH:mm aaa")} />
+            <SectionHeader
+              title={format(new Date(block), "HH:mm aaa, M/d/yy")}
+            />
             <DailyReportCall
               calls={callBlocks[block]}
               canViewDetails={canViewDetails}
@@ -58,7 +70,6 @@ const DailyReport: React.FC<Props> = React.memo(
         <Footer />
       </Page>
     </Document>
-  )
-);
-
+  );
+};
 export default DailyReport;

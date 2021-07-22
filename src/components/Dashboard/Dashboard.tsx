@@ -2,22 +2,8 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   GlobalOutlined,
-  DownOutlined,
-  UserOutlined,
-  FilePdfOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons";
-import {
-  Layout,
-  Space,
-  Row,
-  Col,
-  Button,
-  Typography,
-  Spin,
-  Dropdown,
-  Menu,
-} from "antd";
+import { Layout, Space, Row, Col, Button, Typography, Spin } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { differenceInMinutes, format } from "date-fns";
 import React, { useEffect, useState } from "react";
@@ -28,19 +14,17 @@ import {
   BASE_CHART_COLORS,
 } from "src/styles/styles";
 import { Call } from "src/typings/Call";
-import { callsToDailyLogs, callsToday, onlyUnique } from "src/utils";
+import { callsToday, onlyUnique } from "src/utils";
 import DonutChart from "../charts/DonutChart";
 import LineChart from "../charts/LineChart";
 import Header from "../Header/Header";
 import { groupBy, callsToWeeklyData } from "src/utils";
-import PDFDownloadButton from "./PDFDownloadButton";
-import { SelectedFacility } from "src/typings/Facility";
-import { CSVLink, CSVDownload } from "react-csv";
+import DownloadScheduleMenu from "src/components/DownloadScheduleMenu";
 
 interface Props {
   calls: Call[];
   totalInmates: number;
-  facility: SelectedFacility;
+  facilityName: string;
   lastUpdatedAt: Date;
   isRefreshing: boolean;
   refresh: () => void;
@@ -49,7 +33,7 @@ interface Props {
 const Dashboard: React.FC<Props> = ({
   calls,
   totalInmates,
-  facility,
+  facilityName,
   lastUpdatedAt,
   isRefreshing,
   refresh,
@@ -86,47 +70,20 @@ const Dashboard: React.FC<Props> = ({
 
   if (!ratingsCount || !callVolume) return <div />;
 
-  const scheduleOptionsMenu = (
-    <Menu>
-      <Menu.Item key="1" icon={<FilePdfOutlined />}>
-        <PDFDownloadButton
-          calls={dailyScheduleCalls}
-          facility={facility}
-          canViewDetails={true}
-        />
-      </Menu.Item>
-      <Menu.Item key="2" icon={<FilePdfOutlined />}>
-        <PDFDownloadButton
-          calls={dailyScheduleCalls}
-          facility={facility}
-          canViewDetails={false}
-        />
-      </Menu.Item>
-      <Menu.Item key="3" icon={<UnorderedListOutlined />}>
-        <CSVLink
-          data={callsToDailyLogs(dailyScheduleCalls)}
-          target="_blank"
-          filename={`Daily Logs ${facility.name}@${format(
-            new Date(),
-            "MM/dd/yyyy-HH:mm"
-          )}`}
-        >
-          Daily Logs (CSV)
-        </CSVLink>
-      </Menu.Item>
-    </Menu>
-  );
   return (
     <Layout>
       <Header
         title="Dashboard"
         subtitle="Analyze your facility data and print the daily call schedule."
         extra={[
-          <Dropdown overlay={scheduleOptionsMenu}>
-            <Button>
-              Download Schedule <DownOutlined />
-            </Button>
-          </Dropdown>,
+          <DownloadScheduleMenu
+            facilityName={facilityName}
+            calls={dailyScheduleCalls}
+            filename={`Daily Logs ${facilityName}@${format(
+              new Date(),
+              "MM/dd/yyyy-HH:mm"
+            )}`}
+          />,
           <div>
             {lastUpdatedAtMin > 5 && !isRefreshing && (
               <div>

@@ -13,12 +13,15 @@ import {
   VISITATION_TYPE_FILTER_OPTIONS,
 } from "src/constants";
 import { VisitationType } from "src/typings/Common";
+import DownloadScheduleMenu from "src/components/DownloadScheduleMenu";
+import { format } from "date-fns";
 
 interface Props {
   calls: Call[];
   navigate: (path: string) => void;
   fetchCalls: (filters: CallFilters) => void;
   openCancelCallModal: (call: Call) => void;
+  facilityName: string;
 }
 
 const LABEL_TO_FILTER_MAP: Record<SearchFilter, string> = {
@@ -36,6 +39,7 @@ const SearchCalls = ({
   navigate,
   fetchCalls,
   openCancelCallModal,
+  facilityName,
 }: Props) => {
   const [filteredLogs, setFilteredLogs] = useState<Call[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -99,6 +103,13 @@ const SearchCalls = ({
 
   useEffect(() => {
     let filteredCalls = calls;
+
+    if (!searchQuery && !startDate && !endDate) {
+      // only get future calls
+      filteredCalls = filteredCalls.filter(
+        (call) => new Date(call.scheduledEnd) > new Date()
+      );
+    }
 
     if (startDate && endDate)
       filteredCalls = filteredCalls.filter(
@@ -257,6 +268,14 @@ const SearchCalls = ({
             setStartDate={setStartDate}
             setEndDate={setEndDate}
             setDuration={setMaxDuration}
+          />,
+          <DownloadScheduleMenu
+            facilityName={facilityName}
+            calls={filteredLogs}
+            filename={`Logs ${facilityName}@${format(
+              startDate ? new Date(startDate) : new Date(),
+              "MM/dd/yy"
+            )}${endDate ? `-${format(new Date(endDate), "MM/dd/yy")}` : ""}`}
           />,
         ]}
       />

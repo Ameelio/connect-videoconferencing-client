@@ -1,5 +1,5 @@
 import React from "react";
-import { RootState, useAppDispatch } from "src/redux";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux";
 import { connect, ConnectedProps } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { getCallsInfo, selectAllCalls } from "src/redux/selectors";
@@ -9,24 +9,21 @@ import { Call } from "src/typings/Call";
 import SearchCalls from "src/components/SearchCalls";
 import { openModal } from "src/redux/modules/modal";
 import { DEFAULT_CALL_REJECTION_REASONS } from "src/constants";
+import { useCalls } from "src/hooks/useCalls";
 
-const mapStateToProps = (state: RootState) => ({
-  logs: getCallsInfo(state, selectAllCalls(state)) as Call[],
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ fetchCalls }, dispatch);
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-const SearchCallsPage: React.FC<PropsFromRedux> = ({ logs, fetchCalls }) => {
+const SearchCallsPage = () => {
   const dispatch = useAppDispatch();
+  const calls = useCalls();
+  const facility = useAppSelector(
+    (state: RootState) => state.facilities.selected
+  );
+
+  if (!facility) return <div />;
 
   return (
     <SearchCalls
-      calls={logs}
+      calls={calls}
+      facilityName={facility.name}
       fetchCalls={fetchCalls}
       navigate={(path: string) => dispatch(push(path))}
       openCancelCallModal={(call: Call) =>
@@ -43,4 +40,4 @@ const SearchCallsPage: React.FC<PropsFromRedux> = ({ logs, fetchCalls }) => {
   );
 };
 
-export default connector(SearchCallsPage);
+export default SearchCallsPage;

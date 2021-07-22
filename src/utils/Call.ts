@@ -199,7 +199,7 @@ export const callsToday = <TCall extends BaseCall>(calls: TCall[]): TCall[] => {
   return activeCalls;
 };
 
-export const callsToDailyLogs = (calls: Call[]) => {
+export const callsToCsvLogs = (calls: Call[]) => {
   return calls.map((call) => ({
     incarceratedPerson: getCallInmatesFullNames(call),
     visitors: getCallContactsFullNames(call),
