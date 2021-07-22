@@ -6,6 +6,7 @@ import { Call, CallStatus } from "src/typings/Call";
 import { VisitationType } from "src/typings/Common";
 import { Contact } from "src/typings/Contact";
 import { Inmate } from "src/typings/Inmate";
+import { Kiosk } from "src/typings/Kiosk";
 import { capitalize, genFullName, getVisitationLabel } from "src/utils";
 
 interface Props {
@@ -48,7 +49,11 @@ const SearchCallsTable: React.FC<Props> = ({
   };
 
   return (
-    <Table dataSource={calls} loading={isLoading}>
+    <Table
+      dataSource={calls}
+      loading={isLoading}
+      pagination={{ position: ["topLeft", "bottomLeft"] }}
+    >
       <Table.Column
         title="Date"
         dataIndex="scheduledStart"
@@ -122,6 +127,16 @@ const SearchCallsTable: React.FC<Props> = ({
         render={(status: CallStatus) => (
           <>
             <Tag>{capitalize(status)}</Tag>
+          </>
+        )}
+      />
+      <Table.Column
+        title="Kiosk"
+        dataIndex="kiosk"
+        key="type"
+        render={(kiosk: Kiosk) => (
+          <>
+            <p>{kiosk.name}</p>
           </>
         )}
       />

@@ -34,7 +34,7 @@ const DashboardPage: React.FC = () => {
     <Dashboard
       calls={calls}
       totalInmates={totalInmates}
-      facility={facility}
+      facilityName={facility.name}
       lastUpdatedAt={lastUpdatedAt}
       refresh={refresh}
       isRefreshing={isRefreshing}
